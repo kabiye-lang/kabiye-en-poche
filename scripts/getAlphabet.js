@@ -1,5 +1,6 @@
 /*eslint-env node */
-/* eslint-disable @typescript-eslint/no-var-requires */
+/* eslint-disable no-undef, @typescript-eslint/no-require-imports */
+
 require('dotenv').config()
 
 const fs = require('fs-extra')
@@ -43,6 +44,11 @@ base('Alphabet')
         console.error(err)
         return
       }
-      fs.writeFileSync(`./utils/data/alphabet.json`, JSON.stringify(alphabet, null, 2))
+      fs.mkdir('./utils/data', { recursive: true }, (err) => {
+        if (err) {
+          return
+        }
+        fs.writeFileSync(`./utils/data/alphabet.json`, JSON.stringify(alphabet, null, 2))
+      })
     }
   )

@@ -208,6 +208,7 @@ export const getNavigationTheme = (): Theme => {
       // border: Colors.grey30,
       // notification: Colors.primary,
     },
+    fonts: DefaultTheme.fonts,
   }
 
   const MyDarkTheme: Theme = {
@@ -221,6 +222,7 @@ export const getNavigationTheme = (): Theme => {
       // border: Colors.grey30,
       // notification: Colors.primary,
     },
+    fonts: DefaultTheme.fonts,
   }
 
   const appearance = ui.isAppearanceSystem ? RNAppearance.getColorScheme() : ui.appearance

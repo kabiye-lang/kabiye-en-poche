@@ -6,32 +6,26 @@ const fs = require('fs')
 const ncuCfg = require('./.ncurc.json')
 const pkg = require('./package.json')
 
-// SDK-50
-const url = 'https://raw.githubusercontent.com/expo/expo/sdk-51/packages/expo/bundledNativeModules.json'
+// SDK-52
+const url = 'https://raw.githubusercontent.com/expo/expo/sdk-52/packages/expo/bundledNativeModules.json'
 
 const req = https.get(url, function (res) {
   let data = '',
-    json_data
+    expoJsonData
 
   res.on('data', function (stream) {
     data += stream
   })
   res.on('end', function () {
     try {
-      json_data = JSON.parse(data)
-      ncuCfg.reject = [
-        'expo',
-        'eslint',
-        '@typescript-eslint/eslint-plugin',
-        '@typescript-eslint/parser',
-        ...Object.keys(json_data),
-      ]
-      Object.keys(json_data).forEach((dep) => {
+      expoJsonData = JSON.parse(data)
+      ncuCfg.reject = [...Object.keys(expoJsonData)]
+      Object.keys(expoJsonData).forEach((dep) => {
         if (pkg.dependencies[dep]) {
-          pkg.dependencies[dep] = json_data[dep]
+          pkg.dependencies[dep] = expoJsonData[dep]
         }
         if (pkg.devDependencies[dep]) {
-          pkg.devDependencies[dep] = json_data[dep]
+          pkg.devDependencies[dep] = expoJsonData[dep]
         }
       })
       fs.writeFileSync('.ncurc.json', JSON.stringify(ncuCfg, null, 2))

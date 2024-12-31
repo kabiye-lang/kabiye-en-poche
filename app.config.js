@@ -36,6 +36,8 @@ export default {
     experiments: {
       typedRoutes: true,
       tsconfigPaths: true,
+      reactCompiler: false,
+      reactCanary: false,
     },
     extra: {
       router: {

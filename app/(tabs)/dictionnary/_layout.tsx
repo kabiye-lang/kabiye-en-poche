@@ -11,7 +11,7 @@ export default function TabDictionnaryLayout() {
         options={{
           title: '',
           headerTransparent: true,
-          headerBackTitleVisible: false,
+          headerBackButtonDisplayMode: 'minimal',
         }}
       />
     </Stack>

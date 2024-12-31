@@ -103,6 +103,7 @@ export default function ResourcesScreen() {
               </Text>
               {listItem.items.map((item) => {
                 return (
+                  // @ts-expect-error link string
                   <Link asChild href={item.href} key={item.href}>
                     {renderListItem(item)}
                   </Link>

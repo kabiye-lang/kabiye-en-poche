@@ -33,6 +33,8 @@ export const View = forwardRef((props: ViewProps & RNUIViewProps, _ref) => {
 
 // using forwardRef to fix Warning: Function components cannot be given refs. Attempts to access this ref will fail
 // This happens when used as a child of Link
-export const Button = forwardRef((props: ButtonProps & RNUIButtonProps & CustomTypographyProps, _ref) => {
-  return <RNUIButton {...props} />
-})
+export const Button = forwardRef(
+  (props: ButtonProps & Omit<RNUIButtonProps, 'title'> & CustomTypographyProps, _ref) => {
+    return <RNUIButton {...props} />
+  }
+)
