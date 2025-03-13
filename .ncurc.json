@@ -23,6 +23,7 @@
     "expo-auth-session",
     "expo-av",
     "expo-background-fetch",
+    "expo-background-task",
     "expo-battery",
     "expo-blur",
     "expo-brightness",

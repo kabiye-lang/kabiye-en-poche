@@ -6,7 +6,7 @@ export default function TabHomeLayout() {
   const { t } = useTranslation()
 
   return (
-    <Stack>
+    <Stack screenOptions={{ headerBackButtonDisplayMode: 'minimal' }}>
       <Stack.Screen name="index" options={{ headerShown: false }} />
       <Stack.Screen
         name="alphabet"
