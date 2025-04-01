@@ -1,6 +1,14 @@
 {
   "upgrade": false,
   "reject": [
+    "@dev-plugins/apollo-client",
+    "@dev-plugins/async-storage",
+    "@dev-plugins/react-native-mmkv",
+    "@dev-plugins/react-navigation",
+    "@dev-plugins/react-query",
+    "@dev-plugins/redux",
+    "@dev-plugins/tinybase",
+    "@dev-plugins/vanilla-log-viewer",
     "@expo/metro-runtime",
     "@expo/vector-icons",
     "@react-native-async-storage/async-storage",
