@@ -4,7 +4,7 @@ import { Button, Card, Colors, Text, View } from 'react-native-ui-lib'
 
 import { useLocalSearchParams } from 'expo-router'
 
-import { X } from 'phosphor-react-native'
+import { XIcon } from 'phosphor-react-native'
 
 import { quizContents } from '@/utils/units'
 
@@ -141,7 +141,7 @@ const QuizModal: React.FC<QuizModalProps> = ({ onClose }) => {
     <View style={styles.container} useSafeArea>
       <View style={styles.header}>
         <TouchableOpacity onPress={onClose}>
-          <X size={24} color="black" />
+          <XIcon size={24} color="black" />
         </TouchableOpacity>
         <Text text60 marginL-20 style={styles.title}>
           Quiz

@@ -2,7 +2,7 @@ import React from 'react'
 import { ScrollView, StyleSheet, TouchableOpacity } from 'react-native'
 import { Button, Colors, Text, View } from 'react-native-ui-lib'
 
-import { X } from 'phosphor-react-native'
+import { XIcon } from 'phosphor-react-native'
 
 interface AudioDialogProps {
   onClose: () => void
@@ -13,7 +13,7 @@ const AudioDialog: React.FC<AudioDialogProps> = ({ onClose }) => {
     <View style={styles.container} useSafeArea>
       <View style={styles.header}>
         <TouchableOpacity onPress={onClose}>
-          <X size={24} color="black" />
+          <XIcon size={24} color="black" />
         </TouchableOpacity>
         <Text text60 marginL-20 style={styles.title}>
           Audio Dialog

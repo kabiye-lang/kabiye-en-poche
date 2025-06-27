@@ -5,7 +5,7 @@ import { Card, Colors, TextField, View } from 'react-native-ui-lib'
 
 import { Link } from 'expo-router'
 
-import { Clock, MagnifyingGlass } from 'phosphor-react-native'
+import { ClockIcon, MagnifyingGlassIcon } from 'phosphor-react-native'
 
 import { CaretRightIcon } from '@/components/icons'
 import { Text } from '@/components/themed'
@@ -18,7 +18,7 @@ const DictionaryScreen: React.FC = () => {
       <TextField
         placeholder="Search for a word..."
         leadingAccessory={
-          <MagnifyingGlass size={24} color={Colors.grey30} style={{ marginBottom: 10, marginLeft: 5 }} />
+          <MagnifyingGlassIcon size={24} color={Colors.grey30} style={{ marginBottom: 10, marginLeft: 5 }} />
         }
         style={{
           marginBottom: 10,
@@ -38,7 +38,7 @@ const DictionaryScreen: React.FC = () => {
             <Link href="/dictionnary/search?s=tes" asChild key={item}>
               <TouchableOpacity style={{ flexDirection: 'row', alignItems: 'center', width: '100%' }}>
                 <View row marginB-5 centerV>
-                  <Clock size={20} color={Colors.grey40} />
+                  <ClockIcon size={20} color={Colors.grey40} />
                   <Text normal color={Colors.textGrey} marginL-5 family="ibm5">
                     Kabiyè Word {item}
                   </Text>

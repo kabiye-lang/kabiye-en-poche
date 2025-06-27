@@ -4,7 +4,7 @@ import { Button, Colors, View } from 'react-native-ui-lib'
 
 import { Audio } from 'expo-av'
 
-import { SpeakerHigh } from 'phosphor-react-native'
+import { SpeakerHighIcon } from 'phosphor-react-native'
 
 interface ListenChoseProps {
   question: {
@@ -105,7 +105,7 @@ const ListenChose: React.FC<ListenChoseProps> = ({ question, onAnswerSelected, s
   return (
     <View>
       <Button onPress={replayAudio} backgroundColor={Colors.secondary}>
-        <SpeakerHigh size={20} color={Colors.white} />
+        <SpeakerHighIcon size={20} color={Colors.white} />
         <Text style={styles.replayText}>Replay Audio</Text>
       </Button>
       <Animated.View style={[styles.optionsWrapper, { transform: [{ translateX: shakeAnimation }] }]}>
