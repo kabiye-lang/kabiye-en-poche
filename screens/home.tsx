@@ -6,7 +6,7 @@ import { Card, Colors, View } from 'react-native-ui-lib'
 import { LinearGradient } from 'expo-linear-gradient'
 import { Link } from 'expo-router'
 
-import { CaretRight } from '@/components/icons'
+import { CaretRightIcon } from '@/components/icons'
 import { Text } from '@/components/themed'
 import { units } from '@/utils/units'
 
@@ -87,7 +87,7 @@ const HomeScreen = () => {
                         <Text text70 white style={{ fontWeight: 'bold' }}>
                           {t('home.screen.show_more')}
                         </Text>
-                        <CaretRight size={24} color={Colors.textLight} style={{ marginLeft: 10 }} />
+                        <CaretRightIcon size={24} color={Colors.textLight} style={{ marginLeft: 10 }} />
                       </View>
                     </TouchableOpacity>
                   </Link>
@@ -127,7 +127,7 @@ const HomeScreen = () => {
                       {t('home.screen.learning_tips_description')}
                     </Text>
                   </View>
-                  <CaretRight size={24} />
+                  <CaretRightIcon size={24} />
                 </TouchableOpacity>
               </Link>
             </Card>
@@ -158,7 +158,7 @@ const HomeScreen = () => {
                       {t('home.screen.reference_materials_description')}
                     </Text>
                   </View>
-                  <CaretRight size={24} />
+                  <CaretRightIcon size={24} />
                 </TouchableOpacity>
               </Link>
             </Card>

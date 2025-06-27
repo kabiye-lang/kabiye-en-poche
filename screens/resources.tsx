@@ -6,7 +6,7 @@ import { ListItem } from 'react-native-ui-lib'
 import * as Application from 'expo-application'
 import { Link } from 'expo-router'
 
-import { BookOpenText, CaretRight, Users } from '@/components/icons'
+import { BookOpenTextIcon, CaretRightIcon, UserIcon } from '@/components/icons'
 import { ScreenTitle } from '@/components/screen-title'
 import { Text, View } from '@/components/themed'
 
@@ -20,31 +20,31 @@ export default function ResourcesScreen() {
           href: 'https://academiekabiye.org/',
           title: t('resources.items.learn.academiekabiye.title'),
           description: t('resources.items.learn.academiekabiye.description'),
-          icon: <BookOpenText weight="thin" />,
+          icon: <BookOpenTextIcon weight="thin" />,
         },
         {
           href: 'https://www.kabiyesekuliye.net/fr',
           title: t('resources.items.learn.kabiyeessekuliye.title'),
           description: t('resources.items.learn.kabiyeessekuliye.description'),
-          icon: <BookOpenText weight="thin" />,
+          icon: <BookOpenTextIcon weight="thin" />,
         },
         {
           href: 'http://kabyetanaou.over-blog.com/',
           title: t('resources.items.learn.kabyetanaou.title'),
           description: t('resources.items.learn.kabyetanaou.description'),
-          icon: <BookOpenText weight="thin" />,
+          icon: <BookOpenTextIcon weight="thin" />,
         },
         {
           href: 'https://www.livelingua.com/peace-corps/Kabiye/kabiye2010.pdf',
           title: t('resources.items.learn.kabyeworkbook.title'),
           // description: t('resources.items.learn.kabyeworkbook.description'),
-          icon: <BookOpenText weight="thin" />,
+          icon: <BookOpenTextIcon weight="thin" />,
         },
         {
           href: 'https://www.lexilogos.com/kabiye_dictionnaire.htm',
           title: t('resources.items.learn.lexilogos.title'),
           description: t('resources.items.learn.lexilogos.description'),
-          icon: <BookOpenText weight="thin" />,
+          icon: <BookOpenTextIcon weight="thin" />,
         },
       ],
     },
@@ -55,14 +55,14 @@ export default function ResourcesScreen() {
           href: 'https://github.com/kabiye-lang/wiki/wiki',
           title: t('resources.items.support.join.title'),
           description: t('resources.items.support.join.description'),
-          icon: <Users weight="thin" />,
+          icon: <UserIcon weight="thin" />,
           external: true,
         },
         {
           href: '/terms-and-conditions',
           title: t('resources.items.support.terms_and_conditions.title'),
           description: '',
-          icon: <BookOpenText weight="thin" />,
+          icon: <BookOpenTextIcon weight="thin" />,
           // external: true,
         },
       ],
@@ -83,7 +83,7 @@ export default function ResourcesScreen() {
           )}
         </ListItem.Part>
         <ListItem.Part right>
-          <CaretRight weight="thin" size={22} />
+          <CaretRightIcon weight="thin" size={22} />
         </ListItem.Part>
       </ListItem>
     ),

@@ -13,7 +13,7 @@ import { router, useLocalSearchParams } from 'expo-router'
 
 import Markdown from '@jonasmerlin/react-native-markdown-display'
 
-import { CaretLeft } from '@/components/icons'
+import { CaretLeftIcon } from '@/components/icons'
 import { Button, Text, View } from '@/components/themed'
 import alphabetList from '@/utils/data/alphabet.json'
 import { LETTER_TYPE_COLORS, MARKDOWN_STYLE } from '@/utils/design-system'
@@ -87,7 +87,7 @@ export default function AlphabetLetterScreen() {
             <Button
               title={t('common.labels.back')}
               round
-              iconSource={() => <CaretLeft size={20} weight="bold" color={Colors.black} />}
+              iconSource={() => <CaretLeftIcon size={20} weight="bold" color={Colors.black} />}
               backgroundColor={Colors.white}
               style={{ width: 30, height: 30 }}
               onPress={() => router.back()}

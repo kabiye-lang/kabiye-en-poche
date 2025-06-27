@@ -5,7 +5,7 @@ import { Card, Colors, Text, View } from 'react-native-ui-lib'
 
 import { Link, useLocalSearchParams } from 'expo-router'
 
-import { CaretRight } from '@/components/icons'
+import { CaretRightIcon } from '@/components/icons'
 import { lessons } from '@/utils/units'
 
 const UnitScreen = () => {
@@ -35,7 +35,7 @@ const UnitScreen = () => {
                         {lesson.description}
                       </Text>
                     </View>
-                    <CaretRight size={24} />
+                    <CaretRightIcon size={24} />
                   </View>
                 </TouchableOpacity>
               </Link>

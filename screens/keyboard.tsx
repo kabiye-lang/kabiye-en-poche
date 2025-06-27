@@ -7,7 +7,7 @@ import { Colors, TextField } from 'react-native-ui-lib'
 
 import * as Clipboard from 'expo-clipboard'
 
-import { ArrowFatLinesUp, ArrowFatLineUp, Backspace, Dot, KeyReturn } from '@/components/icons'
+import { ArrowFatLinesUpIcon, ArrowFatLineUpIcon, BackspaceIcon, DotIcon, KeyReturnIcon } from '@/components/icons'
 import { ScreenTitle } from '@/components/screen-title'
 import { Button, Text, View } from '@/components/themed'
 import alphabetList from '@/utils/data/alphabet.json'
@@ -97,7 +97,7 @@ export default function KeyboardScreen() {
         {/* TODO: translation */}
         <Text>{t('keyboard.description.line1')}</Text>
         <Text>
-          {t('keyboard.description.line2_1')} <ArrowFatLineUp weight="regular" size={16} />{' '}
+          {t('keyboard.description.line2_1')} <ArrowFatLineUpIcon weight="regular" size={16} />{' '}
           {t('keyboard.description.line2_2')}
         </Text>
       </View>
@@ -176,9 +176,9 @@ export default function KeyboardScreen() {
               onLongPress={() => setCapsLock((capsLockOld) => (capsLockOld > 0 ? 0 : 2))}
             >
               {capsLock === 2 ? (
-                <ArrowFatLinesUp weight="fill" />
+                <ArrowFatLinesUpIcon weight="fill" />
               ) : (
-                <ArrowFatLineUp weight={capsLock === 1 ? 'fill' : 'light'} />
+                <ArrowFatLineUpIcon weight={capsLock === 1 ? 'fill' : 'light'} />
               )}
             </Button>
             <Button
@@ -195,7 +195,7 @@ export default function KeyboardScreen() {
               backgroundColor={Colors.white}
               onPress={() => changeText({ id: '.' })}
             >
-              <Dot />
+              <DotIcon />
             </Button>
             <Button
               title="space"
@@ -212,7 +212,7 @@ export default function KeyboardScreen() {
               onPress={() => changeText({ id: ' ' })}
             />
             <Button
-              title="backspace"
+              title="BackspaceIcon"
               label=""
               marginV-0
               marginH-0
@@ -225,7 +225,7 @@ export default function KeyboardScreen() {
               backgroundColor={Colors.white}
               onPress={() => setContent((content) => content.substring(0, content.length - 1))}
             >
-              <Backspace weight="light" />
+              <BackspaceIcon weight="light" />
             </Button>
             <Button
               title="enter"
@@ -244,7 +244,7 @@ export default function KeyboardScreen() {
                 setCapsLock(1)
               }}
             >
-              <KeyReturn weight="light" />
+              <KeyReturnIcon weight="light" />
             </Button>
           </View>
         </View>

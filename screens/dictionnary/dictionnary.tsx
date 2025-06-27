@@ -7,7 +7,7 @@ import { Link } from 'expo-router'
 
 import { Clock, MagnifyingGlass } from 'phosphor-react-native'
 
-import { CaretRight } from '@/components/icons'
+import { CaretRightIcon } from '@/components/icons'
 import { Text } from '@/components/themed'
 
 const DictionaryScreen: React.FC = () => {
@@ -78,7 +78,7 @@ const DictionaryScreen: React.FC = () => {
                       {t('home.screen.learning_tips_description')}
                     </Text>
                   </View>
-                  <CaretRight size={24} />
+                  <CaretRightIcon size={24} />
                 </TouchableOpacity>
               </Link>
             </Card>

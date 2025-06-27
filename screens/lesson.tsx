@@ -6,7 +6,7 @@ import { Card, Colors, Text, View } from 'react-native-ui-lib'
 import { useLocalSearchParams } from 'expo-router'
 
 import AudioDialog from '@/components/audio-dialog'
-import { ChatCircleDots, Lightbulb } from '@/components/icons'
+import { ChatCircleDotsIcon, LightbulbIcon } from '@/components/icons'
 import QuizModal from '@/components/quiz'
 import { lessonContents } from '@/utils/units'
 
@@ -47,10 +47,10 @@ const LessonScreen = () => {
       </ScrollView>
       <View style={[styles.bottomBar, { paddingBottom: insets.bottom }]}>
         <TouchableOpacity onPress={() => setAudioDialogVisible(true)}>
-          <ChatCircleDots size={24} color={Colors.primary} />
+          <ChatCircleDotsIcon size={24} color={Colors.primary} />
         </TouchableOpacity>
         <TouchableOpacity onPress={() => setQuizVisible(true)}>
-          <Lightbulb size={24} color={Colors.primary} />
+          <LightbulbIcon size={24} color={Colors.primary} />
         </TouchableOpacity>
       </View>
       <Modal visible={audioDialogVisible} transparent animationType="slide">
