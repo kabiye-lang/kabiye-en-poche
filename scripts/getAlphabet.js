@@ -1,9 +1,7 @@
 /*eslint-env node */
 /* eslint-disable no-undef, @typescript-eslint/no-require-imports */
 
-require('dotenv').config()
-
-const fs = require('fs-extra')
+const fs = require('fs')
 const Airtable = require('airtable')
 const base = new Airtable({ apiKey: process.env.AIRTABLE_API_KEY }).base('appK7j84d1AB9WDjw')
 

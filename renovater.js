@@ -6,8 +6,8 @@ const fs = require('fs')
 const ncuCfg = require('./.ncurc.json')
 const pkg = require('./package.json')
 
-// SDK-53
-const url = 'https://raw.githubusercontent.com/expo/expo/sdk-53/packages/expo/bundledNativeModules.json'
+// SDK-54
+const url = 'https://raw.githubusercontent.com/expo/expo/sdk-54/packages/expo/bundledNativeModules.json'
 
 const req = https.get(url, function (res) {
   let data = '',
@@ -19,6 +19,9 @@ const req = https.get(url, function (res) {
   res.on('end', function () {
     try {
       expoJsonData = JSON.parse(data)
+      pkg.overrides = { ...pkg['overrides-base'] }
+      pkg.overrides.react = expoJsonData['react']
+      pkg.overrides['react-dom'] = expoJsonData['react-dom']
       ncuCfg.reject = [...Object.keys(expoJsonData)]
       Object.keys(expoJsonData).forEach((dep) => {
         if (pkg.dependencies[dep]) {
