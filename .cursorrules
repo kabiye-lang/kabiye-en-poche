@@ -1,0 +1,427 @@
+# Cursor Rules for Kabiyè en Poche - Expo React Native Project
+
+## Project Overview
+This is an Expo 54 React Native project using Expo Router v6, NativeWind for styling, Lingui for internationalization, Phosphor React Native for icons, and Supabase for backend. The project follows modern React Native best practices with TypeScript, ESLint, and Prettier.
+
+## Tech Stack & Dependencies
+- **Framework**: Expo 54 with Expo Router v6
+- **Styling**: NativeWind (Tailwind CSS for React Native)
+- **Internationalization**: Lingui (migrate from i18next)
+- **Icons**: Phosphor React Native v3.0.0
+- **Backend**: Supabase
+- **Language**: TypeScript with strict mode
+- **Linting**: ESLint with TypeScript, Prettier
+- **State Management**: React hooks, Context API (consider Zustand for complex state)
+
+## Code Style & Standards
+
+### General Principles
+- Use functional components with hooks exclusively
+- Prefer composition over inheritance
+- Write self-documenting code with clear variable names
+- Follow the single responsibility principle
+- Use TypeScript strictly - avoid `any` types
+- Implement proper error boundaries and error handling
+- Use React.memo() for performance optimization when needed
+- Prefer early returns over nested conditions
+
+### File Organization
+- Use the `app/` directory for Expo Router file-based routing
+- Keep components in `components/` directory
+- Place utilities in `utils/` directory
+- Store types in `types/` directory
+- Keep screens in `screens/` for complex screen logic
+- Use barrel exports (index.ts) for clean imports
+
+### Naming Conventions
+- **Files**: kebab-case for files (e.g., `user-profile.tsx`)
+- **Components**: PascalCase (e.g., `UserProfile`)
+- **Functions/Variables**: camelCase (e.g., `getUserData`)
+- **Constants**: UPPER_SNAKE_CASE (e.g., `API_BASE_URL`)
+- **Types/Interfaces**: PascalCase with descriptive suffixes (e.g., `UserProfileProps`, `ApiResponse`)
+
+## Expo Router v6 Best Practices
+
+### File-based Routing
+- Use `(tabs)` for tab navigation groups
+- Use `[param]` for dynamic routes
+- Use `_layout.tsx` for layout components
+- Use `+html.tsx` for custom HTML document
+- Use `[...missing].tsx` for 404 pages
+
+### Navigation Patterns
+```typescript
+// Use typed routes
+import { router } from 'expo-router'
+
+// Navigate programmatically
+router.push('/user/123')
+router.replace('/login')
+router.back()
+
+// Use Link component for declarative navigation
+import { Link } from 'expo-router'
+<Link href="/user/123" asChild>
+  <Button title="View User" />
+</Link>
+```
+
+### Layout Structure
+- Keep layouts minimal and focused
+- Use `Stack.Screen` for individual screen configurations
+- Implement proper loading states and error boundaries
+- Use `useFocusEffect` for screen-specific logic
+
+## NativeWind Styling Guidelines
+
+### Setup & Configuration
+- Use NativeWind v4+ with Tailwind CSS v3+
+- Configure `tailwind.config.js` for React Native
+- Use `className` prop for styling
+- Prefer utility classes over custom styles
+
+### Styling Patterns
+```typescript
+// Good: Use NativeWind classes
+<View className="flex-1 bg-white p-4">
+  <Text className="text-lg font-bold text-gray-900">
+    Hello World
+  </Text>
+</View>
+
+// Avoid: Inline styles when NativeWind classes exist
+<View style={{ flex: 1, backgroundColor: 'white', padding: 16 }}>
+```
+
+### Responsive Design
+- Use responsive prefixes: `sm:`, `md:`, `lg:`, `xl:`
+- Implement proper spacing with Tailwind spacing scale
+- Use consistent color palette from design system
+
+### Dark Mode Support
+```typescript
+// Use dark: prefix for dark mode styles
+<View className="bg-white dark:bg-gray-900">
+  <Text className="text-gray-900 dark:text-white">
+    Content
+  </Text>
+</View>
+```
+
+## Lingui Internationalization
+
+### Migration from i18next
+- Migrate from i18next to Lingui for better developer experience
+- Use `@lingui/react` for React components
+- Use `@lingui/macro` for compile-time message extraction
+
+### Implementation Patterns
+```typescript
+// Use Trans component for JSX content
+import { Trans } from '@lingui/react/macro'
+
+<Trans id="welcome.message" comment="Welcome message on home screen">
+  Welcome to <strong>Kabiyè en Poche</strong>!
+</Trans>
+
+// Use t macro for simple strings
+import { t } from '@lingui/macro'
+
+const message = t`Hello, ${name}!`
+
+// Use pluralization
+import { Plural } from '@lingui/react/macro'
+
+<Plural
+  id="items.count"
+  value={count}
+  one="# item"
+  other="# items"
+/>
+```
+
+### Message Management
+- Use descriptive message IDs
+- Add comments for translators
+- Organize messages by feature/screen
+- Use ICU message format for complex translations
+
+## Phosphor React Native Icons
+
+### Usage Patterns
+```typescript
+// Import specific icons
+import { HeartIcon, StarIcon, UserIcon } from 'phosphor-react-native'
+
+// Use with proper props
+<HeartIcon 
+  size={24} 
+  color="#ff0000" 
+  weight="fill" 
+  className="mr-2"
+/>
+
+// Use IconContext for consistent styling
+import { IconContext } from 'phosphor-react-native'
+
+<IconContext.Provider value={{ size: 24, color: '#666' }}>
+  <HeartIcon />
+  <StarIcon />
+</IconContext.Provider>
+```
+
+### Icon Guidelines
+- Use semantic icon names
+- Prefer filled icons for active states
+- Use consistent sizing (16, 20, 24, 32px)
+- Apply proper accessibility labels
+
+## Supabase Integration
+
+### Client Setup
+```typescript
+// Use Supabase client with proper typing
+import { createClient } from '@supabase/supabase-js'
+import type { Database } from '@/types/supabase'
+
+const supabase = createClient<Database>(
+  process.env.EXPO_PUBLIC_SUPABASE_URL!,
+  process.env.EXPO_PUBLIC_SUPABASE_ANON_KEY!
+)
+```
+
+### Data Fetching Patterns
+```typescript
+// Use React Query for server state management
+import { useQuery, useMutation } from '@tanstack/react-query'
+
+// Query pattern
+const { data, isLoading, error } = useQuery({
+  queryKey: ['users', userId],
+  queryFn: () => fetchUser(userId),
+})
+
+// Mutation pattern
+const mutation = useMutation({
+  mutationFn: createUser,
+  onSuccess: () => {
+    queryClient.invalidateQueries({ queryKey: ['users'] })
+  },
+})
+```
+
+### Authentication
+- Use Supabase Auth for authentication
+- Implement proper session management
+- Use protected routes with authentication guards
+- Handle auth state changes properly
+
+## TypeScript Best Practices
+
+### Type Definitions
+```typescript
+// Define proper interfaces
+interface User {
+  id: string
+  name: string
+  email: string
+  createdAt: Date
+}
+
+// Use generic types
+interface ApiResponse<T> {
+  data: T
+  error: string | null
+  status: number
+}
+
+// Use utility types
+type UserUpdate = Partial<Pick<User, 'name' | 'email'>>
+```
+
+### Strict TypeScript
+- Enable strict mode in tsconfig.json
+- Use proper type annotations
+- Avoid `any` types - use `unknown` instead
+- Use type guards for runtime type checking
+- Implement proper error types
+
+## Performance Optimization
+
+### React Native Performance
+- Use `React.memo()` for expensive components
+- Implement `useMemo()` and `useCallback()` appropriately
+- Use `FlatList` for large lists with proper `keyExtractor`
+- Implement lazy loading for images
+- Use `InteractionManager` for heavy operations
+
+### Bundle Optimization
+- Use dynamic imports for code splitting
+- Implement proper tree shaking
+- Optimize images and assets
+- Use Hermes engine for better performance
+
+## Error Handling & Logging
+
+### Error Boundaries
+```typescript
+// Implement error boundaries
+class ErrorBoundary extends React.Component {
+  constructor(props) {
+    super(props)
+    this.state = { hasError: false }
+  }
+
+  static getDerivedStateFromError(error) {
+    return { hasError: true }
+  }
+
+  componentDidCatch(error, errorInfo) {
+    // Log error to crash reporting service
+    console.error('Error caught by boundary:', error, errorInfo)
+  }
+}
+```
+
+### Logging Strategy
+- Use structured logging
+- Implement different log levels
+- Log user actions and errors
+- Use crash reporting (Crashlytics, Sentry)
+
+## Testing Guidelines
+
+### Unit Testing
+- Use Jest and React Native Testing Library
+- Test components in isolation
+- Mock external dependencies
+- Test user interactions and accessibility
+
+### Integration Testing
+- Test navigation flows
+- Test API integrations
+- Test authentication flows
+- Test error scenarios
+
+## Security Best Practices
+
+### Data Protection
+- Never commit sensitive data to version control
+- Use environment variables for configuration
+- Implement proper input validation
+- Use HTTPS for all API calls
+- Implement proper authentication and authorization
+
+### Code Security
+- Use TypeScript for type safety
+- Implement proper error handling
+- Validate all user inputs
+- Use secure storage for sensitive data
+
+## Accessibility Guidelines
+
+### React Native Accessibility
+- Use proper accessibility labels
+- Implement screen reader support
+- Use semantic HTML elements
+- Test with accessibility tools
+- Follow WCAG guidelines
+
+### Implementation
+```typescript
+// Use accessibility props
+<TouchableOpacity
+  accessible={true}
+  accessibilityLabel="Add to favorites"
+  accessibilityHint="Double tap to add this item to your favorites"
+  accessibilityRole="button"
+>
+  <HeartIcon />
+</TouchableOpacity>
+```
+
+## Code Quality & Maintenance
+
+### Code Review Checklist
+- [ ] TypeScript types are properly defined
+- [ ] Components are properly tested
+- [ ] Error handling is implemented
+- [ ] Performance optimizations are applied
+- [ ] Accessibility requirements are met
+- [ ] Code follows project conventions
+- [ ] Documentation is updated
+
+### Refactoring Guidelines
+- Extract reusable components
+- Implement proper separation of concerns
+- Use custom hooks for shared logic
+- Optimize bundle size regularly
+- Update dependencies regularly
+
+## Environment & Configuration
+
+### Environment Variables
+```typescript
+// Use proper environment variable typing
+interface Environment {
+  EXPO_PUBLIC_SUPABASE_URL: string
+  EXPO_PUBLIC_SUPABASE_ANON_KEY: string
+  EXPO_PUBLIC_API_BASE_URL: string
+}
+```
+
+### Configuration Management
+- Use app.config.js for Expo configuration
+- Implement proper environment-specific configs
+- Use TypeScript for configuration files
+- Validate configuration at startup
+
+## Deployment & CI/CD
+
+### Build Configuration
+- Use EAS Build for app builds
+- Implement proper build variants
+- Use proper code signing
+- Implement automated testing in CI
+
+### Release Management
+- Use semantic versioning
+- Implement proper changelog
+- Use automated releases
+- Implement proper rollback strategies
+
+## Common Patterns & Anti-patterns
+
+### Good Patterns
+- Use custom hooks for shared logic
+- Implement proper loading states
+- Use proper error boundaries
+- Implement optimistic updates
+- Use proper caching strategies
+
+### Anti-patterns to Avoid
+- Don't use inline styles when NativeWind classes exist
+- Don't use `any` types in TypeScript
+- Don't ignore accessibility requirements
+- Don't commit sensitive data
+- Don't use deprecated APIs
+- Don't ignore performance implications
+
+## Getting Help
+
+### Resources
+- [Expo Router Documentation](https://expo.github.io/router/)
+- [NativeWind Documentation](https://www.nativewind.dev/)
+- [Lingui Documentation](https://lingui.dev/)
+- [Phosphor Icons](https://phosphoricons.com/)
+- [Supabase Documentation](https://supabase.com/docs)
+
+### Team Guidelines
+- Ask questions early and often
+- Use pull requests for all changes
+- Write descriptive commit messages
+- Keep PRs small and focused
+- Test thoroughly before submitting
+- Document complex logic and decisions
+
+Remember: This is a living document. Update it as the project evolves and new patterns emerge.

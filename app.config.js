@@ -6,11 +6,11 @@ export default {
     slug: 'kabiye-en-poche',
     version: pkg.version,
     orientation: 'portrait',
-    icon: './assets/images/icon.png',
+    icon: './src/assets/images/icon.png',
     scheme: 'kabiye',
     userInterfaceStyle: 'automatic',
     splash: {
-      image: './assets/images/splash.png',
+      image: './src/assets/images/splash.png',
       resizeMode: 'contain',
       backgroundColor: '#ffffff',
     },
@@ -18,13 +18,13 @@ export default {
     ios: {
       bundleIdentifier: 'com.kabiyeenpoche.app',
       supportsTablet: true,
-      "infoPlist": {
-      "ITSAppUsesNonExemptEncryption": false
-    }
+      infoPlist: {
+        ITSAppUsesNonExemptEncryption: false,
+      },
     },
     android: {
       adaptiveIcon: {
-        foregroundImage: './assets/images/adaptive-icon.png',
+        foregroundImage: './src/assets/images/adaptive-icon.png',
         backgroundColor: '#ffffff',
       },
       package: 'com.kabiyeenpoche.app',
@@ -33,14 +33,21 @@ export default {
     web: {
       bundler: 'metro',
       output: 'static',
-      favicon: './assets/images/favicon.png',
+      favicon: './src/assets/images/favicon.png',
     },
-    plugins: ['expo-router', 'expo-localization', 'expo-web-browser', 'expo-audio'],
+    plugins: [
+      [
+        'expo-router',
+        {
+          root: './src/app',
+        },
+      ],
+      'expo-localization',
+      'expo-web-browser',
+      'expo-audio',
+    ],
     experiments: {
-      typedRoutes: true,
       tsconfigPaths: true,
-      reactCompiler: false,
-      reactCanary: false,
     },
     extra: {
       router: {

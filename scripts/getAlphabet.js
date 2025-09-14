@@ -1,5 +1,4 @@
 /*eslint-env node */
-/* eslint-disable no-undef, @typescript-eslint/no-require-imports */
 
 const fs = require('fs')
 const Airtable = require('airtable')

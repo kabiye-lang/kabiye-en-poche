@@ -5,3 +5,5 @@ declare module 'react-native-svg' {
     className?: string
   }
 }
+
+/// <reference types="nativewind/types" />

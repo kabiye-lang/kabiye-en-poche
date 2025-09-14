@@ -51,5 +51,16 @@
         "**/.DS_Store": true,
         "**/Thumbs.db": true
     },
-    "explorerExclude.backup": {}
+    "explorerExclude.backup": {},
+    "tailwindCSS.classAttributes": [
+        "class",
+        "className",
+        "headerClassName"
+    ],
+    "tailwindCSS.experimental.classRegex": [
+        [
+            "([\"'`][^\"'`]*.*?[\"'`])",
+            "[\"'`]([^\"'`]*).*?[\"'`]"
+        ]
+    ]
 }
