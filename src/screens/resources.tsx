@@ -1,4 +1,3 @@
-import { useCallback } from 'react'
 import { ScrollView, TouchableOpacity } from 'react-native'
 
 import * as Application from 'expo-application'
@@ -51,7 +50,7 @@ export default function ResourcesScreen() {
       title: t`Support`,
       items: [
         {
-          href: 'https://github.com/kabiye-lang/wiki/wiki',
+          href: 'https://github.com/kabiye-lang/kabiye-en-poche/wiki',
           title: t`Join the community`,
           description: t`Join our community to contribute to the development of the application`,
           icon: <UserIcon weight="thin" />,
@@ -67,26 +66,23 @@ export default function ResourcesScreen() {
       ],
     },
   ]
-  const renderListItem = useCallback(
-    (item: (typeof listItems)[0]['items'][0]) => (
-      <Card key={'listItemSub-' + item.href} variant="elevated" className="mb-2.5 h-[60px] flex-row items-center p-4">
-        <View className="mr-2.5">{item.icon}</View>
-        <View className="flex-1 flex-col">
-          <Text variant="h6" weight="medium" className="ml-2.5">
-            {item.title}
+  const renderListItem = (item: (typeof listItems)[0]['items'][0]) => (
+    <Card key={'listItemSub-' + item.href} className="mb-4 min-h-[60px] flex-row items-center p-4">
+      <View className="mr-2.5">{item.icon}</View>
+      <View className="flex-1 flex-col">
+        <Text variant="h6" weight="medium" className="ml-2.5">
+          {item.title}
+        </Text>
+        {item.description && (
+          <Text variant="small" color="grey" className="ml-2.5" numberOfLines={3}>
+            {item.description}
           </Text>
-          {item.description && (
-            <Text variant="small" color="grey" className="ml-2.5" numberOfLines={3}>
-              {item.description}
-            </Text>
-          )}
-        </View>
-        <View>
-          <CaretRightIcon weight="thin" size={22} />
-        </View>
-      </Card>
-    ),
-    []
+        )}
+      </View>
+      <View>
+        <CaretRightIcon weight="thin" size={22} />
+      </View>
+    </Card>
   )
 
   return (

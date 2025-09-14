@@ -24,7 +24,7 @@ const UnitScreen = () => {
           </Text>
           {/* @ts-expect-error any */}
           {unitLessons.map((lesson) => (
-            <Card key={lesson.id} variant="elevated" className="mb-5 p-5">
+            <Card key={lesson.id} className="mb-5 p-5">
               <Link href={`/lesson/${lesson.id}`} asChild>
                 <TouchableOpacity>
                   <View className="flex-row items-center justify-between">

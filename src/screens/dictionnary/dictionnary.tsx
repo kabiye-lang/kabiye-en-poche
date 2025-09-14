@@ -13,7 +13,7 @@ const DictionaryScreen: React.FC = () => {
   const { t } = useLingui()
 
   return (
-    <View flex className="bg-bg-grey">
+    <View flex className="bg-bg-grey" safeArea="top">
       <View className="px-2.5 py-2.5">
         <View className="flex-row items-center border-b border-gray-300 pb-2.5">
           <View className="mr-2.5">
@@ -45,7 +45,7 @@ const DictionaryScreen: React.FC = () => {
             Categories
           </Text>
           {['Common Phrases', 'Vocabulary'].map((category) => (
-            <Card key={category} variant="elevated" className="mb-5 flex-row items-center px-5 py-2.5">
+            <Card key={category} className="mb-5 flex-row items-center px-5 py-2.5">
               <Link href={`/dictionnary/${category}`}>
                 <TouchableOpacity className="w-full flex-row items-center">
                   <View className="flex-1">

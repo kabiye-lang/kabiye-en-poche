@@ -1,5 +1,6 @@
-import { useCallback, useEffect, useMemo, useState } from 'react'
+import { useEffect, useState } from 'react'
 import { GestureHandlerRootView } from 'react-native-gesture-handler'
+import { SafeAreaProvider } from 'react-native-safe-area-context'
 
 import '../global.css'
 import 'intl-pluralrules'
@@ -52,7 +53,7 @@ export default function RootLayout() {
   const [error, setError] = useState(false)
   const colorScheme = useColorScheme()
 
-  const onLaunch = useCallback(async () => {
+  const onLaunch = async () => {
     let fontsError = false
     configureDesignSystem()
     try {
@@ -92,12 +93,12 @@ export default function RootLayout() {
     } else {
       setReady(true)
     }
-  }, [])
+  }
 
   useEffect(() => {
     // crashlytics().log('App mounted.')
     onLaunch()
-  }, [onLaunch])
+  }, [])
 
   useEffect(() => {
     configureDesignSystem()
@@ -114,14 +115,14 @@ export default function RootLayout() {
     }
   }, [ready])
 
-  const NotReady = useMemo(() => {
+  const NotReady = () => {
     // [Tip]
     // You can show loading state here.
     return <></>
-  }, [])
+  }
 
   if (!ready) {
-    return NotReady
+    return <NotReady />
   }
 
   return <RootLayoutNav />
@@ -129,55 +130,57 @@ export default function RootLayout() {
 
 function RootLayoutNav() {
   return (
-    <ThemeProvider value={getNavigationTheme()}>
-      <I18nProvider i18n={i18n}>
-        <StatusBar style={getStatusBarStyle()} backgroundColor={getStatusBarBGColor()} />
-        <GestureHandlerRootView style={{ flex: 1 }}>
-          <Stack>
-            <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
+    <SafeAreaProvider>
+      <ThemeProvider value={getNavigationTheme()}>
+        <I18nProvider i18n={i18n}>
+          <StatusBar style={getStatusBarStyle()} backgroundColor={getStatusBarBGColor()} />
+          <GestureHandlerRootView style={{ flex: 1 }}>
+            <Stack>
+              <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
 
-            <Stack.Screen
-              name="alphabet/[letter]"
-              /*getId={() => String(Date.now())}*/ options={{
-                title: '',
-                headerShown: false,
-                headerTransparent: true,
-              }}
-            />
+              <Stack.Screen
+                name="alphabet/[letter]"
+                /*getId={() => String(Date.now())}*/ options={{
+                  title: '',
+                  headerShown: false,
+                  headerTransparent: true,
+                }}
+              />
 
-            <Stack.Screen
-              name="unit/[id]"
-              /*getId={() => String(Date.now())}*/ options={{
-                title: '',
-                // headerShown: false,
-                headerBackTitle: '',
-                headerTransparent: true,
-              }}
-            />
+              <Stack.Screen
+                name="unit/[id]"
+                /*getId={() => String(Date.now())}*/ options={{
+                  title: '',
+                  // headerShown: false,
+                  headerBackTitle: '',
+                  headerTransparent: true,
+                }}
+              />
 
-            <Stack.Screen
-              name="lesson/[id]"
-              /*getId={() => String(Date.now())}*/ options={{
-                title: '',
-                // headerShown: false,
-                headerBackTitle: '',
-                headerTransparent: false,
-              }}
-            />
+              <Stack.Screen
+                name="lesson/[id]"
+                /*getId={() => String(Date.now())}*/ options={{
+                  title: '',
+                  // headerShown: false,
+                  headerBackTitle: '',
+                  headerTransparent: false,
+                }}
+              />
 
-            <Stack.Screen
-              name="word/[id]"
-              /*getId={() => String(Date.now())}*/ options={{
-                // title: '',
-                // headerShown: false,
-                headerTransparent: false,
-              }}
-            />
-            <Stack.Screen name="modal" options={{ presentation: 'modal' }} />
-            <Stack.Screen name="terms-and-conditions" options={{ title: '' }} />
-          </Stack>
-        </GestureHandlerRootView>
-      </I18nProvider>
-    </ThemeProvider>
+              <Stack.Screen
+                name="word/[id]"
+                /*getId={() => String(Date.now())}*/ options={{
+                  // title: '',
+                  // headerShown: false,
+                  headerTransparent: false,
+                }}
+              />
+              <Stack.Screen name="modal" options={{ presentation: 'modal' }} />
+              <Stack.Screen name="terms-and-conditions" options={{ title: '' }} />
+            </Stack>
+          </GestureHandlerRootView>
+        </I18nProvider>
+      </ThemeProvider>
+    </SafeAreaProvider>
   )
 }

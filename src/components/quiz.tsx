@@ -151,7 +151,7 @@ const QuizModal: React.FC<QuizModalProps> = ({ onClose }) => {
       </View>
       <ScrollView contentContainerStyle={{ paddingVertical: 20, paddingHorizontal: 10 }}>
         <View flex className="px-2.5 pt-5">
-          <Card variant="elevated" className="mb-5 p-5">
+          <Card className="mb-5 p-5">
             <Text variant="h3" weight="bold" color="dark" className="mb-2.5">
               {currentQuestion.question}
             </Text>

@@ -13,7 +13,7 @@ const UnitListScreen = () => {
         <View className="flex-row flex-wrap justify-between">
           {units.map((unit) => (
             <View className="mb-2.5 w-[48%]" key={unit.id}>
-              <Card variant="elevated" className="h-[160px] px-4 py-2.5">
+              <Card className="h-[160px] px-4 py-2.5">
                 <Link href={`/unit/${unit.id}`} asChild>
                   <TouchableOpacity className="flex-1">
                     <View className="flex-1">

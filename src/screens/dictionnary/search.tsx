@@ -16,7 +16,7 @@ const SearchResultsScreen: React.FC = () => {
 
   const renderItem = ({ item }: { item: { id: string; word: string; translation: string } }) => (
     <Link asChild href={`/word/${item.id}`}>
-      <Card variant="elevated" className="mb-4 p-4">
+      <Card className="mb-4 p-4">
         <Text variant="h6" weight="bold" color="dark" className="mb-1">
           {item.word}
         </Text>

@@ -50,7 +50,7 @@ const WordDetailsScreen: React.FC = () => {
           Related Words
         </Text>
         {wordDetails.relatedWords.map((relatedWord) => (
-          <Card key={relatedWord.id} variant="elevated" className="mb-2.5 p-2.5">
+          <Card key={relatedWord.id} className="mb-2.5 p-2.5">
             <Text variant="body" color="dark">
               {relatedWord.word}
             </Text>

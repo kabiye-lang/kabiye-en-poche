@@ -42,7 +42,6 @@ Le symbole **ɣ** (appelé «gamma») marque en général une modification et un
         renderItem={({ item }) => (
           <View className="relative w-full items-center">
             <Card
-              variant="elevated"
               className="h-[100px] w-full flex-1 items-center justify-center"
               onPress={() =>
                 router.push({

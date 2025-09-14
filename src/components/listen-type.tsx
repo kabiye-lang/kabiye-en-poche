@@ -1,7 +1,7 @@
 import React, { useEffect, useRef, useState } from 'react'
 import { Animated, TextInput, TouchableOpacity } from 'react-native'
 
-import { Audio } from 'expo-av'
+import { useAudioPlayer } from 'expo-audio'
 
 import { SpeakerHighIcon } from 'phosphor-react-native'
 
@@ -19,51 +19,22 @@ interface ListenTypeProps {
 const ListenType: React.FC<ListenTypeProps> = ({ question, onAnswerSelected, showFeedback }) => {
   const [typedAnswer, setTypedAnswer] = useState<string>('')
   const [feedbackColor, setFeedbackColor] = useState<string>('#9CA3AF')
-  const [, setSound] = useState<Audio.Sound | null>(null)
   const shakeAnimation = useRef(new Animated.Value(0)).current
-  const soundRef = useRef<Audio.Sound | null>(null)
+
+  // Create audio player for the question audio
+  const player = useAudioPlayer({ uri: question.audioUri })
 
   useEffect(() => {
-    const playAudio = async () => {
-      try {
-        if (soundRef.current) {
-          await soundRef.current.unloadAsync()
-        }
-        const { sound } = await Audio.Sound.createAsync({ uri: question.audioUri })
-        soundRef.current = sound
-        setSound(sound)
-        await sound.playAsync()
-      } catch (error) {
-        console.error('Error playing audio:', error)
-      }
-    }
-
-    playAudio()
-
-    return () => {
-      if (soundRef.current) {
-        soundRef.current
-          .stopAsync()
-          .then(() => soundRef.current?.unloadAsync())
-          .catch((error) => {
-            console.error('Error unloading sound:', error)
-          })
-      }
-    }
-  }, [question.audioUri])
+    // Play audio when component mounts or audio URI changes
+    player.play()
+  }, [question.audioUri, player])
 
   const validateAnswer = async () => {
     onAnswerSelected(typedAnswer)
-    if (soundRef.current) {
-      try {
-        await soundRef.current.stopAsync()
-        await soundRef.current.unloadAsync()
-        soundRef.current = null
-        setSound(null)
-      } catch (error) {
-        console.error('Error stopping or unloading sound:', error)
-      }
-    }
+
+    // Stop the audio player
+    player.pause()
+
     if (typedAnswer === question.correctAnswer) {
       setFeedbackColor('#10B981')
     } else {
@@ -76,19 +47,10 @@ const ListenType: React.FC<ListenTypeProps> = ({ question, onAnswerSelected, sho
     }
   }
 
-  const replayAudio = async () => {
-    try {
-      if (soundRef.current) {
-        await soundRef.current.replayAsync()
-      } else {
-        const { sound: newSound } = await Audio.Sound.createAsync({ uri: question.audioUri })
-        soundRef.current = newSound
-        setSound(newSound)
-        await newSound.playAsync()
-      }
-    } catch (error) {
-      console.error('Error replaying audio:', error)
-    }
+  const replayAudio = () => {
+    // Reset to beginning and play
+    player.seekTo(0)
+    player.play()
   }
 
   return (

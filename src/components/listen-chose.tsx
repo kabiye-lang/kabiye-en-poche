@@ -1,7 +1,7 @@
 import React, { useEffect, useRef, useState } from 'react'
 import { Animated } from 'react-native'
 
-import { Audio } from 'expo-av'
+import { useAudioPlayer } from 'expo-audio'
 
 import { SpeakerHighIcon } from 'phosphor-react-native'
 
@@ -27,58 +27,29 @@ const shuffleArray = (array: string[]) => {
 
 const ListenChose: React.FC<ListenChoseProps> = ({ question, onAnswerSelected, showFeedback }) => {
   const [selectedAnswer, setSelectedAnswer] = useState<string | null>(null)
-  const [_sound, setSound] = useState<Audio.Sound | null>(null)
   const [shuffledOptions, setShuffledOptions] = useState<string[]>([])
   const shakeAnimation = useRef(new Animated.Value(0)).current
-  const soundRef = useRef<Audio.Sound | null>(null)
+
+  // Create audio player for the question audio
+  const player = useAudioPlayer({ uri: question.audioUri })
 
   useEffect(() => {
     setShuffledOptions(shuffleArray([...question.options]))
   }, [question.options])
 
   useEffect(() => {
-    const playAudio = async () => {
-      try {
-        if (soundRef.current) {
-          await soundRef.current.unloadAsync()
-        }
-        const { sound } = await Audio.Sound.createAsync({ uri: question.audioUri })
-        soundRef.current = sound
-        setSound(sound)
-        await sound.playAsync()
-      } catch (error) {
-        console.error('Error playing audio:', error)
-      }
-    }
-
-    playAudio()
-
-    return () => {
-      if (soundRef.current) {
-        soundRef.current
-          .stopAsync()
-          .then(() => soundRef.current?.unloadAsync())
-          .catch((error) => {
-            console.error('Error unloading sound:', error)
-          })
-      }
-    }
-  }, [question.audioUri])
+    // Play audio when component mounts or audio URI changes
+    player.play()
+  }, [question.audioUri, player])
 
   const validateAnswer = async () => {
     if (selectedAnswer === null) return
 
     onAnswerSelected(selectedAnswer)
-    if (soundRef.current) {
-      try {
-        await soundRef.current.stopAsync()
-        await soundRef.current.unloadAsync()
-        soundRef.current = null
-        setSound(null)
-      } catch (error) {
-        console.error('Error stopping or unloading sound:', error)
-      }
-    }
+
+    // Stop the audio player
+    player.pause()
+
     if (selectedAnswer !== question.correctAnswer) {
       Animated.sequence([
         Animated.timing(shakeAnimation, { toValue: 10, duration: 50, useNativeDriver: true }),
@@ -88,19 +59,10 @@ const ListenChose: React.FC<ListenChoseProps> = ({ question, onAnswerSelected, s
     }
   }
 
-  const replayAudio = async () => {
-    try {
-      if (soundRef.current) {
-        await soundRef.current.replayAsync()
-      } else {
-        const { sound: newSound } = await Audio.Sound.createAsync({ uri: question.audioUri })
-        soundRef.current = newSound
-        setSound(newSound)
-        await newSound.playAsync()
-      }
-    } catch (error) {
-      console.error('Error replaying audio:', error)
-    }
+  const replayAudio = () => {
+    // Reset to beginning and play
+    player.seekTo(0)
+    player.play()
   }
 
   return (
