@@ -1,0 +1,93 @@
+name: "Release"
+
+on:
+  workflow_dispatch:
+    inputs:
+      release_type:
+        description: "Select release type"
+        type: choice
+        options:
+          - patch
+          - minor
+          - major
+      workspace:
+        description: "Which workspace are we releasing?"
+        type: choice
+        options:
+          - all
+          - mobile
+          - web
+        required: true
+        default: web
+      startFromMain:
+        description: "Start release from main branch? (Mainly for production hotfix)"
+        type: boolean
+        required: true
+        default: false
+
+jobs:
+  release:
+    name: "Release a new version to main"
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8 # v5
+        with:
+          # persist-credentials: false # otherwise, the token used is the GITHUB_TOKEN, instead of your personal access token.
+          fetch-depth: 0 # otherwise, there would be errors pushing refs to the destination repository.
+          token: ${{ secrets.ASSIG_UPGRADE_DEPS_P_ACCESS_TOKEN }}
+
+      - name: 🏗 Setup EAS
+        uses: ./.github/actions/setup-eas
+        with:
+          expo-token: ${{ secrets.EXPO_TOKEN }}
+          install-dependencies: 'false'
+
+
+      - name: Initialize mandatory git config
+        run: |
+          git config user.name "GitHub actions"
+          git config user.email noreply@github.com
+      - name: Merge develop into main
+        run: |
+          git fetch origin
+          git merge origin/develop --no-ff -m "chore: merge develop into main for release"
+
+      - name: Get next version
+        id: next-version
+        run: |
+          npm --no-git-tag-version version ${{ github.event.inputs.release_type }}
+          echo "version=$(grep '"version":' package.json | cut -d\" -f4)" >> $GITHUB_OUTPUT
+      - name: Get next version (Web)
+        id: next-version-web
+        if: ${{ github.event.inputs.workspace == 'all' || github.event.inputs.workspace == 'web' }}
+        run: |
+          npm --no-git-tag-version version -w web ${{ github.event.inputs.release_type }}
+          echo "version=$(grep '"version":' web/package.json | cut -d\" -f4)" >> $GITHUB_OUTPUT
+      # Get current fingerprint info and builds to check if we need to do a version bump
+      - name: Get fingerprint info
+        id: info
+        uses: expo/expo-github-action/continuous-deploy-fingerprint-info@main
+        with:
+          profile: production
+          working-directory: ./mobile
+
+      - name: Get next version (Mobile)
+        id: next-version-mobile
+        if: ${{ (steps.info.outputs.android-build-id == '' || steps.info.outputs.ios-build-id == '') && (github.event.inputs.workspace == 'all' || github.event.inputs.workspace == 'mobile') }}
+        run: |
+          npm --no-git-tag-version version -w mobile ${{ github.event.inputs.release_type }}
+          echo "version=$(grep '"version":' mobile/package.json | cut -d\" -f4)" >> $GITHUB_OUTPUT
+
+      - name: Install dependencies
+        run: npm install
+
+      - name: Commit version bump
+        run: |
+          git add .
+          git commit -m "chore: release ${{ steps.next-version.outputs.version }} Mob ${{ steps.next-version-mobile.outputs.version }} / Web ${{ steps.next-version-web.outputs.version }}"
+
+      - name: Push changes
+        uses: ad-m/github-push-action@master
+        with:
+          github_token: ${{ secrets.ASSIG_UPGRADE_DEPS_P_ACCESS_TOKEN }}
+          branch: ${{ github.ref }}

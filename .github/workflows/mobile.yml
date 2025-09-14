@@ -4,6 +4,7 @@ on:
     branches:
       - main
       - develop
+
   workflow_dispatch:
     inputs:
       platform:
@@ -21,12 +22,13 @@ on:
         required: true
         default: production
         options:
-          - development
           - preview
+          - development
           - production
       submit:
         description: Auto submit to the store? (production only)
         type: boolean
+        default: false
         required: false
 
 concurrency:
@@ -34,55 +36,38 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
-  build_update:
+  continuously-deploy:
     name: Mobile build / update
     runs-on: ubuntu-latest
+    concurrency: mobile-continuous-deploy-fingerprint-${{ github.ref }}
     permissions:
-      contents: read
-      pull-requests: write
-    outputs:
-      version_changed: ${{ steps.checkversion.outputs.changed }}
+      contents: read # Allow checkout
+      pull-requests: write # Allow comments on PRs
+
     steps:
       - name: 🏗 Checkout repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8 # v5
 
       - name: 🏗 Setup EAS
         uses: ./.github/actions/setup-eas
         with:
           expo-token: ${{ secrets.EXPO_TOKEN }}
 
-      - name: Check if version has been updated
-        id: checkversion
-        if: ${{ github.event_name != 'workflow_dispatch' }}
-        uses: EndBug/version-check@v2
+      - name: 🏗 Test
+        run: npm run test --if-present
+
+      - name: 🏗 Make sure and fingerprint is working
+        # if: ${{ !(github.event_name == 'workflow_dispatch' && github.ref == 'refs/heads/main') }}
+        if: ${{ !(github.ref == 'refs/heads/main') }}
+        run: |
+          npx expo-updates fingerprint:generate --platform android --debug
+
+      - name: Continuously Deploy
+        if: ${{ github.ref == 'refs/heads/main' }}
+        uses: expo/expo-github-action/continuous-deploy-fingerprint@main
         with:
-          diff-search: false
-          file-name: ./package.json
-
-      - name: 🏗 [PR] Create preview
-        if: ${{ github.event_name == 'pull_request' }}
-        uses: expo/expo-github-action/preview@v8
-        with:
-          command: eas update --auto --branch=pr-${{ github.event.number }}
-
-      - name: 🏗 Get data from Airtable
-        env:
-          AIRTABLE_API_KEY: ${{ secrets.AIRTABLE_API_KEY }}
-        run: npm run data:download
-
-      # - name: 🚀 Push updates
-      #   if: ${{ github.event_name == 'push' && steps.checkversion.outputs.changed == 'false' }}
-      #   # eas variables are applied in this order: eas.json -> eas credentials -> .env file
-      #   # run: |
-      #   #   node scripts/touch-mobile-env.js ${{ github.ref == 'refs/heads/main' && 'production' || 'preview' }}
-      #   #   cat .env
-      #   #   eas update --auto --channel ${{ github.ref == 'refs/heads/main' && 'production' || 'preview' }}
-      #   run: eas update --auto --channel ${{ github.ref == 'refs/heads/main' && 'production' || 'preview' }}
-
-      # - name: 🚀 [Dev] Build app
-      #   if: ${{ (( github.event_name == 'push' && steps.checkversion.outputs.changed == 'true' ) || github.event_name == 'workflow_dispatch' ) && github.ref == 'refs/heads/develop' }}
-      #   run: eas build --non-interactive --wait --platform=${{ github.event.inputs.platform || 'ios' }} --profile=${{ github.event.inputs.profile || 'preview' }}
-
-      # - name: 🚀 [Main] Build app
-      #   if: ${{ ( ( github.event_name == 'push' && steps.checkversion.outputs.changed == 'true' ) || github.event_name == 'workflow_dispatch'  ) && github.ref == 'refs/heads/main' }}
-      #   run: eas build --non-interactive --wait ${{ github.event.inputs.submit && '--auto-submit' || '' }} --platform=${{ github.event.inputs.platform || 'all' }} --profile=${{ github.event.inputs.profile || 'production' }}
+          profile: ${{ inputs.profile || (github.ref == 'refs/heads/main' && 'production' || 'preview') }}
+          branch: ${{ github.ref == 'refs/heads/main' && 'production' || 'preview' }}
+          working-directory: "mobile"
+          auto-submit-builds: true
+          platform: ${{ inputs.platform ||  'all' }}
