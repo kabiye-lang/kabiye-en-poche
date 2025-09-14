@@ -1,8 +1,9 @@
 import { useState } from 'react'
-import { useTranslation } from 'react-i18next'
 import { Dimensions, TextInput } from 'react-native'
 
 import * as Clipboard from 'expo-clipboard'
+
+import { useLingui } from '@lingui/react/macro'
 
 import { ArrowFatLinesUpIcon, ArrowFatLineUpIcon, BackspaceIcon, DotIcon, KeyReturnIcon } from '@/components/icons'
 import { Button, ScreenTitle, Text, View } from '@/components/ui'
@@ -56,7 +57,7 @@ const OTHER_CHARACTERS = [
 ]
 
 export default function KeyboardScreen() {
-  const { t } = useTranslation()
+  const { t } = useLingui()
   const [capsLock, setCapsLock] = useState<0 | 1 | 2>(0)
   const [content, setContent] = useState('')
   const changeText = (letter: Partial<(typeof alphabetList)[0]>) => {
@@ -85,14 +86,14 @@ export default function KeyboardScreen() {
   return (
     <View flex>
       <View className="px-2.5">
-        <ScreenTitle title={t('keyboard.title')} />
+        <ScreenTitle title={t`Keyboard`} />
         {/* TODO: translation */}
         <Text variant="body" className="mb-2">
-          {t('keyboard.description.line1')}
+          {t`Use this keyboard to write in Kabiyè.`}
         </Text>
         <Text variant="body" className="mb-2">
-          {t('keyboard.description.line2_1')} <ArrowFatLineUpIcon weight="regular" size={16} />{' '}
-          {t('keyboard.description.line2_2')}
+          {t`The`} <ArrowFatLineUpIcon weight="regular" size={16} />{' '}
+          {t`key allows you to capitalize. Long press to lock CAPS mode.`}
         </Text>
       </View>
       <View flex className="justify-end">
@@ -114,7 +115,7 @@ export default function KeyboardScreen() {
             onPress={() => setContent('')}
           >
             <Text variant="body" weight="medium" color="primary">
-              {t('keyboard.clear')}
+              {t`Clear`}
             </Text>
           </Button>
           <Button
@@ -125,7 +126,7 @@ export default function KeyboardScreen() {
             onPress={async () => await Clipboard.setStringAsync(content)}
           >
             <Text variant="body" weight="medium" color="white">
-              {t('keyboard.copy')}
+              {t`Copy`}
             </Text>
           </Button>
         </View>
@@ -172,7 +173,7 @@ export default function KeyboardScreen() {
               onPress={() => changeText({ id: ' ' })}
             >
               <Text variant="body" weight="medium">
-                {t('keyboard.space')}
+                {t`Space`}
               </Text>
             </Button>
             <Button

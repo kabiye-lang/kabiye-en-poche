@@ -1,0 +1,170 @@
+msgid ""
+msgstr ""
+"POT-Creation-Date: 2025-09-14 18:07+0100\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Generator: @lingui/cli\n"
+"Language: fr\n"
+
+#: src/screens/resources.tsx
+msgid "Lexilogos Dictionary"
+msgstr ""
+
+#: src/screens/dictionnary/dictionnary.tsx
+#: src/screens/home.tsx
+msgid "Get tips to improve your learning"
+msgstr ""
+
+#: src/screens/home.tsx
+msgid "Learn Kabiyè in a fun and interactive way"
+msgstr ""
+
+#: src/screens/home.tsx
+msgid "Welcome to Kabiyè en Poche"
+msgstr ""
+
+#: src/screens/home.tsx
+msgid "Tips & Resources"
+msgstr ""
+
+#: src/screens/resources.tsx
+msgid "Académie Kabiyè"
+msgstr ""
+
+#: src/screens/resources.tsx
+msgid "Kabiyè language resources"
+msgstr ""
+
+#: src/screens/alphabet-letter.tsx
+msgid "An error occurred..."
+msgstr ""
+
+#: src/screens/alphabet-list.tsx
+msgid "I learn the Kabiyè Alphabet"
+msgstr ""
+
+#: src/screens/resources.tsx
+msgid "Learning Resources"
+msgstr ""
+
+#: src/screens/resources.tsx
+msgid "Join our community to contribute to the development of the application"
+msgstr ""
+
+#: src/screens/resources.tsx
+msgid "Kabiyè language learning platform"
+msgstr ""
+
+#: src/app/(tabs)/(home)/_layout.tsx
+#: src/screens/home.tsx
+msgid "Learning Units"
+msgstr ""
+
+#: src/screens/keyboard.tsx
+msgid "Use this keyboard to write in Kabiyè."
+msgstr ""
+
+#: src/screens/home.tsx
+msgid "Access additional learning materials"
+msgstr ""
+
+#: src/screens/alphabet-letter.tsx
+#: src/screens/alphabet-list.tsx
+msgid "Consonant"
+msgstr ""
+
+#: src/screens/keyboard.tsx
+msgid "The"
+msgstr ""
+
+#: src/screens/home.tsx
+msgid "Learning Tips"
+msgstr ""
+
+#: src/app/(tabs)/_layout.tsx
+msgid "Dictionary"
+msgstr ""
+
+#: src/screens/resources.tsx
+msgid "Support"
+msgstr ""
+
+#: src/screens/home.tsx
+msgid "Show More"
+msgstr ""
+
+#: src/screens/resources.tsx
+msgid "Terms and conditions of use"
+msgstr ""
+
+#: src/screens/resources.tsx
+msgid "Online Kabiyè dictionary"
+msgstr ""
+
+#: src/screens/resources.tsx
+msgid "Kabiyè Workbook"
+msgstr ""
+
+#: src/screens/resources.tsx
+msgid "Join the community"
+msgstr ""
+
+#: src/screens/resources.tsx
+msgid "Kabiyè Essékuliye"
+msgstr ""
+
+#: src/screens/alphabet-letter.tsx
+#: src/screens/alphabet-list.tsx
+msgid "Vowel"
+msgstr ""
+
+#: src/screens/resources.tsx
+msgid "Kabiyè Tanaou"
+msgstr ""
+
+#: src/screens/keyboard.tsx
+msgid "Copy"
+msgstr ""
+
+#: src/app/(tabs)/_layout.tsx
+msgid "Home"
+msgstr ""
+
+#: src/screens/resources.tsx
+msgid "Official Kabiyè Academy website"
+msgstr ""
+
+#: src/screens/unit.tsx
+msgid "Lessons"
+msgstr ""
+
+#: src/app/(tabs)/_layout.tsx
+#: src/screens/keyboard.tsx
+msgid "Keyboard"
+msgstr ""
+
+#: src/screens/keyboard.tsx
+msgid "Space"
+msgstr ""
+
+#: src/app/(tabs)/_layout.tsx
+msgid "Resources"
+msgstr ""
+
+#: src/screens/alphabet-letter.tsx
+#: src/screens/alphabet-list.tsx
+msgid "Grapheme"
+msgstr ""
+
+#: src/screens/keyboard.tsx
+msgid "key allows you to capitalize. Long press to lock CAPS mode."
+msgstr ""
+
+#: src/screens/keyboard.tsx
+msgid "Clear"
+msgstr ""
+
+#: src/screens/home.tsx
+msgid "Reference Materials"
+msgstr ""

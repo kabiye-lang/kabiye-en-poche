@@ -1,64 +1,65 @@
 import { useCallback } from 'react'
-import { useTranslation } from 'react-i18next'
 import { ScrollView, TouchableOpacity } from 'react-native'
 
 import * as Application from 'expo-application'
 import { Link } from 'expo-router'
 
+import { useLingui } from '@lingui/react/macro'
+
 import { BookOpenTextIcon, CaretRightIcon, UserIcon } from '@/components/icons'
 import { Card, ScreenTitle, Text, View } from '@/components/ui'
 
 export default function ResourcesScreen() {
-  const { t } = useTranslation()
+  const { t } = useLingui()
   const listItems = [
     {
-      title: t('resources.items.learn.title'),
+      title: t`Learning Resources`,
       items: [
         {
           href: 'https://academiekabiye.org/',
-          title: t('resources.items.learn.academiekabiye.title'),
-          description: t('resources.items.learn.academiekabiye.description'),
+          title: t`Académie Kabiyè`,
+          description: t`Official Kabiyè Academy website`,
           icon: <BookOpenTextIcon weight="thin" />,
         },
         {
           href: 'https://www.kabiyesekuliye.net/fr',
-          title: t('resources.items.learn.kabiyeessekuliye.title'),
-          description: t('resources.items.learn.kabiyeessekuliye.description'),
+          title: t`Kabiyè Essékuliye`,
+          description: t`Kabiyè language learning platform`,
           icon: <BookOpenTextIcon weight="thin" />,
         },
         {
           href: 'http://kabyetanaou.over-blog.com/',
-          title: t('resources.items.learn.kabyetanaou.title'),
-          description: t('resources.items.learn.kabyetanaou.description'),
+          title: t`Kabiyè Tanaou`,
+          description: t`Kabiyè language resources`,
           icon: <BookOpenTextIcon weight="thin" />,
         },
         {
           href: 'https://www.livelingua.com/peace-corps/Kabiye/kabiye2010.pdf',
-          title: t('resources.items.learn.kabyeworkbook.title'),
+          title: t`Kabiyè Workbook`,
           // description: t('resources.items.learn.kabyeworkbook.description'),
           icon: <BookOpenTextIcon weight="thin" />,
         },
         {
           href: 'https://www.lexilogos.com/kabiye_dictionnaire.htm',
-          title: t('resources.items.learn.lexilogos.title'),
-          description: t('resources.items.learn.lexilogos.description'),
+          title: t`Lexilogos Dictionary`,
+          description: t`Online Kabiyè dictionary`,
           icon: <BookOpenTextIcon weight="thin" />,
         },
       ],
     },
     {
-      title: t('resources.items.support.title'),
+      title: t`Support`,
       items: [
         {
           href: 'https://github.com/kabiye-lang/wiki/wiki',
-          title: t('resources.items.support.join.title'),
-          description: t('resources.items.support.join.description'),
+          title: t`Join the community`,
+          description: t`Join our community to contribute to the development of the application`,
           icon: <UserIcon weight="thin" />,
           external: true,
         },
         {
           href: '/terms-and-conditions',
-          title: t('resources.items.support.terms_and_conditions.title'),
+          title: t`Terms and conditions of use`,
           description: '',
           icon: <BookOpenTextIcon weight="thin" />,
           // external: true,
@@ -101,7 +102,6 @@ export default function ResourcesScreen() {
               </Text>
               {listItem.items.map((item) => {
                 return (
-                  // @ts-expect-error link string
                   <Link asChild href={item.href} key={item.href}>
                     <TouchableOpacity>{renderListItem(item)}</TouchableOpacity>
                   </Link>

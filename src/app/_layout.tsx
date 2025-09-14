@@ -1,5 +1,4 @@
 import { useCallback, useEffect, useMemo, useState } from 'react'
-import { I18nextProvider } from 'react-i18next'
 import { GestureHandlerRootView } from 'react-native-gesture-handler'
 
 import '../global.css'
@@ -38,7 +37,7 @@ import {
 } from '@expo-google-fonts/ibm-plex-sans-hebrew'
 import { ThemeProvider } from '@react-navigation/native'
 
-import i18n from '@/i18n'
+import i18n, { I18nProvider } from '@/i18n'
 import {
   configureDesignSystem,
   getNavigationTheme,
@@ -131,7 +130,7 @@ export default function RootLayout() {
 function RootLayoutNav() {
   return (
     <ThemeProvider value={getNavigationTheme()}>
-      <I18nextProvider i18n={i18n}>
+      <I18nProvider i18n={i18n}>
         <StatusBar style={getStatusBarStyle()} backgroundColor={getStatusBarBGColor()} />
         <GestureHandlerRootView style={{ flex: 1 }}>
           <Stack>
@@ -178,7 +177,7 @@ function RootLayoutNav() {
             <Stack.Screen name="terms-and-conditions" options={{ title: '' }} />
           </Stack>
         </GestureHandlerRootView>
-      </I18nextProvider>
+      </I18nProvider>
     </ThemeProvider>
   )
 }

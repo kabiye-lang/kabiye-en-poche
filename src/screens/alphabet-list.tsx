@@ -1,16 +1,16 @@
-import { useTranslation } from 'react-i18next'
 import { FlatList } from 'react-native'
 
 import { router } from 'expo-router'
 
 import Markdown from '@jonasmerlin/react-native-markdown-display'
+import { useLingui } from '@lingui/react/macro'
 
 import { Card, ScreenTitle, Text, View } from '@/components/ui'
 import alphabetList from '@/utils/data/alphabet.json'
 import { LETTER_TYPE_COLORS, MARKDOWN_STYLE } from '@/utils/design-system-nativewind'
 
 export default function AlphabetListScreen() {
-  const { t } = useTranslation()
+  const { t } = useLingui()
   return (
     <View flex>
       <FlatList
@@ -21,7 +21,7 @@ export default function AlphabetListScreen() {
         keyExtractor={(item) => item.id}
         ListHeaderComponent={() => (
           <>
-            <ScreenTitle title={t('alphabet.screen.title')} />
+            <ScreenTitle title={t`I learn the Kabiyè Alphabet`} />
             <View>
               <Markdown
                 style={MARKDOWN_STYLE}
@@ -57,7 +57,7 @@ Le symbole **ɣ** (appelé «gamma») marque en général une modification et un
                   backgroundColor={LETTER_TYPE_COLORS[item.type as keyof typeof LETTER_TYPE_COLORS]}
                 >
                   <Text variant="small" weight="medium" color="white">
-                    {t(`alphabet.letter_type.${item.type}` as any)}
+                    {item.type === 'vowel' ? t`Vowel` : item.type === 'consonant' ? t`Consonant` : t`Grapheme`}
                   </Text>
                 </Card>
 

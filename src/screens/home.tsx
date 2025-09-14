@@ -1,14 +1,15 @@
-import { useTranslation } from 'react-i18next'
 import { ScrollView, TouchableOpacity } from 'react-native'
 
 import { Link } from 'expo-router'
+
+import { useLingui } from '@lingui/react/macro'
 
 import { CaretRightIcon } from '@/components/icons'
 import { Card, Gradient, Text, View } from '@/components/ui'
 import { units } from '@/utils/units'
 
 const HomeScreen = () => {
-  const { t } = useTranslation()
+  const { t } = useLingui()
 
   return (
     <View flex className="bg-grey pt-12">
@@ -19,10 +20,10 @@ const HomeScreen = () => {
             <Gradient colors={['#6200EE', '#03DAC6']}>
               <View className="flex-col items-start justify-center p-5">
                 <Text variant="h1" weight="bold" color="white" className="mb-2.5">
-                  {t('home.screen.learn_kabiye')}
+                  {t`Welcome to Kabiyè en Poche`}
                 </Text>
                 <Text variant="h5" weight="medium" color="white" className="mt-2.5">
-                  {t('home.screen.learn_description')}
+                  {t`Learn Kabiyè in a fun and interactive way`}
                 </Text>
               </View>
             </Gradient>
@@ -30,7 +31,7 @@ const HomeScreen = () => {
 
           <View className="mb-5">
             <Text variant="h5" weight="semibold" className="mb-2.5">
-              {t('home.screen.learning_units')}
+              {t`Learning Units`}
             </Text>
             <View className="flex-row flex-wrap justify-between">
               {units.slice(0, 3).map((unit) => (
@@ -57,7 +58,7 @@ const HomeScreen = () => {
                     <TouchableOpacity className="flex-1">
                       <View className="h-full flex-row items-center justify-center">
                         <Text variant="h6" weight="bold" color="white">
-                          {t('home.screen.show_more')}
+                          {t`Show More`}
                         </Text>
                         <View className="ml-2.5">
                           <CaretRightIcon size={24} color="#FFFFFF" />
@@ -72,17 +73,17 @@ const HomeScreen = () => {
 
           <View className="mb-5">
             <Text variant="h5" weight="semibold" className="mb-2.5">
-              {t('home.screen.tips_resources')}
+              {t`Tips & Resources`}
             </Text>
             <Card variant="elevated" className="mb-2.5 flex-row items-center p-5">
               <Link href="/resources/tips" className="w-full flex-row items-center justify-between">
                 <TouchableOpacity className="w-full flex-row items-center">
                   <View className="flex-1">
                     <Text variant="h6" weight="bold" color="primary" className="mt-2.5">
-                      {t('home.screen.learning_tips')}
+                      {t`Learning Tips`}
                     </Text>
                     <Text variant="caption" color="grey" className="mt-2.5">
-                      {t('home.screen.learning_tips_description')}
+                      {t`Get tips to improve your learning`}
                     </Text>
                   </View>
                   <CaretRightIcon size={24} color="#6200EE" />
@@ -94,10 +95,10 @@ const HomeScreen = () => {
                 <TouchableOpacity className="w-full flex-row items-center">
                   <View className="flex-1">
                     <Text variant="h6" weight="bold" color="primary" className="mt-2.5">
-                      {t('home.screen.reference_materials')}
+                      {t`Reference Materials`}
                     </Text>
                     <Text variant="caption" color="grey" className="mt-2.5">
-                      {t('home.screen.reference_materials_description')}
+                      {t`Access additional learning materials`}
                     </Text>
                   </View>
                   <CaretRightIcon size={24} color="#6200EE" />

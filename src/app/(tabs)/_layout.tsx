@@ -1,13 +1,13 @@
-import { useTranslation } from 'react-i18next'
-
 import { Tabs } from 'expo-router'
+
+import { useLingui } from '@lingui/react/macro'
 
 import { ArticleIcon, BookOpenTextIcon, KeyboardIcon, LightbulbIcon } from '@/components/icons'
 import CustomTabBar from '@/components/navigation/tab-bar'
 import { tabScreenDefaultOptions } from '@/utils/design-system-nativewind'
 
 export default function TabLayout() {
-  const { t } = useTranslation()
+  const { t } = useLingui()
   return (
     <Tabs
       tabBar={(props) => <CustomTabBar {...props} />}
@@ -19,7 +19,7 @@ export default function TabLayout() {
       <Tabs.Screen
         name="(home)"
         options={{
-          title: t('navigation.home.title'),
+          title: t`Home`,
           tabBarIcon: ({ color, focused }) => <LightbulbIcon color={color} weight={focused ? 'fill' : 'light'} />,
           href: '/',
           // headerRight: () => (
@@ -42,21 +42,21 @@ export default function TabLayout() {
         name="dictionnary"
         options={{
           href: '/dictionnary',
-          title: t('navigation.dictionary.title'),
+          title: t`Dictionary`,
           tabBarIcon: ({ color, focused }) => <BookOpenTextIcon color={color} weight={focused ? 'fill' : 'light'} />,
         }}
       />
       <Tabs.Screen
         name="keyboard"
         options={{
-          title: t('navigation.keyboard.title'),
+          title: t`Keyboard`,
           tabBarIcon: ({ color, focused }) => <KeyboardIcon color={color} weight={focused ? 'fill' : 'light'} />,
         }}
       />
       <Tabs.Screen
         name="resources"
         options={{
-          title: t('navigation.resources.title'),
+          title: t`Resources`,
           tabBarIcon: ({ color, focused }) => <ArticleIcon color={color} weight={focused ? 'fill' : 'light'} />,
         }}
       />

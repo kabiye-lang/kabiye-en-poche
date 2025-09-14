@@ -1,4 +1,3 @@
-import { useTranslation } from 'react-i18next'
 import Animated, {
   interpolate,
   interpolateColor,
@@ -11,6 +10,7 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context'
 import { router, useLocalSearchParams } from 'expo-router'
 
 import Markdown from '@jonasmerlin/react-native-markdown-display'
+import { useLingui } from '@lingui/react/macro'
 
 import { CaretLeftIcon } from '@/components/icons'
 import { Button, Card, Text, View } from '@/components/ui'
@@ -20,7 +20,7 @@ import { LETTER_TYPE_COLORS, MARKDOWN_STYLE } from '@/utils/design-system-native
 // import { useRefreshOnFocus } from '@/hooks/useRefreshOnFocus'
 
 export default function AlphabetLetterScreen() {
-  const { t } = useTranslation()
+  const { t } = useLingui()
   const { letter: letterParam } = useLocalSearchParams()
   const safeAreaInsets = useSafeAreaInsets()
 
@@ -48,7 +48,7 @@ export default function AlphabetLetterScreen() {
   if (!letter) {
     return (
       <View flex className="pt-5">
-        <Text className="pt-5">{t('common.error.general')}</Text>
+        <Text className="pt-5">{t`An error occurred...`}</Text>
       </View>
     )
   }
@@ -86,7 +86,7 @@ export default function AlphabetLetterScreen() {
             }}
           >
             <Text variant="small" weight="medium" color="white">
-              {t(`alphabet.letter_type.${letter.type}` as any)}
+              {letter.type === 'vowel' ? t`Vowel` : letter.type === 'consonant' ? t`Consonant` : t`Grapheme`}
             </Text>
           </Card>
         </View>

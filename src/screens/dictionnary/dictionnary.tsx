@@ -1,16 +1,16 @@
 import React from 'react'
-import { useTranslation } from 'react-i18next'
 import { ScrollView, TextInput, TouchableOpacity } from 'react-native'
 
 import { Link } from 'expo-router'
 
+import { useLingui } from '@lingui/react/macro'
 import { ClockIcon, MagnifyingGlassIcon } from 'phosphor-react-native'
 
 import { CaretRightIcon } from '@/components/icons'
 import { Card, Text, View } from '@/components/ui'
 
 const DictionaryScreen: React.FC = () => {
-  const { t } = useTranslation()
+  const { t } = useLingui()
 
   return (
     <View flex className="bg-bg-grey">
@@ -53,7 +53,7 @@ const DictionaryScreen: React.FC = () => {
                       {category}
                     </Text>
                     <Text variant="body" color="grey" className="mt-1.5">
-                      {t('home.screen.learning_tips_description')}
+                      {t`Get tips to improve your learning`}
                     </Text>
                   </View>
                   <CaretRightIcon size={24} />

@@ -1,9 +1,9 @@
-import { useTranslation } from 'react-i18next'
-
 import { Stack } from 'expo-router'
 
+import { useLingui } from '@lingui/react/macro'
+
 export default function TabHomeLayout() {
-  const { t } = useTranslation()
+  const { t } = useLingui()
 
   return (
     <Stack screenOptions={{ headerBackButtonDisplayMode: 'minimal' }}>
@@ -18,7 +18,7 @@ export default function TabHomeLayout() {
       <Stack.Screen
         name="units"
         options={{
-          title: t('units.screen.title'),
+          title: t`Learning Units`,
           headerTransparent: false,
         }}
       />
