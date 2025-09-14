@@ -42,11 +42,11 @@ base('Alphabet')
         console.error(err)
         return
       }
-      fs.mkdir('./utils/data', { recursive: true }, (err) => {
+      fs.mkdir('./src/utils/data', { recursive: true }, (err) => {
         if (err) {
           return
         }
-        fs.writeFileSync(`./utils/data/alphabet.json`, JSON.stringify(alphabet, null, 2))
+        fs.writeFileSync(`./src/utils/data/alphabet.json`, JSON.stringify(alphabet, null, 2))
       })
     }
   )

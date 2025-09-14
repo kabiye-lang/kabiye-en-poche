@@ -1,0 +1,256 @@
+[
+  {
+    "id": "a",
+    "caps": "A",
+    "description_fr": "Généralement un mot commençant par la lettre «A» au pluriel a le singulier commençant, soit par la lettre «**E**», soit par la lettre «**Ɛ**» selon les règles d’harmonie vocalique.\n\n### Prononciation\nIdentique au son **\"a\"** en Français.\nP**a**p**a**\nR**a**teaux\n### Exemples\n**abalʋ, abalaa** : Homme, Hommes\n**Afrika** : Afrique\n**agɔma**, pluriel de ɛgɔm : étranger(ère)s\n",
+    "type": "vowel",
+    "hideInKeyboard": false
+  },
+  {
+    "id": "aɣ",
+    "caps": "AƔ",
+    "description_fr": "Rappel: Le symbole **ɣ** (appelé «gamma») marque en général une modification et une longueur des voyelles qu'il suit. Mais dans quelques mots il a la fonction d'une consonne.\n### Prononciation\nFaites comme si vous vous gargarisiez à la fin de la syllabe.\n### Examples\n**fenaɣ**: Lune\n**haɣ**: chien\n**haɣʋ**: se rassasier\n",
+    "type": "grapheme",
+    "hideInKeyboard": true
+  },
+  {
+    "id": "b",
+    "caps": "B",
+    "description_fr": "La lettre «B» ne s'emploie qu'à l'intérieur des mots en Kabiyè. Voyez les mots qui commencent par la lettre «P».\n\n### Prononciation\nElle est la même qu'en Français.\n\n### Examples\n**Abuuja**: Abuja (Capitale du Nigéria)\n**abiɖe**: reine\n**abɛntɛ**: vautour\n",
+    "type": "consonant",
+    "hideInKeyboard": false
+  },
+  {
+    "id": "c",
+    "caps": "C",
+    "description_fr": "### Prononciation\npa**tch**\nscra**tch**\n\n### Examples\n**caa**: père\n**camɩyɛ**: bien\n**cee**: demain\n**cɛɛcɛ**: vélo, bicyclette\n",
+    "type": "consonant",
+    "hideInKeyboard": false
+  },
+  {
+    "id": "d",
+    "caps": "D",
+    "description_fr": "La lettre «D» ne s'emploie qu'à l'intérieur des mots en Kabiyè. Voyez les mots qui commencent par la lettre «T».\n\n### Prononciation\nElle est la même qu'en Français.\n\n### Examples\n**hodo**: lundi\n**cokodo**: culotte\n**ndomiye**: lèvre\n",
+    "type": "consonant",
+    "hideInKeyboard": false
+  },
+  {
+    "id": "ɖ",
+    "caps": "Ɖ",
+    "description_fr": "### Prononciation\nComme un \"r\" mais fait en passant la langue contre le palais vers l'arrière de la bouche.\n### Examples\n**ɖom**: sommeil\n**ɖoo**: mère\n**ɖɔm**: sel\n**dɔkɔtɔ**: médecin, infirmier(ère)\n",
+    "type": "consonant",
+    "hideInKeyboard": false
+  },
+  {
+    "id": "e",
+    "caps": "E",
+    "description_fr": "### Prononciation\n**é**\n**et**\nmang**er**\ngard**é**\n### Exemples\n**ɖeɖe**: hier\n**Egipiti**: Égypte (Pays d'Afrique)\n**evebu**: Jeune homme\n",
+    "type": "vowel",
+    "hideInKeyboard": false
+  },
+  {
+    "id": "eɣ",
+    "caps": "EƔ",
+    "description_fr": "Rappel: Le symbole ɣ (appelé «gamma») marque en général une modification et une longueur des voyelles qu'il suit. Mais dans quelques mots il a la fonction d'une consonne.\n### Prononciation\nFaites comme si vous vous gargarisiez à la fin de la syllabe.\n### Examples\n\n",
+    "type": "grapheme",
+    "hideInKeyboard": true
+  },
+  {
+    "id": "ɛ",
+    "caps": "Ɛ",
+    "description_fr": "### Prononciation\n**ai**gre\nb**ê**te\n**ê**tre\n**ai**\n### Exemples\n**ɛgɔm**: étranger\n**ɛbɛ**: quoi?\n**ɛgbam**: chasseur\n",
+    "type": "vowel",
+    "hideInKeyboard": false
+  },
+  {
+    "id": "ɛɣ",
+    "caps": "ƐƔ",
+    "description_fr": "Rappel: Le symbole ɣ (appelé «gamma») marque en général une modification et une longueur des voyelles qu'il suit. Mais dans quelques mots il a la fonction d'une consonne.\n### Prononciation\nFaites comme si vous vous gargarisiez à la fin de la syllabe.\n### Examples\n\n",
+    "type": "grapheme",
+    "hideInKeyboard": true
+  },
+  {
+    "id": "f",
+    "caps": "F",
+    "description_fr": "### Prononciation\nElle est la même qu'en Français.\n\n### Examples\n**fada**: prêtre catholique\n**falaa**: pour rien, inutilement\n**fetiye**: crapeau\n**Fransɩɩ**: France\n",
+    "type": "consonant",
+    "hideInKeyboard": false
+  },
+  {
+    "id": "g",
+    "caps": "G",
+    "description_fr": "La lettre «G» ne s'emploie qu'à l'intérieur des mots en Kabiyè. Référez vous aux mots qui commencent par la lettre «K».\n### Prononciation\nman**gu**e\nba**g**age\n**g**ourde\n\n### Examples\n**ɛgɔm**: étranger\n**Togo**: Togo (Pays d'Afrique)\n",
+    "type": "consonant",
+    "hideInKeyboard": false
+  },
+  {
+    "id": "gb",
+    "caps": "GB",
+    "type": "grapheme",
+    "hideInKeyboard": true
+  },
+  {
+    "id": "ɣ",
+    "caps": "Ɣ",
+    "description_fr": "Le symbole **ɣ** (appelé «gamma») marque en général une modification et une longueur des voyelles qu'il suit. Mais dans quelques mots il a la fonction d'une consonne.\n### Prononciation\nFaites comme si vous vous gargarisiez à la fin de la syllabe.\n### Examples\n**fenaɣ**: Lune\n**haɣ**: chien\n**haɣʋ**: se rassasier\n",
+    "type": "consonant",
+    "hideInKeyboard": false
+  },
+  {
+    "id": "h",
+    "caps": "H",
+    "type": "consonant",
+    "hideInKeyboard": false
+  },
+  {
+    "id": "i",
+    "caps": "I",
+    "description_fr": "C'est le son **\"i\"** en Français. Il y a une différence subtile avec la lettre **ɩ**, mais leur prononciation est très similaire.\n### Prononciation\nf**i**lle\nr**i**ve\n### Exemples\n**liidiye**: argent\n**sukuli**: école\n**Itaalii**: Italie (pays d'Europe)\n",
+    "type": "vowel",
+    "hideInKeyboard": false
+  },
+  {
+    "id": "iɣ",
+    "caps": "IƔ",
+    "type": "grapheme",
+    "hideInKeyboard": true
+  },
+  {
+    "id": "ɩ",
+    "caps": "Ɩ",
+    "description_fr": "### Prononciation\nLa prononciation est très similaire au son **\"i\"** mais correspond plutôt à \"bit\" en Anglais, ou encore meat\n### Exemples\n**habɩye**: route, rue\n**cɩca**: enseignant\n**fɩɩɩ**: étroit\n",
+    "type": "vowel",
+    "hideInKeyboard": false
+  },
+  {
+    "id": "ɩɣ",
+    "caps": "ƖƔ",
+    "type": "grapheme",
+    "hideInKeyboard": true
+  },
+  {
+    "id": "j",
+    "caps": "J",
+    "description_fr": "La lettre «J» ne s'emploie qu'à l'intérieur des mots en Kabiyè. Voyez les mots qui commencent par la lettre «C».\nSauf pour Japɔŋ, qui est un nom propre.\n",
+    "type": "consonant",
+    "hideInKeyboard": false
+  },
+  {
+    "id": "k",
+    "caps": "K",
+    "type": "consonant",
+    "hideInKeyboard": false
+  },
+  {
+    "id": "kp",
+    "caps": "KP",
+    "type": "grapheme",
+    "hideInKeyboard": true
+  },
+  {
+    "id": "l",
+    "caps": "L",
+    "type": "consonant",
+    "hideInKeyboard": false
+  },
+  {
+    "id": "m",
+    "caps": "M",
+    "type": "consonant",
+    "hideInKeyboard": false
+  },
+  {
+    "id": "n",
+    "caps": "N",
+    "type": "consonant",
+    "hideInKeyboard": false
+  },
+  {
+    "id": "ñ",
+    "caps": "Ñ",
+    "type": "consonant",
+    "hideInKeyboard": false
+  },
+  {
+    "id": "ŋ",
+    "caps": "Ŋ",
+    "type": "consonant",
+    "hideInKeyboard": false
+  },
+  {
+    "id": "o",
+    "caps": "O",
+    "description_fr": "Très peu de mots commencent par la lettre O en Kabiyè.\n\n### Prononciation\nIdentique au son \"o\" en Français.\nm**o**t**o**\nb**eau**\nRat**eaux**\nd**os**\n### Exemples\n**Otawaa**: Ottawa (Capitale du Canada)\n**ɖoo** : mère\n**ɖozi**: sauce\n**kpokpo**: moto\n",
+    "type": "vowel",
+    "hideInKeyboard": false
+  },
+  {
+    "id": "ɔ",
+    "caps": "Ɔ",
+    "description_fr": "La lettre «Ɔ» se trouve seulement à l'intérieur ou à la fin des mots en Kabiyè.\n### Prononciation\n**o**r\np**o**rter\nd**o**rt\n### Exemples\n**sɔnɔ**: aujourd'hui\n**tɔmbolaa**: tombola\n**tɔm**: parole, langage\n**tɔm kpou**: dictionnaire\n",
+    "type": "vowel",
+    "hideInKeyboard": false
+  },
+  {
+    "id": "p",
+    "caps": "P",
+    "type": "consonant",
+    "hideInKeyboard": false
+  },
+  {
+    "id": "r",
+    "caps": "R",
+    "description_fr": "La lettre «R» n'est utilisée en Kabiyè que pour quelques emprunts. Voyez les mots qui commencent par la lettre «Ɖ».\n\n### **Examples**\n**Raabaa:** Rabat (capitale du Maroc).\n**Room**: Rome (capitale de l'Italie) = **Roma**\n",
+    "type": "consonant",
+    "hideInKeyboard": false
+  },
+  {
+    "id": "s",
+    "caps": "S",
+    "type": "consonant",
+    "hideInKeyboard": false
+  },
+  {
+    "id": "t",
+    "caps": "T",
+    "type": "consonant",
+    "hideInKeyboard": false
+  },
+  {
+    "id": "u",
+    "caps": "U",
+    "description_fr": "Le \"u\" diffère de son utilisation en Français. Cette lettre représente le son \"ou\" en Kabiyè.\n### Prononciation\nc**ou**rt\nt**ou**r\nl**ou**pe\n### Exemples\n**tuutu**: rhume\n",
+    "type": "vowel",
+    "hideInKeyboard": false
+  },
+  {
+    "id": "ʋ",
+    "caps": "Ʋ",
+    "type": "vowel",
+    "hideInKeyboard": false
+  },
+  {
+    "id": "v",
+    "caps": "V",
+    "type": "consonant",
+    "hideInKeyboard": false
+  },
+  {
+    "id": "w",
+    "caps": "W",
+    "type": "consonant",
+    "hideInKeyboard": false
+  },
+  {
+    "id": "y",
+    "caps": "Y",
+    "type": "consonant",
+    "hideInKeyboard": false
+  },
+  {
+    "id": "z",
+    "caps": "Z",
+    "type": "consonant",
+    "hideInKeyboard": false
+  }
+]

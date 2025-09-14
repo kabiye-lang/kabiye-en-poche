@@ -15,7 +15,8 @@
     "data:download": "node --env-file=.env ./scripts/getAlphabet.js",
     "clean": "rm -rf node_modules && rm -rf package-lock.json && npm i",
     "renovater": "node ./renovater.js && ncu -u",
-    "postrenovater": "npm run clean"
+    "postrenovater": "npm run clean",
+    "testflight": "npx testflight"
   },
   "dependencies": {
     "@babel/plugin-transform-export-namespace-from": "^7.27.1",

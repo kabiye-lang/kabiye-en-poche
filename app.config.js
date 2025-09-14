@@ -3,7 +3,7 @@ import pkg from './package.json'
 export default {
   expo: {
     name: 'Kabiyè en poche',
-    slug: 'kabiyeenpoche',
+    slug: 'kabiye-en-poche',
     version: pkg.version,
     orientation: 'portrait',
     icon: './assets/images/icon.png',
@@ -18,6 +18,9 @@ export default {
     ios: {
       bundleIdentifier: 'com.kabiyeenpoche.app',
       supportsTablet: true,
+      "infoPlist": {
+      "ITSAppUsesNonExemptEncryption": false
+    }
     },
     android: {
       adaptiveIcon: {
@@ -44,14 +47,14 @@ export default {
         origin: false,
       },
       eas: {
-        projectId: '441030b9-a714-4719-8c50-f3b7067c4a58',
+        projectId: '804c3e23-d136-4f76-81b4-c0ec5ba01117',
       },
     },
     runtimeVersion: {
       policy: 'appVersion',
     },
     updates: {
-      url: 'https://u.expo.dev/441030b9-a714-4719-8c50-f3b7067c4a58',
+      url: 'https://u.expo.dev/804c3e23-d136-4f76-81b4-c0ec5ba01117',
     },
   },
 }
