@@ -37,8 +37,10 @@ import {
   IBMPlexSansHebrew_700Bold,
 } from '@expo-google-fonts/ibm-plex-sans-hebrew'
 import { ThemeProvider } from '@react-navigation/native'
+import { QueryClientProvider } from '@tanstack/react-query'
 
 import i18n, { I18nProvider } from '@/i18n'
+import { queryClient } from '@/lib/query-client'
 import {
   configureDesignSystem,
   getNavigationTheme,
@@ -131,56 +133,59 @@ export default function RootLayout() {
 function RootLayoutNav() {
   return (
     <SafeAreaProvider>
-      <ThemeProvider value={getNavigationTheme()}>
-        <I18nProvider i18n={i18n}>
-          <StatusBar style={getStatusBarStyle()} backgroundColor={getStatusBarBGColor()} />
-          <GestureHandlerRootView style={{ flex: 1 }}>
-            <Stack>
-              <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
+      <QueryClientProvider client={queryClient}>
+        <ThemeProvider value={getNavigationTheme()}>
+          <I18nProvider i18n={i18n}>
+            <StatusBar style={getStatusBarStyle()} backgroundColor={getStatusBarBGColor()} />
+            <GestureHandlerRootView style={{ flex: 1 }}>
+              <Stack>
+                <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
 
-              <Stack.Screen
-                name="alphabet/[letter]"
-                /*getId={() => String(Date.now())}*/ options={{
-                  title: '',
-                  headerShown: false,
-                  headerTransparent: true,
-                }}
-              />
+                <Stack.Screen
+                  name="alphabet/[letter]"
+                  /*getId={() => String(Date.now())}*/ options={{
+                    title: '',
+                    headerTransparent: true,
+                    headerBackButtonDisplayMode: 'minimal',
+                  }}
+                />
 
-              <Stack.Screen
-                name="unit/[id]"
-                /*getId={() => String(Date.now())}*/ options={{
-                  title: '',
-                  // headerShown: false,
-                  headerBackTitle: '',
-                  headerTransparent: true,
-                }}
-              />
+                <Stack.Screen
+                  name="unit/[id]"
+                  /*getId={() => String(Date.now())}*/ options={{
+                    title: '',
+                    // headerShown: false,
+                    headerBackButtonDisplayMode: 'minimal',
+                    headerTransparent: true,
+                  }}
+                />
 
-              <Stack.Screen
-                name="lesson/[id]"
-                /*getId={() => String(Date.now())}*/ options={{
-                  title: '',
-                  // headerShown: false,
-                  headerBackTitle: '',
-                  headerTransparent: false,
-                }}
-              />
+                <Stack.Screen
+                  name="lesson/[id]"
+                  /*getId={() => String(Date.now())}*/ options={{
+                    title: '',
+                    // headerShown: false,
+                    headerBackButtonDisplayMode: 'minimal',
+                    headerBackTitle: '',
+                    headerTransparent: true,
+                  }}
+                />
 
-              <Stack.Screen
-                name="word/[id]"
-                /*getId={() => String(Date.now())}*/ options={{
-                  // title: '',
-                  // headerShown: false,
-                  headerTransparent: false,
-                }}
-              />
-              <Stack.Screen name="modal" options={{ presentation: 'modal' }} />
-              <Stack.Screen name="terms-and-conditions" options={{ title: '' }} />
-            </Stack>
-          </GestureHandlerRootView>
-        </I18nProvider>
-      </ThemeProvider>
+                <Stack.Screen
+                  name="word/[id]"
+                  /*getId={() => String(Date.now())}*/ options={{
+                    // title: '',
+                    // headerShown: false,
+                    headerTransparent: true,
+                  }}
+                />
+                <Stack.Screen name="modal" options={{ presentation: 'modal' }} />
+                <Stack.Screen name="terms-and-conditions" options={{ title: '' }} />
+              </Stack>
+            </GestureHandlerRootView>
+          </I18nProvider>
+        </ThemeProvider>
+      </QueryClientProvider>
     </SafeAreaProvider>
   )
 }

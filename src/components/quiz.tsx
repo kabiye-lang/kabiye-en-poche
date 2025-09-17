@@ -1,12 +1,13 @@
-import React, { useEffect, useState } from 'react'
-import { ScrollView, TouchableOpacity } from 'react-native'
+import { useEffect, useState } from 'react'
+import { ActivityIndicator, ScrollView, TouchableOpacity } from 'react-native'
 
 import { useLocalSearchParams } from 'expo-router'
 
+import { Trans } from '@lingui/react/macro'
 import { XIcon } from 'phosphor-react-native'
 
 import { Button, Card, Text, View } from '@/components/ui'
-import { quizContents } from '@/utils/units'
+import { useAppQuizQuestions } from '@/hooks/use-app-data'
 
 import ListenChose from './listen-chose'
 import ListenType from './listen-type'
@@ -35,8 +36,9 @@ const QuizModal: React.FC<QuizModalProps> = ({ onClose }) => {
   const [selectedAnswer, setSelectedAnswer] = useState<string | null>(null)
   const [score, setScore] = useState(0)
   const [showFeedback, setShowFeedback] = useState(false)
-  // @ts-expect-error id undefined
-  const quiz = quizContents[id]
+
+  const lessonId = id as string
+  const { data: quizQuestions, isLoading, error } = useAppQuizQuestions(lessonId)
 
   useEffect(() => {
     setSelectedAnswer(null)
@@ -44,9 +46,55 @@ const QuizModal: React.FC<QuizModalProps> = ({ onClose }) => {
   }, [currentQuestionIndex])
 
   if (!id) {
-    return
+    return null
   }
-  const currentQuestion: Question = quiz.questions[currentQuestionIndex]
+
+  if (isLoading) {
+    return (
+      <View className="mb-0 mt-auto flex-1 rounded-xl bg-white">
+        <View className="flex-row items-center border-b border-gray-300 p-4">
+          <TouchableOpacity onPress={onClose}>
+            <XIcon size={24} color="black" />
+          </TouchableOpacity>
+          <Text variant="h3" weight="bold" className="ml-5">
+            Quiz
+          </Text>
+        </View>
+        <View className="flex-1 items-center justify-center">
+          <ActivityIndicator size="large" color="#6200EE" />
+          <Text className="mt-4">Loading quiz...</Text>
+        </View>
+      </View>
+    )
+  }
+
+  if (error || !quizQuestions || quizQuestions.length === 0) {
+    return (
+      <View className="mb-0 mt-auto flex-1 rounded-xl bg-white">
+        <View className="flex-row items-center border-b border-gray-300 p-4">
+          <TouchableOpacity onPress={onClose}>
+            <XIcon size={24} color="black" />
+          </TouchableOpacity>
+          <Text variant="h3" weight="bold" className="ml-5">
+            Quiz
+          </Text>
+        </View>
+        <View className="flex-1 items-center justify-center px-4">
+          <Text variant="h6" color="dark" className="text-center">
+            No quiz available for this lesson
+          </Text>
+        </View>
+      </View>
+    )
+  }
+
+  const currentQuestion: Question = {
+    type: quizQuestions[currentQuestionIndex].question_type,
+    question: quizQuestions[currentQuestionIndex].question_en, // Use English for now
+    correctAnswer: quizQuestions[currentQuestionIndex].correct_answer,
+    answers: quizQuestions[currentQuestionIndex].options_en as string[],
+    audioUri: quizQuestions[currentQuestionIndex].audio_url || undefined,
+  }
 
   const handleAnswerPress = (answer: string) => {
     setSelectedAnswer(answer)
@@ -59,7 +107,7 @@ const QuizModal: React.FC<QuizModalProps> = ({ onClose }) => {
   const handleNextPress = () => {
     setShowFeedback(false)
     setSelectedAnswer(null)
-    if (currentQuestionIndex < quiz.questions.length - 1) {
+    if (currentQuestionIndex < quizQuestions.length - 1) {
       setCurrentQuestionIndex(currentQuestionIndex + 1)
     } else {
       setShowFeedback(true)
@@ -164,13 +212,13 @@ const QuizModal: React.FC<QuizModalProps> = ({ onClose }) => {
                   ? 'Correct!'
                   : `Incorrect! The correct answer is ${currentQuestion.correctAnswer}.`}
               </Text>
-              {currentQuestionIndex < quiz.questions.length - 1 ? (
+              {currentQuestionIndex < quizQuestions.length - 1 ? (
                 <Button variant="primary" onPress={handleNextPress}>
                   Next
                 </Button>
               ) : (
                 <Text variant="h3" weight="bold" color="secondary">
-                  Quiz finished! Your score is {score} out of {quiz.questions.length}.
+                  Quiz finished! Your score is {score} out of {quizQuestions.length}.
                 </Text>
               )}
             </View>

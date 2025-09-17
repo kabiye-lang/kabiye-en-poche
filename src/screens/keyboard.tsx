@@ -72,7 +72,7 @@ export default function KeyboardScreen() {
         key={letter.id}
         variant="ghost"
         size="sm"
-        className="rounded-md bg-white"
+        className="rounded-md bg-white !px-0 !py-0"
         style={{ width: buttonWidth, minWidth: buttonWidth, height: 35 }}
         onPress={() => changeText(letter)}
       >
@@ -87,7 +87,6 @@ export default function KeyboardScreen() {
     <View flex>
       <View className="px-2.5">
         <ScreenTitle title={t`Keyboard`} />
-        {/* TODO: translation */}
         <Text variant="body" className="mb-2">
           {t`Use this keyboard to write in Kabiyè.`}
         </Text>
@@ -100,6 +99,7 @@ export default function KeyboardScreen() {
         <View className="px-2.5">
           <TextInput
             value={content}
+            editable={false}
             multiline
             className="max-h-[120px] min-h-[120px] w-full rounded-lg border border-primary p-2.5 text-base"
             placeholder="Type here..."
@@ -134,7 +134,7 @@ export default function KeyboardScreen() {
         {/* <KeyboardAccessoryView
           renderContent={() => (
             <> */}
-        <View className="bg-gray-300 p-1.5 pb-5">
+        <View className="bg-gray-200 p-1.5 pb-5">
           <View className="mt-2.5 flex-row flex-wrap justify-center gap-1.5">
             {OTHER_CHARACTERS.concat(alphabetList)
               // @ts-expect-error hideInKeyboard doesn't exist on tpe
@@ -199,14 +199,6 @@ export default function KeyboardScreen() {
             </Button>
           </View>
         </View>
-        {/* </>
-          )}
-          //  kbInputRef={this.inputRef}
-          //  kbComponent={}
-          //  kbInitialProps={}
-          //  onHeightChanged={this.onHeightChanged()}
-          // scrollBehavior={KeyboardAccessoryView.scrollBehaviors.NONE}
-        /> */}
       </View>
     </View>
   )

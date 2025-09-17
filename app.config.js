@@ -56,6 +56,10 @@ export default {
       eas: {
         projectId: '804c3e23-d136-4f76-81b4-c0ec5ba01117',
       },
+      supabase: {
+        url: process.env.EXPO_PUBLIC_SUPABASE_URL,
+        anonKey: process.env.EXPO_PUBLIC_SUPABASE_ANON_KEY,
+      },
     },
     runtimeVersion: {
       policy: 'appVersion',

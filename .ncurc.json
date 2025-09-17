@@ -1,6 +1,7 @@
 {
   "upgrade": false,
   "reject": [
+    "tailwindcss",
     "@expo/fingerprint",
     "@expo/metro-runtime",
     "@expo/vector-icons",
@@ -44,6 +45,7 @@
     "expo-file-system",
     "expo-font",
     "expo-gl",
+    "expo-glass-effect",
     "expo-google-app-auth",
     "expo-haptics",
     "expo-image",

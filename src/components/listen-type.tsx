@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { Animated, TextInput, TouchableOpacity } from 'react-native'
 
 import { useAudioPlayer } from 'expo-audio'

@@ -2,7 +2,7 @@ import { Tabs } from 'expo-router'
 
 import { useLingui } from '@lingui/react/macro'
 
-import { ArticleIcon, BookOpenTextIcon, KeyboardIcon, LightbulbIcon } from '@/components/icons'
+import { ArticleIcon, BookOpenTextIcon, KeyboardIcon, LightbulbIcon, UserIcon } from '@/components/icons'
 import CustomTabBar from '@/components/navigation/tab-bar'
 import { tabScreenDefaultOptions } from '@/utils/design-system-nativewind'
 
@@ -39,11 +39,18 @@ export default function TabLayout() {
         }}
       />
       <Tabs.Screen
+        name="learn"
+        options={{
+          title: t`Learn`,
+          tabBarIcon: ({ color, focused }) => <BookOpenTextIcon color={color} weight={focused ? 'fill' : 'light'} />,
+        }}
+      />
+      <Tabs.Screen
         name="dictionnary"
         options={{
           href: '/dictionnary',
           title: t`Dictionary`,
-          tabBarIcon: ({ color, focused }) => <BookOpenTextIcon color={color} weight={focused ? 'fill' : 'light'} />,
+          tabBarIcon: ({ color, focused }) => <ArticleIcon color={color} weight={focused ? 'fill' : 'light'} />,
         }}
       />
       <Tabs.Screen
@@ -54,10 +61,10 @@ export default function TabLayout() {
         }}
       />
       <Tabs.Screen
-        name="resources"
+        name="profile"
         options={{
-          title: t`Resources`,
-          tabBarIcon: ({ color, focused }) => <ArticleIcon color={color} weight={focused ? 'fill' : 'light'} />,
+          title: t`Profile`,
+          tabBarIcon: ({ color, focused }) => <UserIcon color={color} weight={focused ? 'fill' : 'light'} />,
         }}
       />
     </Tabs>

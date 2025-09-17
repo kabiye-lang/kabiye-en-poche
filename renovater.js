@@ -21,7 +21,7 @@ const req = https.get(url, function (res) {
       pkg.overrides = { ...pkg['overrides-base'] }
       pkg.overrides.react = expoJsonData['react']
       pkg.overrides['react-dom'] = expoJsonData['react-dom']
-      ncuCfg.reject = [...Object.keys(expoJsonData)]
+      ncuCfg.reject = ['tailwindcss', ...Object.keys(expoJsonData)]
       Object.keys(expoJsonData).forEach((dep) => {
         if (pkg.dependencies[dep]) {
           pkg.dependencies[dep] = expoJsonData[dep]

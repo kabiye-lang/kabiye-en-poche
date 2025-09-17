@@ -1,44 +1,50 @@
-import React from 'react'
+import { useState } from 'react'
 import { ActivityIndicator, ScrollView, TouchableOpacity } from 'react-native'
-import { useSafeAreaInsets } from 'react-native-safe-area-context'
 
-import { Link, useLocalSearchParams } from 'expo-router'
+import { Link } from 'expo-router'
 
 import { useLingui } from '@lingui/react/macro'
 
-import { CheckCircleIcon, LockIcon } from '@/components/icons'
-import { Card, Gradient, Text, View } from '@/components/ui'
-import { useAppLessonsWithProgress, useAppUnit } from '@/hooks/use-app-data'
+import { CaretRightIcon, CheckCircleIcon, LockIcon } from '@/components/icons'
+import { Card, ScreenTitle, Text, View } from '@/components/ui'
+import { useAppLessonsWithProgress, useAppUnits } from '@/hooks/use-app-data'
 
-const UnitScreen = () => {
+const LearnScreen = () => {
   const { t } = useLingui()
-  const { id } = useLocalSearchParams()
-  const unitId = id as string
-  const safeAreaInsets = useSafeAreaInsets()
+  const [expandedUnits, setExpandedUnits] = useState<Set<string>>(new Set())
 
-  const { data: unit, isLoading: unitLoading, error: unitError } = useAppUnit(unitId)
-  const { data: lessons, isLoading: lessonsLoading, error: lessonsError } = useAppLessonsWithProgress(unitId)
+  const { data: units, isLoading: unitsLoading, error: unitsError } = useAppUnits()
 
-  if (unitLoading) {
+  const toggleUnit = (unitId: string) => {
+    const newExpanded = new Set(expandedUnits)
+    if (newExpanded.has(unitId)) {
+      newExpanded.delete(unitId)
+    } else {
+      newExpanded.add(unitId)
+    }
+    setExpandedUnits(newExpanded)
+  }
+
+  if (unitsLoading) {
     return (
       <View flex safeArea="top" className="bg-grey">
         <View className="flex-1 items-center justify-center">
           <ActivityIndicator size="large" color="#6200EE" />
-          <Text className="mt-4">Loading unit...</Text>
+          <Text className="mt-4">Loading learning units...</Text>
         </View>
       </View>
     )
   }
 
-  if (unitError || !unit) {
+  if (unitsError) {
     return (
       <View flex safeArea="top" className="bg-grey">
         <View className="flex-1 items-center justify-center px-4">
           <Text variant="h6" color="primary" className="text-center">
-            Unit not found
+            Failed to load learning units
           </Text>
           <Text variant="caption" color="grey" className="mt-2 text-center">
-            {unitError?.message || 'This unit does not exist'}
+            {unitsError.message}
           </Text>
         </View>
       </View>
@@ -46,66 +52,99 @@ const UnitScreen = () => {
   }
 
   return (
-    <View flex>
-      <ScrollView className="px-4 py-5" style={{ paddingTop: 40 + safeAreaInsets.top }}>
-        {/* Unit Header */}
-        <Gradient colors={['#6200EE', '#03DAC6']} className="my-5">
-          <View className="flex-col items-start justify-center p-5">
-            <Text variant="h1" weight="bold" color="white" className="mb-2.5">
+    <View flex className="bg-grey">
+      <ScrollView className="px-4 pb-5">
+        <ScreenTitle title={t`Learn Kabiyè`} />
+        {units?.map((unit) => (
+          <UnitCard
+            key={unit.id}
+            unit={unit}
+            isExpanded={expandedUnits.has(unit.id)}
+            onToggle={() => toggleUnit(unit.id)}
+          />
+        ))}
+      </ScrollView>
+    </View>
+  )
+}
+
+interface UnitCardProps {
+  unit: {
+    id: string
+    title_en: string
+    title_fr: string
+    description_en: string | null
+    description_fr: string | null
+  }
+  isExpanded: boolean
+  onToggle: () => void
+}
+
+const UnitCard = ({ unit, isExpanded, onToggle }: UnitCardProps) => {
+  const { t } = useLingui()
+  const { data: lessons, isLoading: lessonsLoading } = useAppLessonsWithProgress(unit.id)
+
+  const completedLessons = lessons?.filter((lesson) => lesson.is_completed).length || 0
+  const totalLessons = lessons?.length || 0
+
+  return (
+    <Card className="mb-4 p-4">
+      <TouchableOpacity onPress={onToggle}>
+        <View className="flex-row items-center justify-between">
+          <View className="flex-1">
+            <Text variant="h6" weight="bold" color="primary" className="mb-1">
               {unit.title_en}
             </Text>
             {unit.description_en && (
-              <Text variant="h5" weight="medium" color="white" className="mt-2.5">
+              <Text variant="caption" color="grey" className="mb-2">
                 {unit.description_en}
               </Text>
             )}
+            <View className="flex-row items-center">
+              <Text variant="caption" color="grey">
+                {completedLessons}/{totalLessons} {t`lessons completed`}
+              </Text>
+              <View className="bg-grey ml-2 h-1.5 w-16 rounded-full">
+                <View
+                  className="h-1.5 rounded-full bg-primary transition-all duration-300"
+                  style={{ width: totalLessons > 0 ? `${(completedLessons / totalLessons) * 100}%` : '0%' }}
+                />
+              </View>
+            </View>
           </View>
-        </Gradient>
+          <CaretRightIcon
+            size={20}
+            color="#6200EE"
+            style={{ transform: [{ rotate: isExpanded ? '90deg' : '0deg' }] }}
+          />
+        </View>
+      </TouchableOpacity>
 
-        {/* Lessons Section */}
-        <View className="mb-5">
-          <Text variant="h5" weight="semibold" className="mb-2.5">
-            {t`Lessons`}
-          </Text>
+      {isExpanded && (
+        <View className="border-grey mt-4 border-t pt-4">
           {lessonsLoading ? (
-            <Card className="p-4">
-              <View className="flex-row items-center">
-                <ActivityIndicator size="small" color="#6200EE" />
-                <Text className="ml-2">{t`Loading lessons...`}</Text>
-              </View>
-            </Card>
-          ) : lessonsError ? (
-            <Card className="p-4">
-              <View className="items-center">
-                <Text variant="h6" color="primary" className="text-center">
-                  {t`Lessons temporarily unavailable`}
-                </Text>
-                <Text variant="caption" color="grey" className="mt-2 text-center">
-                  {t`Please check your connection and try again`}
-                </Text>
-              </View>
-            </Card>
+            <View className="space-y-2">
+              {[1, 2, 3].map((i) => (
+                <View key={i} className="flex-row items-center p-2">
+                  <ActivityIndicator size="small" color="#6200EE" />
+                  <Text className="ml-2">Loading lessons...</Text>
+                </View>
+              ))}
+            </View>
           ) : lessons && lessons.length > 0 ? (
-            <View className="space-y-2.5">
+            <View className="space-y-2">
               {lessons.map((lesson) => (
                 <LessonItem key={lesson.id} lesson={lesson} />
               ))}
             </View>
           ) : (
-            <Card className="p-4">
-              <View className="items-center">
-                <Text variant="h6" color="primary" className="text-center">
-                  {t`No lessons available`}
-                </Text>
-                <Text variant="caption" color="grey" className="mt-2 text-center">
-                  {t`Lessons will be added soon`}
-                </Text>
-              </View>
-            </Card>
+            <Text variant="body" color="grey" className="py-4 text-center">
+              {t`No lessons available yet`}
+            </Text>
           )}
         </View>
-      </ScrollView>
-    </View>
+      )}
+    </Card>
   )
 }
 
@@ -185,4 +224,4 @@ const LessonItem = ({ lesson }: LessonItemProps) => {
   )
 }
 
-export default UnitScreen
+export default LearnScreen

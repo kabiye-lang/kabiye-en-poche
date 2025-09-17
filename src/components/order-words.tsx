@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import { useState } from 'react'
 import { ScrollView, TouchableOpacity, View } from 'react-native'
 import Animated, { FadeIn, FadeOut } from 'react-native-reanimated'
 
