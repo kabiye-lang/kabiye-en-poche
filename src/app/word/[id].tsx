@@ -1,3 +1,3 @@
-import WordDetailsScreen from '@/screens/dictionnary/word'
+import WordDetailsScreen from '@/screens/dictionary/word'
 
 export default WordDetailsScreen

@@ -6,6 +6,7 @@ import { useAudioPlayer } from 'expo-audio'
 import { SpeakerHighIcon } from 'phosphor-react-native'
 
 import { Button, Text, View } from '@/components/ui'
+import { brandColors } from '@/utils/design-system-nativewind'
 
 interface ListenTypeProps {
   question: {
@@ -56,7 +57,7 @@ const ListenType: React.FC<ListenTypeProps> = ({ question, onAnswerSelected, sho
   return (
     <View className="p-5">
       <TouchableOpacity onPress={replayAudio} className="my-2.5 flex-row items-center rounded-md bg-green-500 p-2.5">
-        <SpeakerHighIcon size={24} color="#FFFFFF" />
+        <SpeakerHighIcon size={24} color={brandColors.textLight} />
         <Text variant="body" weight="bold" color="white" className="ml-1">
           Replay Audio
         </Text>

@@ -11,6 +11,7 @@ import { ChatCircleDotsIcon, CheckCircleIcon, LightbulbIcon } from '@/components
 import QuizModal from '@/components/quiz'
 import { Button, Card, Text, View } from '@/components/ui'
 import { useAppCompleteLesson, useAppLesson, useAppLessonContent, useAppQuizQuestions } from '@/hooks/use-app-data'
+import { brandColors } from '@/utils/design-system-nativewind'
 
 const LessonScreen = () => {
   const { t } = useLingui()
@@ -49,7 +50,7 @@ const LessonScreen = () => {
     return (
       <View className="flex-1 bg-bg-grey">
         <View className="flex-1 items-center justify-center">
-          <ActivityIndicator size="large" color="#6200EE" />
+          <ActivityIndicator size="large" color={brandColors.primary} />
           <Text className="mt-4">{t`Loading lesson...`}</Text>
         </View>
       </View>

@@ -1,7 +1,7 @@
 import type { BottomTabNavigationOptions } from '@react-navigation/bottom-tabs'
 import type { Theme } from '@react-navigation/native'
 
-import { Platform, Appearance as RNAppearance } from 'react-native'
+import { Appearance as RNAppearance } from 'react-native'
 
 import { StatusBarStyle } from 'expo-status-bar'
 
@@ -19,7 +19,7 @@ const stores: { ui: { isAppearanceSystem: boolean; appearance: Appearance } } = 
 // =============
 
 // Brand colors - used in navigation themes
-const brandColors = {
+export const brandColors = {
   primary: '#6200EE',
   secondary: '#03DAC6',
   bgGrey: '#F5F5F5',
@@ -29,7 +29,7 @@ const brandColors = {
   textGrey: '#757575',
 }
 
-const brandThemeColors = {
+export const brandThemeColors = {
   _black: 'rgba(20, 20, 20, 1)',
   _black2: 'rgba(50, 50, 50, 1)',
   _white: 'rgba(250, 250, 250, 1)',
@@ -64,7 +64,6 @@ const themes: Record<Appearance, ThemeColors> = {
 
 // NativeWind-compatible design system configuration
 export const configureDesignSystem = (): void => {
-  const { ui } = stores
   // NativeWind handles colors and typography through Tailwind config
   // This function is kept for compatibility but doesn't need to do much
   console.log('Design system configured for NativeWind')

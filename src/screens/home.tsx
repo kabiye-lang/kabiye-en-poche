@@ -7,6 +7,7 @@ import { useLingui } from '@lingui/react/macro'
 import { CaretRightIcon, PlayIcon } from '@/components/icons'
 import { Card, Gradient, Text, View } from '@/components/ui'
 import { useAppNextLesson, useAppProgressSummary, useAppUnits } from '@/hooks/use-app-data'
+import { brandColors } from '@/utils/design-system-nativewind'
 
 const HomeScreen = () => {
   const { t } = useLingui()
@@ -23,7 +24,7 @@ const HomeScreen = () => {
           </Text>
           <Card className="h-[120px] px-4 py-2.5">
             <View className="flex-1 items-center justify-center">
-              <ActivityIndicator size="small" color="#6200EE" />
+              <ActivityIndicator size="small" color={brandColors.primary} />
               <Text variant="caption" color="grey" className="mt-2">
                 Loading...
               </Text>
@@ -74,7 +75,7 @@ const HomeScreen = () => {
                   </Text>
                 </View>
                 <View className="ml-2.5">
-                  <PlayIcon size={24} color="#6200EE" />
+                  <PlayIcon size={24} color={brandColors.primary} />
                 </View>
               </View>
             </TouchableOpacity>
@@ -93,7 +94,7 @@ const HomeScreen = () => {
           </Text>
           <Card className="h-[100px] px-4 py-2.5">
             <View className="flex-1 items-center justify-center">
-              <ActivityIndicator size="small" color="#6200EE" />
+              <ActivityIndicator size="small" color={brandColors.primary} />
               <Text variant="caption" color="grey" className="mt-2">
                 Loading progress...
               </Text>
@@ -152,7 +153,7 @@ const HomeScreen = () => {
               <View className="mb-2.5 w-[48%]" key={i}>
                 <Card className="h-[170px] px-4 py-2.5">
                   <View className="flex-1 items-center justify-center">
-                    <ActivityIndicator size="small" color="#6200EE" />
+                    <ActivityIndicator size="small" color={brandColors.primary} />
                     <Text variant="caption" color="grey" className="mt-2">
                       Loading...
                     </Text>
@@ -218,7 +219,7 @@ const HomeScreen = () => {
                       {t`View All`}
                     </Text>
                     <View className="ml-2.5">
-                      <CaretRightIcon size={24} color="#FFFFFF" />
+                      <CaretRightIcon size={24} color={brandColors.textLight} />
                     </View>
                   </View>
                 </TouchableOpacity>
@@ -236,7 +237,7 @@ const HomeScreen = () => {
         <View flex>
           {/* Redesigned Top Card */}
           <Card padding="none" className="mb-5">
-            <Gradient colors={['#6200EE', '#03DAC6']}>
+            <Gradient colors={[brandColors.primary, brandColors.secondary]}>
               <View className="flex-col items-start justify-center p-5">
                 <Text variant="h2" weight="bold" color="white" className="mb-2.5">
                   {t`Welcome to Kabiyè en Poche`}
@@ -273,7 +274,7 @@ const HomeScreen = () => {
                       {t`Learn the Kabiyè alphabet`}
                     </Text>
                   </View>
-                  <CaretRightIcon size={24} color="#6200EE" />
+                  <CaretRightIcon size={24} color={brandColors.primary} />
                 </TouchableOpacity>
               </Link>
             </Card>
@@ -288,7 +289,7 @@ const HomeScreen = () => {
                       {t`Access learning materials and resources`}
                     </Text>
                   </View>
-                  <CaretRightIcon size={24} color="#6200EE" />
+                  <CaretRightIcon size={24} color={brandColors.primary} />
                 </TouchableOpacity>
               </Link>
             </Card>

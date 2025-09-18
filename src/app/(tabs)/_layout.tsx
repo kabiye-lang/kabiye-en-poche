@@ -46,9 +46,9 @@ export default function TabLayout() {
         }}
       />
       <Tabs.Screen
-        name="dictionnary"
+        name="dictionary"
         options={{
-          href: '/dictionnary',
+          href: '/dictionary',
           title: t`Dictionary`,
           tabBarIcon: ({ color, focused }) => <ArticleIcon color={color} weight={focused ? 'fill' : 'light'} />,
         }}

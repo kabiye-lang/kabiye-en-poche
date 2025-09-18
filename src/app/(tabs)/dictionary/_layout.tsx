@@ -1,6 +1,6 @@
 import { Stack } from 'expo-router'
 
-export default function TabDictionnaryLayout() {
+export default function TabDictionaryLayout() {
   // const { t } = useTranslation()
 
   return (

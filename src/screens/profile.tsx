@@ -9,6 +9,7 @@ import { useLingui } from '@lingui/react/macro'
 import { BookOpenTextIcon, CaretRightIcon, GearIcon, TrashIcon, UserIcon } from '@/components/icons'
 import { Card, ScreenTitle, Text, View } from '@/components/ui'
 import { useAppProgressSummary } from '@/hooks/use-app-data'
+import { brandColors } from '@/utils/design-system-nativewind'
 
 const ProfileScreen = () => {
   const { t, i18n } = useLingui()
@@ -116,7 +117,7 @@ const ProfileScreen = () => {
         {/* Progress Overview */}
         <Card className="mb-8 p-4">
           <View className="mb-4 flex-row items-center">
-            <UserIcon size={24} color="#6200EE" />
+            <UserIcon size={24} color={brandColors.primary} />
             <Text variant="h5" weight="semibold" color="dark" className="ml-2">
               {t`Progress Overview`}
             </Text>
@@ -176,7 +177,7 @@ const ProfileScreen = () => {
         {listItems.map((listItem) => (
           <View key={'listItem-' + listItem.title} className="mb-5">
             <View className="mb-4 flex-row items-center">
-              <BookOpenTextIcon size={24} color="#6200EE" />
+              <BookOpenTextIcon size={24} color={brandColors.primary} />
               <Text variant="h5" weight="semibold" color="dark" className="ml-2">
                 {listItem.title}
               </Text>
@@ -218,7 +219,7 @@ const ProfileScreen = () => {
         {/* Settings Section */}
         <Card className="mb-5 p-4">
           <View className="mb-4 flex-row items-center">
-            <GearIcon size={24} color="#6200EE" />
+            <GearIcon size={24} color={brandColors.primary} />
             <Text variant="h5" weight="semibold" color="dark" className="ml-2">
               {t`Settings`}
             </Text>
@@ -242,8 +243,8 @@ const ProfileScreen = () => {
                 <Switch
                   value={isEnglish}
                   onValueChange={handleLanguageToggle}
-                  trackColor={{ false: '#E0E0E0', true: '#6200EE' }}
-                  thumbColor={isEnglish ? '#FFFFFF' : '#FFFFFF'}
+                  trackColor={{ false: '#E0E0E0', true: brandColors.primary }}
+                  thumbColor={isEnglish ? brandColors.textLight : brandColors.textLight}
                 />
                 <Text variant="caption" color={isEnglish ? 'primary' : 'grey'} className="ml-2">
                   EN

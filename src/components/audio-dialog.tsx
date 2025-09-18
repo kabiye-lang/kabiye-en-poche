@@ -11,7 +11,7 @@ interface AudioDialogProps {
 
 const AudioDialog: React.FC<AudioDialogProps> = ({ onClose }) => {
   return (
-    <View className="mb-0 mt-auto flex-1 rounded-xl bg-white">
+    <View className="mb-0 mt-auto flex-1 rounded-xl bg-white" safeArea="top">
       <View className="flex-row items-center border-b border-gray-300 p-4">
         <TouchableOpacity onPress={onClose}>
           <XIcon size={24} color="black" />

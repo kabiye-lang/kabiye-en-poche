@@ -6,33 +6,67 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "X-Generator: @lingui/cli\n"
 "Language: en\n"
+"Project-Id-Version: \n"
+"Report-Msgid-Bugs-To: \n"
+"PO-Revision-Date: \n"
+"Last-Translator: \n"
+"Language-Team: \n"
+"Plural-Forms: \n"
 
-#: src/screens/resources.tsx
+#: src/screens/learn.tsx
+msgid "Learn Kabiyè"
+msgstr "Learn Kabiyè"
+
+#: src/screens/lesson.tsx
+msgid "Complete Lesson"
+msgstr "Complete Lesson"
+
+#: src/screens/profile.tsx
 msgid "Lexilogos Dictionary"
 msgstr "Lexilogos Dictionary"
 
-#: src/screens/dictionnary/dictionnary.tsx
-#: src/screens/home.tsx
+#: src/screens/lesson.tsx
+msgid "Audio"
+msgstr "Audio"
+
+#: src/screens/dictionary/dictionary.tsx
 msgid "Get tips to improve your learning"
 msgstr "Get tips to improve your learning"
 
 #: src/screens/home.tsx
+#: src/screens/profile.tsx
 msgid "Learn Kabiyè in a fun and interactive way"
 msgstr "Learn Kabiyè in a fun and interactive way"
+
+#: src/screens/lesson.tsx
+msgid "Failed to complete lesson. Please try again."
+msgstr "Failed to complete lesson. Please try again."
+
+#: src/screens/home.tsx
+msgid "Great job on finishing the course"
+msgstr "Great job on finishing the course"
+
+#: src/screens/profile.tsx
+msgid "No progress data available"
+msgstr "No progress data available"
 
 #: src/screens/home.tsx
 msgid "Welcome to Kabiyè en Poche"
 msgstr "Welcome to Kabiyè en Poche"
 
 #: src/screens/home.tsx
-msgid "Tips & Resources"
-msgstr "Tips & Resources"
+#~ msgid "Tips & Resources"
+#~ msgstr "Tips & Resources"
 
-#: src/screens/resources.tsx
+#: src/screens/lesson.tsx
+msgid "Content"
+msgstr "Content"
+
+#: src/screens/profile.tsx
 msgid "Académie Kabiyè"
 msgstr "Académie Kabiyè"
 
-#: src/screens/resources.tsx
+#: src/screens/profile.tsx
 msgid "Kabiyè language resources"
 msgstr "Kabiyè language resources"
 
@@ -44,84 +78,204 @@ msgstr "An error occurred..."
 msgid "I learn the Kabiyè Alphabet"
 msgstr "I learn the Kabiyè Alphabet"
 
-#: src/screens/resources.tsx
+#: src/screens/lesson.tsx
+msgid "Lesson Completed!"
+msgstr "Lesson Completed!"
+
+#: src/screens/learn.tsx
+msgid "lessons completed"
+msgstr "lessons completed"
+
+#: src/screens/home.tsx
+#: src/screens/profile.tsx
 msgid "Learning Resources"
 msgstr "Learning Resources"
 
-#: src/screens/resources.tsx
+#: src/screens/profile.tsx
 msgid "Join our community to contribute to the development of the application"
 msgstr "Join our community to contribute to the development of the application"
 
-#: src/screens/resources.tsx
+#: src/screens/home.tsx
+msgid "Tap to continue"
+msgstr "Tap to continue"
+
+#: src/screens/profile.tsx
 msgid "Kabiyè language learning platform"
 msgstr "Kabiyè language learning platform"
 
-#: src/app/(tabs)/(home)/_layout.tsx
+#: src/screens/home.tsx
+msgid "Units temporarily unavailable"
+msgstr "Units temporarily unavailable"
+
+#: src/screens/unit.tsx
+msgid "No lessons available"
+msgstr "No lessons available"
+
+#: src/screens/lesson.tsx
+msgid "Lesson content will be available soon."
+msgstr "Lesson content will be available soon."
+
+#: src/screens/home.tsx
+#: src/screens/home.tsx
 #: src/screens/home.tsx
 msgid "Learning Units"
 msgstr "Learning Units"
+
+#: src/screens/learn.tsx
+#: src/screens/unit.tsx
+msgid "Complete previous lesson to unlock"
+msgstr "Complete previous lesson to unlock"
+
+#: src/screens/home.tsx
+msgid "Learn the Kabiyè alphabet"
+msgstr "Learn the Kabiyè alphabet"
+
+#: src/screens/profile.tsx
+msgid "Reset"
+msgstr "Reset"
 
 #: src/screens/keyboard.tsx
 msgid "Use this keyboard to write in Kabiyè."
 msgstr "Use this keyboard to write in Kabiyè."
 
 #: src/screens/home.tsx
-msgid "Access additional learning materials"
-msgstr "Access additional learning materials"
+#~ msgid "Access additional learning materials"
+#~ msgstr "Access additional learning materials"
+
+#: src/screens/home.tsx
+msgid "Access learning materials and resources"
+msgstr "Access learning materials and resources"
+
+#: src/screens/lesson.tsx
+msgid "Great job! You've completed this lesson."
+msgstr "Great job! You've completed this lesson."
 
 #: src/screens/alphabet-letter.tsx
 #: src/screens/alphabet-list.tsx
 msgid "Consonant"
 msgstr "Consonant"
 
+#: src/screens/lesson.tsx
+msgid "Error"
+msgstr "Error"
+
 #: src/screens/keyboard.tsx
 msgid "The"
 msgstr "The"
 
 #: src/screens/home.tsx
-msgid "Learning Tips"
-msgstr "Learning Tips"
+#: src/screens/home.tsx
+#: src/screens/home.tsx
+msgid "Continue Learning"
+msgstr "Continue Learning"
+
+#: src/screens/profile.tsx
+msgid "Settings"
+msgstr "Settings"
+
+#: src/screens/learn.tsx
+#: src/screens/unit.tsx
+msgid "Tap to start"
+msgstr "Tap to start"
+
+#: src/screens/home.tsx
+#~ msgid "Learning Tips"
+#~ msgstr "Learning Tips"
 
 #: src/app/(tabs)/_layout.tsx
 msgid "Dictionary"
 msgstr "Dictionary"
 
-#: src/screens/resources.tsx
+#: src/screens/profile.tsx
+msgid "Overall Progress"
+msgstr "Overall Progress"
+
+#: src/screens/profile.tsx
 msgid "Support"
 msgstr "Support"
 
-#: src/screens/home.tsx
-msgid "Show More"
-msgstr "Show More"
+#: src/screens/learn.tsx
+msgid "No lessons available yet"
+msgstr "No lessons available yet"
 
-#: src/screens/resources.tsx
+#: src/screens/home.tsx
+#~ msgid "Show More"
+#~ msgstr "Show More"
+
+#: src/screens/home.tsx
+#: src/screens/unit.tsx
+msgid "Please check your connection and try again"
+msgstr "Please check your connection and try again"
+
+#: src/screens/profile.tsx
+msgid "Progress Reset"
+msgstr "Progress Reset"
+
+#: src/screens/profile.tsx
 msgid "Terms and conditions of use"
 msgstr "Terms and conditions of use"
 
-#: src/screens/resources.tsx
+#: src/screens/profile.tsx
+msgid "Are you sure you want to reset all your progress? This action cannot be undone."
+msgstr "Are you sure you want to reset all your progress? This action cannot be undone."
+
+#: src/screens/profile.tsx
+msgid "Loading progress..."
+msgstr "Loading progress..."
+
+#: src/screens/profile.tsx
 msgid "Online Kabiyè dictionary"
 msgstr "Online Kabiyè dictionary"
 
-#: src/screens/resources.tsx
+#: src/screens/profile.tsx
 msgid "Kabiyè Workbook"
 msgstr "Kabiyè Workbook"
 
-#: src/screens/resources.tsx
+#: src/screens/profile.tsx
 msgid "Join the community"
 msgstr "Join the community"
 
-#: src/screens/resources.tsx
+#: src/screens/profile.tsx
 msgid "Kabiyè Essékuliye"
 msgstr "Kabiyè Essékuliye"
+
+#: src/screens/profile.tsx
+msgid "Cancel"
+msgstr "Cancel"
+
+#: src/screens/profile.tsx
+msgid "Progress Overview"
+msgstr "Progress Overview"
 
 #: src/screens/alphabet-letter.tsx
 #: src/screens/alphabet-list.tsx
 msgid "Vowel"
 msgstr "Vowel"
 
-#: src/screens/resources.tsx
+#: src/screens/home.tsx
+#: src/screens/profile.tsx
+msgid "Lessons completed"
+msgstr "Lessons completed"
+
+#: src/screens/profile.tsx
+msgid "App Language"
+msgstr "App Language"
+
+#: src/screens/unit.tsx
+msgid "Lessons will be added soon"
+msgstr "Lessons will be added soon"
+
+#: src/screens/profile.tsx
+msgid "Clear all your learning progress"
+msgstr "Clear all your learning progress"
+
+#: src/screens/profile.tsx
 msgid "Kabiyè Tanaou"
 msgstr "Kabiyè Tanaou"
+
+#: src/screens/lesson.tsx
+msgid "Examples"
+msgstr "Examples"
 
 #: src/screens/keyboard.tsx
 msgid "Copy"
@@ -131,7 +285,7 @@ msgstr "Copy"
 msgid "Home"
 msgstr "Home"
 
-#: src/screens/resources.tsx
+#: src/screens/profile.tsx
 msgid "Official Kabiyè Academy website"
 msgstr "Official Kabiyè Academy website"
 
@@ -139,32 +293,111 @@ msgstr "Official Kabiyè Academy website"
 msgid "Lessons"
 msgstr "Lessons"
 
+#: src/screens/home.tsx
+msgid "Kabiyè Alphabet"
+msgstr "Kabiyè Alphabet"
+
+#: src/screens/lesson.tsx
+msgid "Loading lesson..."
+msgstr "Loading lesson..."
+
+#: src/screens/home.tsx
+#: src/screens/home.tsx
+msgid "Your Progress"
+msgstr "Your Progress"
+
+#: src/screens/home.tsx
+#: src/screens/profile.tsx
+msgid "Units completed"
+msgstr "Units completed"
+
 #: src/app/(tabs)/_layout.tsx
 #: src/screens/keyboard.tsx
 msgid "Keyboard"
 msgstr "Keyboard"
 
+#: src/screens/profile.tsx
+msgid "Choose your preferred interface language"
+msgstr "Choose your preferred interface language"
+
+#: src/screens/unit.tsx
+msgid "Loading lessons..."
+msgstr "Loading lessons..."
+
+#: src/screens/lesson.tsx
+msgid "Lesson"
+msgstr "Lesson"
+
+#: src/screens/home.tsx
+msgid "View All"
+msgstr "View All"
+
 #: src/screens/keyboard.tsx
 msgid "Space"
 msgstr "Space"
 
+#: src/screens/learn.tsx
+#: src/screens/lesson.tsx
+#: src/screens/lesson.tsx
+#: src/screens/unit.tsx
+msgid "Completed"
+msgstr "Completed"
+
+#: src/screens/lesson.tsx
+msgid "Quiz"
+msgstr "Quiz"
+
 #: src/app/(tabs)/_layout.tsx
+msgid "Learn"
+msgstr "Learn"
+
+#: src/screens/home.tsx
 msgid "Resources"
 msgstr "Resources"
+
+#: src/screens/profile.tsx
+#: src/screens/profile.tsx
+msgid "Reset Progress"
+msgstr "Reset Progress"
 
 #: src/screens/alphabet-letter.tsx
 #: src/screens/alphabet-list.tsx
 msgid "Grapheme"
 msgstr "Grapheme"
 
+#: src/screens/unit.tsx
+msgid "Lessons temporarily unavailable"
+msgstr "Lessons temporarily unavailable"
+
+#: src/app/(tabs)/_layout.tsx
+#: src/screens/profile.tsx
+msgid "Profile"
+msgstr "Profile"
+
 #: src/screens/keyboard.tsx
 msgid "key allows you to capitalize. Long press to lock CAPS mode."
 msgstr "key allows you to capitalize. Long press to lock CAPS mode."
+
+#: src/screens/home.tsx
+msgid "All lessons completed! 🎉"
+msgstr "All lessons completed! 🎉"
+
+#: src/screens/lesson.tsx
+msgid "Learning Objectives"
+msgstr "Learning Objectives"
 
 #: src/screens/keyboard.tsx
 msgid "Clear"
 msgstr "Clear"
 
+#: src/screens/lesson.tsx
+msgid "Continue"
+msgstr "Continue"
+
+#: src/screens/profile.tsx
+msgid "Your progress has been reset."
+msgstr "Your progress has been reset."
+
 #: src/screens/home.tsx
-msgid "Reference Materials"
-msgstr "Reference Materials"
+#~ msgid "Reference Materials"
+#~ msgstr "Reference Materials"

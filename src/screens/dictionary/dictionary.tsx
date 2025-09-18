@@ -28,7 +28,7 @@ const DictionaryScreen: React.FC = () => {
             Recent searches
           </Text>
           {['1', '2'].map((item) => (
-            <Link href="/dictionnary/search?s=tes" asChild key={item}>
+            <Link href="/dictionary/search?s=tes" asChild key={item}>
               <TouchableOpacity className="w-full flex-row items-center">
                 <View row className="mb-1.5 items-center">
                   <ClockIcon size={20} color="#9CA3AF" />
@@ -46,7 +46,7 @@ const DictionaryScreen: React.FC = () => {
           </Text>
           {['Common Phrases', 'Vocabulary'].map((category) => (
             <Card key={category} className="mb-5 flex-row items-center px-5 py-2.5">
-              <Link href={`/dictionnary/${category}`}>
+              <Link href={`/dictionary/${category}`}>
                 <TouchableOpacity className="w-full flex-row items-center">
                   <View className="flex-1">
                     <Text variant="lg" weight="semibold" color="primary" className="mt-1.5">

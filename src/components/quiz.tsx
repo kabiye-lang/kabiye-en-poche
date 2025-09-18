@@ -8,6 +8,7 @@ import { XIcon } from 'phosphor-react-native'
 
 import { Button, Card, Text, View } from '@/components/ui'
 import { useAppQuizQuestions } from '@/hooks/use-app-data'
+import { brandColors } from '@/utils/design-system-nativewind'
 
 import ListenChose from './listen-chose'
 import ListenType from './listen-type'
@@ -61,7 +62,7 @@ const QuizModal: React.FC<QuizModalProps> = ({ onClose }) => {
           </Text>
         </View>
         <View className="flex-1 items-center justify-center">
-          <ActivityIndicator size="large" color="#6200EE" />
+          <ActivityIndicator size="large" color={brandColors.primary} />
           <Text className="mt-4">Loading quiz...</Text>
         </View>
       </View>

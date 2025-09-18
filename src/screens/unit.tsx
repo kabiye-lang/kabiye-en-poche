@@ -9,6 +9,7 @@ import { useLingui } from '@lingui/react/macro'
 import { CheckCircleIcon, LockIcon } from '@/components/icons'
 import { Card, Gradient, Text, View } from '@/components/ui'
 import { useAppLessonsWithProgress, useAppUnit } from '@/hooks/use-app-data'
+import { brandColors } from '@/utils/design-system-nativewind'
 
 const UnitScreen = () => {
   const { t } = useLingui()
@@ -23,7 +24,7 @@ const UnitScreen = () => {
     return (
       <View flex safeArea="top" className="bg-grey">
         <View className="flex-1 items-center justify-center">
-          <ActivityIndicator size="large" color="#6200EE" />
+          <ActivityIndicator size="large" color={brandColors.primary} />
           <Text className="mt-4">Loading unit...</Text>
         </View>
       </View>
@@ -49,7 +50,7 @@ const UnitScreen = () => {
     <View flex>
       <ScrollView className="px-4 py-5" style={{ paddingTop: 40 + safeAreaInsets.top }}>
         {/* Unit Header */}
-        <Gradient colors={['#6200EE', '#03DAC6']} className="my-5">
+        <Gradient colors={[brandColors.primary, brandColors.secondary]} className="my-5">
           <View className="flex-col items-start justify-center p-5">
             <Text variant="h1" weight="bold" color="white" className="mb-2.5">
               {unit.title_en}
@@ -70,7 +71,7 @@ const UnitScreen = () => {
           {lessonsLoading ? (
             <Card className="p-4">
               <View className="flex-row items-center">
-                <ActivityIndicator size="small" color="#6200EE" />
+                <ActivityIndicator size="small" color={brandColors.primary} />
                 <Text className="ml-2">{t`Loading lessons...`}</Text>
               </View>
             </Card>
@@ -132,7 +133,7 @@ const LessonItem = ({ lesson }: LessonItemProps) => {
       case 'Advanced':
         return '#F44336'
       default:
-        return '#6200EE'
+        return brandColors.primary
     }
   }
 

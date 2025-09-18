@@ -8,6 +8,7 @@ import { useLingui } from '@lingui/react/macro'
 import { CaretRightIcon, CheckCircleIcon, LockIcon } from '@/components/icons'
 import { Card, ScreenTitle, Text, View } from '@/components/ui'
 import { useAppLessonsWithProgress, useAppUnits } from '@/hooks/use-app-data'
+import { brandColors } from '@/utils/design-system-nativewind'
 
 const LearnScreen = () => {
   const { t } = useLingui()
@@ -29,7 +30,7 @@ const LearnScreen = () => {
     return (
       <View flex safeArea="top" className="bg-grey">
         <View className="flex-1 items-center justify-center">
-          <ActivityIndicator size="large" color="#6200EE" />
+          <ActivityIndicator size="large" color={brandColors.primary} />
           <Text className="mt-4">Loading learning units...</Text>
         </View>
       </View>
@@ -114,7 +115,7 @@ const UnitCard = ({ unit, isExpanded, onToggle }: UnitCardProps) => {
           </View>
           <CaretRightIcon
             size={20}
-            color="#6200EE"
+            color={brandColors.primary}
             style={{ transform: [{ rotate: isExpanded ? '90deg' : '0deg' }] }}
           />
         </View>
@@ -126,7 +127,7 @@ const UnitCard = ({ unit, isExpanded, onToggle }: UnitCardProps) => {
             <View className="space-y-2">
               {[1, 2, 3].map((i) => (
                 <View key={i} className="flex-row items-center p-2">
-                  <ActivityIndicator size="small" color="#6200EE" />
+                  <ActivityIndicator size="small" color={brandColors.primary} />
                   <Text className="ml-2">Loading lessons...</Text>
                 </View>
               ))}
@@ -171,7 +172,7 @@ const LessonItem = ({ lesson }: LessonItemProps) => {
       case 'Advanced':
         return '#F44336'
       default:
-        return '#6200EE'
+        return brandColors.primary
     }
   }
 

@@ -15,7 +15,7 @@ import { useLingui } from '@lingui/react/macro'
 import { CaretLeftIcon } from '@/components/icons'
 import { Button, Card, Text, View } from '@/components/ui'
 import alphabetList from '@/utils/data/alphabet.json'
-import { LETTER_TYPE_COLORS, MARKDOWN_STYLE } from '@/utils/design-system-nativewind'
+import { brandColors, LETTER_TYPE_COLORS, MARKDOWN_STYLE } from '@/utils/design-system-nativewind'
 
 // import { useRefreshOnFocus } from '@/hooks/useRefreshOnFocus'
 
@@ -35,7 +35,7 @@ export default function AlphabetLetterScreen() {
   })
   const animatedHeaderStyle = useAnimatedStyle(() => {
     return {
-      backgroundColor: interpolateColor(sv.value, [0, 100, 200], ['transparent', 'transparent', '#FFFFFF']),
+      backgroundColor: interpolateColor(sv.value, [0, 100, 200], ['transparent', 'transparent', brandColors.textLight]),
       borderBottomWidth: interpolate(sv.value, [0, 120, 220], [0, 0, 1]),
     }
   })
