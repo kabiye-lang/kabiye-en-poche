@@ -1,4 +1,13 @@
 /files
+/docs
+.husky
+.github
+.expo
+.cursor
+node_modules
+scripts
+gen-lessons
+.gitignore
 .vscode
 commitlint.config.js
 .lintstagedrc.js
