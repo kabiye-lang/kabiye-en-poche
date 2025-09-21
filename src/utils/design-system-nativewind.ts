@@ -9,11 +9,6 @@ import { DarkTheme, DefaultTheme } from '@react-navigation/native'
 
 import { Appearance } from './types'
 
-// We don't use mobx for now
-const stores: { ui: { isAppearanceSystem: boolean; appearance: Appearance } } = {
-  ui: { isAppearanceSystem: true, appearance: 'system' },
-}
-
 // =============
 // | NativeWind Design System |
 // =============
@@ -62,42 +57,14 @@ const themes: Record<Appearance, ThemeColors> = {
   },
 }
 
-// NativeWind-compatible design system configuration
-export const configureDesignSystem = (): void => {
-  // NativeWind handles colors and typography through Tailwind config
-  // This function is kept for compatibility but doesn't need to do much
-  console.log('Design system configured for NativeWind')
-}
-
 // ==============
 // | Navigation |
 // ==============
 export const getStatusBarStyle = (): StatusBarStyle => {
-  const { ui } = stores
-
-  if (ui.isAppearanceSystem) {
-    return 'auto'
-  } else {
-    switch (ui.appearance) {
-      case 'dark':
-        return 'light'
-      case 'light':
-        return 'dark'
-      default:
-        return 'auto'
-    }
-  }
-}
-
-export const getStatusBarBGColor = (): string => {
-  const { ui } = stores
-  const appearance = ui.isAppearanceSystem ? RNAppearance.getColorScheme() : ui.appearance
-  return themes[appearance ?? 'light'].bg2Color
+  return 'auto'
 }
 
 export const getNavigationTheme = (): Theme => {
-  const { ui } = stores
-
   // for more information - https://docs.expo.dev/routing/appearance/
   const MyDefaultTheme: Theme = {
     dark: false,
@@ -123,15 +90,10 @@ export const getNavigationTheme = (): Theme => {
     fonts: DefaultTheme.fonts,
   }
 
-  const appearance = ui.isAppearanceSystem ? RNAppearance.getColorScheme() : ui.appearance
-  switch (appearance) {
-    case 'dark':
-      return MyDarkTheme
-    case 'light':
-      return MyDefaultTheme
+  if (RNAppearance.getColorScheme() === 'dark') {
+    return MyDarkTheme
   }
-
-  return DefaultTheme
+  return MyDefaultTheme
 }
 
 export const tabScreenDefaultOptions = (): BottomTabNavigationOptions => ({

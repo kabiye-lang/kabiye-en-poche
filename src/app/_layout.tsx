@@ -5,8 +5,6 @@ import { SafeAreaProvider } from 'react-native-safe-area-context'
 import '../global.css'
 import 'intl-pluralrules'
 
-import { useColorScheme } from 'react-native'
-
 import { loadAsync } from 'expo-font'
 import { SplashScreen, Stack } from 'expo-router'
 import { StatusBar } from 'expo-status-bar'
@@ -38,26 +36,22 @@ import {
 } from '@expo-google-fonts/ibm-plex-sans-hebrew'
 import { ThemeProvider } from '@react-navigation/native'
 import { QueryClientProvider } from '@tanstack/react-query'
+import { useColorScheme } from 'nativewind'
 
 import i18n, { I18nProvider } from '@/i18n'
 import { queryClient } from '@/lib/query-client'
-import {
-  configureDesignSystem,
-  getNavigationTheme,
-  getStatusBarBGColor,
-  getStatusBarStyle,
-} from '@/utils/design-system-nativewind'
+import { getNavigationTheme, getStatusBarStyle } from '@/utils/design-system-nativewind'
 
 // react-native-ui-lib config removed - using NativeWind instead
 
 export default function RootLayout() {
   const [ready, setReady] = useState(false)
   const [error, setError] = useState(false)
-  const colorScheme = useColorScheme()
+  const { colorScheme } = useColorScheme()
+  console.log(colorScheme)
 
   const onLaunch = async () => {
     let fontsError = false
-    configureDesignSystem()
     try {
       await Promise.all([
         loadAsync({
@@ -102,10 +96,6 @@ export default function RootLayout() {
     onLaunch()
   }, [])
 
-  useEffect(() => {
-    configureDesignSystem()
-  }, [colorScheme])
-
   // Expo Router uses Error Boundaries to catch errors in the navigation tree.
   useEffect(() => {
     if (error) throw error
@@ -136,7 +126,7 @@ function RootLayoutNav() {
       <QueryClientProvider client={queryClient}>
         <ThemeProvider value={getNavigationTheme()}>
           <I18nProvider i18n={i18n}>
-            <StatusBar style={getStatusBarStyle()} backgroundColor={getStatusBarBGColor()} />
+            <StatusBar style={getStatusBarStyle()} />
             <GestureHandlerRootView style={{ flex: 1 }}>
               <Stack>
                 <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
