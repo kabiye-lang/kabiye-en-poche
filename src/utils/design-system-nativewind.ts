@@ -64,36 +64,28 @@ export const getStatusBarStyle = (): StatusBarStyle => {
   return 'auto'
 }
 
-export const getNavigationTheme = (): Theme => {
-  // for more information - https://docs.expo.dev/routing/appearance/
-  const MyDefaultTheme: Theme = {
-    dark: false,
-    colors: {
-      ...DefaultTheme.colors,
-      primary: brandColors.primary,
-      background: themes.light.bgColor,
-      card: themes.light.bgColor,
-      text: themes.light.textColor,
-    },
-    fonts: DefaultTheme.fonts,
-  }
+export const AppDefaultTheme: Theme = {
+  dark: false,
+  colors: {
+    ...DefaultTheme.colors,
+    primary: brandColors.primary,
+    background: themes.light.bgColor,
+    card: themes.light.bgColor,
+    text: themes.light.textColor,
+  },
+  fonts: DefaultTheme.fonts,
+}
 
-  const MyDarkTheme: Theme = {
-    dark: true,
-    colors: {
-      ...DarkTheme.colors,
-      primary: brandColors.primary,
-      background: themes.dark.bgColor,
-      card: themes.dark.bgColor,
-      text: themes.dark.textColor,
-    },
-    fonts: DefaultTheme.fonts,
-  }
-
-  if (RNAppearance.getColorScheme() === 'dark') {
-    return MyDarkTheme
-  }
-  return MyDefaultTheme
+export const AppDarkTheme: Theme = {
+  dark: true,
+  colors: {
+    ...DarkTheme.colors,
+    primary: brandColors.primary,
+    background: themes.dark.bgColor,
+    card: themes.dark.bgColor,
+    text: themes.dark.textColor,
+  },
+  fonts: DefaultTheme.fonts,
 }
 
 export const tabScreenDefaultOptions = (): BottomTabNavigationOptions => ({

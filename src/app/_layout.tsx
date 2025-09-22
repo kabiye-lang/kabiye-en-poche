@@ -40,15 +40,23 @@ import { useColorScheme } from 'nativewind'
 
 import i18n, { I18nProvider } from '@/i18n'
 import { queryClient } from '@/lib/query-client'
-import { getNavigationTheme, getStatusBarStyle } from '@/utils/design-system-nativewind'
+import { AppDarkTheme, AppDefaultTheme } from '@/utils/design-system-nativewind'
 
-// react-native-ui-lib config removed - using NativeWind instead
+export {
+  // Catch any errors thrown by the Layout component.
+  ErrorBoundary,
+} from 'expo-router'
+
+export const unstable_settings = {
+  // Ensure that reloading on `/modal` keeps a back button present.
+  initialRouteName: 'index',
+}
+
+SplashScreen.preventAutoHideAsync()
 
 export default function RootLayout() {
   const [ready, setReady] = useState(false)
   const [error, setError] = useState(false)
-  const { colorScheme } = useColorScheme()
-  console.log(colorScheme)
 
   const onLaunch = async () => {
     let fontsError = false
@@ -121,12 +129,14 @@ export default function RootLayout() {
 }
 
 function RootLayoutNav() {
+  const { colorScheme } = useColorScheme()
+
   return (
     <SafeAreaProvider>
       <QueryClientProvider client={queryClient}>
-        <ThemeProvider value={getNavigationTheme()}>
+        <ThemeProvider value={colorScheme === 'dark' ? AppDarkTheme : AppDefaultTheme}>
           <I18nProvider i18n={i18n}>
-            <StatusBar style={getStatusBarStyle()} />
+            <StatusBar style={'auto'} />
             <GestureHandlerRootView style={{ flex: 1 }}>
               <Stack>
                 <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
