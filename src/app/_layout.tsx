@@ -88,7 +88,8 @@ export default function RootLayout() {
         }),
       ])
     } catch (error) {
-      console.log(error)
+      // Log error for debugging (remove in production)
+      console.error('Error in app layout:', error)
       // crashlytics().recordError(error as Error)
       fontsError = true
     }

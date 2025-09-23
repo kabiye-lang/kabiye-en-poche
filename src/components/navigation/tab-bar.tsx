@@ -21,7 +21,6 @@ export default function CustomTabBar({ state, descriptors, navigation }: BottomT
   const safeAreaInsets = useSafeAreaInsets()
   useEffect(() => {
     const currentTabIdx = state.routes.findIndex((item) => {
-      // console.log(item.name + ' - ' + pathname)
       return (pathname === '/' && item.name === 'index') || item.name.indexOf(pathname.substring(1)) === 0
     })
 
