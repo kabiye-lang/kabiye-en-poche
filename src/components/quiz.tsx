@@ -52,8 +52,8 @@ const QuizModal: React.FC<QuizModalProps> = ({ onClose }) => {
 
   if (isLoading) {
     return (
-      <View className="mb-0 mt-auto flex-1 rounded-xl bg-white">
-        <View className="flex-row items-center border-b border-gray-300 p-4">
+      <View className="mb-0 mt-auto flex-1 rounded-xl bg-white dark:bg-gray-800">
+        <View className="flex-row items-center border-b border-gray-300 p-4 dark:border-gray-600">
           <TouchableOpacity onPress={onClose}>
             <XIcon size={24} color="black" />
           </TouchableOpacity>
@@ -71,8 +71,8 @@ const QuizModal: React.FC<QuizModalProps> = ({ onClose }) => {
 
   if (error || !quizQuestions || quizQuestions.length === 0) {
     return (
-      <View className="mb-0 mt-auto flex-1 rounded-xl bg-white">
-        <View className="flex-row items-center border-b border-gray-300 p-4">
+      <View className="mb-0 mt-auto flex-1 rounded-xl bg-white dark:bg-gray-800">
+        <View className="flex-row items-center border-b border-gray-300 p-4 dark:border-gray-600">
           <TouchableOpacity onPress={onClose}>
             <XIcon size={24} color="black" />
           </TouchableOpacity>
@@ -121,7 +121,7 @@ const QuizModal: React.FC<QuizModalProps> = ({ onClose }) => {
         return currentQuestion.answers!.map((answer, index) => (
           <TouchableOpacity
             key={index}
-            className={`mt-2.5 rounded-xl p-4 ${selectedAnswer === answer ? 'bg-secondary' : 'bg-gray-200'}`}
+            className={`mt-2.5 rounded-xl p-4 ${selectedAnswer === answer ? 'bg-secondary' : 'bg-gray-200 dark:bg-gray-700'}`}
             onPress={() => handleAnswerPress(answer)}
             disabled={showFeedback}
           >
@@ -134,7 +134,7 @@ const QuizModal: React.FC<QuizModalProps> = ({ onClose }) => {
         return ['True', 'False'].map((answer, index) => (
           <TouchableOpacity
             key={index}
-            className={`mt-2.5 rounded-xl p-4 ${selectedAnswer === answer ? 'bg-secondary' : 'bg-gray-200'}`}
+            className={`mt-2.5 rounded-xl p-4 ${selectedAnswer === answer ? 'bg-secondary' : 'bg-gray-200 dark:bg-gray-700'}`}
             onPress={() => handleAnswerPress(answer)}
             disabled={showFeedback}
           >
@@ -189,8 +189,8 @@ const QuizModal: React.FC<QuizModalProps> = ({ onClose }) => {
   }
 
   return (
-    <View className="mb-0 mt-auto flex-1 rounded-xl bg-white">
-      <View className="flex-row items-center border-b border-gray-300 p-4">
+    <View className="mb-0 mt-auto flex-1 rounded-xl bg-white dark:bg-gray-800">
+      <View className="flex-row items-center border-b border-gray-300 p-4 dark:border-gray-600">
         <TouchableOpacity onPress={onClose}>
           <XIcon size={24} color="black" />
         </TouchableOpacity>

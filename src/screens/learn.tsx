@@ -28,7 +28,7 @@ const LearnScreen = () => {
 
   if (unitsLoading) {
     return (
-      <View flex safeArea="top" className="bg-grey">
+      <View flex safeArea="top" className="bg-grey dark:bg-gray-900">
         <View className="flex-1 items-center justify-center">
           <ActivityIndicator size="large" color={brandColors.primary} />
           <Text className="mt-4">Loading learning units...</Text>
@@ -39,7 +39,7 @@ const LearnScreen = () => {
 
   if (unitsError) {
     return (
-      <View flex safeArea="top" className="bg-grey">
+      <View flex safeArea="top" className="bg-grey dark:bg-gray-900">
         <View className="flex-1 items-center justify-center px-4">
           <Text variant="h6" color="primary" className="text-center">
             Failed to load learning units
@@ -53,7 +53,7 @@ const LearnScreen = () => {
   }
 
   return (
-    <View flex className="bg-grey">
+    <View flex className="bg-grey dark:bg-gray-900">
       <ScrollView className="px-4 pb-5">
         <ScreenTitle title={t`Learn Kabiyè`} />
         {units?.map((unit) => (
@@ -93,7 +93,7 @@ const UnitCard = ({ unit, isExpanded, onToggle }: UnitCardProps) => {
       <TouchableOpacity onPress={onToggle}>
         <View className="flex-row items-center justify-between">
           <View className="flex-1">
-            <Text variant="h6" weight="bold" color="primary" className="mb-1">
+            <Text variant="h6" weight="bold" className="mb-1 text-primary dark:text-gray-100">
               {unit.title_en}
             </Text>
             {unit.description_en && (
@@ -105,7 +105,7 @@ const UnitCard = ({ unit, isExpanded, onToggle }: UnitCardProps) => {
               <Text variant="caption" color="grey">
                 {completedLessons}/{totalLessons} {t`lessons completed`}
               </Text>
-              <View className="bg-grey ml-2 h-1.5 w-16 rounded-full">
+              <View className="bg-grey ml-2 h-1.5 w-16 rounded-full dark:bg-gray-600">
                 <View
                   className="h-1.5 rounded-full bg-primary transition-all duration-300"
                   style={{ width: totalLessons > 0 ? `${(completedLessons / totalLessons) * 100}%` : '0%' }}
@@ -115,14 +115,14 @@ const UnitCard = ({ unit, isExpanded, onToggle }: UnitCardProps) => {
           </View>
           <CaretRightIcon
             size={20}
-            color={brandColors.primary}
+            className="text-primary dark:text-gray-100"
             style={{ transform: [{ rotate: isExpanded ? '90deg' : '0deg' }] }}
           />
         </View>
       </TouchableOpacity>
 
       {isExpanded && (
-        <View className="border-grey mt-4 border-t pt-4">
+        <View className="border-grey mt-4 border-t pt-4 dark:border-gray-600">
           {lessonsLoading ? (
             <View className="space-y-2">
               {[1, 2, 3].map((i) => (
@@ -178,7 +178,7 @@ const LessonItem = ({ lesson }: LessonItemProps) => {
 
   if (lesson.is_locked) {
     return (
-      <View className="bg-grey flex-row items-center rounded-lg p-3 opacity-50">
+      <View className="bg-grey flex-row items-center rounded-lg p-3 opacity-50 dark:bg-gray-700">
         <LockIcon size={20} color="#999" />
         <View className="ml-3 flex-1">
           <Text variant="body" color="grey" className="mb-1">
@@ -200,7 +200,7 @@ const LessonItem = ({ lesson }: LessonItemProps) => {
   return (
     <Link href={`/lesson/${lesson.id}`} asChild>
       <TouchableOpacity>
-        <View className="flex-row items-center rounded-lg bg-white p-3">
+        <View className="flex-row items-center rounded-lg bg-white p-3 dark:bg-gray-800">
           {lesson.is_completed ? (
             <CheckCircleIcon size={20} color="#4CAF50" />
           ) : (

@@ -22,7 +22,7 @@ const UnitScreen = () => {
 
   if (unitLoading) {
     return (
-      <View flex safeArea="top" className="bg-grey">
+      <View flex safeArea="top" className="bg-grey dark:bg-gray-900">
         <View className="flex-1 items-center justify-center">
           <ActivityIndicator size="large" color={brandColors.primary} />
           <Text className="mt-4">Loading unit...</Text>
@@ -33,7 +33,7 @@ const UnitScreen = () => {
 
   if (unitError || !unit) {
     return (
-      <View flex safeArea="top" className="bg-grey">
+      <View flex safeArea="top" className="bg-grey dark:bg-gray-900">
         <View className="flex-1 items-center justify-center px-4">
           <Text variant="h6" color="primary" className="text-center">
             Unit not found
@@ -47,7 +47,7 @@ const UnitScreen = () => {
   }
 
   return (
-    <View flex>
+    <View flex className="bg-white dark:bg-gray-900">
       <ScrollView className="px-4 py-5" style={{ paddingTop: 40 + safeAreaInsets.top }}>
         {/* Unit Header */}
         <Gradient colors={[brandColors.primary, brandColors.secondary]} className="my-5">

@@ -12,7 +12,7 @@ import { LETTER_TYPE_COLORS, MARKDOWN_STYLE } from '@/utils/design-system-native
 export default function AlphabetListScreen() {
   const { t } = useLingui()
   return (
-    <View flex>
+    <View flex className="bg-white dark:bg-gray-900">
       <FlatList
         numColumns={3}
         data={alphabetList}

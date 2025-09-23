@@ -16,6 +16,7 @@ import { Appearance } from './types'
 // Brand colors - used in navigation themes
 export const brandColors = {
   primary: '#6200EE',
+  primaryDark: '#7577CD',
   secondary: '#03DAC6',
   bgGrey: '#F5F5F5',
   textDark: '#212121',
@@ -80,7 +81,7 @@ export const AppDarkTheme: Theme = {
   dark: true,
   colors: {
     ...DarkTheme.colors,
-    primary: brandColors.primary,
+    primary: brandColors.primaryDark,
     background: themes.dark.bgColor,
     card: themes.dark.bgColor,
     text: themes.dark.textColor,

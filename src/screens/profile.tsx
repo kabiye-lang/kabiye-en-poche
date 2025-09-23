@@ -35,30 +35,30 @@ const ProfileScreen = () => {
           href: 'https://academiekabiye.org/',
           title: t`Académie Kabiyè`,
           description: t`Official Kabiyè Academy website`,
-          icon: <BookOpenTextIcon weight="thin" />,
+          icon: <BookOpenTextIcon weight="thin" className="text-gray-900 dark:text-gray-100" />,
         },
         {
           href: 'https://www.kabiyesekuliye.net/fr',
           title: t`Kabiyè Essékuliye`,
           description: t`Kabiyè language learning platform`,
-          icon: <BookOpenTextIcon weight="thin" />,
+          icon: <BookOpenTextIcon weight="thin" className="text-gray-900 dark:text-gray-100" />,
         },
         {
           href: 'http://kabyetanaou.over-blog.com/',
           title: t`Kabiyè Tanaou`,
           description: t`Kabiyè language resources`,
-          icon: <BookOpenTextIcon weight="thin" />,
+          icon: <BookOpenTextIcon weight="thin" className="text-gray-900 dark:text-gray-100" />,
         },
         {
           href: 'https://www.livelingua.com/peace-corps/Kabiye/kabiye2010.pdf',
           title: t`Kabiyè Workbook`,
-          icon: <BookOpenTextIcon weight="thin" />,
+          icon: <BookOpenTextIcon weight="thin" className="text-gray-900 dark:text-gray-100" />,
         },
         {
           href: 'https://www.lexilogos.com/kabiye_dictionnaire.htm',
           title: t`Lexilogos Dictionary`,
           description: t`Online Kabiyè dictionary`,
-          icon: <BookOpenTextIcon weight="thin" />,
+          icon: <BookOpenTextIcon weight="thin" className="text-gray-900 dark:text-gray-100" />,
         },
       ],
     },
@@ -69,14 +69,14 @@ const ProfileScreen = () => {
           href: 'https://github.com/kabiye-lang/kabiye-en-poche/wiki',
           title: t`Join the community`,
           description: t`Join our community to contribute to the development of the application`,
-          icon: <UserIcon weight="thin" />,
+          icon: <UserIcon weight="thin" className="text-gray-900 dark:text-gray-100" />,
           external: true,
         },
         {
           href: '/terms-and-conditions',
           title: t`Terms and conditions of use`,
           description: '',
-          icon: <BookOpenTextIcon weight="thin" />,
+          icon: <BookOpenTextIcon weight="thin" className="text-gray-900 dark:text-gray-100" />,
         },
       ],
     },
@@ -111,13 +111,13 @@ const ProfileScreen = () => {
   }
 
   return (
-    <View flex className="bg-grey">
+    <View flex className="bg-grey dark:bg-gray-900">
       <ScrollView className="px-4 pb-5">
         <ScreenTitle title={t`Profile`} />
         {/* Progress Overview */}
         <Card className="mb-8 p-4">
           <View className="mb-4 flex-row items-center">
-            <UserIcon size={24} color={brandColors.primary} />
+            <UserIcon size={24} color={brandColors.primary} className="text-gray-900 dark:text-gray-100" />
             <Text variant="h5" weight="semibold" color="dark" className="ml-2">
               {t`Progress Overview`}
             </Text>
@@ -158,7 +158,7 @@ const ProfileScreen = () => {
                     {Math.round(progressSummary.progressPercentage)}%
                   </Text>
                 </View>
-                <View className="bg-grey h-2 w-full rounded-full">
+                <View className="bg-grey h-2 w-full rounded-full dark:bg-gray-600">
                   <View
                     className="h-2 rounded-full bg-primary transition-all duration-300"
                     style={{ width: `${progressSummary.progressPercentage}%` }}
@@ -177,7 +177,7 @@ const ProfileScreen = () => {
         {listItems.map((listItem) => (
           <View key={'listItem-' + listItem.title} className="mb-5">
             <View className="mb-4 flex-row items-center">
-              <BookOpenTextIcon size={24} color={brandColors.primary} />
+              <BookOpenTextIcon size={24} color={brandColors.primary} className="text-gray-900 dark:text-gray-100" />
               <Text variant="h5" weight="semibold" color="dark" className="ml-2">
                 {listItem.title}
               </Text>
@@ -200,12 +200,12 @@ const ProfileScreen = () => {
                   <View>
                     {item.external ? (
                       <TouchableOpacity onPress={() => handleResourcePress(item.href, true)}>
-                        <CaretRightIcon weight="thin" size={22} />
+                        <CaretRightIcon weight="thin" size={22} className="text-gray-900 dark:text-gray-100" />
                       </TouchableOpacity>
                     ) : (
                       <Link asChild href={item.href}>
                         <TouchableOpacity>
-                          <CaretRightIcon weight="thin" size={22} />
+                          <CaretRightIcon weight="thin" size={22} className="text-gray-900 dark:text-gray-100" />
                         </TouchableOpacity>
                       </Link>
                     )}
@@ -219,7 +219,7 @@ const ProfileScreen = () => {
         {/* Settings Section */}
         <Card className="mb-5 p-4">
           <View className="mb-4 flex-row items-center">
-            <GearIcon size={24} color={brandColors.primary} />
+            <GearIcon size={24} color={brandColors.primary} className="text-gray-900 dark:text-gray-100" />
             <Text variant="h5" weight="semibold" color="dark" className="ml-2">
               {t`Settings`}
             </Text>
@@ -254,11 +254,11 @@ const ProfileScreen = () => {
 
             {/* Reset Progress */}
             <TouchableOpacity
-              className="mt-8 flex-row items-center justify-between rounded-lg bg-red-50 p-3"
+              className="mt-8 flex-row items-center justify-between rounded-lg bg-red-50 p-3 dark:bg-red-900/20"
               onPress={handleResetProgress}
             >
               <View className="flex-1 flex-row items-center">
-                <TrashIcon size={20} color="#F44336" />
+                <TrashIcon size={20} color="#F44336" className="text-gray-900 dark:text-gray-100" />
                 <View className="ml-3">
                   <Text variant="body" weight="medium" color="dark" className="mb-1">
                     {t`Reset Progress`}

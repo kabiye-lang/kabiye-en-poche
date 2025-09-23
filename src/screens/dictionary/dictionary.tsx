@@ -13,13 +13,17 @@ const DictionaryScreen: React.FC = () => {
   const { t } = useLingui()
 
   return (
-    <View flex className="bg-bg-grey" safeArea="top">
+    <View flex className="bg-bg-grey dark:bg-gray-900" safeArea="top">
       <View className="px-2.5 py-2.5">
-        <View className="flex-row items-center border-b border-gray-300 pb-2.5">
+        <View className="flex-row items-center border-b border-gray-300 pb-2.5 dark:border-gray-600">
           <View className="mr-2.5">
             <MagnifyingGlassIcon size={24} color="#9CA3AF" />
           </View>
-          <TextInput placeholder="Search for a word..." className="flex-1 text-base" placeholderTextColor="#9CA3AF" />
+          <TextInput
+            placeholder="Search for a word..."
+            className="flex-1 text-base text-gray-900 dark:text-gray-100"
+            placeholderTextColor="#9CA3AF"
+          />
         </View>
       </View>
       <ScrollView className="flex-1" contentContainerStyle={{ paddingTop: 10 }}>

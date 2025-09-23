@@ -48,7 +48,7 @@ const LessonScreen = () => {
 
   if (isLoading) {
     return (
-      <View className="flex-1 bg-bg-grey">
+      <View className="flex-1 bg-bg-grey dark:bg-gray-900">
         <View className="flex-1 items-center justify-center">
           <ActivityIndicator size="large" color={brandColors.primary} />
           <Text className="mt-4">{t`Loading lesson...`}</Text>
@@ -59,7 +59,7 @@ const LessonScreen = () => {
 
   if (error) {
     return (
-      <View className="flex-1 bg-bg-grey">
+      <View className="flex-1 bg-bg-grey dark:bg-gray-900">
         <View className="flex-1 items-center justify-center px-4">
           <Text variant="h6" color="primary" className="text-center">
             Failed to load lesson
@@ -75,7 +75,7 @@ const LessonScreen = () => {
   const hasQuiz = (content as any)?.has_quiz || (quizQuestions && quizQuestions.length > 0)
 
   return (
-    <View className="bg-grey flex-1" safeArea="top">
+    <View className="bg-grey flex-1 dark:bg-gray-900" safeArea="top">
       <ScrollView className="px-4 pb-5 pt-16">
         {/* Lesson Header */}
         <Text variant="h3" weight="bold" color="primary">
