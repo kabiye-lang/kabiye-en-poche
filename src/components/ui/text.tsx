@@ -32,19 +32,6 @@ const textVariants = tv({
       extrabold: 'font-fig-extrabold',
       black: 'font-fig-black',
     },
-    color: {
-      primary: 'text-primary',
-      secondary: 'text-secondary',
-      accent: 'text-accent',
-      dark: 'text-text-dark dark:text-gray-100',
-      light: 'text-text-light dark:text-gray-300',
-      grey: 'text-text-grey dark:text-gray-400',
-      white: 'text-white',
-      grapheme: 'text-grapheme',
-      vowel: 'text-vowel',
-      consonant: 'text-consonant',
-      indication: 'text-indication',
-    },
     center: {
       true: 'text-center',
       false: '',
@@ -52,7 +39,6 @@ const textVariants = tv({
   },
   defaultVariants: {
     variant: 'body',
-    color: 'dark',
     center: false,
   },
 })
@@ -61,8 +47,8 @@ export interface TextProps extends RNTextProps, VariantProps<typeof textVariants
   className?: string
 }
 
-export function Text({ variant, weight, color, center, className, children, ...props }: TextProps) {
-  const textClassName = cn(textVariants({ variant, weight, color, center }), className)
+export function Text({ variant, weight, center, className, children, ...props }: TextProps) {
+  const textClassName = cn(textVariants({ variant, weight, center }), className)
 
   return (
     <RNText className={textClassName} {...props}>

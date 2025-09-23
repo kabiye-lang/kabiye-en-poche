@@ -69,8 +69,8 @@ const ListenChose: React.FC<ListenChoseProps> = ({ question, onAnswerSelected, s
   return (
     <View>
       <Button variant="secondary" onPress={replayAudio} className="flex-row items-center">
-        <SpeakerHighIcon size={20} color={brandColors.textLight} />
-        <Text variant="body" weight="bold" color="white" className="ml-1">
+        <SpeakerHighIcon size={20} className="text-white" />
+        <Text variant="body" weight="bold" className="ml-1 text-white">
           Replay Audio
         </Text>
       </Button>

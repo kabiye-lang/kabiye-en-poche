@@ -14,20 +14,20 @@ const AudioDialog: React.FC<AudioDialogProps> = ({ onClose }) => {
     <View className="mb-0 mt-auto flex-1 rounded-xl bg-white" safeArea="top">
       <View className="flex-row items-center border-b border-gray-300 p-4">
         <TouchableOpacity onPress={onClose}>
-          <XIcon size={24} color="black" />
+          <XIcon size={24} className="text-text-dark dark:text-gray-100" />
         </TouchableOpacity>
         <Text variant="h3" weight="bold" className="ml-5">
           Audio Dialog
         </Text>
       </View>
       <ScrollView contentContainerStyle={{ padding: 15 }}>
-        <Text variant="body" color="dark" className="mb-4">
+        <Text variant="body" className="mb-4 text-text-dark dark:text-gray-100">
           Speaker 1: Hello! How are you?
         </Text>
-        <Text variant="body" color="dark" className="mb-4">
+        <Text variant="body" className="mb-4 text-text-dark dark:text-gray-100">
           Speaker 2: I&apos;m fine, thank you! And you?
         </Text>
-        <Text variant="body" color="dark" className="mb-4">
+        <Text variant="body" className="mb-4 text-text-dark dark:text-gray-100">
           Speaker 1: I&apos;m doing well, thank you!
         </Text>
         <Button

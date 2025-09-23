@@ -114,7 +114,7 @@ export default function KeyboardScreen() {
             style={{ width: 90, minWidth: 90, height: 35 }}
             onPress={() => setContent('')}
           >
-            <Text variant="body" weight="medium" color="primary">
+            <Text variant="body" weight="medium" className="text-primary">
               {t`Clear`}
             </Text>
           </Button>
@@ -125,7 +125,7 @@ export default function KeyboardScreen() {
             style={{ width: 90, minWidth: 90, height: 35 }}
             onPress={async () => await Clipboard.setStringAsync(content)}
           >
-            <Text variant="body" weight="medium" color="white">
+            <Text variant="body" weight="medium" className="text-white">
               {t`Copy`}
             </Text>
           </Button>

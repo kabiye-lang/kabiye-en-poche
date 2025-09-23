@@ -17,10 +17,10 @@ const SearchResultsScreen: React.FC = () => {
   const renderItem = ({ item }: { item: { id: string; word: string; translation: string } }) => (
     <Link asChild href={`/word/${item.id}`}>
       <Card className="mb-4 p-4">
-        <Text variant="h6" weight="bold" color="dark" className="mb-1">
+        <Text variant="h6" weight="bold" className="mb-1 text-text-dark dark:text-gray-100">
           {item.word}
         </Text>
-        <Text variant="body" color="grey">
+        <Text variant="body" className="text-text-grey dark:text-gray-400">
           {item.translation}
         </Text>
       </Card>

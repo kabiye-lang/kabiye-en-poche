@@ -23,7 +23,7 @@ export function ScreenTitle({ title, subtitle, fixed = false, className = '' }: 
         {title}
       </Text>
       {subtitle && (
-        <Text variant="body" color="grey">
+        <Text variant="body" className="text-text-grey dark:text-gray-400">
           {subtitle}
         </Text>
       )}

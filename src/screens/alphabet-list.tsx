@@ -55,7 +55,7 @@ Le symbole **ɣ** (appelé «gamma») marque en général une modification et un
                   className="mb-2 rounded-full px-2 py-1"
                   backgroundColor={LETTER_TYPE_COLORS[item.type as keyof typeof LETTER_TYPE_COLORS]}
                 >
-                  <Text variant="small" weight="medium" color="white">
+                  <Text variant="small" weight="medium" className="text-white">
                     {item.type === 'vowel' ? t`Vowel` : item.type === 'consonant' ? t`Consonant` : t`Grapheme`}
                   </Text>
                 </Card>

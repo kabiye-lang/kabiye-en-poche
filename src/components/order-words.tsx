@@ -52,7 +52,7 @@ const OrderWords: React.FC<OrderWordsProps> = ({ question, onAnswerSelected, sho
             disabled={showFeedback || isValidated}
           >
             <Animated.View entering={FadeIn} exiting={FadeOut}>
-              <Text variant="body" color="dark" className="text-center">
+              <Text variant="body" className="text-center text-text-dark dark:text-gray-100">
                 {word.label}
               </Text>
             </Animated.View>
@@ -68,7 +68,7 @@ const OrderWords: React.FC<OrderWordsProps> = ({ question, onAnswerSelected, sho
             disabled={showFeedback || isValidated}
           >
             <Animated.View entering={FadeIn} exiting={FadeOut}>
-              <Text variant="body" color="dark" className="text-center">
+              <Text variant="body" className="text-center text-text-dark dark:text-gray-100">
                 {word.label}
               </Text>
             </Animated.View>

@@ -117,44 +117,44 @@ const ProfileScreen = () => {
         {/* Progress Overview */}
         <Card className="mb-8 p-4">
           <View className="mb-4 flex-row items-center">
-            <UserIcon size={24} color={brandColors.primary} className="text-gray-900 dark:text-gray-100" />
-            <Text variant="h5" weight="semibold" color="dark" className="ml-2">
+            <UserIcon size={24} className="text-primary dark:text-gray-100" />
+            <Text variant="h5" weight="semibold" className="ml-2 text-text-dark dark:text-gray-100">
               {t`Progress Overview`}
             </Text>
           </View>
 
           {progressLoading ? (
             <View className="py-4">
-              <Text variant="body" color="grey" className="text-center">
+              <Text variant="body" className="text-center text-text-grey dark:text-gray-400">
                 {t`Loading progress...`}
               </Text>
             </View>
           ) : progressSummary ? (
             <View className="space-y-3">
               <View className="flex-row items-center justify-between">
-                <Text variant="body" color="grey">
+                <Text variant="body" className="text-text-grey dark:text-gray-400">
                   {t`Units completed`}
                 </Text>
-                <Text variant="h6" weight="bold" color="primary">
+                <Text variant="h6" weight="bold" className="text-primary">
                   {progressSummary.completedUnits} / {progressSummary.totalUnits}
                 </Text>
               </View>
 
               <View className="flex-row items-center justify-between">
-                <Text variant="body" color="grey">
+                <Text variant="body" className="text-text-grey dark:text-gray-400">
                   {t`Lessons completed`}
                 </Text>
-                <Text variant="h6" weight="bold" color="primary">
+                <Text variant="h6" weight="bold" className="text-primary">
                   {progressSummary.completedLessons} / {progressSummary.totalLessons}
                 </Text>
               </View>
 
               <View className="mt-3">
                 <View className="mb-1 flex-row items-center justify-between">
-                  <Text variant="caption" color="grey">
+                  <Text variant="caption" className="text-text-grey dark:text-gray-400">
                     {t`Overall Progress`}
                   </Text>
-                  <Text variant="caption" color="primary">
+                  <Text variant="caption" className="text-primary">
                     {Math.round(progressSummary.progressPercentage)}%
                   </Text>
                 </View>
@@ -167,7 +167,7 @@ const ProfileScreen = () => {
               </View>
             </View>
           ) : (
-            <Text variant="body" color="grey" className="py-4 text-center">
+            <Text variant="body" className="py-4 text-center text-text-grey dark:text-gray-400">
               {t`No progress data available`}
             </Text>
           )}
@@ -177,8 +177,8 @@ const ProfileScreen = () => {
         {listItems.map((listItem) => (
           <View key={'listItem-' + listItem.title} className="mb-5">
             <View className="mb-4 flex-row items-center">
-              <BookOpenTextIcon size={24} color={brandColors.primary} className="text-gray-900 dark:text-gray-100" />
-              <Text variant="h5" weight="semibold" color="dark" className="ml-2">
+              <BookOpenTextIcon size={24} className="text-primary dark:text-gray-100" />
+              <Text variant="h5" weight="semibold" className="ml-2 text-text-dark dark:text-gray-100">
                 {listItem.title}
               </Text>
             </View>
@@ -192,7 +192,7 @@ const ProfileScreen = () => {
                       {item.title}
                     </Text>
                     {item.description && (
-                      <Text variant="small" color="grey" className="ml-2.5" numberOfLines={3}>
+                      <Text variant="small" className="ml-2.5 text-text-grey dark:text-gray-400" numberOfLines={3}>
                         {item.description}
                       </Text>
                     )}
@@ -219,8 +219,8 @@ const ProfileScreen = () => {
         {/* Settings Section */}
         <Card className="mb-5 p-4">
           <View className="mb-4 flex-row items-center">
-            <GearIcon size={24} color={brandColors.primary} className="text-gray-900 dark:text-gray-100" />
-            <Text variant="h5" weight="semibold" color="dark" className="ml-2">
+            <GearIcon size={24} className="text-primary dark:text-gray-100" />
+            <Text variant="h5" weight="semibold" className="ml-2 text-text-dark dark:text-gray-100">
               {t`Settings`}
             </Text>
           </View>
@@ -229,15 +229,18 @@ const ProfileScreen = () => {
             {/* Language Setting */}
             <View className="flex-row items-center justify-between">
               <View className="flex-1">
-                <Text variant="body" weight="medium" color="dark" className="mb-1">
+                <Text variant="body" weight="medium" className="mb-1 text-text-dark dark:text-gray-100">
                   {t`App Language`}
                 </Text>
-                <Text variant="caption" color="grey">
+                <Text variant="caption" className="text-text-grey dark:text-gray-400">
                   {t`Choose your preferred interface language`}
                 </Text>
               </View>
               <View className="flex-row items-center">
-                <Text variant="caption" color={!isEnglish ? 'primary' : 'grey'} className="mr-2">
+                <Text
+                  variant="caption"
+                  className={`mr-2 ${!isEnglish ? 'text-primary' : 'text-text-grey dark:text-gray-400'}`}
+                >
                   FR
                 </Text>
                 <Switch
@@ -246,7 +249,10 @@ const ProfileScreen = () => {
                   trackColor={{ false: '#E0E0E0', true: brandColors.primary }}
                   thumbColor={isEnglish ? brandColors.textLight : brandColors.textLight}
                 />
-                <Text variant="caption" color={isEnglish ? 'primary' : 'grey'} className="ml-2">
+                <Text
+                  variant="caption"
+                  className={`ml-2 ${isEnglish ? 'text-primary' : 'text-text-grey dark:text-gray-400'}`}
+                >
                   EN
                 </Text>
               </View>
@@ -258,12 +264,12 @@ const ProfileScreen = () => {
               onPress={handleResetProgress}
             >
               <View className="flex-1 flex-row items-center">
-                <TrashIcon size={20} color="#F44336" className="text-gray-900 dark:text-gray-100" />
+                <TrashIcon size={20} className="text-accent dark:text-gray-100" />
                 <View className="ml-3">
-                  <Text variant="body" weight="medium" color="dark" className="mb-1">
+                  <Text variant="body" weight="medium" className="mb-1 text-text-dark dark:text-gray-100">
                     {t`Reset Progress`}
                   </Text>
-                  <Text variant="caption" color="grey">
+                  <Text variant="caption" className="text-text-grey dark:text-gray-400">
                     {t`Clear all your learning progress`}
                   </Text>
                 </View>
@@ -274,10 +280,10 @@ const ProfileScreen = () => {
 
         {/* App Info */}
         <View className="mb-5 p-4">
-          <Text variant="caption" color="grey" className="text-center">
+          <Text variant="caption" className="text-center text-text-grey dark:text-gray-400">
             Version {Application.nativeApplicationVersion} ({Application.nativeBuildVersion})
           </Text>
-          <Text variant="caption" color="grey" className="mt-1 text-center">
+          <Text variant="caption" className="mt-1 text-center text-text-grey dark:text-gray-400">
             {t`Learn Kabiyè in a fun and interactive way`}
           </Text>
         </View>

@@ -74,7 +74,7 @@ const MatchPairs: React.FC<MatchPairsProps> = ({ question, onAnswerSelected, sho
         onPress={() => handleSelect(item, index, type)}
         disabled={showFeedback || isMatched || isSelected}
       >
-        <Text variant="body" color="dark" className="text-center">
+        <Text variant="body" className="text-center text-text-dark dark:text-gray-100">
           {item}
         </Text>
       </TouchableOpacity>

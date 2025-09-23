@@ -24,7 +24,7 @@ const UnitScreen = () => {
     return (
       <View flex safeArea="top" className="bg-grey dark:bg-gray-900">
         <View className="flex-1 items-center justify-center">
-          <ActivityIndicator size="large" color={brandColors.primary} />
+          <ActivityIndicator size="large" className="text-primary" />
           <Text className="mt-4">Loading unit...</Text>
         </View>
       </View>
@@ -35,10 +35,10 @@ const UnitScreen = () => {
     return (
       <View flex safeArea="top" className="bg-grey dark:bg-gray-900">
         <View className="flex-1 items-center justify-center px-4">
-          <Text variant="h6" color="primary" className="text-center">
+          <Text variant="h6" className="text-center text-primary">
             Unit not found
           </Text>
-          <Text variant="caption" color="grey" className="mt-2 text-center">
+          <Text variant="caption" className="mt-2 text-center text-text-grey dark:text-gray-400">
             {unitError?.message || 'This unit does not exist'}
           </Text>
         </View>
@@ -52,11 +52,11 @@ const UnitScreen = () => {
         {/* Unit Header */}
         <Gradient colors={[brandColors.primary, brandColors.secondary]} className="my-5">
           <View className="flex-col items-start justify-center p-5">
-            <Text variant="h1" weight="bold" color="white" className="mb-2.5">
+            <Text variant="h1" weight="bold" className="mb-2.5 text-white">
               {unit.title_en}
             </Text>
             {unit.description_en && (
-              <Text variant="h5" weight="medium" color="white" className="mt-2.5">
+              <Text variant="h5" weight="medium" className="mt-2.5 text-white">
                 {unit.description_en}
               </Text>
             )}
@@ -71,17 +71,17 @@ const UnitScreen = () => {
           {lessonsLoading ? (
             <Card className="p-4">
               <View className="flex-row items-center">
-                <ActivityIndicator size="small" color={brandColors.primary} />
+                <ActivityIndicator size="small" className="text-primary" />
                 <Text className="ml-2">{t`Loading lessons...`}</Text>
               </View>
             </Card>
           ) : lessonsError ? (
             <Card className="p-4">
               <View className="items-center">
-                <Text variant="h6" color="primary" className="text-center">
+                <Text variant="h6" className="text-center text-primary">
                   {t`Lessons temporarily unavailable`}
                 </Text>
-                <Text variant="caption" color="grey" className="mt-2 text-center">
+                <Text variant="caption" className="mt-2 text-center text-text-grey dark:text-gray-400">
                   {t`Please check your connection and try again`}
                 </Text>
               </View>
@@ -95,10 +95,10 @@ const UnitScreen = () => {
           ) : (
             <Card className="p-4">
               <View className="items-center">
-                <Text variant="h6" color="primary" className="text-center">
+                <Text variant="h6" className="text-center text-primary">
                   {t`No lessons available`}
                 </Text>
-                <Text variant="caption" color="grey" className="mt-2 text-center">
+                <Text variant="caption" className="mt-2 text-center text-text-grey dark:text-gray-400">
                   {t`Lessons will be added soon`}
                 </Text>
               </View>
@@ -140,12 +140,12 @@ const LessonItem = ({ lesson }: LessonItemProps) => {
   if (lesson.is_locked) {
     return (
       <View className="bg-grey flex-row items-center rounded-lg p-3 opacity-50">
-        <LockIcon size={20} color="#999" />
+        <LockIcon size={20} className="text-text-grey dark:text-gray-400" />
         <View className="ml-3 flex-1">
-          <Text variant="body" color="grey" className="mb-1">
+          <Text variant="body" className="mb-1 text-text-grey dark:text-gray-400">
             {lesson.title_en}
           </Text>
-          <Text variant="caption" color="grey">
+          <Text variant="caption" className="text-text-grey dark:text-gray-400">
             {t`Complete previous lesson to unlock`}
           </Text>
         </View>
@@ -163,15 +163,19 @@ const LessonItem = ({ lesson }: LessonItemProps) => {
       <TouchableOpacity>
         <View className="flex-row items-center rounded-lg bg-white p-3">
           {lesson.is_completed ? (
-            <CheckCircleIcon size={20} color="#4CAF50" />
+            <CheckCircleIcon size={20} className="text-success" />
           ) : (
             <View className="h-5 w-5 rounded-full border-2 border-primary" />
           )}
           <View className="ml-3 flex-1">
-            <Text variant="body" weight={lesson.is_completed ? 'medium' : 'regular'} color="dark" className="mb-1">
+            <Text
+              variant="body"
+              weight={lesson.is_completed ? 'medium' : 'regular'}
+              className="mb-1 text-text-dark dark:text-gray-100"
+            >
               {lesson.title_en}
             </Text>
-            <Text variant="caption" color="grey">
+            <Text variant="caption" className="text-text-grey dark:text-gray-400">
               {lesson.is_completed ? t`Completed` : t`Tap to start`}
             </Text>
           </View>

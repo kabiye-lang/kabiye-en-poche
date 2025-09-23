@@ -55,14 +55,14 @@ const QuizModal: React.FC<QuizModalProps> = ({ onClose }) => {
       <View className="mb-0 mt-auto flex-1 rounded-xl bg-white dark:bg-gray-800">
         <View className="flex-row items-center border-b border-gray-300 p-4 dark:border-gray-600">
           <TouchableOpacity onPress={onClose}>
-            <XIcon size={24} color="black" />
+            <XIcon size={24} className="text-text-dark dark:text-gray-100" />
           </TouchableOpacity>
           <Text variant="h3" weight="bold" className="ml-5">
             Quiz
           </Text>
         </View>
         <View className="flex-1 items-center justify-center">
-          <ActivityIndicator size="large" color={brandColors.primary} />
+          <ActivityIndicator size="large" className="text-primary" />
           <Text className="mt-4">Loading quiz...</Text>
         </View>
       </View>
@@ -74,14 +74,14 @@ const QuizModal: React.FC<QuizModalProps> = ({ onClose }) => {
       <View className="mb-0 mt-auto flex-1 rounded-xl bg-white dark:bg-gray-800">
         <View className="flex-row items-center border-b border-gray-300 p-4 dark:border-gray-600">
           <TouchableOpacity onPress={onClose}>
-            <XIcon size={24} color="black" />
+            <XIcon size={24} className="text-text-dark dark:text-gray-100" />
           </TouchableOpacity>
           <Text variant="h3" weight="bold" className="ml-5">
             Quiz
           </Text>
         </View>
         <View className="flex-1 items-center justify-center px-4">
-          <Text variant="h6" color="dark" className="text-center">
+          <Text variant="h6" className="text-center text-text-dark dark:text-gray-100">
             No quiz available for this lesson
           </Text>
         </View>
@@ -125,7 +125,7 @@ const QuizModal: React.FC<QuizModalProps> = ({ onClose }) => {
             onPress={() => handleAnswerPress(answer)}
             disabled={showFeedback}
           >
-            <Text variant="lg" color="dark">
+            <Text variant="lg" className="text-text-dark dark:text-gray-100">
               {answer}
             </Text>
           </TouchableOpacity>
@@ -138,7 +138,7 @@ const QuizModal: React.FC<QuizModalProps> = ({ onClose }) => {
             onPress={() => handleAnswerPress(answer)}
             disabled={showFeedback}
           >
-            <Text variant="lg" color="dark">
+            <Text variant="lg" className="text-text-dark dark:text-gray-100">
               {answer}
             </Text>
           </TouchableOpacity>
@@ -146,7 +146,7 @@ const QuizModal: React.FC<QuizModalProps> = ({ onClose }) => {
       case 'fill-in-the-blank':
         return (
           <View>
-            <Text variant="lg" color="dark" className="mb-2.5">
+            <Text variant="lg" className="mb-2.5 text-text-dark dark:text-gray-100">
               {currentQuestion.prompt}
             </Text>
             {currentQuestion.answers!.map((answer, index) => (
@@ -156,7 +156,7 @@ const QuizModal: React.FC<QuizModalProps> = ({ onClose }) => {
                 onPress={() => handleAnswerPress(answer)}
                 disabled={showFeedback}
               >
-                <Text variant="lg" color="dark">
+                <Text variant="lg" className="text-text-dark dark:text-gray-100">
                   {answer}
                 </Text>
               </TouchableOpacity>
@@ -192,7 +192,7 @@ const QuizModal: React.FC<QuizModalProps> = ({ onClose }) => {
     <View className="mb-0 mt-auto flex-1 rounded-xl bg-white dark:bg-gray-800">
       <View className="flex-row items-center border-b border-gray-300 p-4 dark:border-gray-600">
         <TouchableOpacity onPress={onClose}>
-          <XIcon size={24} color="black" />
+          <XIcon size={24} className="text-text-dark dark:text-gray-100" />
         </TouchableOpacity>
         <Text variant="h3" weight="bold" className="ml-5">
           Quiz
@@ -201,14 +201,14 @@ const QuizModal: React.FC<QuizModalProps> = ({ onClose }) => {
       <ScrollView contentContainerStyle={{ paddingVertical: 20, paddingHorizontal: 10 }}>
         <View flex className="px-2.5 pt-5">
           <Card className="mb-5 p-5">
-            <Text variant="h3" weight="bold" color="dark" className="mb-2.5">
+            <Text variant="h3" weight="bold" className="mb-2.5 text-text-dark dark:text-gray-100">
               {currentQuestion.question}
             </Text>
             {renderQuestion()}
           </Card>
           {showFeedback && (
             <View className="mt-5 items-center">
-              <Text variant="h3" weight="bold" color="primary" className="mb-5">
+              <Text variant="h3" weight="bold" className="mb-5 text-primary">
                 {selectedAnswer === currentQuestion.correctAnswer
                   ? 'Correct!'
                   : `Incorrect! The correct answer is ${currentQuestion.correctAnswer}.`}
@@ -218,7 +218,7 @@ const QuizModal: React.FC<QuizModalProps> = ({ onClose }) => {
                   Next
                 </Button>
               ) : (
-                <Text variant="h3" weight="bold" color="secondary">
+                <Text variant="h3" weight="bold" className="text-secondary">
                   Quiz finished! Your score is {score} out of {quizQuestions.length}.
                 </Text>
               )}

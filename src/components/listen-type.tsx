@@ -57,8 +57,8 @@ const ListenType: React.FC<ListenTypeProps> = ({ question, onAnswerSelected, sho
   return (
     <View className="p-5">
       <TouchableOpacity onPress={replayAudio} className="my-2.5 flex-row items-center rounded-md bg-green-500 p-2.5">
-        <SpeakerHighIcon size={24} color={brandColors.textLight} />
-        <Text variant="body" weight="bold" color="white" className="ml-1">
+        <SpeakerHighIcon size={24} className="text-white" />
+        <Text variant="body" weight="bold" className="ml-1 text-white">
           Replay Audio
         </Text>
       </TouchableOpacity>

@@ -76,7 +76,7 @@ export function CardHeader({ title, subtitle, action, className }: CardHeaderPro
           </Text>
         )}
         {subtitle && (
-          <Text variant="body" color="grey">
+          <Text variant="body" className="text-text-grey dark:text-gray-400">
             {subtitle}
           </Text>
         )}

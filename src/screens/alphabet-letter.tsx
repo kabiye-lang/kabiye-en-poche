@@ -63,7 +63,7 @@ export default function AlphabetLetterScreen() {
         <View className="h-[70px] flex-row items-center justify-between px-2.5">
           <View>
             <Button variant="ghost" size="sm" className="h-8 w-8 rounded-full" onPress={() => router.back()}>
-              <CaretLeftIcon size={20} weight="bold" color="#000000" />
+              <CaretLeftIcon size={20} weight="bold" className="text-text-dark dark:text-gray-100" />
             </Button>
           </View>
 
@@ -85,7 +85,7 @@ export default function AlphabetLetterScreen() {
               backgroundColor: LETTER_TYPE_COLORS[letter.type as keyof typeof LETTER_TYPE_COLORS],
             }}
           >
-            <Text variant="small" weight="medium" color="white">
+            <Text variant="small" weight="medium" className="text-white">
               {letter.type === 'vowel' ? t`Vowel` : letter.type === 'consonant' ? t`Consonant` : t`Grapheme`}
             </Text>
           </Card>

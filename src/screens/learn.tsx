@@ -30,7 +30,7 @@ const LearnScreen = () => {
     return (
       <View flex safeArea="top" className="bg-grey dark:bg-gray-900">
         <View className="flex-1 items-center justify-center">
-          <ActivityIndicator size="large" color={brandColors.primary} />
+          <ActivityIndicator size="large" className="text-primary" />
           <Text className="mt-4">Loading learning units...</Text>
         </View>
       </View>
@@ -41,10 +41,10 @@ const LearnScreen = () => {
     return (
       <View flex safeArea="top" className="bg-grey dark:bg-gray-900">
         <View className="flex-1 items-center justify-center px-4">
-          <Text variant="h6" color="primary" className="text-center">
+          <Text variant="h6" className="text-center text-primary">
             Failed to load learning units
           </Text>
-          <Text variant="caption" color="grey" className="mt-2 text-center">
+          <Text variant="caption" className="mt-2 text-center text-text-grey dark:text-gray-400">
             {unitsError.message}
           </Text>
         </View>
@@ -97,12 +97,12 @@ const UnitCard = ({ unit, isExpanded, onToggle }: UnitCardProps) => {
               {unit.title_en}
             </Text>
             {unit.description_en && (
-              <Text variant="caption" color="grey" className="mb-2">
+              <Text variant="caption" className="mb-2 text-text-grey dark:text-gray-400">
                 {unit.description_en}
               </Text>
             )}
             <View className="flex-row items-center">
-              <Text variant="caption" color="grey">
+              <Text variant="caption" className="text-text-grey dark:text-gray-400">
                 {completedLessons}/{totalLessons} {t`lessons completed`}
               </Text>
               <View className="bg-grey ml-2 h-1.5 w-16 rounded-full dark:bg-gray-600">
@@ -127,7 +127,7 @@ const UnitCard = ({ unit, isExpanded, onToggle }: UnitCardProps) => {
             <View className="space-y-2">
               {[1, 2, 3].map((i) => (
                 <View key={i} className="flex-row items-center p-2">
-                  <ActivityIndicator size="small" color={brandColors.primary} />
+                  <ActivityIndicator size="small" className="text-primary" />
                   <Text className="ml-2">Loading lessons...</Text>
                 </View>
               ))}
@@ -139,7 +139,7 @@ const UnitCard = ({ unit, isExpanded, onToggle }: UnitCardProps) => {
               ))}
             </View>
           ) : (
-            <Text variant="body" color="grey" className="py-4 text-center">
+            <Text variant="body" className="py-4 text-center text-text-grey dark:text-gray-400">
               {t`No lessons available yet`}
             </Text>
           )}
@@ -179,12 +179,12 @@ const LessonItem = ({ lesson }: LessonItemProps) => {
   if (lesson.is_locked) {
     return (
       <View className="bg-grey flex-row items-center rounded-lg p-3 opacity-50 dark:bg-gray-700">
-        <LockIcon size={20} color="#999" />
+        <LockIcon size={20} className="text-text-grey dark:text-gray-400" />
         <View className="ml-3 flex-1">
-          <Text variant="body" color="grey" className="mb-1">
+          <Text variant="body" className="mb-1 text-text-grey dark:text-gray-400">
             {lesson.title_en}
           </Text>
-          <Text variant="caption" color="grey">
+          <Text variant="caption" className="text-text-grey dark:text-gray-400">
             {t`Complete previous lesson to unlock`}
           </Text>
         </View>
@@ -202,15 +202,19 @@ const LessonItem = ({ lesson }: LessonItemProps) => {
       <TouchableOpacity>
         <View className="flex-row items-center rounded-lg bg-white p-3 dark:bg-gray-800">
           {lesson.is_completed ? (
-            <CheckCircleIcon size={20} color="#4CAF50" />
+            <CheckCircleIcon size={20} className="text-success" />
           ) : (
             <View className="h-5 w-5 rounded-full border-2 border-primary" />
           )}
           <View className="ml-3 flex-1">
-            <Text variant="body" weight={lesson.is_completed ? 'medium' : 'regular'} color="dark" className="mb-1">
+            <Text
+              variant="body"
+              weight={lesson.is_completed ? 'medium' : 'regular'}
+              className="mb-1 text-text-dark dark:text-gray-100"
+            >
               {lesson.title_en}
             </Text>
-            <Text variant="caption" color="grey">
+            <Text variant="caption" className="text-text-grey dark:text-gray-400">
               {lesson.is_completed ? t`Completed` : t`Tap to start`}
             </Text>
           </View>

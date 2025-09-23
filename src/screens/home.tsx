@@ -19,13 +19,13 @@ const HomeScreen = () => {
     if (nextLessonLoading) {
       return (
         <View className="mb-5">
-          <Text variant="h5" weight="semibold" className="mb-2.5">
+          <Text variant="h5" weight="semibold" className="mb-2.5 text-text-dark dark:text-gray-100">
             {t`Continue Learning`}
           </Text>
           <Card className="h-[120px] px-4 py-2.5">
             <View className="flex-1 items-center justify-center">
-              <ActivityIndicator size="small" color={brandColors.primary} />
-              <Text variant="caption" color="grey" className="mt-2">
+              <ActivityIndicator size="small" className="text-primary" />
+              <Text variant="caption" className="mt-2 text-text-grey dark:text-gray-400">
                 Loading...
               </Text>
             </View>
@@ -37,15 +37,15 @@ const HomeScreen = () => {
     if (!nextLesson) {
       return (
         <View className="mb-5">
-          <Text variant="h5" weight="semibold" className="mb-2.5">
+          <Text variant="h5" weight="semibold" className="mb-2.5 text-text-dark dark:text-gray-100">
             {t`Continue Learning`}
           </Text>
           <Card className="h-[120px] px-4 py-2.5">
             <View className="flex-1 items-center justify-center">
-              <Text variant="h6" color="primary" className="text-center">
+              <Text variant="h6" className="text-center text-primary dark:text-gray-100">
                 {t`All lessons completed! 🎉`}
               </Text>
-              <Text variant="caption" color="grey" className="mt-2 text-center">
+              <Text variant="caption" className="mt-2 text-center text-text-grey dark:text-gray-400">
                 {t`Great job on finishing the course`}
               </Text>
             </View>
@@ -56,7 +56,7 @@ const HomeScreen = () => {
 
     return (
       <View className="mb-5">
-        <Text variant="h5" weight="semibold" className="mb-2.5">
+        <Text variant="h5" weight="semibold" className="mb-2.5 text-text-dark dark:text-gray-100">
           {t`Continue Learning`}
         </Text>
         <Card className="h-[120px] px-4 py-2.5">
@@ -67,7 +67,7 @@ const HomeScreen = () => {
                   <Text variant="h6" weight="bold" className="mb-1 text-primary dark:text-gray-100">
                     {nextLesson.title_en}
                   </Text>
-                  <Text variant="caption" color="grey" className="mb-1">
+                  <Text variant="caption" className="mb-1 text-text-grey dark:text-gray-400">
                     {nextLesson.units?.title_en} • {nextLesson.difficulty}
                   </Text>
                   <Text variant="caption" className="text-primary dark:text-gray-100">
@@ -89,13 +89,13 @@ const HomeScreen = () => {
     if (progressLoading) {
       return (
         <View className="mb-5">
-          <Text variant="h5" weight="semibold" className="mb-2.5">
+          <Text variant="h5" weight="semibold" className="mb-2.5 text-text-dark dark:text-gray-100">
             {t`Your Progress`}
           </Text>
           <Card className="h-[100px] px-4 py-2.5">
             <View className="flex-1 items-center justify-center">
-              <ActivityIndicator size="small" color={brandColors.primary} />
-              <Text variant="caption" color="grey" className="mt-2">
+              <ActivityIndicator size="small" className="text-primary" />
+              <Text variant="caption" className="mt-2 text-text-grey dark:text-gray-400">
                 Loading progress...
               </Text>
             </View>
@@ -110,23 +110,23 @@ const HomeScreen = () => {
 
     return (
       <View className="mb-5">
-        <Text variant="h5" weight="semibold" className="mb-2.5">
+        <Text variant="h5" weight="semibold" className="mb-2.5 text-text-dark dark:text-gray-100">
           {t`Your Progress`}
         </Text>
         <Card className="px-4 py-2.5">
           <View className="mb-2 flex-row items-center justify-between">
-            <Text variant="body" color="grey">
+            <Text variant="body" className="text-text-grey dark:text-gray-400">
               {t`Units completed`}
             </Text>
-            <Text variant="body" weight="semibold" color="primary">
+            <Text variant="body" weight="semibold" className="text-primary">
               {progressSummary.completedUnits} / {progressSummary.totalUnits}
             </Text>
           </View>
           <View className="mb-3 flex-row items-center justify-between">
-            <Text variant="body" color="grey">
+            <Text variant="body" className="text-text-grey dark:text-gray-400">
               {t`Lessons completed`}
             </Text>
-            <Text variant="body" weight="semibold" color="primary">
+            <Text variant="body" weight="semibold" className="text-primary">
               {progressSummary.completedLessons} / {progressSummary.totalLessons}
             </Text>
           </View>
@@ -145,7 +145,7 @@ const HomeScreen = () => {
     if (unitsLoading) {
       return (
         <View className="mb-5">
-          <Text variant="h5" weight="semibold" className="mb-2.5">
+          <Text variant="h5" weight="semibold" className="mb-2.5 text-text-dark dark:text-gray-100">
             {t`Learning Units`}
           </Text>
           <View className="flex-row flex-wrap justify-between">
@@ -153,8 +153,8 @@ const HomeScreen = () => {
               <View className="mb-2.5 w-[48%]" key={i}>
                 <Card className="h-[170px] px-4 py-2.5">
                   <View className="flex-1 items-center justify-center">
-                    <ActivityIndicator size="small" color={brandColors.primary} />
-                    <Text variant="caption" color="grey" className="mt-2">
+                    <ActivityIndicator size="small" className="text-primary" />
+                    <Text variant="caption" className="mt-2 text-text-grey dark:text-gray-400">
                       Loading...
                     </Text>
                   </View>
@@ -169,7 +169,7 @@ const HomeScreen = () => {
     if (unitsError) {
       return (
         <View className="mb-5">
-          <Text variant="h5" weight="semibold" className="mb-2.5">
+          <Text variant="h5" weight="semibold" className="mb-2.5 text-text-dark dark:text-gray-100">
             {t`Learning Units`}
           </Text>
           <Card className="h-[170px] px-4 py-2.5">
@@ -177,7 +177,7 @@ const HomeScreen = () => {
               <Text variant="h6" className="text-center text-primary dark:text-gray-100">
                 {t`Units temporarily unavailable`}
               </Text>
-              <Text variant="caption" className="text-grey mt-2 text-center dark:text-gray-400">
+              <Text variant="caption" className="mt-2 text-center text-text-grey dark:text-gray-400">
                 {t`Please check your connection and try again`}
               </Text>
             </View>
@@ -188,7 +188,7 @@ const HomeScreen = () => {
 
     return (
       <View className="mb-5">
-        <Text variant="h5" weight="semibold" className="mb-2.5">
+        <Text variant="h5" weight="semibold" className="mb-2.5 text-text-dark dark:text-gray-100">
           {t`Learning Units`}
         </Text>
         <View className="flex-row flex-wrap justify-between">
@@ -201,7 +201,7 @@ const HomeScreen = () => {
                       <Text variant="h6" weight="bold" className="mt-2.5 text-primary dark:text-gray-100">
                         {unit.title_en}
                       </Text>
-                      <Text variant="caption" className="text-grey mt-2.5 dark:text-gray-400">
+                      <Text variant="caption" className="mt-2.5 text-text-grey dark:text-gray-400">
                         {unit.description_en}
                       </Text>
                     </View>
@@ -239,10 +239,10 @@ const HomeScreen = () => {
           <Card padding="none" className="mb-5">
             <Gradient colors={[brandColors.primary, brandColors.secondary]}>
               <View className="flex-col items-start justify-center p-5">
-                <Text variant="h2" weight="bold" color="white" className="mb-2.5">
+                <Text variant="h2" weight="bold" className="mb-2.5 text-white">
                   {t`Welcome to Kabiyè en Poche`}
                 </Text>
-                <Text variant="h5" weight="medium" color="white" className="mt-2.5">
+                <Text variant="h5" weight="medium" className="mt-2.5 text-white">
                   {t`Learn Kabiyè in a fun and interactive way`}
                 </Text>
               </View>
@@ -259,7 +259,7 @@ const HomeScreen = () => {
           {renderUnitsSection()}
 
           <View className="mb-5">
-            <Text variant="h5" weight="semibold" className="mb-2.5">
+            <Text variant="h5" weight="semibold" className="mb-2.5 text-text-dark dark:text-gray-100">
               {t`Resources`}
             </Text>
 
@@ -270,7 +270,7 @@ const HomeScreen = () => {
                     <Text variant="h6" weight="bold" className="mt-2.5 text-primary dark:text-gray-100">
                       {t`Kabiyè Alphabet`}
                     </Text>
-                    <Text variant="caption" className="text-grey mt-2.5 dark:text-gray-400">
+                    <Text variant="caption" className="mt-2.5 text-text-grey dark:text-gray-400">
                       {t`Learn the Kabiyè alphabet`}
                     </Text>
                   </View>
@@ -285,7 +285,7 @@ const HomeScreen = () => {
                     <Text variant="h6" weight="bold" className="mt-2.5 text-primary dark:text-gray-100">
                       {t`Learning Resources`}
                     </Text>
-                    <Text variant="caption" className="text-grey mt-2.5 dark:text-gray-400">
+                    <Text variant="caption" className="mt-2.5 text-text-grey dark:text-gray-400">
                       {t`Access learning materials and resources`}
                     </Text>
                   </View>

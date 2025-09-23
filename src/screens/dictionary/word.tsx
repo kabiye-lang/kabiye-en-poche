@@ -27,31 +27,31 @@ const WordDetailsScreen: React.FC = () => {
   return (
     <View flex className="bg-bg-grey">
       <ScrollView contentContainerStyle={{ padding: 20 }}>
-        <Text variant="h3" weight="bold" color="primary" className="mb-2.5">
+        <Text variant="h3" weight="bold" className="mb-2.5 text-primary">
           {wordDetails.word}
         </Text>
-        <Text variant="h5" color="dark" className="mb-2.5">
+        <Text variant="h5" className="mb-2.5 text-text-dark dark:text-gray-100">
           {wordDetails.translation}
         </Text>
-        <Text variant="lg" color="grey" className="mb-5">
+        <Text variant="lg" className="mb-5 text-text-grey dark:text-gray-400">
           {wordDetails.pronunciation}
         </Text>
 
-        <Text variant="h6" weight="bold" color="dark" className="mb-2.5">
+        <Text variant="h6" weight="bold" className="mb-2.5 text-text-dark dark:text-gray-100">
           Usage Examples
         </Text>
         {wordDetails.usageExamples.map((example, index) => (
-          <Text key={index} variant="body" color="grey" className="mb-1">
+          <Text key={index} variant="body" className="mb-1 text-text-grey dark:text-gray-400">
             {example}
           </Text>
         ))}
 
-        <Text variant="h6" weight="bold" color="dark" className="mb-2.5 mt-5">
+        <Text variant="h6" weight="bold" className="mb-2.5 mt-5 text-text-dark dark:text-gray-100">
           Related Words
         </Text>
         {wordDetails.relatedWords.map((relatedWord) => (
           <Card key={relatedWord.id} className="mb-2.5 p-2.5">
-            <Text variant="body" color="dark">
+            <Text variant="body" className="text-text-dark dark:text-gray-100">
               {relatedWord.word}
             </Text>
           </Card>
