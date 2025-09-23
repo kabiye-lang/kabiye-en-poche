@@ -1,4 +1,4 @@
-import type { Database, Lesson, LessonWithProgress, Unit, UnitWithLessons } from '@/types/supabase'
+import type { AlphabetLetter, CmsPage, Lesson, LessonWithProgress, Unit, UnitWithLessons } from '@/types/supabase'
 import type { LocalProgress } from '@/utils/local-storage'
 
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
@@ -15,6 +15,10 @@ export const unitKeys = {
   lessons: (unitId?: string) => [...unitKeys.all, 'lessons', unitId] as const,
   lesson: (id: string) => [...unitKeys.all, 'lesson', id] as const,
   userProgress: (userId: string) => [...unitKeys.all, 'user-progress', userId] as const,
+  alphabetLetters: () => [...unitKeys.all, 'alphabet-letters'] as const,
+  alphabetLetter: (id: string) => [...unitKeys.all, 'alphabet-letter', id] as const,
+  cmsPages: () => [...unitKeys.all, 'cms-pages'] as const,
+  cmsPage: (slug: string) => [...unitKeys.all, 'cms-page', slug] as const,
 }
 
 // Get all units
@@ -44,7 +48,7 @@ export function useUnit(unitId: string) {
   })
 }
 
-// Get unit with lessons
+// Get a unit with its lessons
 export function useUnitWithLessons(unitId: string) {
   return useQuery({
     queryKey: unitKeys.unitWithLessons(unitId),
@@ -56,8 +60,10 @@ export function useUnitWithLessons(unitId: string) {
           *,
           lessons (
             *,
-            categories (name),
-            user_progress!left (completed_at, score)
+            user_progress (
+              is_completed,
+              completed_at
+            )
           )
         `
         )
@@ -65,27 +71,18 @@ export function useUnitWithLessons(unitId: string) {
         .single()
 
       if (error) throw error
-      return data as UnitWithLessons
+      return data
     },
     enabled: !!unitId,
   })
 }
 
-// Get lessons for a unit
+// Get all lessons (optionally filtered by unit)
 export function useLessons(unitId?: string) {
   return useQuery({
     queryKey: unitKeys.lessons(unitId),
     queryFn: async (): Promise<Lesson[]> => {
-      let query = supabase
-        .from('lessons')
-        .select(
-          `
-          *,
-          units (title_en, title_fr),
-          categories (name)
-        `
-        )
-        .order('position', { ascending: true })
+      let query = supabase.from('lessons').select('*').order('position', { ascending: true })
 
       if (unitId) {
         query = query.eq('unit_id', unitId)
@@ -104,17 +101,7 @@ export function useLesson(lessonId: string) {
   return useQuery({
     queryKey: unitKeys.lesson(lessonId),
     queryFn: async (): Promise<Lesson | null> => {
-      const { data, error } = await supabase
-        .from('lessons')
-        .select(
-          `
-          *,
-          units (title_en, title_fr),
-          categories (name)
-        `
-        )
-        .eq('id', lessonId)
-        .single()
+      const { data, error } = await supabase.from('lessons').select('*').eq('id', lessonId).single()
 
       if (error) throw error
       return data
@@ -123,17 +110,7 @@ export function useLesson(lessonId: string) {
   })
 }
 
-// Get user progress (local storage)
-export function useUserProgress() {
-  return useQuery({
-    queryKey: unitKeys.userProgress('local'),
-    queryFn: async (): Promise<LocalProgress[]> => {
-      return await localProgressStorage.getAll()
-    },
-  })
-}
-
-// Get lessons with progress for a unit (using local storage)
+// Get lessons with progress for a specific unit
 export function useLessonsWithProgress(unitId: string) {
   return useQuery({
     queryKey: [...unitKeys.lessons(unitId), 'with-progress', 'local'],
@@ -189,112 +166,225 @@ export function useLessonsWithProgress(unitId: string) {
   })
 }
 
-// Get the next lesson to continue (using local storage)
+// Get user progress
+export function useUserProgress() {
+  return useQuery({
+    queryKey: unitKeys.userProgress('local'),
+    queryFn: async (): Promise<LocalProgress[]> => {
+      return await localProgressStorage.getAll()
+    },
+  })
+}
+
+// Get next lesson to continue
 export function useNextLesson() {
   return useQuery({
-    queryKey: [...unitKeys.all, 'next-lesson', 'local'],
-    queryFn: async (): Promise<
-      (Lesson & { units: { position: number; title_en: string; title_fr: string } }) | null
-    > => {
-      // Get all lessons ordered by unit position and lesson position
-      const { data: lessons, error: lessonsError } = await supabase
+    queryKey: ['next-lesson'],
+    queryFn: async () => {
+      const completedLessonIds = await localProgressStorage.getCompletedLessonIds()
+
+      if (!completedLessonIds.length) {
+        // If no lessons completed, get the first lesson of the first unit
+        const { data: firstUnit } = await supabase
+          .from('units')
+          .select('id')
+          .eq('status', 'available')
+          .order('position', { ascending: true })
+          .limit(1)
+          .single()
+
+        if (firstUnit) {
+          const { data: firstLesson } = await supabase
+            .from('lessons')
+            .select('*')
+            .eq('unit_id', firstUnit.id)
+            .order('position', { ascending: true })
+            .limit(1)
+            .single()
+
+          return firstLesson
+        }
+        return null
+      }
+
+      // Find the next incomplete lesson
+      const lastCompletedLessonId = completedLessonIds[completedLessonIds.length - 1]
+
+      const { data: lastLesson } = await supabase
         .from('lessons')
-        .select(
-          `
-          *,
-          units (position, title_en, title_fr)
-        `
-        )
-        .order('position', { ascending: true })
+        .select('unit_id, position')
+        .eq('id', lastCompletedLessonId)
+        .single()
 
-      if (lessonsError) throw lessonsError
+      if (lastLesson) {
+        const { data: nextLesson } = await supabase
+          .from('lessons')
+          .select('*')
+          .eq('unit_id', lastLesson.unit_id)
+          .gt('position', lastLesson.position)
+          .order('position', { ascending: true })
+          .limit(1)
+          .single()
 
-      // Get local progress
-      const localProgress = await localProgressStorage.getAll()
-      const completedLessonIds = new Set(localProgress.map((p) => p.lessonId))
+        if (nextLesson) {
+          return nextLesson
+        }
 
-      // Find the first incomplete lesson
-      const nextLesson = lessons?.find((lesson) => !completedLessonIds.has(lesson.id))
+        // If no more lessons in current unit, get first lesson of next unit
+        const { data: nextUnit } = await supabase
+          .from('units')
+          .select('id')
+          .eq('status', 'available')
+          .gt('position', lastLesson.unit_id)
+          .order('position', { ascending: true })
+          .limit(1)
+          .single()
 
-      return nextLesson || null
+        if (nextUnit) {
+          const { data: firstLessonOfNextUnit } = await supabase
+            .from('lessons')
+            .select('*')
+            .eq('unit_id', nextUnit.id)
+            .order('position', { ascending: true })
+            .limit(1)
+            .single()
+
+          return firstLessonOfNextUnit
+        }
+      }
+
+      return null
     },
   })
 }
 
-// Mark lesson as completed (using local storage)
-export function useCompleteLesson() {
-  const queryClient = useQueryClient()
-
-  return useMutation({
-    mutationFn: async ({ lessonId, score }: { lessonId: string; score?: number }) => {
-      await localProgressStorage.saveLessonProgress(lessonId, score)
-      return { lessonId, completedAt: new Date().toISOString(), score }
-    },
-    onSuccess: () => {
-      // Invalidate relevant queries
-      queryClient.invalidateQueries({ queryKey: unitKeys.userProgress('local') })
-      queryClient.invalidateQueries({ queryKey: unitKeys.all })
-    },
-  })
-}
-
-// Get progress summary (using local storage)
+// Get progress summary
 export function useProgressSummary() {
   return useQuery({
-    queryKey: [...unitKeys.all, 'progress-summary', 'local'],
+    queryKey: ['progress-summary'],
     queryFn: async () => {
-      // Get total units and lessons
-      const { data: units, error: unitsError } = await supabase
-        .from('units')
-        .select('id')
-        .order('position', { ascending: true })
+      const completedLessonIds = await localProgressStorage.getCompletedLessonIds()
 
-      if (unitsError) throw unitsError
+      const { data: units } = await supabase.from('units').select('id').eq('status', 'available')
 
-      const { data: lessons, error: lessonsError } = await supabase
+      const { data: lessons } = await supabase
         .from('lessons')
         .select('id, unit_id')
-        .order('position', { ascending: true })
+        .in('unit_id', units?.map((u) => u.id) || [])
 
-      if (lessonsError) throw lessonsError
+      const totalUnits = units?.length || 0
+      const totalLessons = lessons?.length || 0
+      const completedLessons = completedLessonIds.length
 
-      // Get local progress
-      const localProgress = await localProgressStorage.getAll()
-      const completedLessonIds = new Set(localProgress.map((p) => p.lessonId))
-      const completedLessons = lessons?.filter((l) => completedLessonIds.has(l.id)) || []
-
-      // Calculate completed units (a unit is completed if all its lessons are completed)
+      // Calculate completed units (units where all lessons are completed)
       const completedUnits =
         units?.filter((unit) => {
-          const unitLessons = lessons?.filter((l) => l.unit_id === unit.id) || []
-          return unitLessons.length > 0 && unitLessons.every((l) => completedLessonIds.has(l.id))
-        }) || []
+          const unitLessons = lessons?.filter((lesson) => lesson.unit_id === unit.id) || []
+          return unitLessons.every((lesson) => completedLessonIds.includes(lesson.id))
+        }).length || 0
+
+      const progressPercentage = totalLessons > 0 ? (completedLessons / totalLessons) * 100 : 0
 
       return {
-        totalUnits: units?.length || 0,
-        completedUnits: completedUnits.length,
-        totalLessons: lessons?.length || 0,
-        completedLessons: completedLessons.length,
-        progressPercentage: lessons?.length ? (completedLessons.length / lessons.length) * 100 : 0,
+        totalUnits,
+        totalLessons,
+        completedUnits,
+        completedLessons,
+        progressPercentage,
       }
     },
   })
 }
 
-// Quiz questions
+// Complete a lesson
+export function useCompleteLesson() {
+  const queryClient = useQueryClient()
+
+  return useMutation({
+    mutationFn: async (lessonId: string) => {
+      await localProgressStorage.saveLessonProgress(lessonId)
+    },
+    onSuccess: () => {
+      // Invalidate related queries
+      queryClient.invalidateQueries({ queryKey: unitKeys.all })
+      queryClient.invalidateQueries({ queryKey: ['next-lesson'] })
+      queryClient.invalidateQueries({ queryKey: ['progress-summary'] })
+    },
+  })
+}
+
+// Get quiz questions for a lesson
 export function useQuizQuestions(lessonId: string) {
   return useQuery({
-    queryKey: [...unitKeys.lesson(lessonId), 'quiz'],
-    queryFn: async () => {
-      const { data, error } = await supabase
-        .from('quiz_questions')
-        .select('*')
-        .eq('lesson_id', lessonId)
-        .order('created_at', { ascending: true })
+    queryKey: ['quiz-questions', lessonId],
+    queryFn: async (): Promise<any[]> => {
+      // TODO: Implement quiz questions table
+      // For now, return empty array since table doesn't exist
+      return []
+    },
+    enabled: !!lessonId,
+  })
+}
+
+// Get all alphabet letters
+export function useAlphabetLetters() {
+  return useQuery({
+    queryKey: unitKeys.alphabetLetters(),
+    queryFn: async (): Promise<AlphabetLetter[]> => {
+      const { data, error } = await supabase.from('alphabet_letters').select('*').order('position', { ascending: true })
 
       if (error) throw error
       return data || []
     },
-    enabled: !!lessonId,
+  })
+}
+
+// Get a single alphabet letter
+export function useAlphabetLetter(letterId: string) {
+  return useQuery({
+    queryKey: unitKeys.alphabetLetter(letterId),
+    queryFn: async (): Promise<AlphabetLetter | null> => {
+      const { data, error } = await supabase.from('alphabet_letters').select('*').eq('id', letterId).single()
+
+      if (error) throw error
+      return data
+    },
+    enabled: !!letterId,
+  })
+}
+
+// Get all CMS pages
+export function useCmsPages() {
+  return useQuery({
+    queryKey: unitKeys.cmsPages(),
+    queryFn: async (): Promise<CmsPage[]> => {
+      const { data, error } = await supabase
+        .from('cms_pages')
+        .select('*')
+        .eq('is_active', true)
+        .order('sort_order', { ascending: true })
+
+      if (error) throw error
+      return data || []
+    },
+  })
+}
+
+// Get a single CMS page by slug
+export function useCmsPage(slug: string) {
+  return useQuery({
+    queryKey: unitKeys.cmsPage(slug),
+    queryFn: async (): Promise<CmsPage | null> => {
+      const { data, error } = await supabase
+        .from('cms_pages')
+        .select('*')
+        .eq('slug', slug)
+        .eq('is_active', true)
+        .single()
+
+      if (error) throw error
+      return data
+    },
+    enabled: !!slug,
   })
 }

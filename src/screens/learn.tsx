@@ -31,7 +31,7 @@ const LearnScreen = () => {
       <View flex safeArea="top" className="bg-grey dark:bg-gray-900">
         <View className="flex-1 items-center justify-center">
           <ActivityIndicator size="large" className="text-primary" />
-          <Text className="mt-4">Loading learning units...</Text>
+          <Text className="mt-4">{t`Loading learning units...`}</Text>
         </View>
       </View>
     )
@@ -42,7 +42,7 @@ const LearnScreen = () => {
       <View flex safeArea="top" className="bg-grey dark:bg-gray-900">
         <View className="flex-1 items-center justify-center px-4">
           <Text variant="h6" className="text-center text-primary">
-            Failed to load learning units
+            {t`Failed to load learning units`}
           </Text>
           <Text variant="caption" className="mt-2 text-center text-text-grey dark:text-gray-400">
             {unitsError.message}
@@ -76,6 +76,7 @@ interface UnitCardProps {
     title_fr: string
     description_en: string | null
     description_fr: string | null
+    status: 'available' | 'coming_soon' | 'maintenance' | 'disabled'
   }
   isExpanded: boolean
   onToggle: () => void
@@ -87,13 +88,21 @@ const UnitCard = ({ unit, isExpanded, onToggle }: UnitCardProps) => {
 
   const completedLessons = lessons?.filter((lesson) => lesson.is_completed).length || 0
   const totalLessons = lessons?.length || 0
+  const isAvailable = unit.status === 'available'
+  const isComingSoon = unit.status === 'coming_soon'
+  const isMaintenance = unit.status === 'maintenance'
+  const isDisabled = unit.status === 'disabled'
 
   return (
-    <Card className="mb-4 p-4">
-      <TouchableOpacity onPress={onToggle}>
+    <Card className={`mb-4 p-4 ${!isAvailable ? 'opacity-50' : ''}`}>
+      <TouchableOpacity onPress={isAvailable ? onToggle : undefined} disabled={!isAvailable}>
         <View className="flex-row items-center justify-between">
           <View className="flex-1">
-            <Text variant="h6" weight="bold" className="mb-1 text-primary dark:text-gray-100">
+            <Text
+              variant="h6"
+              weight="bold"
+              className={`mb-1 ${isAvailable ? 'text-primary dark:text-gray-100' : 'text-text-grey dark:text-gray-400'}`}
+            >
               {unit.title_en}
             </Text>
             {unit.description_en && (
@@ -101,21 +110,31 @@ const UnitCard = ({ unit, isExpanded, onToggle }: UnitCardProps) => {
                 {unit.description_en}
               </Text>
             )}
-            <View className="flex-row items-center">
-              <Text variant="caption" className="text-text-grey dark:text-gray-400">
-                {completedLessons}/{totalLessons} {t`lessons completed`}
-              </Text>
-              <View className="bg-grey ml-2 h-1.5 w-16 rounded-full dark:bg-gray-600">
-                <View
-                  className="h-1.5 rounded-full bg-primary transition-all duration-300"
-                  style={{ width: totalLessons > 0 ? `${(completedLessons / totalLessons) * 100}%` : '0%' }}
-                />
+            {isAvailable ? (
+              <View className="flex-row items-center">
+                <Text variant="caption" className="text-text-grey dark:text-gray-400">
+                  {completedLessons}/{totalLessons} {t`lessons completed`}
+                </Text>
+                <View className="bg-grey ml-2 h-1.5 w-16 rounded-full dark:bg-gray-600">
+                  <View
+                    className="h-1.5 rounded-full bg-primary transition-all duration-300"
+                    style={{ width: totalLessons > 0 ? `${(completedLessons / totalLessons) * 100}%` : '0%' }}
+                  />
+                </View>
               </View>
-            </View>
+            ) : (
+              <View className="mt-1">
+                <Text variant="caption" className="text-text-grey dark:text-gray-400">
+                  {isComingSoon && t`Coming Soon`}
+                  {isMaintenance && t`Under Maintenance`}
+                  {isDisabled && t`Temporarily Unavailable`}
+                </Text>
+              </View>
+            )}
           </View>
           <CaretRightIcon
             size={20}
-            className="text-primary dark:text-gray-100"
+            className={isAvailable ? 'text-primary dark:text-gray-100' : 'text-text-grey dark:text-gray-400'}
             style={{ transform: [{ rotate: isExpanded ? '90deg' : '0deg' }] }}
           />
         </View>
@@ -128,7 +147,7 @@ const UnitCard = ({ unit, isExpanded, onToggle }: UnitCardProps) => {
               {[1, 2, 3].map((i) => (
                 <View key={i} className="flex-row items-center p-2">
                   <ActivityIndicator size="small" className="text-primary" />
-                  <Text className="ml-2">Loading lessons...</Text>
+                  <Text className="ml-2">{t`Loading lessons...`}</Text>
                 </View>
               ))}
             </View>

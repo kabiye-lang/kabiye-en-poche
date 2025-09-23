@@ -2,7 +2,7 @@ import { useState } from 'react'
 import { Alert, Linking, ScrollView, Switch, TouchableOpacity } from 'react-native'
 
 import * as Application from 'expo-application'
-import { Link } from 'expo-router'
+import { useRouter } from 'expo-router'
 
 import { useLingui } from '@lingui/react/macro'
 
@@ -14,7 +14,7 @@ import { brandColors } from '@/utils/design-system-nativewind'
 const ProfileScreen = () => {
   const { t, i18n } = useLingui()
   const [isEnglish, setIsEnglish] = useState(i18n.locale === 'en')
-
+  const router = useRouter()
   const { data: progressSummary, isLoading: progressLoading } = useAppProgressSummary()
 
   // Resources data from the original resources screen
@@ -76,6 +76,12 @@ const ProfileScreen = () => {
           href: '/terms-and-conditions',
           title: t`Terms and conditions of use`,
           description: '',
+          icon: <BookOpenTextIcon weight="thin" className="text-gray-900 dark:text-gray-100" />,
+        },
+        {
+          href: '/privacy-policy',
+          title: t`Privacy Policy`,
+          description: t`How we collect and use your data`,
           icon: <BookOpenTextIcon weight="thin" className="text-gray-900 dark:text-gray-100" />,
         },
       ],
@@ -185,32 +191,33 @@ const ProfileScreen = () => {
 
             <View className="space-y-3">
               {listItem.items.map((item) => (
-                <Card key={'listItemSub-' + item.href} className="mb-4 min-h-[60px] flex-row items-center p-4">
-                  <View className="mr-2.5">{item.icon}</View>
-                  <View className="flex-1 flex-col">
-                    <Text variant="h6" weight="medium" className="ml-2.5">
-                      {item.title}
-                    </Text>
-                    {item.description && (
-                      <Text variant="small" className="ml-2.5 text-text-grey dark:text-gray-400" numberOfLines={3}>
-                        {item.description}
+                <TouchableOpacity
+                  key={'listItemSub-' + item.href}
+                  onPress={() => {
+                    if (item.external) {
+                      handleResourcePress(item.href, true)
+                    } else {
+                      router.push(item.href)
+                    }
+                  }}
+                >
+                  <Card className="mb-4 min-h-[60px] flex-row items-center p-4">
+                    <View className="mr-2.5">{item.icon}</View>
+                    <View className="flex-1 flex-col">
+                      <Text variant="h6" weight="medium" className="ml-2.5">
+                        {item.title}
                       </Text>
-                    )}
-                  </View>
-                  <View>
-                    {item.external ? (
-                      <TouchableOpacity onPress={() => handleResourcePress(item.href, true)}>
-                        <CaretRightIcon weight="thin" size={22} className="text-gray-900 dark:text-gray-100" />
-                      </TouchableOpacity>
-                    ) : (
-                      <Link asChild href={item.href}>
-                        <TouchableOpacity>
-                          <CaretRightIcon weight="thin" size={22} className="text-gray-900 dark:text-gray-100" />
-                        </TouchableOpacity>
-                      </Link>
-                    )}
-                  </View>
-                </Card>
+                      {item.description && (
+                        <Text variant="small" className="ml-2.5 text-text-grey dark:text-gray-400" numberOfLines={3}>
+                          {item.description}
+                        </Text>
+                      )}
+                    </View>
+                    <View>
+                      <CaretRightIcon weight="thin" size={22} className="text-gray-900 dark:text-gray-100" />
+                    </View>
+                  </Card>
+                </TouchableOpacity>
               ))}
             </View>
           </View>

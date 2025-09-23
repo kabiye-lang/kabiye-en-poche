@@ -3,12 +3,10 @@ import { ActivityIndicator, ScrollView, TouchableOpacity } from 'react-native'
 
 import { useLocalSearchParams } from 'expo-router'
 
-import { Trans } from '@lingui/react/macro'
 import { XIcon } from 'phosphor-react-native'
 
 import { Button, Card, Text, View } from '@/components/ui'
 import { useAppQuizQuestions } from '@/hooks/use-app-data'
-import { brandColors } from '@/utils/design-system-nativewind'
 
 import ListenChose from './listen-chose'
 import ListenType from './listen-type'
@@ -89,15 +87,19 @@ const QuizModal: React.FC<QuizModalProps> = ({ onClose }) => {
     )
   }
 
-  const currentQuestion: Question = {
-    type: quizQuestions[currentQuestionIndex].question_type,
-    question: quizQuestions[currentQuestionIndex].question_en, // Use English for now
-    correctAnswer: quizQuestions[currentQuestionIndex].correct_answer,
-    answers: quizQuestions[currentQuestionIndex].options_en as string[],
-    audioUri: quizQuestions[currentQuestionIndex].audio_url || undefined,
-  }
+  const currentQuestion: Question | null =
+    quizQuestions && quizQuestions.length > 0
+      ? {
+          type: quizQuestions[currentQuestionIndex].question_type,
+          question: quizQuestions[currentQuestionIndex].question_en, // Use English for now
+          correctAnswer: quizQuestions[currentQuestionIndex].correct_answer,
+          answers: quizQuestions[currentQuestionIndex].options_en as string[],
+          audioUri: quizQuestions[currentQuestionIndex].audio_url || undefined,
+        }
+      : null
 
   const handleAnswerPress = (answer: string) => {
+    if (!currentQuestion) return
     setSelectedAnswer(answer)
     setShowFeedback(true)
     if (answer === currentQuestion.correctAnswer) {
@@ -116,6 +118,7 @@ const QuizModal: React.FC<QuizModalProps> = ({ onClose }) => {
   }
 
   const renderQuestion = () => {
+    if (!currentQuestion) return null
     switch (currentQuestion.type) {
       case 'multiple-choice':
         return currentQuestion.answers!.map((answer, index) => (
@@ -147,9 +150,9 @@ const QuizModal: React.FC<QuizModalProps> = ({ onClose }) => {
         return (
           <View>
             <Text variant="lg" className="mb-2.5 text-text-dark dark:text-gray-100">
-              {currentQuestion.prompt}
+              {currentQuestion?.prompt}
             </Text>
-            {currentQuestion.answers!.map((answer, index) => (
+            {currentQuestion?.answers!.map((answer, index) => (
               <TouchableOpacity
                 key={index}
                 className={`mt-2.5 rounded-xl p-4 ${selectedAnswer === answer ? 'bg-secondary' : 'bg-gray-200'}`}
@@ -202,16 +205,16 @@ const QuizModal: React.FC<QuizModalProps> = ({ onClose }) => {
         <View flex className="px-2.5 pt-5">
           <Card className="mb-5 p-5">
             <Text variant="h3" weight="bold" className="mb-2.5 text-text-dark dark:text-gray-100">
-              {currentQuestion.question}
+              {currentQuestion?.question}
             </Text>
             {renderQuestion()}
           </Card>
           {showFeedback && (
             <View className="mt-5 items-center">
               <Text variant="h3" weight="bold" className="mb-5 text-primary">
-                {selectedAnswer === currentQuestion.correctAnswer
+                {selectedAnswer === currentQuestion?.correctAnswer
                   ? 'Correct!'
-                  : `Incorrect! The correct answer is ${currentQuestion.correctAnswer}.`}
+                  : `Incorrect! The correct answer is ${currentQuestion?.correctAnswer}.`}
               </Text>
               {currentQuestionIndex < quizQuestions.length - 1 ? (
                 <Button variant="primary" onPress={handleNextPress}>

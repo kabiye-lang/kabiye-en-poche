@@ -10,6 +10,7 @@ export interface Database {
           description_en: string | null
           description_fr: string | null
           position: number
+          status: 'available' | 'coming_soon' | 'maintenance' | 'disabled'
           created_at: string
         }
         Insert: {
@@ -20,6 +21,7 @@ export interface Database {
           description_en?: string | null
           description_fr?: string | null
           position: number
+          status?: 'available' | 'coming_soon' | 'maintenance' | 'disabled'
           created_at?: string
         }
         Update: {
@@ -30,6 +32,7 @@ export interface Database {
           description_en?: string | null
           description_fr?: string | null
           position?: number
+          status?: 'available' | 'coming_soon' | 'maintenance' | 'disabled'
           created_at?: string
         }
         Relationships: []
@@ -286,13 +289,14 @@ export interface Database {
         Row: {
           id: string
           letter: string
-          name_en: string
-          name_fr: string
-          pronunciation: string
+          name: string
+          type: 'vowel' | 'consonant' | 'grapheme'
+          pronunciation_en: string
+          pronunciation_fr: string
           description_en: string
           description_fr: string
-          examples_en: any
-          examples_fr: any
+          examples_en: any | null
+          examples_fr: any | null
           audio_url: string | null
           image_url: string | null
           position: number
@@ -301,13 +305,14 @@ export interface Database {
         Insert: {
           id?: string
           letter: string
-          name_en: string
-          name_fr: string
-          pronunciation: string
+          name: string
+          type: 'vowel' | 'consonant' | 'grapheme'
+          pronunciation_en: string
+          pronunciation_fr: string
           description_en: string
           description_fr: string
-          examples_en?: any
-          examples_fr?: any
+          examples_en?: any | null
+          examples_fr?: any | null
           audio_url?: string | null
           image_url?: string | null
           position?: number
@@ -316,13 +321,14 @@ export interface Database {
         Update: {
           id?: string
           letter?: string
-          name_en?: string
-          name_fr?: string
-          pronunciation?: string
+          name?: string
+          type?: 'vowel' | 'consonant' | 'grapheme'
+          pronunciation_en?: string
+          pronunciation_fr?: string
           description_en?: string
           description_fr?: string
-          examples_en?: any
-          examples_fr?: any
+          examples_en?: any | null
+          examples_fr?: any | null
           audio_url?: string | null
           image_url?: string | null
           position?: number
@@ -367,6 +373,51 @@ export interface Database {
           },
         ]
       }
+      cms_pages: {
+        Row: {
+          id: string
+          slug: string
+          title_en: string
+          title_fr: string
+          content_en: string
+          content_fr: string
+          description_en: string | null
+          description_fr: string | null
+          is_active: boolean
+          sort_order: number
+          created_at: string
+          updated_at: string
+        }
+        Insert: {
+          id?: string
+          slug: string
+          title_en: string
+          title_fr: string
+          content_en: string
+          content_fr: string
+          description_en?: string | null
+          description_fr?: string | null
+          is_active?: boolean
+          sort_order?: number
+          created_at?: string
+          updated_at?: string
+        }
+        Update: {
+          id?: string
+          slug?: string
+          title_en?: string
+          title_fr?: string
+          content_en?: string
+          content_fr?: string
+          description_en?: string | null
+          description_fr?: string | null
+          is_active?: boolean
+          sort_order?: number
+          created_at?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
@@ -392,6 +443,7 @@ export type LessonContent = Database['public']['Tables']['lesson_contents']['Row
 export type QuizQuestion = Database['public']['Tables']['quiz_questions']['Row']
 export type AlphabetLetter = Database['public']['Tables']['alphabet_letters']['Row']
 export type UserProgress = Database['public']['Tables']['user_progress']['Row']
+export type CmsPage = Database['public']['Tables']['cms_pages']['Row']
 
 // Extended types with relationships
 export type UnitWithLessons = Unit & {

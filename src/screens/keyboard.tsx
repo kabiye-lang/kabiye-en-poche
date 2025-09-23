@@ -7,7 +7,42 @@ import { useLingui } from '@lingui/react/macro'
 
 import { ArrowFatLinesUpIcon, ArrowFatLineUpIcon, BackspaceIcon, DotIcon, KeyReturnIcon } from '@/components/icons'
 import { Button, ScreenTitle, Text, View } from '@/components/ui'
-import alphabetList from '@/utils/data/alphabet.json'
+
+// Static alphabet list for keyboard (no database calls needed)
+const ALPHABET_LIST = [
+  { id: 'a', caps: 'A' },
+  { id: 'b', caps: 'B' },
+  { id: 'c', caps: 'C' },
+  { id: 'd', caps: 'D' },
+  { id: 'ɖ', caps: 'Ɖ' },
+  { id: 'e', caps: 'E' },
+  { id: 'ɛ', caps: 'Ɛ' },
+  { id: 'f', caps: 'F' },
+  { id: 'g', caps: 'G' },
+  { id: 'ɣ', caps: 'Ɣ' },
+  { id: 'h', caps: 'H' },
+  { id: 'i', caps: 'I' },
+  { id: 'ɩ', caps: 'Ɩ' },
+  { id: 'j', caps: 'J' },
+  { id: 'k', caps: 'K' },
+  { id: 'l', caps: 'L' },
+  { id: 'm', caps: 'M' },
+  { id: 'n', caps: 'N' },
+  { id: 'ñ', caps: 'Ñ' },
+  { id: 'ŋ', caps: 'Ŋ' },
+  { id: 'o', caps: 'O' },
+  { id: 'ɔ', caps: 'Ɔ' },
+  { id: 'p', caps: 'P' },
+  { id: 'r', caps: 'R' },
+  { id: 's', caps: 'S' },
+  { id: 't', caps: 'T' },
+  { id: 'u', caps: 'U' },
+  { id: 'ʋ', caps: 'Ʋ' },
+  { id: 'v', caps: 'V' },
+  { id: 'w', caps: 'W' },
+  { id: 'y', caps: 'Y' },
+  { id: 'z', caps: 'Z' },
+]
 
 const OTHER_CHARACTERS = [
   {
@@ -60,7 +95,7 @@ export default function KeyboardScreen() {
   const { t } = useLingui()
   const [capsLock, setCapsLock] = useState<0 | 1 | 2>(0)
   const [content, setContent] = useState('')
-  const changeText = (letter: Partial<(typeof alphabetList)[0]>) => {
+  const changeText = (letter: Partial<(typeof ALPHABET_LIST)[0]>) => {
     setContent((oldContent) => oldContent + (capsLock ? letter.caps || letter.id : letter.id))
     setCapsLock((capsLockOld) => (capsLockOld === 2 ? capsLockOld : 0))
   }
@@ -136,10 +171,7 @@ export default function KeyboardScreen() {
             <> */}
         <View className="bg-gray-200 p-1.5 pb-5 dark:bg-gray-700">
           <View className="mt-2.5 flex-row flex-wrap justify-center gap-1.5">
-            {OTHER_CHARACTERS.concat(alphabetList)
-              // @ts-expect-error hideInKeyboard doesn't exist on tpe
-              .filter((letter) => !letter.hideInKeyboard)
-              .map((letter) => renderButton(letter))}
+            {OTHER_CHARACTERS.concat(ALPHABET_LIST).map((letter) => renderButton(letter))}
           </View>
           <View className="mt-2.5 flex-row flex-wrap justify-center gap-1.5">
             <Button
@@ -175,7 +207,7 @@ export default function KeyboardScreen() {
               style={{ width: 90, minWidth: 90, height: 35 }}
               onPress={() => changeText({ id: ' ' })}
             >
-              <Text variant="body" weight="medium">
+              <Text variant="body" weight="light" className="text-gray-900 dark:text-gray-100">
                 {t`Space`}
               </Text>
             </Button>

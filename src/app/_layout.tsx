@@ -34,6 +34,7 @@ import {
   IBMPlexSansHebrew_600SemiBold,
   IBMPlexSansHebrew_700Bold,
 } from '@expo-google-fonts/ibm-plex-sans-hebrew'
+import { defineMessage as msg } from '@lingui/core/macro'
 import { ThemeProvider } from '@react-navigation/native'
 import { QueryClientProvider } from '@tanstack/react-query'
 import { useColorScheme } from 'nativewind'
@@ -130,7 +131,6 @@ export default function RootLayout() {
 
 function RootLayoutNav() {
   const { colorScheme } = useColorScheme()
-
   return (
     <SafeAreaProvider>
       <QueryClientProvider client={queryClient}>
@@ -180,7 +180,22 @@ function RootLayoutNav() {
                   }}
                 />
                 <Stack.Screen name="modal" options={{ presentation: 'modal' }} />
-                <Stack.Screen name="terms-and-conditions" options={{ title: '' }} />
+                <Stack.Screen
+                  name="terms-and-conditions"
+                  options={{
+                    title: i18n._(msg`Terms and Conditions`),
+                    headerBackButtonDisplayMode: 'minimal',
+                    headerTransparent: true,
+                  }}
+                />
+                <Stack.Screen
+                  name="privacy-policy"
+                  options={{
+                    title: i18n._(msg`Privacy Policy`),
+                    headerBackButtonDisplayMode: 'minimal',
+                    headerTransparent: true,
+                  }}
+                />
               </Stack>
             </GestureHandlerRootView>
           </I18nProvider>

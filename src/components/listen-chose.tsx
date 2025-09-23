@@ -6,7 +6,6 @@ import { useAudioPlayer } from 'expo-audio'
 import { SpeakerHighIcon } from 'phosphor-react-native'
 
 import { Button, Text, View } from '@/components/ui'
-import { brandColors } from '@/utils/design-system-nativewind'
 
 interface ListenChoseProps {
   question: {

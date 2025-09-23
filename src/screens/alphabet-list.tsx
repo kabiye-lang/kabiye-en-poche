@@ -1,4 +1,4 @@
-import { FlatList } from 'react-native'
+import { ActivityIndicator, FlatList } from 'react-native'
 
 import { router } from 'expo-router'
 
@@ -6,37 +6,55 @@ import Markdown from '@jonasmerlin/react-native-markdown-display'
 import { useLingui } from '@lingui/react/macro'
 
 import { Card, ScreenTitle, Text, View } from '@/components/ui'
-import alphabetList from '@/utils/data/alphabet.json'
+import { useAppAlphabetLetters, useAppCmsPage } from '@/hooks/use-app-data'
 import { LETTER_TYPE_COLORS, MARKDOWN_STYLE } from '@/utils/design-system-nativewind'
 
 export default function AlphabetListScreen() {
   const { t } = useLingui()
+  const { data: alphabetLetters, isLoading, error } = useAppAlphabetLetters()
+  const { data: alphabetIntro } = useAppCmsPage('alphabet-introduction')
+
+  if (isLoading) {
+    return (
+      <View flex className="bg-white dark:bg-gray-900">
+        <View className="flex-1 items-center justify-center">
+          <ActivityIndicator size="large" className="text-primary" />
+          <Text className="mt-4">{t`Loading alphabet...`}</Text>
+        </View>
+      </View>
+    )
+  }
+
+  if (error) {
+    return (
+      <View flex className="bg-white dark:bg-gray-900">
+        <View className="flex-1 items-center justify-center px-4">
+          <Text variant="h6" className="text-center text-primary">
+            {t`Error loading alphabet`}
+          </Text>
+          <Text variant="caption" className="mt-2 text-center text-text-grey dark:text-gray-400">
+            {error.message}
+          </Text>
+        </View>
+      </View>
+    )
+  }
   return (
     <View flex className="bg-white dark:bg-gray-900">
       <FlatList
         numColumns={3}
-        data={alphabetList}
+        data={alphabetLetters || []}
         contentContainerStyle={{ paddingHorizontal: 15, gap: 5, paddingBottom: 20 }}
         columnWrapperStyle={{ maxWidth: '33.33%', gap: 5 }}
         keyExtractor={(item) => item.id}
         ListHeaderComponent={() => (
           <>
-            <ScreenTitle title={t`I learn the Kabiyè Alphabet`} />
-            <View>
-              <Markdown
-                style={MARKDOWN_STYLE}
-              >{`Le **Kabiyè** est écrit de façon qu'en général il y ait un seul symbole (graphème) pour chaque son utile
-                (phonème). Pour des raisons d'économie, certains sons sont symbolisés par deux lettres. Par exemple: kp,
-                **gb, aɣ, eɣ, iɣ, et ɩɣ**. Comme chacun de ces symboles représente un son distinct des autres, ils sont
-                introduits dans l'alphabet.
-
-Il y a des lettres dans l'orthographe du kabiyè qui n'existent pas en français. Chaque lettre est là pour représenter un son utile dans le parler Kabiyè et pour éliminer des ambiguïtés dans l'écriture. Donc, parmi les voyelles vous trouvez **ɛ, ɩ, ɔ, et ʋ**. Parmi les consonnes vous trouvez **ɖ, ñ et ŋ**.
-
-Le symbole **ɣ** (appelé «gamma») marque en général une modification et une longueur des voyelles qu'il suit. Mais dans quelques mots il a la fonction d'une consonne. (Par exemple: **sooɣa** «petit mortier», **hoɣa** «enceinte»).
-
-**Les mots dans le dictionnaire Kabiyè sont rangées dans l'ordre suivant:**
-            `}</Markdown>
-            </View>
+            <ScreenTitle title={alphabetIntro?.title_en || t`I learn the Kabiyè Alphabet`} />
+            {alphabetIntro && (
+              <View>
+                <Markdown style={MARKDOWN_STYLE}>{alphabetIntro.content_en}</Markdown>
+              </View>
+            )}
           </>
         )}
         renderItem={({ item }) => (
@@ -61,7 +79,7 @@ Le symbole **ɣ** (appelé «gamma») marque en général une modification et un
                 </Card>
 
                 <Text variant="h2" weight="medium" className="text-center">
-                  {item.id}
+                  {item.letter}
                 </Text>
               </View>
             </Card>

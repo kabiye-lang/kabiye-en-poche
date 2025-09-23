@@ -46,6 +46,10 @@ msgstr "Échec de la finalisation de la leçon. Veuillez réessayer."
 msgid "Great job on finishing the course"
 msgstr "Excellent travail pour avoir terminé le cours"
 
+#: src/screens/terms-and-conditions.tsx
+msgid "Terms and conditions are not available"
+msgstr ""
+
 #: src/screens/profile.tsx
 msgid "No progress data available"
 msgstr "Aucune donnée de progression disponible"
@@ -66,17 +70,49 @@ msgstr "Contenu"
 msgid "Académie Kabiyè"
 msgstr "Académie Kabiyè"
 
+#: src/screens/unit.tsx
+msgid "Please check back later"
+msgstr ""
+
 #: src/screens/profile.tsx
 msgid "Kabiyè language resources"
 msgstr "Ressources de la langue Kabiyè"
 
+#: src/screens/terms-and-conditions.tsx
+msgid "Terms not found"
+msgstr ""
+
+#: src/screens/privacy-policy.tsx
+msgid "Privacy policy is not available"
+msgstr "La politique de confidentialité n'est pas disponible"
+
+#: src/screens/unit.tsx
+msgid "Loading unit..."
+msgstr "Chargement de l'unité..."
+
+#: src/screens/privacy-policy.tsx
+msgid "Loading privacy policy..."
+msgstr "Chargement de la politique de confidentialité..."
+
 #: src/screens/alphabet-letter.tsx
-msgid "An error occurred..."
-msgstr "Une erreur s'est produite..."
+#~ msgid "An error occurred..."
+#~ msgstr "Une erreur s'est produite..."
 
 #: src/screens/alphabet-list.tsx
 msgid "I learn the Kabiyè Alphabet"
 msgstr "J'apprends l'alphabet Kabiyè"
+
+#: src/screens/dictionary/dictionary-pdf.tsx
+msgid "Loading dictionary..."
+msgstr "Chargement du dictionnaire..."
+
+#: src/screens/alphabet-list.tsx
+msgid "Error loading alphabet"
+msgstr "Erreur lors du chargement de l'alphabet"
+
+#: src/screens/dictionary/dictionary-pdf.tsx
+msgid "Failed to load dictionary"
+msgstr "Échec du chargement du dictionnaire"
 
 #: src/screens/lesson.tsx
 msgid "Lesson Completed!"
@@ -86,10 +122,13 @@ msgstr "Leçon terminée !"
 msgid "lessons completed"
 msgstr "leçons terminées"
 
-#: src/screens/home.tsx
 #: src/screens/profile.tsx
 msgid "Learning Resources"
 msgstr "Ressources d'apprentissage"
+
+#: src/screens/unit.tsx
+msgid "This unit does not exist"
+msgstr "Cette unité n'existe pas"
 
 #: src/screens/profile.tsx
 msgid "Join our community to contribute to the development of the application"
@@ -102,6 +141,10 @@ msgstr "Appuyez pour continuer"
 #: src/screens/profile.tsx
 msgid "Kabiyè language learning platform"
 msgstr "Plateforme d'apprentissage de la langue Kabiyè"
+
+#: src/screens/lesson.tsx
+msgid "Failed to load lesson"
+msgstr "Échec du chargement de la leçon"
 
 #: src/screens/home.tsx
 msgid "Units temporarily unavailable"
@@ -117,18 +160,34 @@ msgstr "Le contenu de la leçon sera bientôt disponible."
 
 #: src/screens/home.tsx
 #: src/screens/home.tsx
-#: src/screens/home.tsx
 msgid "Learning Units"
 msgstr "Unités d'apprentissage"
+
+#: src/app/_layout.tsx
+#: src/screens/profile.tsx
+msgid "Privacy Policy"
+msgstr "Politique de confidentialité"
 
 #: src/screens/learn.tsx
 #: src/screens/unit.tsx
 msgid "Complete previous lesson to unlock"
 msgstr "Terminez la leçon précédente pour débloquer"
 
+#: src/screens/alphabet-letter.tsx
+msgid "This letter does not exist"
+msgstr ""
+
 #: src/screens/home.tsx
 msgid "Learn the Kabiyè alphabet"
 msgstr "Apprenez l'alphabet Kabiyè"
+
+#: src/screens/alphabet-letter.tsx
+msgid "Loading letter..."
+msgstr "Chargement de la lettre..."
+
+#: src/screens/home.tsx
+msgid "Let's Learn Together!"
+msgstr ""
 
 #: src/screens/profile.tsx
 msgid "Reset"
@@ -142,9 +201,17 @@ msgstr "Utilisez ce clavier pour écrire en Kabiyè."
 #~ msgid "Access additional learning materials"
 #~ msgstr ""
 
+#: src/screens/unit.tsx
+msgid "This unit is under maintenance"
+msgstr ""
+
 #: src/screens/home.tsx
-msgid "Access learning materials and resources"
-msgstr "Accédez aux matériels et ressources d'apprentissage"
+#~ msgid "Access learning materials and resources"
+#~ msgstr "Accédez aux matériels et ressources d'apprentissage"
+
+#: src/screens/learn.tsx
+msgid "Loading learning units..."
+msgstr "Chargement des unités d'apprentissage..."
 
 #: src/screens/lesson.tsx
 msgid "Great job! You've completed this lesson."
@@ -182,6 +249,11 @@ msgstr "Appuyez pour commencer"
 #~ msgid "Learning Tips"
 #~ msgstr ""
 
+#: src/screens/home.tsx
+#: src/screens/learn.tsx
+msgid "Coming Soon"
+msgstr ""
+
 #: src/app/(tabs)/_layout.tsx
 msgid "Dictionary"
 msgstr "Dictionnaire"
@@ -215,6 +287,11 @@ msgstr "Réinitialisation de la progression"
 msgid "Terms and conditions of use"
 msgstr "Conditions d'utilisation"
 
+#: src/screens/home.tsx
+#: src/screens/home.tsx
+msgid "Loading..."
+msgstr "Chargement..."
+
 #: src/screens/profile.tsx
 msgid "Are you sure you want to reset all your progress? This action cannot be undone."
 msgstr "Êtes-vous sûr de vouloir réinitialiser toute votre progression ? Cette action ne peut pas être annulée."
@@ -222,6 +299,15 @@ msgstr "Êtes-vous sûr de vouloir réinitialiser toute votre progression ? Cett
 #: src/screens/profile.tsx
 msgid "Loading progress..."
 msgstr "Chargement de la progression..."
+
+#: src/screens/unit.tsx
+msgid "This unit is temporarily unavailable"
+msgstr ""
+
+#: src/screens/home.tsx
+#: src/screens/learn.tsx
+msgid "Under Maintenance"
+msgstr ""
 
 #: src/screens/profile.tsx
 msgid "Online Kabiyè dictionary"
@@ -252,10 +338,13 @@ msgstr "Aperçu de la progression"
 msgid "Vowel"
 msgstr "Voyelle"
 
-#: src/screens/home.tsx
 #: src/screens/profile.tsx
 msgid "Lessons completed"
 msgstr "Leçons terminées"
+
+#: src/screens/unit.tsx
+msgid "This unit is coming soon!"
+msgstr ""
 
 #: src/screens/profile.tsx
 msgid "App Language"
@@ -293,6 +382,10 @@ msgstr "Site web officiel de l'Académie Kabiyè"
 msgid "Lessons"
 msgstr "Leçons"
 
+#: src/screens/alphabet-letter.tsx
+msgid "Letter not found"
+msgstr ""
+
 #: src/screens/home.tsx
 msgid "Kabiyè Alphabet"
 msgstr "Alphabet Kabiyè"
@@ -303,13 +396,16 @@ msgstr "Chargement de la leçon..."
 
 #: src/screens/home.tsx
 #: src/screens/home.tsx
-msgid "Your Progress"
-msgstr "Votre progression"
+#~ msgid "Your Progress"
+#~ msgstr "Votre progression"
 
-#: src/screens/home.tsx
 #: src/screens/profile.tsx
 msgid "Units completed"
 msgstr "Unités terminées"
+
+#: src/screens/learn.tsx
+msgid "Failed to load learning units"
+msgstr "Échec du chargement des unités d'apprentissage"
 
 #: src/app/(tabs)/_layout.tsx
 #: src/screens/keyboard.tsx
@@ -320,17 +416,34 @@ msgstr "Clavier"
 msgid "Choose your preferred interface language"
 msgstr "Choisissez votre langue d'interface préférée"
 
+#: src/app/_layout.tsx
+msgid "Terms and Conditions"
+msgstr ""
+
+#: src/screens/learn.tsx
 #: src/screens/unit.tsx
 msgid "Loading lessons..."
 msgstr "Chargement des leçons..."
+
+#: src/screens/alphabet-list.tsx
+msgid "Loading alphabet..."
+msgstr "Chargement de l'alphabet..."
 
 #: src/screens/lesson.tsx
 msgid "Lesson"
 msgstr "Leçon"
 
+#: src/screens/privacy-policy.tsx
+msgid "Privacy Policy not found"
+msgstr "Politique de confidentialité non trouvée"
+
 #: src/screens/home.tsx
 msgid "View All"
 msgstr "Voir tout"
+
+#: src/screens/profile.tsx
+msgid "How we collect and use your data"
+msgstr "Comment nous collectons et utilisons vos données"
 
 #: src/screens/keyboard.tsx
 msgid "Space"
@@ -352,8 +465,8 @@ msgid "Learn"
 msgstr "Apprendre"
 
 #: src/screens/home.tsx
-msgid "Resources"
-msgstr "Ressources"
+#~ msgid "Resources"
+#~ msgstr "Ressources"
 
 #: src/screens/profile.tsx
 #: src/screens/profile.tsx
@@ -365,9 +478,18 @@ msgstr "Réinitialiser la progression"
 msgid "Grapheme"
 msgstr "Graphème"
 
+#: src/screens/dictionary/dictionary-pdf.tsx
+msgid "Please check your internet connection and try again"
+msgstr "Veuillez vérifier votre connexion internet et réessayer"
+
 #: src/screens/unit.tsx
 msgid "Lessons temporarily unavailable"
 msgstr "Leçons temporairement indisponibles"
+
+#: src/screens/home.tsx
+#: src/screens/learn.tsx
+msgid "Temporarily Unavailable"
+msgstr ""
 
 #: src/app/(tabs)/_layout.tsx
 #: src/screens/profile.tsx
@@ -382,9 +504,17 @@ msgstr "touche vous permet de mettre en majuscules. Appui long pour verrouiller 
 msgid "All lessons completed! 🎉"
 msgstr "Toutes les leçons terminées ! 🎉"
 
+#: src/screens/home.tsx
+msgid "Learn the Basics"
+msgstr ""
+
 #: src/screens/lesson.tsx
 msgid "Learning Objectives"
 msgstr "Objectifs d'apprentissage"
+
+#: src/screens/terms-and-conditions.tsx
+msgid "Loading terms..."
+msgstr "Chargement des conditions..."
 
 #: src/screens/keyboard.tsx
 msgid "Clear"
@@ -398,6 +528,14 @@ msgstr "Continuer"
 msgid "Your progress has been reset."
 msgstr "Votre progression a été réinitialisée."
 
+#: src/screens/unit.tsx
+msgid "This unit is not available"
+msgstr ""
+
 #: src/screens/home.tsx
 #~ msgid "Reference Materials"
 #~ msgstr ""
+
+#: src/screens/unit.tsx
+msgid "Unit not found"
+msgstr "Unité non trouvée"

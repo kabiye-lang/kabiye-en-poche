@@ -25,7 +25,7 @@ const UnitScreen = () => {
       <View flex safeArea="top" className="bg-grey dark:bg-gray-900">
         <View className="flex-1 items-center justify-center">
           <ActivityIndicator size="large" className="text-primary" />
-          <Text className="mt-4">Loading unit...</Text>
+          <Text className="mt-4">{t`Loading unit...`}</Text>
         </View>
       </View>
     )
@@ -36,10 +36,35 @@ const UnitScreen = () => {
       <View flex safeArea="top" className="bg-grey dark:bg-gray-900">
         <View className="flex-1 items-center justify-center px-4">
           <Text variant="h6" className="text-center text-primary">
-            Unit not found
+            {t`Unit not found`}
           </Text>
           <Text variant="caption" className="mt-2 text-center text-text-grey dark:text-gray-400">
-            {unitError?.message || 'This unit does not exist'}
+            {unitError?.message || t`This unit does not exist`}
+          </Text>
+        </View>
+      </View>
+    )
+  }
+
+  // Check if unit is available
+  if (unit.status !== 'available') {
+    const statusMessage =
+      unit.status === 'coming_soon'
+        ? t`This unit is coming soon!`
+        : unit.status === 'maintenance'
+          ? t`This unit is under maintenance`
+          : unit.status === 'disabled'
+            ? t`This unit is temporarily unavailable`
+            : t`This unit is not available`
+
+    return (
+      <View flex safeArea="top" className="bg-grey dark:bg-gray-900">
+        <View className="flex-1 items-center justify-center px-4">
+          <Text variant="h6" className="text-center text-primary">
+            {statusMessage}
+          </Text>
+          <Text variant="caption" className="mt-2 text-center text-text-grey dark:text-gray-400">
+            {t`Please check back later`}
           </Text>
         </View>
       </View>

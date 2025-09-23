@@ -6,14 +6,13 @@ import { useLingui } from '@lingui/react/macro'
 
 import { CaretRightIcon, PlayIcon } from '@/components/icons'
 import { Card, Gradient, Text, View } from '@/components/ui'
-import { useAppNextLesson, useAppProgressSummary, useAppUnits } from '@/hooks/use-app-data'
+import { useAppNextLesson, useAppUnits } from '@/hooks/use-app-data'
 import { brandColors } from '@/utils/design-system-nativewind'
 
 const HomeScreen = () => {
   const { t } = useLingui()
   const { data: units, isLoading: unitsLoading, error: unitsError } = useAppUnits()
   const { data: nextLesson, isLoading: nextLessonLoading } = useAppNextLesson()
-  const { data: progressSummary, isLoading: progressLoading } = useAppProgressSummary()
 
   const renderContinueLessonSection = () => {
     if (nextLessonLoading) {
@@ -26,7 +25,7 @@ const HomeScreen = () => {
             <View className="flex-1 items-center justify-center">
               <ActivityIndicator size="small" className="text-primary" />
               <Text variant="caption" className="mt-2 text-text-grey dark:text-gray-400">
-                Loading...
+                {t`Loading...`}
               </Text>
             </View>
           </Card>
@@ -68,7 +67,7 @@ const HomeScreen = () => {
                     {nextLesson.title_en}
                   </Text>
                   <Text variant="caption" className="mb-1 text-text-grey dark:text-gray-400">
-                    {nextLesson.units?.title_en} • {nextLesson.difficulty}
+                    {nextLesson.difficulty}
                   </Text>
                   <Text variant="caption" className="text-primary dark:text-gray-100">
                     {t`Tap to continue`}
@@ -80,62 +79,6 @@ const HomeScreen = () => {
               </View>
             </TouchableOpacity>
           </Link>
-        </Card>
-      </View>
-    )
-  }
-
-  const renderProgressSection = () => {
-    if (progressLoading) {
-      return (
-        <View className="mb-5">
-          <Text variant="h5" weight="semibold" className="mb-2.5 text-text-dark dark:text-gray-100">
-            {t`Your Progress`}
-          </Text>
-          <Card className="h-[100px] px-4 py-2.5">
-            <View className="flex-1 items-center justify-center">
-              <ActivityIndicator size="small" className="text-primary" />
-              <Text variant="caption" className="mt-2 text-text-grey dark:text-gray-400">
-                Loading progress...
-              </Text>
-            </View>
-          </Card>
-        </View>
-      )
-    }
-
-    if (!progressSummary) {
-      return null
-    }
-
-    return (
-      <View className="mb-5">
-        <Text variant="h5" weight="semibold" className="mb-2.5 text-text-dark dark:text-gray-100">
-          {t`Your Progress`}
-        </Text>
-        <Card className="px-4 py-2.5">
-          <View className="mb-2 flex-row items-center justify-between">
-            <Text variant="body" className="text-text-grey dark:text-gray-400">
-              {t`Units completed`}
-            </Text>
-            <Text variant="body" weight="semibold" className="text-primary">
-              {progressSummary.completedUnits} / {progressSummary.totalUnits}
-            </Text>
-          </View>
-          <View className="mb-3 flex-row items-center justify-between">
-            <Text variant="body" className="text-text-grey dark:text-gray-400">
-              {t`Lessons completed`}
-            </Text>
-            <Text variant="body" weight="semibold" className="text-primary">
-              {progressSummary.completedLessons} / {progressSummary.totalLessons}
-            </Text>
-          </View>
-          <View className="bg-grey h-2 w-full rounded-full dark:bg-gray-600">
-            <View
-              className="h-2 rounded-full bg-primary transition-all duration-300"
-              style={{ width: `${progressSummary.progressPercentage}%` }}
-            />
-          </View>
         </Card>
       </View>
     )
@@ -155,7 +98,7 @@ const HomeScreen = () => {
                   <View className="flex-1 items-center justify-center">
                     <ActivityIndicator size="small" className="text-primary" />
                     <Text variant="caption" className="mt-2 text-text-grey dark:text-gray-400">
-                      Loading...
+                      {t`Loading...`}
                     </Text>
                   </View>
                 </Card>
@@ -189,27 +132,54 @@ const HomeScreen = () => {
     return (
       <View className="mb-5">
         <Text variant="h5" weight="semibold" className="mb-2.5 text-text-dark dark:text-gray-100">
-          {t`Learning Units`}
+          {t`Let's Learn Together!`}
         </Text>
         <View className="flex-row flex-wrap justify-between">
-          {units?.slice(0, 3).map((unit) => (
-            <View className="mb-2.5 w-[48%]" key={unit.id}>
-              <Card className="h-[170px] px-4 py-2.5">
-                <Link href={`/unit/${unit.id}`} asChild>
-                  <TouchableOpacity className="flex-1">
-                    <View className="flex-1">
-                      <Text variant="h6" weight="bold" className="mt-2.5 text-primary dark:text-gray-100">
-                        {unit.title_en}
-                      </Text>
-                      <Text variant="caption" className="mt-2.5 text-text-grey dark:text-gray-400">
-                        {unit.description_en}
-                      </Text>
-                    </View>
-                  </TouchableOpacity>
-                </Link>
-              </Card>
-            </View>
-          ))}
+          {units?.slice(0, 3).map((unit) => {
+            const isAvailable = unit.status === 'available'
+            const isComingSoon = unit.status === 'coming_soon'
+            const isMaintenance = unit.status === 'maintenance'
+            const isDisabled = unit.status === 'disabled'
+
+            return (
+              <View className="mb-2.5 w-[48%]" key={unit.id}>
+                <Card className={`h-[170px] px-4 py-2.5 ${!isAvailable ? 'opacity-50' : ''}`}>
+                  {isAvailable ? (
+                    <Link href={`/unit/${unit.id}`} asChild>
+                      <TouchableOpacity className="flex-1">
+                        <View className="flex-1">
+                          <Text variant="h6" weight="bold" className="mt-2.5 text-primary dark:text-gray-100">
+                            {unit.title_en}
+                          </Text>
+                          <Text variant="caption" className="mt-2.5 text-text-grey dark:text-gray-400">
+                            {unit.description_en}
+                          </Text>
+                        </View>
+                      </TouchableOpacity>
+                    </Link>
+                  ) : (
+                    <TouchableOpacity className="flex-1" disabled>
+                      <View className="flex-1">
+                        <Text variant="h6" weight="bold" className="mt-2.5 text-text-grey dark:text-gray-400">
+                          {unit.title_en}
+                        </Text>
+                        <Text variant="caption" className="mt-2.5 text-text-grey dark:text-gray-400">
+                          {unit.description_en}
+                        </Text>
+                        <View className="mt-2">
+                          <Text variant="caption" className="text-text-grey dark:text-gray-400">
+                            {isComingSoon && t`Coming Soon`}
+                            {isMaintenance && t`Under Maintenance`}
+                            {isDisabled && t`Temporarily Unavailable`}
+                          </Text>
+                        </View>
+                      </View>
+                    </TouchableOpacity>
+                  )}
+                </Card>
+              </View>
+            )
+          })}
           <View className="mb-2.5 w-[48%]">
             <Card className="h-[170px] !bg-accent p-5">
               <Link href="/learn" asChild>
@@ -252,17 +222,11 @@ const HomeScreen = () => {
           {/* Continue Lesson Section */}
           {renderContinueLessonSection()}
 
-          {/* Progress Summary Section */}
-          {renderProgressSection()}
-
-          {/* Units Section */}
-          {renderUnitsSection()}
-
+          {/* Kabiyè Alphabet Section */}
           <View className="mb-5">
             <Text variant="h5" weight="semibold" className="mb-2.5 text-text-dark dark:text-gray-100">
-              {t`Resources`}
+              {t`Learn the Basics`}
             </Text>
-
             <Card className="mb-2.5 flex-row items-center p-5">
               <Link href="/alphabet" className="w-full flex-row items-center justify-between" asChild>
                 <TouchableOpacity className="w-full flex-row items-center">
@@ -278,22 +242,10 @@ const HomeScreen = () => {
                 </TouchableOpacity>
               </Link>
             </Card>
-            <Card className="mb-2.5 flex-row items-center p-5">
-              <Link href="/profile" className="w-full flex-row items-center justify-between">
-                <TouchableOpacity className="w-full flex-row items-center">
-                  <View className="flex-1">
-                    <Text variant="h6" weight="bold" className="mt-2.5 text-primary dark:text-gray-100">
-                      {t`Learning Resources`}
-                    </Text>
-                    <Text variant="caption" className="mt-2.5 text-text-grey dark:text-gray-400">
-                      {t`Access learning materials and resources`}
-                    </Text>
-                  </View>
-                  <CaretRightIcon size={24} className="text-primary dark:text-gray-100" />
-                </TouchableOpacity>
-              </Link>
-            </Card>
           </View>
+
+          {/* Units Section */}
+          {renderUnitsSection()}
         </View>
       </ScrollView>
     </View>

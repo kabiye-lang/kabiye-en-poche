@@ -1,8 +1,6 @@
 import type { BottomTabNavigationOptions } from '@react-navigation/bottom-tabs'
 import type { Theme } from '@react-navigation/native'
 
-import { Appearance as RNAppearance } from 'react-native'
-
 import { StatusBarStyle } from 'expo-status-bar'
 
 import { DarkTheme, DefaultTheme } from '@react-navigation/native'

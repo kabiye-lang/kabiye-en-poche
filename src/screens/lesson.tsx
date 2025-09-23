@@ -11,7 +11,6 @@ import { ChatCircleDotsIcon, CheckCircleIcon, LightbulbIcon } from '@/components
 import QuizModal from '@/components/quiz'
 import { Button, Card, Text, View } from '@/components/ui'
 import { useAppCompleteLesson, useAppLesson, useAppLessonContent, useAppQuizQuestions } from '@/hooks/use-app-data'
-import { brandColors } from '@/utils/design-system-nativewind'
 
 const LessonScreen = () => {
   const { t } = useLingui()
@@ -33,7 +32,7 @@ const LessonScreen = () => {
 
   const handleCompleteLesson = async () => {
     try {
-      await completeLessonMutation.mutateAsync({ lessonId })
+      await completeLessonMutation.mutateAsync(lessonId)
       setIsCompleted(true)
       Alert.alert(t`Lesson Completed!`, t`Great job! You've completed this lesson.`, [
         {
@@ -62,7 +61,7 @@ const LessonScreen = () => {
       <View className="flex-1 bg-bg-grey dark:bg-gray-900">
         <View className="flex-1 items-center justify-center px-4">
           <Text variant="h6" className="text-center text-primary">
-            Failed to load lesson
+            {t`Failed to load lesson`}
           </Text>
           <Text variant="caption" className="mt-2 text-center text-text-grey dark:text-gray-400">
             {error.message}

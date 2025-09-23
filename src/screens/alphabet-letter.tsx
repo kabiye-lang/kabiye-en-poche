@@ -1,3 +1,4 @@
+import { ActivityIndicator } from 'react-native'
 import Animated, {
   interpolate,
   interpolateColor,
@@ -14,7 +15,7 @@ import { useLingui } from '@lingui/react/macro'
 
 import { CaretLeftIcon } from '@/components/icons'
 import { Button, Card, Text, View } from '@/components/ui'
-import alphabetList from '@/utils/data/alphabet.json'
+import { useAppAlphabetLetter } from '@/hooks/use-app-data'
 import { brandColors, LETTER_TYPE_COLORS, MARKDOWN_STYLE } from '@/utils/design-system-nativewind'
 
 // import { useRefreshOnFocus } from '@/hooks/useRefreshOnFocus'
@@ -24,7 +25,8 @@ export default function AlphabetLetterScreen() {
   const { letter: letterParam } = useLocalSearchParams()
   const safeAreaInsets = useSafeAreaInsets()
 
-  const letter = letterParam ? alphabetList.find((item) => item.id === decodeURI(letterParam as string)) : null
+  const letterId = letterParam ? decodeURI(letterParam as string) : ''
+  const { data: letter, isLoading, error } = useAppAlphabetLetter(letterId)
 
   const sv = useSharedValue<number>(0)
   const scrollHandler = useAnimatedScrollHandler({
@@ -45,18 +47,39 @@ export default function AlphabetLetterScreen() {
     }
   })
 
-  if (!letter) {
+  if (isLoading) {
     return (
-      <View flex className="pt-5">
-        <Text className="pt-5">{t`An error occurred...`}</Text>
+      <View flex className="bg-white dark:bg-gray-900">
+        <View className="flex-1 items-center justify-center">
+          <ActivityIndicator size="large" className="text-primary" />
+          <Text className="mt-4">{t`Loading letter...`}</Text>
+        </View>
       </View>
     )
   }
 
+  if (error || !letter) {
+    return (
+      <View flex className="bg-white dark:bg-gray-900">
+        <View className="flex-1 items-center justify-center px-4">
+          <Text variant="h6" className="text-center text-primary">
+            {t`Letter not found`}
+          </Text>
+          <Text variant="caption" className="mt-2 text-center text-text-grey dark:text-gray-400">
+            {error?.message || t`This letter does not exist`}
+          </Text>
+        </View>
+      </View>
+    )
+  }
+
+  // Use the type from the database
+  const letterType = letter.type
+
   return (
-    <View flex className="bg-white" style={{ paddingBottom: 70 + safeAreaInsets.top }}>
+    <View flex className="bg-white dark:bg-gray-900" style={{ paddingBottom: 70 + safeAreaInsets.top }}>
       <Animated.View
-        className="absolute left-0 top-0 z-10 w-full border-b border-gray-200 bg-white"
+        className="absolute left-0 top-0 z-10 w-full border-b border-gray-200 bg-white dark:border-gray-700 dark:bg-gray-900"
         style={[animatedHeaderStyle]}
       >
         <View style={{ height: safeAreaInsets.top }} />
@@ -68,25 +91,25 @@ export default function AlphabetLetterScreen() {
           </View>
 
           <Animated.View className="flex-1 pl-2.5" style={[animatedHeaderTitleStyle]}>
-            <Text variant="lg" weight="medium" numberOfLines={1}>
-              {letter?.id} - {letter?.caps}
+            <Text variant="lg" weight="medium" numberOfLines={1} className="text-text-dark dark:text-gray-100">
+              {letter.letter} - {letter.letter.toUpperCase()}
             </Text>
           </Animated.View>
         </View>
       </Animated.View>
       <Animated.ScrollView onScroll={scrollHandler} scrollEventThrottle={16}>
         <View center className="h-[200px]" style={{ paddingTop: safeAreaInsets.top }}>
-          <Text variant="h1" weight="bold" className="mb-2.5">
-            {letter?.id} - {letter?.caps}
+          <Text variant="h1" weight="bold" className="mb-2.5 text-text-dark dark:text-gray-100">
+            {letter.letter} - {letter.letter.toUpperCase()}
           </Text>
           <Card
             className="rounded-full px-5 py-2"
             style={{
-              backgroundColor: LETTER_TYPE_COLORS[letter.type as keyof typeof LETTER_TYPE_COLORS],
+              backgroundColor: LETTER_TYPE_COLORS[letterType as keyof typeof LETTER_TYPE_COLORS],
             }}
           >
             <Text variant="small" weight="medium" className="text-white">
-              {letter.type === 'vowel' ? t`Vowel` : letter.type === 'consonant' ? t`Consonant` : t`Grapheme`}
+              {letterType === 'vowel' ? t`Vowel` : letterType === 'consonant' ? t`Consonant` : t`Grapheme`}
             </Text>
           </Card>
         </View>
