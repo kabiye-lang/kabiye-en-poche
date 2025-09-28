@@ -92,7 +92,7 @@ export default function AlphabetLetterScreen() {
 
           <Animated.View className="flex-1 pl-2.5" style={[animatedHeaderTitleStyle]}>
             <Text variant="lg" weight="medium" numberOfLines={1} className="text-text-dark dark:text-gray-100">
-              {letter.letter} - {letter.letter.toUpperCase()}
+              {letter.id} - {letter.id.toUpperCase()}
             </Text>
           </Animated.View>
         </View>
@@ -100,7 +100,7 @@ export default function AlphabetLetterScreen() {
       <Animated.ScrollView onScroll={scrollHandler} scrollEventThrottle={16}>
         <View center className="h-[200px]" style={{ paddingTop: safeAreaInsets.top }}>
           <Text variant="h1" weight="bold" className="mb-2.5 text-text-dark dark:text-gray-100">
-            {letter.letter} - {letter.letter.toUpperCase()}
+            {letter.id} - {letter.id.toUpperCase()}
           </Text>
           <Card
             className="rounded-full px-5 py-2"

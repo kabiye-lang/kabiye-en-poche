@@ -79,7 +79,7 @@ export default function AlphabetListScreen() {
                 </Card>
 
                 <Text variant="h2" weight="medium" className="text-center">
-                  {item.letter}
+                  {item.id}
                 </Text>
               </View>
             </Card>

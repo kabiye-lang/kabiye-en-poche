@@ -288,8 +288,6 @@ export interface Database {
       alphabet_letters: {
         Row: {
           id: string
-          letter: string
-          name: string
           type: 'vowel' | 'consonant' | 'grapheme'
           pronunciation_en: string
           pronunciation_fr: string
@@ -304,8 +302,6 @@ export interface Database {
         }
         Insert: {
           id?: string
-          letter: string
-          name: string
           type: 'vowel' | 'consonant' | 'grapheme'
           pronunciation_en: string
           pronunciation_fr: string
@@ -320,8 +316,6 @@ export interface Database {
         }
         Update: {
           id?: string
-          letter?: string
-          name?: string
           type?: 'vowel' | 'consonant' | 'grapheme'
           pronunciation_en?: string
           pronunciation_fr?: string

@@ -122,10 +122,10 @@ export default function KeyboardScreen() {
     <View flex className="bg-white dark:bg-gray-900">
       <View className="px-2.5">
         <ScreenTitle title={t`Keyboard`} />
-        <Text variant="body" className="mb-2">
+        <Text variant="body" className="mb-2 text-text-dark dark:text-gray-100">
           {t`Use this keyboard to write in Kabiyè.`}
         </Text>
-        <Text variant="body" className="mb-2">
+        <Text variant="body" className="mb-2 text-text-dark dark:text-gray-100">
           {t`The`} <ArrowFatLineUpIcon weight="regular" size={16} />{' '}
           {t`key allows you to capitalize. Long press to lock CAPS mode.`}
         </Text>

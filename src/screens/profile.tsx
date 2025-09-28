@@ -24,7 +24,7 @@ const ProfileScreen = () => {
       href: string
       title: string
       description?: string
-      icon: React.ReactElement
+      icon?: React.ReactElement
       external?: boolean
     }[]
   }[] = [
@@ -35,30 +35,25 @@ const ProfileScreen = () => {
           href: 'https://academiekabiye.org/',
           title: t`Académie Kabiyè`,
           description: t`Official Kabiyè Academy website`,
-          icon: <BookOpenTextIcon weight="thin" className="text-gray-900 dark:text-gray-100" />,
         },
         {
           href: 'https://www.kabiyesekuliye.net/fr',
           title: t`Kabiyè Essékuliye`,
           description: t`Kabiyè language learning platform`,
-          icon: <BookOpenTextIcon weight="thin" className="text-gray-900 dark:text-gray-100" />,
         },
         {
           href: 'http://kabyetanaou.over-blog.com/',
           title: t`Kabiyè Tanaou`,
           description: t`Kabiyè language resources`,
-          icon: <BookOpenTextIcon weight="thin" className="text-gray-900 dark:text-gray-100" />,
         },
         {
           href: 'https://www.livelingua.com/peace-corps/Kabiye/kabiye2010.pdf',
           title: t`Kabiyè Workbook`,
-          icon: <BookOpenTextIcon weight="thin" className="text-gray-900 dark:text-gray-100" />,
         },
         {
           href: 'https://www.lexilogos.com/kabiye_dictionnaire.htm',
           title: t`Lexilogos Dictionary`,
           description: t`Online Kabiyè dictionary`,
-          icon: <BookOpenTextIcon weight="thin" className="text-gray-900 dark:text-gray-100" />,
         },
       ],
     },
@@ -202,9 +197,9 @@ const ProfileScreen = () => {
                   }}
                 >
                   <Card className="mb-4 min-h-[60px] flex-row items-center p-4">
-                    <View className="mr-2.5">{item.icon}</View>
+                    {item.icon ? <View className="mr-2.5">{item.icon}</View> : null}
                     <View className="flex-1 flex-col">
-                      <Text variant="h6" weight="medium" className="ml-2.5">
+                      <Text variant="h6" weight="medium" className="ml-2.5 text-text-dark dark:text-gray-100">
                         {item.title}
                       </Text>
                       {item.description && (
