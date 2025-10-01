@@ -106,6 +106,10 @@ msgstr "I learn the Kabiyè Alphabet"
 msgid "Loading dictionary..."
 msgstr "Loading dictionary..."
 
+#: src/screens/lesson.tsx
+msgid "Got it!"
+msgstr "Got it!"
+
 #: src/screens/alphabet-list.tsx
 msgid "Error loading alphabet"
 msgstr "Error loading alphabet"
@@ -265,6 +269,10 @@ msgstr "Overall Progress"
 #: src/screens/profile.tsx
 msgid "Support"
 msgstr "Support"
+
+#: src/screens/lesson.tsx
+msgid "No learning objectives available for this lesson."
+msgstr "No learning objectives available for this lesson."
 
 #: src/screens/learn.tsx
 msgid "No lessons available yet"

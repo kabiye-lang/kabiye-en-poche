@@ -12,12 +12,14 @@ import { ChatCircleDotsIcon, CheckCircleIcon, LightbulbIcon } from '@/components
 import QuizModal from '@/components/quiz'
 import { Button, Card, Text, View } from '@/components/ui'
 import { useAppCompleteLesson, useAppLesson, useAppLessonContent, useAppQuizQuestions } from '@/hooks/use-app-data'
+import { useLanguage } from '@/hooks/use-language'
 
 const LessonScreen = () => {
   const { t } = useLingui()
   const { id } = useLocalSearchParams()
   const navigation = useNavigation()
   const lessonId = id as string
+  const { getValue, getArrayValue, getJsonValue } = useLanguage()
 
   const { data: lesson, isLoading: lessonLoading, error: lessonError } = useAppLesson(lessonId)
   const { data: content, isLoading: contentLoading, error: contentError } = useAppLessonContent(lessonId)
@@ -30,9 +32,16 @@ const LessonScreen = () => {
   const [isCompleted, setIsCompleted] = useState(false)
   const insets = useSafeAreaInsets()
 
+  // Get localized content
+  const lessonTitle = getValue(lesson, 'title')
+  const lessonObjectives = getArrayValue(lesson, 'objectives')
+  const contentText = getValue(content, 'content')
+  const contentTitle = getValue(content, 'title')
+  const examples = getJsonValue(content, 'examples')
+
   // Set navigation options with objectives button
   useEffect(() => {
-    if (lesson?.objectives_en && lesson.objectives_en.length > 0) {
+    if (lessonObjectives && lessonObjectives.length > 0) {
       navigation.setOptions({
         headerRight: () => (
           <Button
@@ -45,7 +54,7 @@ const LessonScreen = () => {
         ),
       })
     }
-  }, [navigation, lesson])
+  }, [navigation, lessonObjectives])
 
   const isLoading = lessonLoading || contentLoading || quizLoading
   const error = lessonError || contentError
@@ -98,7 +107,7 @@ const LessonScreen = () => {
       <ScrollView className="px-4 pb-5 pt-16">
         {/* Lesson Header */}
         <Text variant="h3" weight="bold" className="text-primary">
-          {lesson?.title_en || t`Lesson`}
+          {lessonTitle || t`Lesson`}
         </Text>
         <View className="mb-4 mt-2 flex-row items-center justify-stretch">
           {lesson?.difficulty && (
@@ -144,35 +153,33 @@ const LessonScreen = () => {
             {t`Content`}
           </Text>
           <Text variant="lg" className="text-text-dark dark:text-gray-100">
-            {(content as any)?.content_en || t`Lesson content will be available soon.`}
+            {contentText || t`Lesson content will be available soon.`}
           </Text>
         </Card>
 
         {/* Examples */}
-        {(content as any)?.examples_en &&
-          Array.isArray((content as any).examples_en) &&
-          (content as any).examples_en.length > 0 && (
-            <Card className="mb-4 p-5">
-              <Text variant="h5" weight="semibold" className="mb-3 text-primary">
-                {t`Examples`}
-              </Text>
-              {(content as any).examples_en.map((example: any, index: number) => (
-                <View
-                  key={index}
-                  className="mb-3 flex-row items-center justify-between rounded-lg bg-bg-grey p-3 dark:bg-gray-700"
-                >
-                  <Text variant="h6" weight="bold" className="text-primary">
-                    {example.kabiye || example}
+        {examples && Array.isArray(examples) && examples.length > 0 && (
+          <Card className="mb-4 p-5">
+            <Text variant="h5" weight="semibold" className="mb-3 text-primary">
+              {t`Examples`}
+            </Text>
+            {examples.map((example: any, index: number) => (
+              <View
+                key={index}
+                className="mb-3 flex-row items-center justify-between rounded-lg bg-bg-grey p-3 dark:bg-gray-700"
+              >
+                <Text variant="h6" weight="bold" className="text-primary">
+                  {example.kabiye || example}
+                </Text>
+                {example.english && (
+                  <Text variant="body" className="text-text-grey dark:text-gray-400">
+                    {example.english}
                   </Text>
-                  {example.english && (
-                    <Text variant="body" className="text-text-grey dark:text-gray-400">
-                      {example.english}
-                    </Text>
-                  )}
-                </View>
-              ))}
-            </Card>
-          )}
+                )}
+              </View>
+            ))}
+          </Card>
+        )}
 
         {/* Complete Lesson Button */}
         {!isCompleted && (
@@ -253,8 +260,8 @@ const LessonScreen = () => {
 
             {/* Modal Content */}
             <ScrollView className="max-h-96 p-4" showsVerticalScrollIndicator={false}>
-              {lesson?.objectives_en && Array.isArray(lesson.objectives_en) && lesson.objectives_en.length > 0 ? (
-                lesson.objectives_en.map((objective, index) => (
+              {lessonObjectives && lessonObjectives.length > 0 ? (
+                lessonObjectives.map((objective, index) => (
                   <View key={index} className="mb-3 flex-row items-start">
                     <View className="mr-3 mt-1 h-6 w-6 items-center justify-center rounded-full bg-primary">
                       <Text variant="caption" weight="bold" className="text-white">

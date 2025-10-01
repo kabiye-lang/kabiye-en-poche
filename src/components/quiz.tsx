@@ -7,6 +7,7 @@ import { XIcon } from 'phosphor-react-native'
 
 import { Button, Card, Text, View } from '@/components/ui'
 import { useAppQuizQuestions } from '@/hooks/use-app-data'
+import { useLanguage } from '@/hooks/use-language'
 
 import ListenChose from './listen-chose'
 import ListenType from './listen-type'
@@ -31,6 +32,7 @@ interface Question {
 
 const QuizModal: React.FC<QuizModalProps> = ({ onClose }) => {
   const { id } = useLocalSearchParams<{ id: string }>()
+  const { getValue, getJsonValue } = useLanguage()
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0)
   const [selectedAnswer, setSelectedAnswer] = useState<string | null>(null)
   const [score, setScore] = useState(0)
@@ -87,16 +89,16 @@ const QuizModal: React.FC<QuizModalProps> = ({ onClose }) => {
     )
   }
 
-  const currentQuestion: Question | null =
-    quizQuestions && quizQuestions.length > 0
-      ? {
-          type: quizQuestions[currentQuestionIndex].question_type,
-          question: quizQuestions[currentQuestionIndex].question_en, // Use English for now
-          correctAnswer: quizQuestions[currentQuestionIndex].correct_answer,
-          answers: (quizQuestions[currentQuestionIndex].options as string[]) || [],
-          audioUri: undefined,
-        }
-      : null
+  const currentQuestionData = quizQuestions?.[currentQuestionIndex]
+  const currentQuestion: Question | null = currentQuestionData
+    ? {
+        type: currentQuestionData.question_type,
+        question: getValue(currentQuestionData, 'question') || '',
+        correctAnswer: currentQuestionData.correct_answer,
+        answers: (currentQuestionData.options as string[]) || [],
+        audioUri: undefined,
+      }
+    : null
 
   const handleAnswerPress = (answer: string) => {
     if (!currentQuestion) return

@@ -7,10 +7,12 @@ import { useLingui } from '@lingui/react/macro'
 import { CaretRightIcon, PlayIcon } from '@/components/icons'
 import { Card, Gradient, Text, View } from '@/components/ui'
 import { useAppNextLesson, useAppUnits } from '@/hooks/use-app-data'
+import { useLanguage } from '@/hooks/use-language'
 import { brandColors } from '@/utils/design-system-nativewind'
 
 const HomeScreen = () => {
   const { t } = useLingui()
+  const { getValue } = useLanguage()
   const { data: units, isLoading: unitsLoading, error: unitsError } = useAppUnits()
   const { data: nextLesson, isLoading: nextLessonLoading } = useAppNextLesson()
 
@@ -64,7 +66,7 @@ const HomeScreen = () => {
               <View className="flex-1 flex-row items-center">
                 <View className="flex-1">
                   <Text variant="h6" weight="bold" className="mb-1 text-primary dark:text-gray-100">
-                    {nextLesson.title_en}
+                    {getValue(nextLesson, 'title')}
                   </Text>
                   <Text variant="caption" className="mb-1 text-text-grey dark:text-gray-400">
                     {nextLesson.difficulty}
@@ -149,10 +151,10 @@ const HomeScreen = () => {
                       <TouchableOpacity className="flex-1">
                         <View className="flex-1">
                           <Text variant="h6" weight="bold" className="mt-2.5 text-primary dark:text-gray-100">
-                            {unit.title_en}
+                            {getValue(unit, 'title')}
                           </Text>
                           <Text variant="caption" className="mt-2.5 text-text-grey dark:text-gray-400">
-                            {unit.description_en}
+                            {getValue(unit, 'description')}
                           </Text>
                         </View>
                       </TouchableOpacity>
@@ -161,10 +163,10 @@ const HomeScreen = () => {
                     <TouchableOpacity className="flex-1" disabled>
                       <View className="flex-1">
                         <Text variant="h6" weight="bold" className="mt-2.5 text-text-grey dark:text-gray-400">
-                          {unit.title_en}
+                          {getValue(unit, 'title')}
                         </Text>
                         <Text variant="caption" className="mt-2.5 text-text-grey dark:text-gray-400">
-                          {unit.description_en}
+                          {getValue(unit, 'description')}
                         </Text>
                         <View className="mt-2">
                           <Text variant="caption" className="text-text-grey dark:text-gray-400">

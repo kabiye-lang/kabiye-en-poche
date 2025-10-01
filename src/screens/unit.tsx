@@ -9,6 +9,7 @@ import { useLingui } from '@lingui/react/macro'
 import { CheckCircleIcon, LockIcon } from '@/components/icons'
 import { Card, Gradient, Text, View } from '@/components/ui'
 import { useAppLessonsWithProgress, useAppUnit } from '@/hooks/use-app-data'
+import { useLanguage } from '@/hooks/use-language'
 import { brandColors } from '@/utils/design-system-nativewind'
 
 const UnitScreen = () => {
@@ -16,9 +17,14 @@ const UnitScreen = () => {
   const { id } = useLocalSearchParams()
   const unitId = id as string
   const safeAreaInsets = useSafeAreaInsets()
+  const { getValue } = useLanguage()
 
   const { data: unit, isLoading: unitLoading, error: unitError } = useAppUnit(unitId)
   const { data: lessons, isLoading: lessonsLoading, error: lessonsError } = useAppLessonsWithProgress(unitId)
+
+  // Get localized content
+  const unitTitle = getValue(unit, 'title')
+  const unitDescription = getValue(unit, 'description')
 
   if (unitLoading) {
     return (
@@ -78,11 +84,11 @@ const UnitScreen = () => {
         <Gradient colors={[brandColors.primary, brandColors.secondary]} className="my-5">
           <View className="flex-col items-start justify-center p-5">
             <Text variant="h1" weight="bold" className="mb-2.5 text-white">
-              {unit.title_en}
+              {unitTitle}
             </Text>
-            {unit.description_en && (
+            {unitDescription && (
               <Text variant="h5" weight="medium" className="mt-2.5 text-white">
-                {unit.description_en}
+                {unitDescription}
               </Text>
             )}
           </View>
@@ -148,6 +154,9 @@ interface LessonItemProps {
 
 const LessonItem = ({ lesson }: LessonItemProps) => {
   const { t } = useLingui()
+  const { getValue } = useLanguage()
+
+  const lessonTitle = getValue(lesson, 'title')
 
   const getDifficultyColor = (difficulty: string) => {
     switch (difficulty) {
@@ -168,7 +177,7 @@ const LessonItem = ({ lesson }: LessonItemProps) => {
         <LockIcon size={20} className="text-text-grey dark:text-gray-400" />
         <View className="ml-3 flex-1">
           <Text variant="body" className="mb-1 text-text-grey dark:text-gray-400">
-            {lesson.title_en}
+            {lessonTitle}
           </Text>
           <Text variant="caption" className="text-text-grey dark:text-gray-400">
             {t`Complete previous lesson to unlock`}
@@ -198,7 +207,7 @@ const LessonItem = ({ lesson }: LessonItemProps) => {
               weight={lesson.is_completed ? 'medium' : 'regular'}
               className="mb-1 text-text-dark dark:text-gray-100"
             >
-              {lesson.title_en}
+              {lessonTitle}
             </Text>
             <Text variant="caption" className="text-text-grey dark:text-gray-400">
               {lesson.is_completed ? t`Completed` : t`Tap to start`}

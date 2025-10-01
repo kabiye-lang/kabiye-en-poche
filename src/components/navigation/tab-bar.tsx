@@ -20,14 +20,15 @@ export default function CustomTabBar({ state, descriptors, navigation }: BottomT
   const pathname = usePathname()
   const safeAreaInsets = useSafeAreaInsets()
   useEffect(() => {
+    if (state.routes.length === 0) return
     const currentTabIdx = state.routes.findIndex((item) => {
       return (pathname === '/' && item.name === 'index') || item.name.indexOf(pathname.substring(1)) === 0
     })
 
     if (currentTabIdx > -1) {
-      translateX.value = withTiming(currentTabIdx, { duration: 350 })
+      translateX.set(withTiming(currentTabIdx, { duration: 350 }))
     }
-  }, [pathname])
+  }, [pathname, state.routes, translateX])
 
   const animationStyle = useAnimatedStyle(() => ({
     transform: [
