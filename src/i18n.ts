@@ -4,8 +4,8 @@ import { i18n } from '@lingui/core'
 import { I18nProvider } from '@lingui/react'
 
 // Import messages from locales folder
-import { messages as enMessages } from './locales/en/messages'
-import { messages as frMessages } from './locales/fr/messages'
+import { messages as enMessages } from './locales/en/messages.po'
+import { messages as frMessages } from './locales/fr/messages.po'
 
 // Load messages for each locale
 i18n.load({

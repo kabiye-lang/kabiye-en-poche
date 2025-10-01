@@ -5,6 +5,8 @@ import {
   useCmsPages,
   useCompleteLesson,
   useLesson,
+  useLessonContent,
+  useLessonExercises,
   useLessons,
   useLessonsWithProgress,
   useNextLesson,
@@ -39,8 +41,11 @@ export function useAppLesson(lessonId: string) {
 }
 
 export function useAppLessonContent(lessonId: string) {
-  // TODO: Implement lesson content hook
-  return { data: null, isLoading: false, error: null }
+  return useLessonContent(lessonId)
+}
+
+export function useAppLessonExercises(lessonId: string) {
+  return useLessonExercises(lessonId)
 }
 
 export function useAppLessonsWithProgress(unitId: string) {

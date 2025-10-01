@@ -76,7 +76,7 @@ interface UnitCardProps {
     title_fr: string
     description_en: string | null
     description_fr: string | null
-    status: 'available' | 'coming_soon' | 'maintenance' | 'disabled'
+    status: 'available' | 'coming_soon' | 'maintenance' | 'disabled' | null
   }
   isExpanded: boolean
   onToggle: () => void

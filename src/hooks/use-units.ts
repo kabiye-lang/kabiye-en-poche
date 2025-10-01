@@ -313,14 +313,51 @@ export function useCompleteLesson() {
   })
 }
 
+// Get lesson content
+export function useLessonContent(lessonId: string) {
+  return useQuery({
+    queryKey: ['lesson-content', lessonId],
+    queryFn: async () => {
+      const { data, error } = await supabase.from('lesson_contents').select('*').eq('lesson_id', lessonId).single()
+
+      if (error) throw error
+      return data
+    },
+    enabled: !!lessonId,
+  })
+}
+
+// Get lesson exercises
+export function useLessonExercises(lessonId: string) {
+  return useQuery({
+    queryKey: ['lesson-exercises', lessonId],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from('lesson_exercises')
+        .select('*')
+        .eq('lesson_id', lessonId)
+        .order('position', { ascending: true })
+
+      if (error) throw error
+      return data || []
+    },
+    enabled: !!lessonId,
+  })
+}
+
 // Get quiz questions for a lesson
 export function useQuizQuestions(lessonId: string) {
   return useQuery({
     queryKey: ['quiz-questions', lessonId],
     queryFn: async (): Promise<any[]> => {
-      // TODO: Implement quiz questions table
-      // For now, return empty array since table doesn't exist
-      return []
+      const { data, error } = await supabase
+        .from('quiz_questions')
+        .select('*')
+        .eq('lesson_id', lessonId)
+        .order('position', { ascending: true })
+
+      if (error) throw error
+      return data || []
     },
     enabled: !!lessonId,
   })

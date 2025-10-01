@@ -53,16 +53,15 @@ expo-env.d.ts
 
 ### GITIGNORE END ###
 
-/files
-/docs
-.husky
-.github
-.expo
-.cursor
-node_modules
-scripts
-gen-lessons
+files/
+docs/
+.husky/
+.github/
+.cursor/
+node_modules/
+scripts/
+gen-lessons/
 .gitignore
-.vscode
+.vscode/
 commitlint.config.js
 .lintstagedrc.js

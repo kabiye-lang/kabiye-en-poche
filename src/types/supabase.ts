@@ -1,60 +1,71 @@
+export type Json = string | number | boolean | null | { [key: string]: Json | undefined } | Json[]
+
 export interface Database {
   public: {
     Tables: {
-      units: {
+      alphabet_letters: {
         Row: {
+          audio_url: string | null
+          created_at: string | null
+          description_en: string
+          description_fr: string
+          examples_en: Json | null
+          examples_fr: Json | null
           id: string
-          code: string
-          title_en: string
-          title_fr: string
-          description_en: string | null
-          description_fr: string | null
+          image_url: string | null
           position: number
-          status: 'available' | 'coming_soon' | 'maintenance' | 'disabled'
-          created_at: string
+          pronunciation_en: string | null
+          pronunciation_fr: string | null
+          type: string | null
         }
         Insert: {
-          id?: string
-          code: string
-          title_en: string
-          title_fr: string
-          description_en?: string | null
-          description_fr?: string | null
+          audio_url?: string | null
+          created_at?: string | null
+          description_en: string
+          description_fr: string
+          examples_en?: Json | null
+          examples_fr?: Json | null
+          id: string
+          image_url?: string | null
           position: number
-          status?: 'available' | 'coming_soon' | 'maintenance' | 'disabled'
-          created_at?: string
+          pronunciation_en?: string | null
+          pronunciation_fr?: string | null
+          type?: string | null
         }
         Update: {
+          audio_url?: string | null
+          created_at?: string | null
+          description_en?: string
+          description_fr?: string
+          examples_en?: Json | null
+          examples_fr?: Json | null
           id?: string
-          code?: string
-          title_en?: string
-          title_fr?: string
-          description_en?: string | null
-          description_fr?: string | null
+          image_url?: string | null
           position?: number
-          status?: 'available' | 'coming_soon' | 'maintenance' | 'disabled'
-          created_at?: string
+          pronunciation_en?: string | null
+          pronunciation_fr?: string | null
+          type?: string | null
         }
         Relationships: []
       }
       categories: {
         Row: {
+          created_at: string | null
           id: string
           name: string
           parent_category: string | null
-          created_at: string
         }
         Insert: {
+          created_at?: string | null
           id?: string
           name: string
           parent_category?: string | null
-          created_at?: string
         }
         Update: {
+          created_at?: string | null
           id?: string
           name?: string
           parent_category?: string | null
-          created_at?: string
         }
         Relationships: [
           {
@@ -65,72 +76,148 @@ export interface Database {
           },
         ]
       }
-      topics: {
+      cms_pages: {
         Row: {
+          content_en: string
+          content_fr: string
+          created_at: string | null
+          description_en: string | null
+          description_fr: string | null
           id: string
-          name: string
-          created_at: string
+          is_active: boolean | null
+          slug: string
+          sort_order: number | null
+          title_en: string
+          title_fr: string
+          updated_at: string | null
         }
         Insert: {
+          content_en: string
+          content_fr: string
+          created_at?: string | null
+          description_en?: string | null
+          description_fr?: string | null
           id?: string
-          name: string
-          created_at?: string
+          is_active?: boolean | null
+          slug: string
+          sort_order?: number | null
+          title_en: string
+          title_fr: string
+          updated_at?: string | null
         }
         Update: {
+          content_en?: string
+          content_fr?: string
+          created_at?: string | null
+          description_en?: string | null
+          description_fr?: string | null
           id?: string
-          name?: string
-          created_at?: string
+          is_active?: boolean | null
+          slug?: string
+          sort_order?: number | null
+          title_en?: string
+          title_fr?: string
+          updated_at?: string | null
         }
         Relationships: []
       }
-      lessons: {
+      lesson_contents: {
         Row: {
+          audio_url: string | null
+          content_en: string
+          content_fr: string
+          created_at: string | null
+          examples_en: Json | null
+          examples_fr: Json | null
+          has_quiz: boolean | null
           id: string
-          unit_id: string
-          category_id: string | null
-          position: number
+          image_url: string | null
+          lesson_id: string
           title_en: string
           title_fr: string
-          objectives_en: string[]
-          objectives_fr: string[]
-          difficulty: 'Beginner' | 'Intermediate' | 'Advanced'
-          created_at: string
         }
         Insert: {
+          audio_url?: string | null
+          content_en: string
+          content_fr: string
+          created_at?: string | null
+          examples_en?: Json | null
+          examples_fr?: Json | null
+          has_quiz?: boolean | null
           id?: string
-          unit_id: string
-          category_id?: string | null
-          position: number
+          image_url?: string | null
+          lesson_id: string
           title_en: string
           title_fr: string
-          objectives_en: string[]
-          objectives_fr: string[]
-          difficulty: 'Beginner' | 'Intermediate' | 'Advanced'
-          created_at?: string
         }
         Update: {
+          audio_url?: string | null
+          content_en?: string
+          content_fr?: string
+          created_at?: string | null
+          examples_en?: Json | null
+          examples_fr?: Json | null
+          has_quiz?: boolean | null
           id?: string
-          unit_id?: string
-          category_id?: string | null
-          position?: number
+          image_url?: string | null
+          lesson_id?: string
           title_en?: string
           title_fr?: string
-          objectives_en?: string[]
-          objectives_fr?: string[]
-          difficulty?: 'Beginner' | 'Intermediate' | 'Advanced'
-          created_at?: string
         }
         Relationships: [
           {
-            foreignKeyName: 'lessons_unit_id_fkey'
-            columns: ['unit_id']
-            referencedRelation: 'units'
+            foreignKeyName: 'lesson_contents_lesson_id_fkey'
+            columns: ['lesson_id']
+            referencedRelation: 'lessons'
             referencedColumns: ['id']
           },
+        ]
+      }
+      lesson_exercises: {
+        Row: {
+          audio_url: string | null
+          created_at: string | null
+          data: Json
+          exercise_type: string
+          id: string
+          instructions_en: string | null
+          instructions_fr: string | null
+          lesson_id: string
+          position: number
+          title_en: string
+          title_fr: string
+        }
+        Insert: {
+          audio_url?: string | null
+          created_at?: string | null
+          data: Json
+          exercise_type: string
+          id?: string
+          instructions_en?: string | null
+          instructions_fr?: string | null
+          lesson_id: string
+          position?: number
+          title_en: string
+          title_fr: string
+        }
+        Update: {
+          audio_url?: string | null
+          created_at?: string | null
+          data?: Json
+          exercise_type?: string
+          id?: string
+          instructions_en?: string | null
+          instructions_fr?: string | null
+          lesson_id?: string
+          position?: number
+          title_en?: string
+          title_fr?: string
+        }
+        Relationships: [
           {
-            foreignKeyName: 'lessons_category_id_fkey'
-            columns: ['category_id']
-            referencedRelation: 'categories'
+            foreignKeyName: 'lesson_exercises_lesson_id_fkey'
+            columns: ['lesson_id']
+            referencedRelation: 'lessons'
             referencedColumns: ['id']
           },
         ]
@@ -163,118 +250,97 @@ export interface Database {
           },
         ]
       }
-      lesson_contents: {
+      lessons: {
         Row: {
+          category_id: string | null
+          created_at: string | null
+          difficulty: 'Beginner' | 'Intermediate' | 'Advanced'
           id: string
-          lesson_id: string
+          objectives_en: string[] | null
+          objectives_fr: string[] | null
+          position: number
           title_en: string
           title_fr: string
-          content_en: string
-          content_fr: string
-          examples_en: any
-          examples_fr: any
-          image_url: string | null
-          audio_url: string | null
-          has_quiz: boolean
-          created_at: string
+          unit_id: string
         }
         Insert: {
+          category_id?: string | null
+          created_at?: string | null
+          difficulty: 'Beginner' | 'Intermediate' | 'Advanced'
           id?: string
-          lesson_id: string
+          objectives_en?: string[] | null
+          objectives_fr?: string[] | null
+          position: number
           title_en: string
           title_fr: string
-          content_en: string
-          content_fr: string
-          examples_en?: any
-          examples_fr?: any
-          image_url?: string | null
-          audio_url?: string | null
-          has_quiz?: boolean
-          created_at?: string
+          unit_id: string
         }
         Update: {
+          category_id?: string | null
+          created_at?: string | null
+          difficulty?: 'Beginner' | 'Intermediate' | 'Advanced'
           id?: string
-          lesson_id?: string
+          objectives_en?: string[] | null
+          objectives_fr?: string[] | null
+          position?: number
           title_en?: string
           title_fr?: string
-          content_en?: string
-          content_fr?: string
-          examples_en?: any
-          examples_fr?: any
-          image_url?: string | null
-          audio_url?: string | null
-          has_quiz?: boolean
-          created_at?: string
+          unit_id?: string
         }
         Relationships: [
           {
-            foreignKeyName: 'lesson_contents_lesson_id_fkey'
-            columns: ['lesson_id']
-            referencedRelation: 'lessons'
+            foreignKeyName: 'lessons_category_id_fkey'
+            columns: ['category_id']
+            referencedRelation: 'categories'
+            referencedColumns: ['id']
+          },
+          {
+            foreignKeyName: 'lessons_unit_id_fkey'
+            columns: ['unit_id']
+            referencedRelation: 'units'
             referencedColumns: ['id']
           },
         ]
       }
       quiz_questions: {
         Row: {
+          correct_answer: string
+          created_at: string | null
+          explanation_en: string | null
+          explanation_fr: string | null
           id: string
           lesson_id: string
-          question_type:
-            | 'multiple-choice'
-            | 'true-false'
-            | 'fill-in-the-blank'
-            | 'match-pairs'
-            | 'order-words'
-            | 'listen-type'
-            | 'listen-chose'
+          options: Json
+          position: number
           question_en: string
           question_fr: string
-          options_en: any | null
-          options_fr: any | null
-          correct_answer: string
-          audio_url: string | null
-          position: number
-          created_at: string
+          question_type: string
         }
         Insert: {
+          correct_answer: string
+          created_at?: string | null
+          explanation_en?: string | null
+          explanation_fr?: string | null
           id?: string
           lesson_id: string
-          question_type:
-            | 'multiple-choice'
-            | 'true-false'
-            | 'fill-in-the-blank'
-            | 'match-pairs'
-            | 'order-words'
-            | 'listen-type'
-            | 'listen-chose'
+          options: Json
+          position?: number
           question_en: string
           question_fr: string
-          options_en?: any | null
-          options_fr?: any | null
-          correct_answer: string
-          audio_url?: string | null
-          position?: number
-          created_at?: string
+          question_type: string
         }
         Update: {
+          correct_answer?: string
+          created_at?: string | null
+          explanation_en?: string | null
+          explanation_fr?: string | null
           id?: string
           lesson_id?: string
-          question_type?:
-            | 'multiple-choice'
-            | 'true-false'
-            | 'fill-in-the-blank'
-            | 'match-pairs'
-            | 'order-words'
-            | 'listen-type'
-            | 'listen-chose'
+          options?: Json
+          position?: number
           question_en?: string
           question_fr?: string
-          options_en?: any | null
-          options_fr?: any | null
-          correct_answer?: string
-          audio_url?: string | null
-          position?: number
-          created_at?: string
+          question_type?: string
         }
         Relationships: [
           {
@@ -285,130 +351,57 @@ export interface Database {
           },
         ]
       }
-      alphabet_letters: {
+      topics: {
         Row: {
+          created_at: string | null
           id: string
-          type: 'vowel' | 'consonant' | 'grapheme'
-          pronunciation_en: string
-          pronunciation_fr: string
-          description_en: string
-          description_fr: string
-          examples_en: any | null
-          examples_fr: any | null
-          audio_url: string | null
-          image_url: string | null
-          position: number
-          created_at: string
+          name: string
         }
         Insert: {
+          created_at?: string | null
           id?: string
-          type: 'vowel' | 'consonant' | 'grapheme'
-          pronunciation_en: string
-          pronunciation_fr: string
-          description_en: string
-          description_fr: string
-          examples_en?: any | null
-          examples_fr?: any | null
-          audio_url?: string | null
-          image_url?: string | null
-          position?: number
-          created_at?: string
+          name: string
         }
         Update: {
+          created_at?: string | null
           id?: string
-          type?: 'vowel' | 'consonant' | 'grapheme'
-          pronunciation_en?: string
-          pronunciation_fr?: string
-          description_en?: string
-          description_fr?: string
-          examples_en?: any | null
-          examples_fr?: any | null
-          audio_url?: string | null
-          image_url?: string | null
-          position?: number
-          created_at?: string
+          name?: string
         }
         Relationships: []
       }
-      user_progress: {
+      units: {
         Row: {
-          id: string
-          user_id: string
-          lesson_id: string
-          completed_at: string | null
-          score: number | null
-          created_at: string
-          updated_at: string
-        }
-        Insert: {
-          id?: string
-          user_id: string
-          lesson_id: string
-          completed_at?: string | null
-          score?: number | null
-          created_at?: string
-          updated_at?: string
-        }
-        Update: {
-          id?: string
-          user_id?: string
-          lesson_id?: string
-          completed_at?: string | null
-          score?: number | null
-          created_at?: string
-          updated_at?: string
-        }
-        Relationships: [
-          {
-            foreignKeyName: 'user_progress_lesson_id_fkey'
-            columns: ['lesson_id']
-            referencedRelation: 'lessons'
-            referencedColumns: ['id']
-          },
-        ]
-      }
-      cms_pages: {
-        Row: {
-          id: string
-          slug: string
-          title_en: string
-          title_fr: string
-          content_en: string
-          content_fr: string
+          code: string
+          created_at: string | null
           description_en: string | null
           description_fr: string | null
-          is_active: boolean
-          sort_order: number
-          created_at: string
-          updated_at: string
-        }
-        Insert: {
-          id?: string
-          slug: string
+          id: string
+          position: number
+          status: 'available' | 'coming_soon' | 'maintenance' | 'disabled' | null
           title_en: string
           title_fr: string
-          content_en: string
-          content_fr: string
+        }
+        Insert: {
+          code: string
+          created_at?: string | null
           description_en?: string | null
           description_fr?: string | null
-          is_active?: boolean
-          sort_order?: number
-          created_at?: string
-          updated_at?: string
+          id?: string
+          position: number
+          status?: 'available' | 'coming_soon' | 'maintenance' | 'disabled' | null
+          title_en: string
+          title_fr: string
         }
         Update: {
-          id?: string
-          slug?: string
-          title_en?: string
-          title_fr?: string
-          content_en?: string
-          content_fr?: string
+          code?: string
+          created_at?: string | null
           description_en?: string | null
           description_fr?: string | null
-          is_active?: boolean
-          sort_order?: number
-          created_at?: string
-          updated_at?: string
+          id?: string
+          position?: number
+          status?: 'available' | 'coming_soon' | 'maintenance' | 'disabled' | null
+          title_en?: string
+          title_fr?: string
         }
         Relationships: []
       }
@@ -428,16 +421,21 @@ export interface Database {
   }
 }
 
-// Helper types for easier usage
-export type Unit = Database['public']['Tables']['units']['Row']
-export type Lesson = Database['public']['Tables']['lessons']['Row']
-export type Category = Database['public']['Tables']['categories']['Row']
-export type Topic = Database['public']['Tables']['topics']['Row']
-export type LessonContent = Database['public']['Tables']['lesson_contents']['Row']
-export type QuizQuestion = Database['public']['Tables']['quiz_questions']['Row']
-export type AlphabetLetter = Database['public']['Tables']['alphabet_letters']['Row']
-export type UserProgress = Database['public']['Tables']['user_progress']['Row']
-export type CmsPage = Database['public']['Tables']['cms_pages']['Row']
+// Helper types
+export type Tables<T extends keyof Database['public']['Tables']> = Database['public']['Tables'][T]['Row']
+export type Insertables<T extends keyof Database['public']['Tables']> = Database['public']['Tables'][T]['Insert']
+export type Updateables<T extends keyof Database['public']['Tables']> = Database['public']['Tables'][T]['Update']
+
+// Specific table types
+export type Unit = Tables<'units'>
+export type Lesson = Tables<'lessons'>
+export type LessonContent = Tables<'lesson_contents'>
+export type LessonExercise = Tables<'lesson_exercises'>
+export type QuizQuestion = Tables<'quiz_questions'>
+export type Category = Tables<'categories'>
+export type Topic = Tables<'topics'>
+export type AlphabetLetter = Tables<'alphabet_letters'>
+export type CmsPage = Tables<'cms_pages'>
 
 // Extended types with relationships
 export type UnitWithLessons = Unit & {
@@ -449,11 +447,30 @@ export type LessonWithContent = Lesson & {
   category: Category | null
   content: LessonContent | null
   quiz_questions: QuizQuestion[]
-  user_progress: UserProgress | null
+  exercises: LessonExercise[]
 }
 
 export type LessonWithProgress = Lesson & {
   is_completed: boolean
   is_locked: boolean
-  progress: UserProgress | null
+  progress: {
+    id: string
+    user_id: string
+    lesson_id: string
+    completed_at: string
+    score: number | null
+    created_at: string
+    updated_at: string
+  } | null
+}
+
+export type UserProgress = {
+  id: string
+  user_id: string
+  lesson_id: string
+  is_completed: boolean
+  completed_at: string
+  score: number | null
+  created_at: string
+  updated_at: string
 }

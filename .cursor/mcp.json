@@ -1,10 +1,14 @@
 {
   "mcpServers": {
-    "RadonAi": {
-      "url": "http://127.0.0.1:58459/mcp",
-      "type": "http",
-      "headers": {
-        "nonce": "5de7c8b6-592c-4058-8c55-ee14774c9b07"
+    "supabase-kabiyeenpoche": {
+      "command": "npx",
+      "args": [
+        "-y",
+        "@supabase/mcp-server-supabase@latest",
+        "--project-ref=isdeilllppdfngxmsols"
+      ],
+      "env": {
+        "SUPABASE_ACCESS_TOKEN": "sbp_de9f845ff378892b58a21195a82a9f4a75b46345"
       }
     }
   }

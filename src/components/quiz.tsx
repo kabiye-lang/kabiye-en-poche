@@ -69,7 +69,7 @@ const QuizModal: React.FC<QuizModalProps> = ({ onClose }) => {
 
   if (error || !quizQuestions || quizQuestions.length === 0) {
     return (
-      <View className="mb-0 mt-auto flex-1 rounded-xl bg-white dark:bg-gray-800">
+      <View className="mb-0 mt-auto flex-1 rounded-xl bg-white dark:bg-gray-800" safeArea="top">
         <View className="flex-row items-center border-b border-gray-300 p-4 dark:border-gray-600">
           <TouchableOpacity onPress={onClose}>
             <XIcon size={24} className="text-text-dark dark:text-gray-100" />
@@ -93,8 +93,8 @@ const QuizModal: React.FC<QuizModalProps> = ({ onClose }) => {
           type: quizQuestions[currentQuestionIndex].question_type,
           question: quizQuestions[currentQuestionIndex].question_en, // Use English for now
           correctAnswer: quizQuestions[currentQuestionIndex].correct_answer,
-          answers: quizQuestions[currentQuestionIndex].options_en as string[],
-          audioUri: quizQuestions[currentQuestionIndex].audio_url || undefined,
+          answers: (quizQuestions[currentQuestionIndex].options as string[]) || [],
+          audioUri: undefined,
         }
       : null
 
@@ -120,7 +120,7 @@ const QuizModal: React.FC<QuizModalProps> = ({ onClose }) => {
   const renderQuestion = () => {
     if (!currentQuestion) return null
     switch (currentQuestion.type) {
-      case 'multiple-choice':
+      case 'multiple_choice':
         return currentQuestion.answers!.map((answer, index) => (
           <TouchableOpacity
             key={index}
@@ -133,7 +133,7 @@ const QuizModal: React.FC<QuizModalProps> = ({ onClose }) => {
             </Text>
           </TouchableOpacity>
         ))
-      case 'true-false':
+      case 'true_false':
         return ['True', 'False'].map((answer, index) => (
           <TouchableOpacity
             key={index}
@@ -146,7 +146,7 @@ const QuizModal: React.FC<QuizModalProps> = ({ onClose }) => {
             </Text>
           </TouchableOpacity>
         ))
-      case 'fill-in-the-blank':
+      case 'fill_blank':
         return (
           <View>
             <Text variant="lg" className="mb-2.5 text-text-dark dark:text-gray-100">
@@ -166,22 +166,22 @@ const QuizModal: React.FC<QuizModalProps> = ({ onClose }) => {
             ))}
           </View>
         )
-      case 'match-pairs':
+      case 'match':
         return (
           // @ts-expect-error question type
           <MatchPairs question={currentQuestion} onAnswerSelected={handleAnswerPress} showFeedback={showFeedback} />
         )
-      case 'order-words':
+      case 'order_words':
         return (
           // @ts-expect-error question type
           <OrderWords question={currentQuestion} onAnswerSelected={handleAnswerPress} showFeedback={showFeedback} />
         )
-      case 'listen-type':
+      case 'listen_type':
         return (
           // @ts-expect-error question type
           <ListenType question={currentQuestion} onAnswerSelected={handleAnswerPress} showFeedback={showFeedback} />
         )
-      case 'listen-chose':
+      case 'listen_choose':
         return (
           // @ts-expect-error question type
           <ListenChose question={currentQuestion} onAnswerSelected={handleAnswerPress} showFeedback={showFeedback} />
@@ -192,7 +192,7 @@ const QuizModal: React.FC<QuizModalProps> = ({ onClose }) => {
   }
 
   return (
-    <View className="mb-0 mt-auto flex-1 rounded-xl bg-white dark:bg-gray-800">
+    <View className="mb-0 mt-auto flex-1 rounded-xl bg-white dark:bg-gray-800" safeArea="top">
       <View className="flex-row items-center border-b border-gray-300 p-4 dark:border-gray-600">
         <TouchableOpacity onPress={onClose}>
           <XIcon size={24} className="text-text-dark dark:text-gray-100" />
