@@ -1,6 +1,15 @@
 # Kabiyè Lesson Content Generator
 
-Automatically generates lesson content (explanations, activities, exercises, quizzes) for your existing lessons in Supabase using AI and your Kabiyè PDF documents.
+Automatically generates lesson content (explanations, activities, exercises, quizzes) for your existing lessons in Supabase using AI, Kabiyè PDF documents, and a comprehensive Kabiyè-French dictionary (~9,000 entries).
+
+## Features
+
+✅ **Multi-source RAG**: Combines PDF books + dictionary for accurate content  
+✅ **9,000+ dictionary entries**: Automatic retrieval of words with pronunciations, definitions, and examples  
+✅ **Multi-column PDF support**: Proper handling of academic 2-column PDFs  
+✅ **French language OCR**: Optimized for French/Kabiyè text extraction  
+✅ **Direct database insert**: Generates and inserts to Supabase in one step  
+✅ **Performance tracking**: Detailed timing logs for each step  
 
 ## Quick Start
 
@@ -57,6 +66,23 @@ For each lesson:
 - **lesson_exercises** - Practice exercises (fill-in-blank, translation)
 - **quiz_questions** - Quiz questions with explanations
 
+## Dictionary Integration
+
+The script automatically loads **~9,000 Kabiyè-French dictionary entries** from the `kbp-dict-crawler` project and adds them to the RAG vector store. When generating content, the AI will automatically retrieve relevant dictionary entries with:
+
+- Kabiyè word + pronunciation
+- French definitions
+- Grammatical information
+- Usage examples in Kabiyè with translations
+- Synonyms and variants
+- Scientific names (for plants/animals)
+- Etymology information
+
+**Dictionary location**: `../../kbp-dict-crawler/storage/datasets/default`  
+**Format**: JSON files with comprehensive linguistic data
+
+If the dictionary folder is not found, the script continues with PDF-only content.
+
 ## Multi-Column PDF Support
 
 The script automatically detects and uses `UnstructuredPDFLoader` for better handling of multi-column PDFs (common in academic documents). Falls back to `PyPDFLoader` if unstructured is not installed.
@@ -64,7 +90,7 @@ The script automatically detects and uses `UnstructuredPDFLoader` for better han
 **For best results with 2-column PDFs:**
 ```bash
 # Install system dependencies
-brew install poppler  # macOS
+brew install poppler tesseract tesseract-lang  # macOS
 
 # Ensure unstructured is installed
 pip install unstructured pdf2image pdfminer.six
@@ -79,24 +105,42 @@ pip install unstructured pdf2image pdfminer.six
 
 Edit `main.py` to customize:
 
-**Use OpenAI instead of Ollama** (line ~45):
+**Use OpenAI instead of Ollama** (line ~63):
 ```python
 from langchain.chat_models import ChatOpenAI
 llm = ChatOpenAI(model="gpt-4o-mini", temperature=0)
 ```
 
-**Change PDF folder** (line ~55):
+**Change PDF folder** (line ~68):
 ```python
 pdf_folder = "../files/gpt"
 ```
 
+**Change dictionary folder** (line ~118):
+```python
+dictionary_folder = "../../kbp-dict-crawler/storage/datasets/default"
+```
+
 ## Requirements
 
-- Python 3.8+
+- Python 3.9+ (3.13+ recommended)
 - Supabase with lessons database
 - Ollama (or OpenAI API key)
 - Kabiyè PDF documents in `../files/gpt/`
+- Kabiyè dictionary JSON files in `../../kbp-dict-crawler/storage/datasets/default/`
 - Poppler (for PDF processing, especially multi-column PDFs)
+- Tesseract with French language data (for OCR)
+
+## Performance
+
+Typical execution times:
+- **PDF loading**: 60-120s (7 PDFs with OCR)
+- **Dictionary loading**: 15-30s (~9,000 entries)
+- **Text splitting**: 2-5s
+- **Vector store creation**: 40-60s
+- **Per-lesson generation**: 30-60s
+
+Total: ~5-10 minutes for full batch processing
 
 ## Troubleshooting
 
@@ -106,8 +150,20 @@ pdf_folder = "../files/gpt"
 
 **"Missing environment variables"** → Create `.env` file with Supabase credentials
 
+**"TypeError: SyncPostgrestClient.__init__()" or Supabase errors** → Fix dependency version conflict:
+```bash
+./fix_dependencies.sh
+# Or manually:
+pip uninstall -y supabase postgrest
+pip install "supabase>=2.17.0"
+```
+
+**"Dictionary folder not found"** → Ensure kbp-dict-crawler is in the correct location
+
 **Off-topic content** → Ensure PDFs are in correct folder, try again (3 retry attempts)
 
-**Poor text extraction from PDFs** → Install poppler: `brew install poppler` and reinstall: `pip install -r requirements.txt`
+**Poor text extraction from PDFs** → Install poppler and tesseract-lang: `brew install poppler tesseract tesseract-lang`
 
-**Multi-column PDFs mixed up** → The script uses UnstructuredPDFLoader for better column detection. If issues persist, ensure poppler is installed.
+**Multi-column PDFs mixed up** → The script uses UnstructuredPDFLoader for better column detection. If issues persist, ensure poppler and tesseract are installed.
+
+**Slow performance** → Normal! OCR + ML models take time. First run downloads models (~217MB). Dictionary loading adds 15-30s.

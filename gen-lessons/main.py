@@ -3,6 +3,7 @@ import json
 import shutil
 import argparse
 import sys
+import time
 from dotenv import load_dotenv
 from supabase import create_client, Client
 
@@ -18,9 +19,13 @@ from langchain_text_splitters import RecursiveCharacterTextSplitter
 from langchain.chains import RetrievalQA
 from langchain_core.prompts import PromptTemplate
 from langchain_community.vectorstores import FAISS
+from langchain_core.documents import Document
 
 # Load environment variables
 load_dotenv()
+
+# Track script execution time
+script_start_time = time.time()
 
 # === PARSE COMMAND LINE ARGUMENTS ===
 parser = argparse.ArgumentParser(description='Generate lesson content from database')
@@ -61,6 +66,7 @@ print(f"✅ Using LLM: Ollama Mistral")
 pdf_folder = "../files/gpt"  # put all your Kabiyè PDFs here
 docs = []
 print(f"\n📚 Loading PDFs from {pdf_folder}...")
+pdf_load_start = time.time()
 
 # Try to use UnstructuredPDFLoader for better column handling
 try:
@@ -72,66 +78,239 @@ except ImportError:
     print("  ℹ️  Using PyPDFLoader (install 'unstructured' package for better column handling)")
     print("  💡 Run: pip install unstructured pdf2image pdfminer.six")
 
-for file in os.listdir(pdf_folder):
-    if file.endswith(".pdf"):
-        pdf_path = os.path.join(pdf_folder, file)
-        try:
-            if use_unstructured:
-                # UnstructuredPDFLoader handles multi-column layouts better
-                # Specify French language for better OCR (PDFs are in French/Kabiyè)
-                loader = UnstructuredPDFLoader(
-                    pdf_path, 
-                    mode="elements",
-                    languages=["fra", "eng"]  # French + English fallback
-                )
-            else:
-                # Fallback to PyPDFLoader
-                loader = PyPDFLoader(pdf_path)
+# for file in os.listdir(pdf_folder):
+#     if file.endswith(".pdf"):
+#         pdf_path = os.path.join(pdf_folder, file)
+#         try:
+#             if use_unstructured:
+#                 # UnstructuredPDFLoader handles multi-column layouts better
+#                 # Specify French language for better OCR (PDFs are in French/Kabiyè)
+#                 loader = UnstructuredPDFLoader(
+#                     pdf_path, 
+#                     mode="elements",
+#                     languages=["fra", "eng"]  # French + English fallback
+#                 )
+#             else:
+#                 # Fallback to PyPDFLoader
+#                 loader = PyPDFLoader(pdf_path)
             
-            docs.extend(loader.load())
-            print(f"  ✓ Loaded {file}")
-        except Exception as e:
-            print(f"  ✗ Failed to load {file}: {e}")
-            continue
+#             docs.extend(loader.load())
+#             print(f"  ✓ Loaded {file}")
+#         except Exception as e:
+#             print(f"  ✗ Failed to load {file}: {e}")
+#             continue
 
-if len(docs) == 0:
-    print("❌ No PDFs loaded successfully. Check the PDF folder and file permissions.")
-    exit(1)
+# if len(docs) == 0:
+#     print("❌ No PDFs loaded successfully. Check the PDF folder and file permissions.")
+#     exit(1)
 
-print(f"✅ Loaded {len(docs)} PDF pages/elements")
+pdf_load_time = time.time() - pdf_load_start
+print(f"✅ Loaded {len(docs)} PDF pages/elements in {pdf_load_time:.1f}s")
+
+# === STEP 3.5: Load Kabiyè-French dictionary ===
+print(f"\n📖 Loading Kabiyè-French dictionary...")
+dict_load_start = time.time()
+dictionary_folder = "../../kbp-dict-crawler/storage/datasets/default"
+dictionary_docs = []
+pdf_doc_count = len(docs)  # Track PDF count before adding dictionary
+
+if os.path.exists(dictionary_folder):
+    try:
+        dict_files = [f for f in os.listdir(dictionary_folder) if f.endswith('.json')]
+        total_files = len(dict_files)
+        print(f"  Found {total_files} dictionary entries")
+        
+        processed = 0
+        skipped = 0
+        
+        for dict_file in dict_files:
+            try:
+                with open(os.path.join(dictionary_folder, dict_file), 'r', encoding='utf-8') as f:
+                    entry = json.load(f)
+                    
+                    headword = entry.get('headword', '').strip()
+                    if not headword:
+                        skipped += 1
+                        continue
+                    
+                    # Build formatted entry
+                    content_parts = [f"Mot kabiyè: {headword}"]
+                    
+                    # Add pronunciations
+                    pronunciations = entry.get('pronunciations', [])
+                    if pronunciations:
+                        content_parts.append(f"Prononciation: {', '.join(pronunciations)}")
+                    
+                    # Add grammar info
+                    grammar = entry.get('grammaticalInfo', '')
+                    if grammar:
+                        content_parts.append(f"Grammaire: {grammar}")
+                    
+                    # Add plural form
+                    plural = entry.get('plural', '')
+                    if plural and plural != '–':
+                        content_parts.append(f"Pluriel: {plural}")
+                    
+                    # Add variants
+                    variant_refs = entry.get('variantRefs', [])
+                    if variant_refs:
+                        variants = []
+                        for var_ref in variant_refs:
+                            var_text = var_ref.get('variant', '')
+                            var_pron = var_ref.get('pronunciation', '')
+                            if var_text:
+                                if var_pron:
+                                    variants.append(f"{var_text} [{var_pron}]")
+                                else:
+                                    variants.append(var_text)
+                        if variants:
+                            content_parts.append(f"Variantes: {', '.join(variants)}")
+                    
+                    # Process senses (definitions and examples)
+                    has_content = False
+                    for sense_idx, sense in enumerate(entry.get('senses', []), 1):
+                        definitions = sense.get('definitions', [])
+                        for def_obj in definitions:
+                            definition = def_obj.get('definition', '').strip()
+                            if definition:
+                                def_grammar = def_obj.get('grammar', '')
+                                if def_grammar:
+                                    content_parts.append(f"Définition {sense_idx}: {definition} ({def_grammar})")
+                                else:
+                                    content_parts.append(f"Définition {sense_idx}: {definition}")
+                                has_content = True
+                        
+                        # Add examples from this sense
+                        examples = sense.get('examples', [])
+                        for example in examples:
+                            source = example.get('source', '').strip()
+                            translation = example.get('translation', '').strip()
+                            if source and translation:
+                                content_parts.append(f"Exemple: {source}")
+                                content_parts.append(f"Traduction: {translation}")
+                                has_content = True
+                        
+                        # Add scientific name if present
+                        sci_name = sense.get('scientifiName', '')
+                        if sci_name:
+                            content_parts.append(f"Nom scientifique: {sci_name}")
+                    
+                    # Add etymology if present
+                    etymology = entry.get('publishRoot', '')
+                    if etymology:
+                        content_parts.append(f"Étymologie: {etymology}")
+                    
+                    # Add cross-references (synonyms, etc.)
+                    cross_refs = entry.get('crossRefs', [])
+                    if cross_refs:
+                        for cross_ref in cross_refs:
+                            ref_type = cross_ref.get('type', '')
+                            targets = cross_ref.get('targets', [])
+                            if targets:
+                                ref_text = ', '.join(targets)
+                                if ref_type == 'syn':
+                                    content_parts.append(f"Synonymes: {ref_text}")
+                                elif ref_type == 'cf':
+                                    content_parts.append(f"Voir aussi: {ref_text}")
+                                else:
+                                    content_parts.append(f"Référence ({ref_type}): {ref_text}")
+                    
+                    # Create document if we have meaningful content
+                    if has_content and len(content_parts) > 1:
+                        doc_content = '\n'.join(content_parts)
+                        dictionary_docs.append(Document(
+                            page_content=doc_content,
+                            metadata={'source': 'kabiye_dictionary', 'headword': headword, 'letter': entry.get('letter', '')}
+                        ))
+                        processed += 1
+                    else:
+                        skipped += 1
+                    
+                    # Process sub-entries as separate documents
+                    sub_entries = entry.get('subEntries', [])
+                    for sub_entry in sub_entries:
+                        sub_headword = sub_entry.get('headword', '').strip()
+                        if not sub_headword:
+                            continue
+                        
+                        sub_type = sub_entry.get('type', '')
+                        sub_content_parts = [
+                            f"Mot kabiyè: {sub_headword}",
+                            f"(sous-entrée de: {headword})"
+                        ]
+                        
+                        if sub_type:
+                            sub_content_parts.append(f"Type: {sub_type}")
+                        
+                        sub_has_content = False
+                        for sub_sense in sub_entry.get('senses', []):
+                            for sub_def in sub_sense.get('definitions', []):
+                                definition = sub_def.get('definition', '').strip()
+                                if definition:
+                                    sub_content_parts.append(f"Définition: {definition}")
+                                    sub_has_content = True
+                            
+                            for sub_example in sub_sense.get('examples', []):
+                                source = sub_example.get('source', '').strip()
+                                translation = sub_example.get('translation', '').strip()
+                                if source and translation:
+                                    sub_content_parts.append(f"Exemple: {source}")
+                                    sub_content_parts.append(f"Traduction: {translation}")
+                                    sub_has_content = True
+                        
+                        if sub_has_content:
+                            sub_doc_content = '\n'.join(sub_content_parts)
+                            dictionary_docs.append(Document(
+                                page_content=sub_doc_content,
+                                metadata={'source': 'kabiye_dictionary', 'headword': sub_headword, 'parent': headword}
+                            ))
+                            processed += 1
+                    
+            except Exception as e:
+                skipped += 1
+                continue
+        
+        dict_load_time = time.time() - dict_load_start
+        print(f"✅ Loaded {len(dictionary_docs)} dictionary entries in {dict_load_time:.1f}s")
+        print(f"   Processed: {processed}, Skipped: {skipped}")
+        
+        # Combine PDF docs with dictionary docs
+        print(f"\n🔗 Combining PDFs and dictionary...")
+        docs.extend(dictionary_docs)
+        print(f"✅ Total documents: {len(docs)} ({pdf_doc_count} PDF + {len(dictionary_docs)} dictionary)")
+    except Exception as e:
+        print(f"⚠️  Error loading dictionary: {e}")
+        print(f"   Continuing with PDF documents only...")
+else:
+    print(f"⚠️  Dictionary folder not found: {dictionary_folder}")
+    print(f"   Continuing with PDF documents only...")
 
 # === STEP 4: Split into chunks ===
 print(f"\n🔪 Splitting documents into chunks...")
+split_start = time.time()
 splitter = RecursiveCharacterTextSplitter(chunk_size=1000, chunk_overlap=100)
 chunks = splitter.split_documents(docs)
-print(f"✅ Created {len(chunks)} chunks")
+split_time = time.time() - split_start
+print(f"✅ Created {len(chunks)} chunks in {split_time:.1f}s")
 
 # === STEP 5: Build vector store ===
 print(f"\n🧠 Building vector store...")
+vector_start = time.time()
 from langchain_huggingface import HuggingFaceEmbeddings
 embeddings = HuggingFaceEmbeddings(model_name="sentence-transformers/all-MiniLM-L6-v2")
 
 db = FAISS.from_documents(chunks, embeddings)
 retriever = db.as_retriever(search_kwargs={"k": 3})  # Limit to top 3 most relevant chunks
-print(f"✅ Vector store ready")
+vector_time = time.time() - vector_start
+print(f"✅ Vector store ready in {vector_time:.1f}s")
 
 # === STEP 6: Lesson content generation template ===
-prompt_template = """
-You are a Kabiyè language expert creating detailed lesson content.
+prompt_template = """You are a Kabiyè language expert creating detailed lesson content.
 
-Context from Kabiyè language documents: {context}
+Use the following Kabiyè language context (PDFs + dictionary):
+{context}
 
-Lesson Information:
-- Title (EN): {title_en}
-- Title (FR): {title_fr}
-- Unit: {unit_name}
-- Category: {category_name}
-- Topics: {topics}
-- Objectives (EN): {objectives_en}
-- Objectives (FR): {objectives_fr}
-- Difficulty: {difficulty}
-
-Create comprehensive, engaging lesson content for this specific lesson. Focus ONLY on the topics mentioned above.
+Question: {question}
 
 Respond with ONLY valid JSON matching this structure:
 
@@ -140,7 +319,7 @@ Respond with ONLY valid JSON matching this structure:
     {{
       "title_en": "Section Title in English",
       "title_fr": "Titre de section en français",
-      "content_en": "Detailed explanation in English. Make this thorough and educational, covering key concepts related to {title_en}.",
+      "content_en": "Detailed explanation in English. Make this thorough and educational.",
       "content_fr": "Explication détaillée en français. Rendez cela complet et éducatif.",
       "examples_en": [
         {{"kabiye": "word1", "translation": "meaning1", "pronunciation": "how to say it"}},
@@ -237,7 +416,7 @@ Respond with ONLY valid JSON matching this structure:
     {{
       "position": 1,
       "question_type": "multiple_choice",
-      "question_en": "Question in English about {title_en}?",
+      "question_en": "Question in English?",
       "question_fr": "Question en français?",
       "options": [
         {{"value": "option1", "label_en": "Option 1", "label_fr": "Option 1"}},
@@ -265,24 +444,35 @@ Respond with ONLY valid JSON matching this structure:
   "cultural_note": {{
     "title_en": "Cultural Insight",
     "title_fr": "Aperçu culturel",
-    "content_en": "Cultural information related to {title_en}",
+    "content_en": "Cultural information",
     "content_fr": "Informations culturelles"
   }}
 }}
 
-Remember: Create content specifically for {title_en}. Include at least 2 lesson content sections, 3 activities, 2 exercises, and 2-3 quiz questions.
+Include at least 2 lesson content sections, 3 activities, 2 exercises, and 2-3 quiz questions. Use proper Kabiyè words from the dictionary context.
 """
 
 PROMPT = PromptTemplate(
     template=prompt_template,
-    input_variables=["context", "title_en", "title_fr", "unit_name", "category_name", "topics", "objectives_en", "objectives_fr", "difficulty"]
+    input_variables=["context", "question"]
 )
 
-qa_chain = RetrievalQA.from_chain_type(
-    llm=llm,
-    retriever=retriever,
-    chain_type="stuff",
-    chain_type_kwargs={"prompt": PROMPT}
+# Use the newer LCEL (LangChain Expression Language) pattern
+from langchain.schema.runnable import RunnablePassthrough
+from langchain.schema.output_parser import StrOutputParser
+
+# Create a custom chain using LCEL
+def format_docs(docs):
+    return "\n\n".join(doc.page_content for doc in docs)
+
+qa_chain = (
+    {
+        "context": retriever | format_docs,
+        "question": RunnablePassthrough()
+    }
+    | PROMPT
+    | llm
+    | StrOutputParser()
 )
 
 # === STEP 7: Fetch lessons from database ===
@@ -362,7 +552,6 @@ def extract_and_validate_json(text):
                     return json.loads(partial_json)
             except:
                 return None
-
 
 def insert_to_database(lesson_id, lesson_data):
     """Insert lesson content directly to Supabase database"""
@@ -448,8 +637,8 @@ def insert_to_database(lesson_id, lesson_data):
     
     return results
 
-
 # === STEP 10: Generate content for each lesson ===
+generation_start_time = time.time()
 successful_generations = 0
 failed_generations = []
 database_inserts = 0
@@ -466,6 +655,7 @@ for lesson in lessons:
     objectives_en = ", ".join(lesson.get('objectives_en', []))
     objectives_fr = ", ".join(lesson.get('objectives_fr', []))
     
+    lesson_start_time = time.time()
     print(f"\n{'='*80}")
     print(f"📝 Generating content for: {title_en}")
     print(f"{'='*80}")
@@ -478,35 +668,35 @@ for lesson in lessons:
     success = False
     for attempt in range(3):
         try:
-            # Create specific query with all lesson context
-            query = f"""Generate comprehensive lesson content for: {title_en}
-            
-Focus on these topics: {topics if topics else title_en}
-This lesson is about: {objectives_en if objectives_en else 'teaching ' + title_en}
+            # Create comprehensive query with ALL lesson metadata embedded
+            query = f"""Generate comprehensive lesson content for the following Kabiyè language lesson:
 
-Create engaging content with:
-- Multiple content sections explaining key concepts
-- Interactive activities (listen and choose, match pairs, order words)
-- Practice exercises (fill in blanks, translation)
-- Quiz questions to test understanding
-- Cultural notes when relevant
+**Lesson Title:**
+- English: {title_en}
+- French: {title_fr}
 
-Make sure everything is related to {title_en} and the topics: {topics}."""
+**Unit:** {unit_name}
+**Category:** {category_name}
+**Difficulty Level:** {difficulty}
 
-            # Invoke chain with all context
-            result = qa_chain.invoke({
-                "query": query,
-                "title_en": title_en,
-                "title_fr": title_fr,
-                "unit_name": unit_name,
-                "category_name": category_name,
-                "topics": topics or "General",
-                "objectives_en": objectives_en or "Learn about " + title_en,
-                "objectives_fr": objectives_fr or "Apprendre " + title_fr,
-                "difficulty": difficulty
-            })
-            
-            result_text = result["result"] if isinstance(result, dict) else str(result)
+**Topics to Cover:** {topics if topics else title_en}
+
+**Learning Objectives:**
+- English: {objectives_en if objectives_en else 'Learn about ' + title_en}
+- French: {objectives_fr if objectives_fr else 'Apprendre ' + title_fr}
+
+Create engaging, educational content that includes:
+1. Multiple content sections explaining key concepts about {topics if topics else title_en}
+2. Interactive activities (listen and choose, match pairs, order words)
+3. Practice exercises (fill in blanks, translation)
+4. Quiz questions to test understanding
+5. Cultural notes when relevant to {title_en}
+
+Use accurate Kabiyè words, pronunciations, and examples from the dictionary context.
+Make sure everything is specifically related to: {title_en} and covers these topics: {topics if topics else title_en}."""
+
+            # Invoke chain with LCEL pattern (just pass the query string directly)
+            result_text = qa_chain.invoke(query)
             
             lesson_data = extract_and_validate_json(result_text)
             
@@ -561,6 +751,8 @@ Make sure everything is related to {title_en} and the topics: {topics}."""
                 else:
                     print(f"\n🔍 Dry-run mode: Skipping database insert")
                 
+                lesson_time = time.time() - lesson_start_time
+                print(f"⏱️  Lesson generated in {lesson_time:.1f}s")
                 successful_generations += 1
                 success = True
                 break
@@ -587,6 +779,18 @@ print(f"{'='*80}")
 
 if args.dry_run:
     print(f"🔍 DRY RUN MODE - No database changes were made")
+
+total_generation_time = time.time() - generation_start_time
+total_script_time = time.time() - script_start_time
+
+print(f"\n⏱️  Timing:")
+print(f"   PDF loading: {pdf_load_time:.1f}s")
+if 'dict_load_time' in locals():
+    print(f"   Dictionary loading: {dict_load_time:.1f}s")
+print(f"   Text splitting: {split_time:.1f}s")
+print(f"   Vector store: {vector_time:.1f}s")
+print(f"   Lesson generation: {total_generation_time:.1f}s")
+print(f"   Total execution: {total_script_time:.1f}s")
 
 print(f"\n📊 Statistics:")
 print(f"   Total lessons processed: {len(lessons)}")
