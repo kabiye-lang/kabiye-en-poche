@@ -1,4 +1,12 @@
-import type { AlphabetLetter, CmsPage, Lesson, LessonWithProgress, Unit, UnitWithLessons } from '@/types/supabase'
+import type {
+  AlphabetLetter,
+  CmsPage,
+  Lesson,
+  LessonActivity,
+  LessonWithProgress,
+  Unit,
+  UnitWithLessons,
+} from '@/types/supabase'
 import type { LocalProgress } from '@/utils/local-storage'
 
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
@@ -345,13 +353,31 @@ export function useLessonExercises(lessonId: string) {
   })
 }
 
-// Get quiz questions for a lesson
+// Get quiz questions for a lesson (DEPRECATED - use useLessonActivities instead)
 export function useQuizQuestions(lessonId: string) {
   return useQuery({
     queryKey: ['quiz-questions', lessonId],
     queryFn: async (): Promise<any[]> => {
       const { data, error } = await supabase
         .from('quiz_questions')
+        .select('*')
+        .eq('lesson_id', lessonId)
+        .order('position', { ascending: true })
+
+      if (error) throw error
+      return data || []
+    },
+    enabled: !!lessonId,
+  })
+}
+
+// Get all lesson activities (unified quiz questions and exercises)
+export function useLessonActivities(lessonId: string) {
+  return useQuery({
+    queryKey: ['lesson-activities', lessonId],
+    queryFn: async (): Promise<LessonActivity[]> => {
+      const { data, error } = await supabase
+        .from('lesson_activities')
         .select('*')
         .eq('lesson_id', lessonId)
         .order('position', { ascending: true })

@@ -5,6 +5,7 @@ import {
   useCmsPages,
   useCompleteLesson,
   useLesson,
+  useLessonActivities,
   useLessonContent,
   useLessonExercises,
   useLessons,
@@ -46,6 +47,10 @@ export function useAppLessonContent(lessonId: string) {
 
 export function useAppLessonExercises(lessonId: string) {
   return useLessonExercises(lessonId)
+}
+
+export function useAppLessonActivities(lessonId: string) {
+  return useLessonActivities(lessonId)
 }
 
 export function useAppLessonsWithProgress(unitId: string) {

@@ -1,19 +1,16 @@
-import { useState } from 'react'
-import { Alert, Linking, ScrollView, Switch, TouchableOpacity } from 'react-native'
+import { Alert, Linking, Platform, ScrollView, TouchableOpacity } from 'react-native'
 
 import * as Application from 'expo-application'
 import { useRouter } from 'expo-router'
 
 import { useLingui } from '@lingui/react/macro'
 
-import { BookOpenTextIcon, CaretRightIcon, GearIcon, TrashIcon, UserIcon } from '@/components/icons'
+import { BookOpenTextIcon, CaretRightIcon, GearIcon, GlobeIcon, TrashIcon, UserIcon } from '@/components/icons'
 import { Card, ScreenTitle, Text, View } from '@/components/ui'
 import { useAppProgressSummary } from '@/hooks/use-app-data'
-import { brandColors } from '@/utils/design-system-nativewind'
 
 const ProfileScreen = () => {
   const { t, i18n } = useLingui()
-  const [isEnglish, setIsEnglish] = useState(i18n.locale === 'en')
   const router = useRouter()
   const { data: progressSummary, isLoading: progressLoading } = useAppProgressSummary()
 
@@ -89,9 +86,12 @@ const ProfileScreen = () => {
     }
   }
 
-  const handleLanguageToggle = (value: boolean) => {
-    setIsEnglish(value)
-    i18n.activate(value ? 'en' : 'fr')
+  const openLanguageSettings = () => {
+    if (Platform.OS === 'ios') {
+      Linking.openURL('app-settings:')
+    } else {
+      Linking.openSettings()
+    }
   }
 
   const handleResetProgress = () => {
@@ -229,36 +229,26 @@ const ProfileScreen = () => {
 
           <View className="space-y-4">
             {/* Language Setting */}
-            <View className="flex-row items-center justify-between">
-              <View className="flex-1">
-                <Text variant="body" weight="medium" className="mb-1 text-text-dark dark:text-gray-100">
-                  {t`App Language`}
-                </Text>
-                <Text variant="caption" className="text-text-grey dark:text-gray-400">
-                  {t`Choose your preferred interface language`}
-                </Text>
+            <TouchableOpacity
+              className="flex-row items-center justify-between rounded-lg bg-gray-50 p-3 dark:bg-gray-800"
+              onPress={openLanguageSettings}
+            >
+              <View className="flex-1 flex-row items-center">
+                <GlobeIcon size={20} className="text-primary dark:text-gray-100" />
+                <View className="ml-3 flex-1">
+                  <Text variant="body" weight="medium" className="mb-1 text-text-dark dark:text-gray-100">
+                    {t`App Language`}
+                  </Text>
+                  <Text variant="caption" className="text-text-grey dark:text-gray-400">
+                    {t`Current`}: {i18n.locale === 'en' ? 'English' : 'Français'}
+                  </Text>
+                  <Text variant="caption" className="mt-1 text-text-grey dark:text-gray-400">
+                    {t`Change language in device settings`}
+                  </Text>
+                </View>
               </View>
-              <View className="flex-row items-center">
-                <Text
-                  variant="caption"
-                  className={`mr-2 ${!isEnglish ? 'text-primary' : 'text-text-grey dark:text-gray-400'}`}
-                >
-                  FR
-                </Text>
-                <Switch
-                  value={isEnglish}
-                  onValueChange={handleLanguageToggle}
-                  trackColor={{ false: '#E0E0E0', true: brandColors.primary }}
-                  thumbColor={isEnglish ? brandColors.textLight : brandColors.textLight}
-                />
-                <Text
-                  variant="caption"
-                  className={`ml-2 ${isEnglish ? 'text-primary' : 'text-text-grey dark:text-gray-400'}`}
-                >
-                  EN
-                </Text>
-              </View>
-            </View>
+              <CaretRightIcon weight="thin" size={22} className="text-gray-900 dark:text-gray-100" />
+            </TouchableOpacity>
 
             {/* Reset Progress */}
             <TouchableOpacity

@@ -17,17 +17,17 @@ msgstr ""
 msgid "Learn Kabiyè"
 msgstr "Learn Kabiyè"
 
-#: src/screens/lesson.tsx
-msgid "Complete Lesson"
-msgstr "Complete Lesson"
+#: src/screens/lesson-old.tsx
+#~ msgid "Complete Lesson"
+#~ msgstr "Complete Lesson"
 
 #: src/screens/profile.tsx
 msgid "Lexilogos Dictionary"
 msgstr "Lexilogos Dictionary"
 
-#: src/screens/lesson.tsx
-msgid "Audio"
-msgstr "Audio"
+#: src/screens/lesson-old.tsx
+#~ msgid "Audio"
+#~ msgstr "Audio"
 
 #: src/screens/dictionary/dictionary.tsx
 msgid "Get tips to improve your learning"
@@ -62,13 +62,17 @@ msgstr "Welcome to Kabiyè en Poche"
 #~ msgid "Tips & Resources"
 #~ msgstr "Tips & Resources"
 
-#: src/screens/lesson.tsx
-msgid "Content"
-msgstr "Content"
+#: src/screens/lesson-old.tsx
+#~ msgid "Content"
+#~ msgstr "Content"
 
 #: src/screens/profile.tsx
 msgid "Académie Kabiyè"
 msgstr "Académie Kabiyè"
+
+#: src/components/lesson-steps/audio-step.tsx
+msgid "Audio content will be available soon."
+msgstr "Audio content will be available soon."
 
 #: src/screens/unit.tsx
 msgid "Please check back later"
@@ -77,6 +81,14 @@ msgstr "Please check back later"
 #: src/screens/profile.tsx
 msgid "Kabiyè language resources"
 msgstr "Kabiyè language resources"
+
+#: src/components/lesson-steps/completion-step.tsx
+msgid "Lesson Complete!"
+msgstr "Lesson Complete!"
+
+#: src/components/lesson-steps/order-words-step.tsx
+msgid "Check"
+msgstr "Check"
 
 #: src/screens/terms-and-conditions.tsx
 msgid "Terms not found"
@@ -89,6 +101,18 @@ msgstr "Privacy policy is not available"
 #: src/screens/unit.tsx
 msgid "Loading unit..."
 msgstr "Loading unit..."
+
+#: src/components/lesson-steps/completion-step.tsx
+msgid "Perfect! You're a star! 🌟"
+msgstr "Perfect! You're a star! 🌟"
+
+#: src/components/lesson-steps/completion-step.tsx
+msgid "Back to Learn"
+msgstr "Back to Learn"
+
+#: src/components/lesson-steps/audio-step.tsx
+msgid "Transcript"
+msgstr "Transcript"
 
 #: src/screens/privacy-policy.tsx
 msgid "Loading privacy policy..."
@@ -106,9 +130,9 @@ msgstr "I learn the Kabiyè Alphabet"
 msgid "Loading dictionary..."
 msgstr "Loading dictionary..."
 
-#: src/screens/lesson.tsx
-msgid "Got it!"
-msgstr "Got it!"
+#: src/screens/lesson-old.tsx
+#~ msgid "Got it!"
+#~ msgstr "Got it!"
 
 #: src/screens/alphabet-list.tsx
 msgid "Error loading alphabet"
@@ -138,9 +162,21 @@ msgstr "This unit does not exist"
 msgid "Join our community to contribute to the development of the application"
 msgstr "Join our community to contribute to the development of the application"
 
+#: src/screens/profile.tsx
+msgid "Current"
+msgstr "Current"
+
+#: src/components/lesson-steps/completion-step.tsx
+msgid "Great job! 🎉"
+msgstr "Great job! 🎉"
+
 #: src/screens/home.tsx
 msgid "Tap to continue"
 msgstr "Tap to continue"
+
+#: src/components/lesson-steps/order-words-step.tsx
+msgid "Correct order:"
+msgstr "Correct order:"
 
 #: src/screens/profile.tsx
 msgid "Kabiyè language learning platform"
@@ -181,6 +217,14 @@ msgstr "Complete previous lesson to unlock"
 msgid "This letter does not exist"
 msgstr "This letter does not exist"
 
+#: src/screens/lesson.tsx
+msgid "Lesson not found"
+msgstr "Lesson not found"
+
+#: src/components/lesson-steps/completion-step.tsx
+msgid "correct"
+msgstr "correct"
+
 #: src/screens/home.tsx
 msgid "Learn the Kabiyè alphabet"
 msgstr "Learn the Kabiyè alphabet"
@@ -193,6 +237,7 @@ msgstr "Loading letter..."
 msgid "Let's Learn Together!"
 msgstr "Let's Learn Together!"
 
+#: src/components/lesson-steps/order-words-step.tsx
 #: src/screens/profile.tsx
 msgid "Reset"
 msgstr "Reset"
@@ -200,6 +245,10 @@ msgstr "Reset"
 #: src/screens/keyboard.tsx
 msgid "Use this keyboard to write in Kabiyè."
 msgstr "Use this keyboard to write in Kabiyè."
+
+#: src/components/lesson-steps/match-pairs-step.tsx
+msgid "Tap pairs to match them"
+msgstr "Tap pairs to match them"
 
 #: src/screens/home.tsx
 #~ msgid "Access additional learning materials"
@@ -226,6 +275,14 @@ msgstr "Great job! You've completed this lesson."
 msgid "Consonant"
 msgstr "Consonant"
 
+#: src/components/lesson-steps/completion-step.tsx
+msgid "Well done! Keep practicing! 💪"
+msgstr "Well done! Keep practicing! 💪"
+
+#: src/components/lesson-steps/match-pairs-step.tsx
+msgid "Perfect! All pairs matched! 🎉"
+msgstr "Perfect! All pairs matched! 🎉"
+
 #: src/screens/lesson.tsx
 msgid "Error"
 msgstr "Error"
@@ -233,6 +290,10 @@ msgstr "Error"
 #: src/screens/keyboard.tsx
 msgid "The"
 msgstr "The"
+
+#: src/components/lesson-steps/order-words-step.tsx
+msgid "Tap words in the correct order"
+msgstr "Tap words in the correct order"
 
 #: src/screens/home.tsx
 #: src/screens/home.tsx
@@ -258,6 +319,10 @@ msgstr "Tap to start"
 msgid "Coming Soon"
 msgstr "Coming Soon"
 
+#: src/components/lesson-steps/order-words-step.tsx
+msgid "Perfect! Correct order! 🎉"
+msgstr "Perfect! Correct order! 🎉"
+
 #: src/app/(tabs)/_layout.tsx
 msgid "Dictionary"
 msgstr "Dictionary"
@@ -267,12 +332,21 @@ msgid "Overall Progress"
 msgstr "Overall Progress"
 
 #: src/screens/profile.tsx
+msgid "Change language in device settings"
+msgstr "Change language in device settings"
+
+#: src/screens/profile.tsx
 msgid "Support"
 msgstr "Support"
 
-#: src/screens/lesson.tsx
-msgid "No learning objectives available for this lesson."
-msgstr "No learning objectives available for this lesson."
+#: src/components/lesson-steps/audio-step.tsx
+#: src/components/lesson-steps/listen-choose-step.tsx
+msgid "No audio available"
+msgstr "No audio available"
+
+#: src/screens/lesson-old.tsx
+#~ msgid "No learning objectives available for this lesson."
+#~ msgstr "No learning objectives available for this lesson."
 
 #: src/screens/learn.tsx
 msgid "No lessons available yet"
@@ -291,6 +365,10 @@ msgstr "Please check your connection and try again"
 msgid "Progress Reset"
 msgstr "Progress Reset"
 
+#: src/components/lesson-steps/audio-step.tsx
+msgid "Conversation"
+msgstr "Conversation"
+
 #: src/screens/profile.tsx
 msgid "Terms and conditions of use"
 msgstr "Terms and conditions of use"
@@ -304,6 +382,16 @@ msgstr "Loading..."
 msgid "Are you sure you want to reset all your progress? This action cannot be undone."
 msgstr "Are you sure you want to reset all your progress? This action cannot be undone."
 
+#: src/components/lesson-steps/listen-choose-step.tsx
+#: src/components/lesson-steps/quiz-step.tsx
+msgid "Correct! 🎉"
+msgstr "Correct! 🎉"
+
+#: src/components/lesson-steps/listen-choose-step.tsx
+#: src/components/lesson-steps/quiz-step.tsx
+msgid "Not quite right"
+msgstr "Not quite right"
+
 #: src/screens/profile.tsx
 msgid "Loading progress..."
 msgstr "Loading progress..."
@@ -316,6 +404,10 @@ msgstr "This unit is temporarily unavailable"
 #: src/screens/learn.tsx
 msgid "Under Maintenance"
 msgstr "Under Maintenance"
+
+#: src/components/lesson-steps/order-words-step.tsx
+msgid "Your answer will appear here"
+msgstr "Your answer will appear here"
 
 #: src/screens/profile.tsx
 msgid "Online Kabiyè dictionary"
@@ -358,6 +450,14 @@ msgstr "This unit is coming soon!"
 msgid "App Language"
 msgstr "App Language"
 
+#: src/components/lesson-steps/order-words-step.tsx
+msgid "Available words:"
+msgstr "Available words:"
+
+#: src/components/lesson-steps/match-pairs-step.tsx
+msgid "matched"
+msgstr "matched"
+
 #: src/screens/unit.tsx
 msgid "Lessons will be added soon"
 msgstr "Lessons will be added soon"
@@ -370,7 +470,7 @@ msgstr "Clear all your learning progress"
 msgid "Kabiyè Tanaou"
 msgstr "Kabiyè Tanaou"
 
-#: src/screens/lesson.tsx
+#: src/components/lesson-steps/content-step.tsx
 msgid "Examples"
 msgstr "Examples"
 
@@ -385,6 +485,10 @@ msgstr "Home"
 #: src/screens/profile.tsx
 msgid "Official Kabiyè Academy website"
 msgstr "Official Kabiyè Academy website"
+
+#: src/components/lesson-steps/completion-step.tsx
+msgid "Keep trying! Practice makes perfect! 📚"
+msgstr "Keep trying! Practice makes perfect! 📚"
 
 #: src/screens/unit.tsx
 msgid "Lessons"
@@ -420,9 +524,14 @@ msgstr "Failed to load learning units"
 msgid "Keyboard"
 msgstr "Keyboard"
 
+#: src/components/lesson-steps/audio-step.tsx
+#: src/components/lesson-steps/listen-choose-step.tsx
+msgid "Tap to listen"
+msgstr "Tap to listen"
+
 #: src/screens/profile.tsx
-msgid "Choose your preferred interface language"
-msgstr "Choose your preferred interface language"
+#~ msgid "Choose your preferred interface language"
+#~ msgstr "Choose your preferred interface language"
 
 #: src/app/_layout.tsx
 msgid "Terms and Conditions"
@@ -437,9 +546,9 @@ msgstr "Loading lessons..."
 msgid "Loading alphabet..."
 msgstr "Loading alphabet..."
 
-#: src/screens/lesson.tsx
-msgid "Lesson"
-msgstr "Lesson"
+#: src/screens/lesson-old.tsx
+#~ msgid "Lesson"
+#~ msgstr "Lesson"
 
 #: src/screens/privacy-policy.tsx
 msgid "Privacy Policy not found"
@@ -458,15 +567,17 @@ msgid "Space"
 msgstr "Space"
 
 #: src/screens/learn.tsx
-#: src/screens/lesson.tsx
-#: src/screens/lesson.tsx
 #: src/screens/unit.tsx
 msgid "Completed"
 msgstr "Completed"
 
-#: src/screens/lesson.tsx
-msgid "Quiz"
-msgstr "Quiz"
+#: src/screens/lesson-old.tsx
+#~ msgid "Quiz"
+#~ msgstr "Quiz"
+
+#: src/components/lesson-steps/order-words-step.tsx
+msgid "Not quite right. Try again!"
+msgstr "Not quite right. Try again!"
 
 #: src/app/(tabs)/_layout.tsx
 msgid "Learn"
@@ -494,6 +605,10 @@ msgstr "Please check your internet connection and try again"
 msgid "Lessons temporarily unavailable"
 msgstr "Lessons temporarily unavailable"
 
+#: src/components/lesson-steps/completion-step.tsx
+msgid "Your Score"
+msgstr "Your Score"
+
 #: src/screens/home.tsx
 #: src/screens/learn.tsx
 msgid "Temporarily Unavailable"
@@ -516,9 +631,9 @@ msgstr "All lessons completed! 🎉"
 msgid "Learn the Basics"
 msgstr "Learn the Basics"
 
-#: src/screens/lesson.tsx
-msgid "Learning Objectives"
-msgstr "Learning Objectives"
+#: src/screens/lesson-old.tsx
+#~ msgid "Learning Objectives"
+#~ msgstr "Learning Objectives"
 
 #: src/screens/terms-and-conditions.tsx
 msgid "Loading terms..."
@@ -528,9 +643,26 @@ msgstr "Loading terms..."
 msgid "Clear"
 msgstr "Clear"
 
+#: src/components/lesson-steps/audio-step.tsx
+#: src/components/lesson-steps/completion-step.tsx
+#: src/components/lesson-steps/content-step.tsx
+#: src/components/lesson-steps/listen-choose-step.tsx
+#: src/components/lesson-steps/match-pairs-step.tsx
+#: src/components/lesson-steps/order-words-step.tsx
+#: src/components/lesson-steps/quiz-step.tsx
 #: src/screens/lesson.tsx
 msgid "Continue"
 msgstr "Continue"
+
+#: src/components/lesson-steps/audio-step.tsx
+#: src/components/lesson-steps/listen-choose-step.tsx
+msgid "Playing... (Tap to stop)"
+msgstr "Playing... (Tap to stop)"
+
+#: src/components/lesson-steps/audio-step.tsx
+#: src/components/lesson-steps/listen-choose-step.tsx
+msgid "Loading audio..."
+msgstr "Loading audio..."
 
 #: src/screens/profile.tsx
 msgid "Your progress has been reset."
@@ -547,3 +679,7 @@ msgstr "This unit is not available"
 #: src/screens/unit.tsx
 msgid "Unit not found"
 msgstr "Unit not found"
+
+#: src/components/lesson-steps/completion-step.tsx
+msgid "out of"
+msgstr "out of"

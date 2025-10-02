@@ -1,68 +1,189 @@
-import { useEffect, useState } from 'react'
-import { ActivityIndicator, Alert, Modal, ScrollView, TouchableOpacity } from 'react-native'
-import { useSafeAreaInsets } from 'react-native-safe-area-context'
+import type { LessonStep } from '@/types/lesson-steps'
 
-import { router, useLocalSearchParams, useNavigation } from 'expo-router'
+import { useEffect, useState } from 'react'
+import { ActivityIndicator, Alert } from 'react-native'
+
+import { router, useLocalSearchParams } from 'expo-router'
 
 import { useLingui } from '@lingui/react/macro'
-import { ListBulletsIcon, XIcon } from 'phosphor-react-native'
 
-import AudioDialog from '@/components/audio-dialog'
-import { ChatCircleDotsIcon, CheckCircleIcon, LightbulbIcon } from '@/components/icons'
-import QuizModal from '@/components/quiz'
-import { Button, Card, Text, View } from '@/components/ui'
-import { useAppCompleteLesson, useAppLesson, useAppLessonContent, useAppQuizQuestions } from '@/hooks/use-app-data'
+import {
+  AudioStep,
+  CompletionStep,
+  ContentStep,
+  ListenChooseStep,
+  MatchPairsStep,
+  OrderWordsStep,
+  ProgressBar,
+  QuizStep,
+} from '@/components/lesson-steps'
+import { Text, View } from '@/components/ui'
+import { useAppCompleteLesson, useAppLesson, useAppLessonActivities, useAppLessonContent } from '@/hooks/use-app-data'
 import { useLanguage } from '@/hooks/use-language'
 
 const LessonScreen = () => {
   const { t } = useLingui()
   const { id } = useLocalSearchParams()
-  const navigation = useNavigation()
   const lessonId = id as string
-  const { getValue, getArrayValue, getJsonValue } = useLanguage()
+  const { getValue, getJsonValue, currentLanguage } = useLanguage()
 
   const { data: lesson, isLoading: lessonLoading, error: lessonError } = useAppLesson(lessonId)
-  const { data: content, isLoading: contentLoading, error: contentError } = useAppLessonContent(lessonId)
-  const { data: quizQuestions, isLoading: quizLoading } = useAppQuizQuestions(lessonId)
+  const { data: content, isLoading: contentLoading } = useAppLessonContent(lessonId)
+  const { data: activities, isLoading: activitiesLoading } = useAppLessonActivities(lessonId)
   const completeLessonMutation = useAppCompleteLesson()
 
-  const [audioDialogVisible, setAudioDialogVisible] = useState(false)
-  const [quizVisible, setQuizVisible] = useState(false)
-  const [objectivesVisible, setObjectivesVisible] = useState(false)
-  const [isCompleted, setIsCompleted] = useState(false)
-  const insets = useSafeAreaInsets()
+  const [currentStepIndex, setCurrentStepIndex] = useState(0)
+  const [steps, setSteps] = useState<LessonStep[]>([])
+  const [score, setScore] = useState(0)
+  const [answers, setAnswers] = useState<Map<string, { answer: string; isCorrect: boolean }>>(new Map())
 
-  // Get localized content
-  const lessonTitle = getValue(lesson, 'title')
-  const lessonObjectives = getArrayValue(lesson, 'objectives')
-  const contentText = getValue(content, 'content')
-  const contentTitle = getValue(content, 'title')
-  const examples = getJsonValue(content, 'examples')
-
-  // Set navigation options with objectives button
+  // Build steps when data is loaded
   useEffect(() => {
-    if (lessonObjectives && lessonObjectives.length > 0) {
-      navigation.setOptions({
-        headerRight: () => (
-          <Button
-            variant="ghost"
-            onPress={() => setObjectivesVisible(true)}
-            className="!h-10 !w-10 flex-col items-center justify-center rounded-full !px-0 !py-0"
-          >
-            <ListBulletsIcon size={32} className="text-text-dark dark:text-text-light" />
-          </Button>
-        ),
+    if (!lesson || !content) return
+
+    const builtSteps: LessonStep[] = []
+    let stepOrder = 0
+
+    // Step 1: Content + Examples
+    const contentText = getValue(content, 'content')
+    const examples = getJsonValue<any, { kabiye: string; english?: string; french?: string }[]>(content, 'examples')
+
+    if (contentText) {
+      builtSteps.push({
+        id: 'content',
+        type: 'content',
+        order: stepOrder++,
+        content: contentText,
+        examples: examples?.map((ex) => ({
+          kabiye: ex.kabiye,
+          translation: ex.english || ex.french || '',
+        })),
       })
     }
-  }, [navigation, lessonObjectives])
 
-  const isLoading = lessonLoading || contentLoading || quizLoading
-  const error = lessonError || contentError
+    // Step 2: Audio (if available)
+    if (content.audio_url) {
+      builtSteps.push({
+        id: 'audio',
+        type: 'audio',
+        order: stepOrder++,
+        audioType: 'single',
+        audioUrl: content.audio_url,
+      })
+    }
 
-  const handleCompleteLesson = async () => {
+    // Step 3+: Activities (quizzes and exercises)
+    if (activities && activities.length > 0) {
+      activities.forEach((activity) => {
+        const activityData = activity.data as any
+        const question = getValue(activity, 'question') || getValue(activity, 'instructions') || ''
+
+        // Handle different activity types
+        if (activity.activity_type === 'match_pairs') {
+          // Match pairs activity with translation support
+          const rawPairs = activityData?.pairs || []
+
+          // Transform pairs to use correct language for 'right' values
+          const pairs = rawPairs.map((pair: any) => ({
+            left: pair.left,
+            right:
+              typeof pair.right === 'object' ? pair.right[currentLanguage] || pair.right.en || pair.right : pair.right,
+          }))
+
+          if (pairs.length > 0) {
+            builtSteps.push({
+              id: `activity-${activity.id}`,
+              type: 'match_pairs',
+              order: stepOrder++,
+              question,
+              pairs,
+            })
+          }
+        } else if (activity.activity_type === 'order_words') {
+          // Order words activity
+          const words = activityData?.words || []
+          const correctOrder = activityData?.correctOrder || []
+          if (words.length > 0 && correctOrder.length > 0) {
+            builtSteps.push({
+              id: `activity-${activity.id}`,
+              type: 'order_words',
+              order: stepOrder++,
+              question,
+              words,
+              correctOrder,
+            })
+          }
+        } else {
+          // Quiz-type activities (multiple_choice, true_false, listen_choose, etc.)
+          const optionsData = activityData?.options
+          const options = optionsData?.[currentLanguage] || optionsData?.en || []
+
+          if (options && options.length > 0) {
+            const correctAnswer = activityData?.correct_answer || ''
+            const explanationData = activityData?.explanation
+            const explanation = explanationData?.[currentLanguage] || explanationData?.en || undefined
+            const stepType = activity.activity_type === 'listen_choose' ? 'listen_choose' : 'quiz'
+
+            builtSteps.push({
+              id: `activity-${activity.id}`,
+              type: stepType as any,
+              order: stepOrder++,
+              questionType: activity.activity_type as any,
+              question,
+              options,
+              correctAnswer,
+              explanation,
+              audioUrl: activityData?.audio_url || activity.audio_url,
+            })
+          }
+        }
+      })
+    }
+
+    // Final Step: Completion
+    builtSteps.push({
+      id: 'completion',
+      type: 'completion',
+      order: stepOrder++,
+    })
+
+    setSteps(builtSteps)
+  }, [lesson, content, activities, getValue, getJsonValue, currentLanguage])
+
+  const handleStepComplete = () => {
+    if (currentStepIndex < steps.length - 1) {
+      setCurrentStepIndex(currentStepIndex + 1)
+    }
+  }
+
+  const handleQuizAnswer = (isCorrect: boolean, answer: string) => {
+    const currentStep = steps[currentStepIndex]
+
+    // Track all interactive activities (quiz, listen_choose, match_pairs, order_words)
+    if (
+      currentStep.type === 'quiz' ||
+      currentStep.type === 'listen_choose' ||
+      currentStep.type === 'match_pairs' ||
+      currentStep.type === 'order_words'
+    ) {
+      // Save answer
+      const newAnswers = new Map(answers)
+      newAnswers.set(currentStep.id, { answer, isCorrect })
+      setAnswers(newAnswers)
+
+      // Update score
+      if (isCorrect) {
+        setScore(score + 1)
+      }
+    }
+
+    // Move to next step
+    handleStepComplete()
+  }
+
+  const handleLessonComplete = async () => {
     try {
       await completeLessonMutation.mutateAsync(lessonId)
-      setIsCompleted(true)
       Alert.alert(t`Lesson Completed!`, t`Great job! You've completed this lesson.`, [
         {
           text: t`Continue`,
@@ -74,221 +195,114 @@ const LessonScreen = () => {
     }
   }
 
-  if (isLoading) {
+  // Loading state
+  if (lessonLoading || contentLoading || activitiesLoading) {
     return (
-      <View className="flex-1 bg-bg-grey dark:bg-gray-900">
-        <View className="flex-1 items-center justify-center">
-          <ActivityIndicator size="large" className="text-primary" />
-          <Text className="mt-4">{t`Loading lesson...`}</Text>
-        </View>
+      <View className="flex-1 items-center justify-center bg-white dark:bg-gray-900">
+        <ActivityIndicator size="large" className="text-primary" />
+        <Text className="mt-4">{t`Loading lesson...`}</Text>
       </View>
     )
   }
 
-  if (error) {
+  // Error state
+  if (lessonError || !lesson) {
     return (
-      <View className="flex-1 bg-bg-grey dark:bg-gray-900">
-        <View className="flex-1 items-center justify-center px-4">
-          <Text variant="h6" className="text-center text-primary">
-            {t`Failed to load lesson`}
-          </Text>
-          <Text variant="caption" className="mt-2 text-center text-text-grey dark:text-gray-400">
-            {error.message}
-          </Text>
-        </View>
-      </View>
-    )
-  }
-
-  const hasQuiz = (content as any)?.has_quiz || (quizQuestions && quizQuestions.length > 0)
-
-  return (
-    <View className="bg-grey flex-1 dark:bg-gray-900" safeArea="top">
-      <ScrollView className="px-4 pb-5 pt-16">
-        {/* Lesson Header */}
-        <Text variant="h3" weight="bold" className="text-primary">
-          {lessonTitle || t`Lesson`}
+      <View className="flex-1 items-center justify-center bg-white px-4 dark:bg-gray-900">
+        <Text variant="h6" className="text-center text-primary">
+          {t`Failed to load lesson`}
         </Text>
-        <View className="mb-4 mt-2 flex-row items-center justify-stretch">
-          {lesson?.difficulty && (
-            <View
-              className="rounded px-2 py-1"
-              style={{
-                backgroundColor:
-                  lesson.difficulty === 'Beginner'
-                    ? '#4CAF5020'
-                    : lesson.difficulty === 'Intermediate'
-                      ? '#FF980020'
-                      : '#F4433620',
-              }}
-            >
-              <Text
-                variant="caption"
-                style={{
-                  color:
-                    lesson.difficulty === 'Beginner'
-                      ? '#4CAF50'
-                      : lesson.difficulty === 'Intermediate'
-                        ? '#FF9800'
-                        : '#F44336',
-                }}
-              >
-                {lesson.difficulty}
-              </Text>
-            </View>
-          )}
-          {isCompleted && (
-            <View className="flex-row items-center">
-              <CheckCircleIcon size={16} className="text-success" />
-              <Text variant="caption" className="ml-1 text-primary">
-                {t`Completed`}
-              </Text>
-            </View>
-          )}
-        </View>
-
-        {/* Lesson Content */}
-        <Card className="mb-4 p-5">
-          <Text variant="h5" weight="semibold" className="mb-3 text-primary">
-            {t`Content`}
-          </Text>
-          <Text variant="lg" className="text-text-dark dark:text-gray-100">
-            {contentText || t`Lesson content will be available soon.`}
-          </Text>
-        </Card>
-
-        {/* Examples */}
-        {examples && Array.isArray(examples) && examples.length > 0 && (
-          <Card className="mb-4 p-5">
-            <Text variant="h5" weight="semibold" className="mb-3 text-primary">
-              {t`Examples`}
-            </Text>
-            {examples.map((example: any, index: number) => (
-              <View
-                key={index}
-                className="mb-3 flex-row items-center justify-between rounded-lg bg-bg-grey p-3 dark:bg-gray-700"
-              >
-                <Text variant="h6" weight="bold" className="text-primary">
-                  {example.kabiye || example}
-                </Text>
-                {example.english && (
-                  <Text variant="body" className="text-text-grey dark:text-gray-400">
-                    {example.english}
-                  </Text>
-                )}
-              </View>
-            ))}
-          </Card>
-        )}
-
-        {/* Complete Lesson Button */}
-        {!isCompleted && (
-          <Button onPress={handleCompleteLesson} loading={completeLessonMutation.isPending} className="mb-8 w-full">
-            <View className="flex-row items-center justify-center">
-              <CheckCircleIcon size={20} className="text-white" />
-              <Text variant="body" className="ml-2 text-white">
-                {t`Complete Lesson`}
-              </Text>
-            </View>
-          </Button>
-        )}
-      </ScrollView>
-
-      {/* Bottom Action Bar */}
-      <View className="border-t-hairline bg-white px-6 py-4" style={{ paddingBottom: Math.max(insets.bottom, 16) }}>
-        <View className="flex-row items-center justify-center gap-x-4 space-x-8">
-          {/* Audio Action */}
-          <TouchableOpacity onPress={() => setAudioDialogVisible(true)} className="items-center">
-            <View className="h-12 w-12 items-center justify-center rounded-full bg-primary">
-              <ChatCircleDotsIcon size={20} className="text-white" />
-            </View>
-            <Text variant="caption" className="mt-1 text-center text-primary">
-              {t`Audio`}
-            </Text>
-          </TouchableOpacity>
-
-          {/* Quiz Action */}
-          {hasQuiz && (
-            <TouchableOpacity onPress={() => setQuizVisible(true)} className="items-center">
-              <View className="h-12 w-12 items-center justify-center rounded-full bg-secondary">
-                <LightbulbIcon size={20} className="text-white" />
-              </View>
-              <Text variant="caption" className="mt-1 text-center text-secondary">
-                {t`Quiz`}
-              </Text>
-            </TouchableOpacity>
-          )}
-
-          {/* Completion Status */}
-          {isCompleted && (
-            <View className="items-center">
-              <View className="bg-success h-12 w-12 items-center justify-center rounded-full">
-                <CheckCircleIcon size={20} className="text-white" />
-              </View>
-              <Text variant="caption" className="mt-1 text-center text-primary">
-                {t`Completed`}
-              </Text>
-            </View>
-          )}
-        </View>
+        <Text variant="caption" className="mt-2 text-center text-text-grey dark:text-gray-400">
+          {lessonError?.message || t`Lesson not found`}
+        </Text>
       </View>
-      {/* Modals */}
-      <Modal visible={audioDialogVisible} transparent animationType="slide">
-        <AudioDialog onClose={() => setAudioDialogVisible(false)} />
-      </Modal>
+    )
+  }
 
-      <Modal visible={quizVisible} transparent animationType="slide">
-        <QuizModal onClose={() => setQuizVisible(false)} />
-      </Modal>
+  // No steps available
+  if (steps.length === 0) {
+    return (
+      <View className="flex-1 items-center justify-center bg-white px-4 dark:bg-gray-900">
+        <Text variant="h6" className="text-center text-primary">
+          {t`Lesson content will be available soon.`}
+        </Text>
+      </View>
+    )
+  }
 
-      {/* Learning Objectives Modal */}
-      <Modal visible={objectivesVisible} transparent animationType="fade">
-        <View className="flex-1 items-center justify-center bg-black/50 px-4">
-          <View className="w-full max-w-lg rounded-2xl bg-white dark:bg-gray-800">
-            {/* Modal Header */}
-            <View className="flex-row items-center justify-between border-b border-gray-200 p-4 dark:border-gray-700">
-              <Text variant="h4" weight="bold" className="text-primary">
-                {t`Learning Objectives`}
-              </Text>
-              <TouchableOpacity
-                onPress={() => setObjectivesVisible(false)}
-                className="rounded-full bg-gray-100 p-2 dark:bg-gray-700"
-              >
-                <XIcon size={20} className="text-text-dark dark:text-gray-100" />
-              </TouchableOpacity>
-            </View>
+  const currentStep = steps[currentStepIndex]
 
-            {/* Modal Content */}
-            <ScrollView className="max-h-96 p-4" showsVerticalScrollIndicator={false}>
-              {lessonObjectives && lessonObjectives.length > 0 ? (
-                lessonObjectives.map((objective, index) => (
-                  <View key={index} className="mb-3 flex-row items-start">
-                    <View className="mr-3 mt-1 h-6 w-6 items-center justify-center rounded-full bg-primary">
-                      <Text variant="caption" weight="bold" className="text-white">
-                        {index + 1}
-                      </Text>
-                    </View>
-                    <Text variant="lg" className="flex-1 text-text-dark dark:text-gray-100">
-                      {objective}
-                    </Text>
-                  </View>
-                ))
-              ) : (
-                <Text variant="body" className="text-center text-text-grey dark:text-gray-400">
-                  {t`No learning objectives available for this lesson.`}
-                </Text>
-              )}
-            </ScrollView>
+  // Count all interactive activity steps (quiz, listen_choose, match_pairs, order_words)
+  const totalQuizQuestions = steps.filter(
+    (s) => s.type === 'quiz' || s.type === 'listen_choose' || s.type === 'match_pairs' || s.type === 'order_words'
+  ).length
 
-            {/* Modal Footer */}
-            <View className="border-t border-gray-200 p-4 dark:border-gray-700">
-              <Button variant="primary" onPress={() => setObjectivesVisible(false)} className="w-full">
-                {t`Got it!`}
-              </Button>
-            </View>
-          </View>
-        </View>
-      </Modal>
+  // Render current step
+  return (
+    <View className="flex-1 bg-white dark:bg-gray-900">
+      {/* Progress Bar */}
+      <ProgressBar currentStep={currentStepIndex + 1} totalSteps={steps.length} />
+
+      {/* Step Content */}
+      <View className="flex-1">
+        {currentStep.type === 'content' && (
+          <ContentStep
+            title={getValue(lesson, 'title') || undefined}
+            difficulty={lesson?.difficulty}
+            content={currentStep.content}
+            examples={currentStep.examples}
+            onContinue={handleStepComplete}
+          />
+        )}
+
+        {currentStep.type === 'audio' && (
+          <AudioStep
+            audioType={currentStep.audioType}
+            audioUrl={currentStep.audioUrl}
+            conversation={currentStep.conversation}
+            transcript={currentStep.transcript}
+            onContinue={handleStepComplete}
+          />
+        )}
+
+        {currentStep.type === 'quiz' && (
+          <QuizStep
+            questionType={currentStep.questionType}
+            question={currentStep.question}
+            options={currentStep.options}
+            correctAnswer={currentStep.correctAnswer}
+            explanation={currentStep.explanation}
+            onAnswer={handleQuizAnswer}
+          />
+        )}
+
+        {currentStep.type === 'listen_choose' && (
+          <ListenChooseStep
+            question={currentStep.question}
+            options={currentStep.options}
+            correctAnswer={currentStep.correctAnswer}
+            audioUrl={currentStep.audioUrl}
+            onAnswer={handleQuizAnswer}
+          />
+        )}
+
+        {currentStep.type === 'match_pairs' && (
+          <MatchPairsStep question={currentStep.question} pairs={currentStep.pairs} onAnswer={handleQuizAnswer} />
+        )}
+
+        {currentStep.type === 'order_words' && (
+          <OrderWordsStep
+            question={currentStep.question}
+            words={currentStep.words}
+            correctOrder={currentStep.correctOrder}
+            onAnswer={handleQuizAnswer}
+          />
+        )}
+
+        {currentStep.type === 'completion' && (
+          <CompletionStep score={score} totalQuestions={totalQuizQuestions} onComplete={handleLessonComplete} />
+        )}
+      </View>
     </View>
   )
 }

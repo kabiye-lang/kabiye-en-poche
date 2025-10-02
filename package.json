@@ -18,8 +18,8 @@
     "postrenovate": "npm run clean",
     "testflight": "npx testflight",
     "i18n:extract": "lingui extract",
-    "i18n:compile": "lingui compile",
-    "i18n:extract-compile": "lingui extract && lingui compile"
+    "//not used, we use po files with metro bundler: i18n:compile": "lingui compile",
+    "//not used, we use po files with metro bundler: i18n:extract-compile": "lingui extract && lingui compile"
   },
   "dependencies": {
     "@babel/plugin-transform-export-namespace-from": "^7.27.1",

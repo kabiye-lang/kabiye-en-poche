@@ -1,3 +1,5 @@
+import { AppState, Platform } from 'react-native'
+
 import * as Localization from 'expo-localization'
 
 import { i18n } from '@lingui/core'
@@ -19,6 +21,21 @@ const deviceLocale = Localization.getLocales()[0]?.languageCode || 'fr'
 const supportedLocale = deviceLocale === 'en' ? 'en' : 'fr'
 console.log('Supported locale:', supportedLocale)
 i18n.activate(supportedLocale)
+
+// Android only: Listen for app state changes to detect language changes
+// iOS automatically resets the app when language changes, so no listener needed
+if (Platform.OS === 'android') {
+  AppState.addEventListener('change', (nextAppState) => {
+    if (nextAppState === 'active') {
+      const newLocale = Localization.getLocales()[0]?.languageCode || 'fr'
+      const newSupportedLocale = newLocale === 'en' ? 'en' : 'fr'
+      if (newSupportedLocale !== i18n.locale) {
+        console.log('Locale changed to:', newSupportedLocale)
+        i18n.activate(newSupportedLocale)
+      }
+    }
+  })
+}
 
 // Export the I18nProvider for use in the app
 export { I18nProvider }

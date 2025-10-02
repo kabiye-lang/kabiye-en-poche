@@ -1,5 +1,12 @@
 # Cursor Rules for Kabiyè en Poche - Expo React Native Project
 
+## AI Assistant Guidelines
+
+**IMPORTANT: Follow these rules strictly when assisting with this project:**
+
+1. **No Summary Files**: Do NOT create summary, documentation, or changelog files (e.g., `SUMMARY.md`, `CHANGES.md`, `REFACTORING.md`) unless explicitly requested by the user.
+2. **Kebab-Case Files**: ALL files must be named using kebab-case (e.g., `user-profile.tsx`, `lesson-steps.ts`, `audio-player.tsx`). Never use PascalCase or camelCase for file names.
+
 ## Project Overview
 
 This is an Expo 54 React Native project using Expo Router v6, NativeWind for styling, Lingui for internationalization, Phosphor React Native for icons, and Supabase for backend. The project follows modern React Native best practices with TypeScript, ESLint, and Prettier.

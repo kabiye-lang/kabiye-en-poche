@@ -302,6 +302,59 @@ export interface Database {
           },
         ]
       }
+      lesson_activities: {
+        Row: {
+          activity_type: string
+          audio_url: string | null
+          created_at: string | null
+          data: Json
+          id: string
+          image_url: string | null
+          instructions_en: string | null
+          instructions_fr: string | null
+          lesson_id: string
+          position: number
+          question_en: string | null
+          question_fr: string | null
+        }
+        Insert: {
+          activity_type: string
+          audio_url?: string | null
+          created_at?: string | null
+          data?: Json
+          id?: string
+          image_url?: string | null
+          instructions_en?: string | null
+          instructions_fr?: string | null
+          lesson_id: string
+          position?: number
+          question_en?: string | null
+          question_fr?: string | null
+        }
+        Update: {
+          activity_type?: string
+          audio_url?: string | null
+          created_at?: string | null
+          data?: Json
+          id?: string
+          image_url?: string | null
+          instructions_en?: string | null
+          instructions_fr?: string | null
+          lesson_id?: string
+          position?: number
+          question_en?: string | null
+          question_fr?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: 'lesson_activities_lesson_id_fkey'
+            columns: ['lesson_id']
+            isOneToOne: false
+            referencedRelation: 'lessons'
+            referencedColumns: ['id']
+          },
+        ]
+      }
       quiz_questions: {
         Row: {
           correct_answer: string
@@ -430,6 +483,7 @@ export type Updateables<T extends keyof Database['public']['Tables']> = Database
 export type Unit = Tables<'units'>
 export type Lesson = Tables<'lessons'>
 export type LessonContent = Tables<'lesson_contents'>
+export type LessonActivity = Tables<'lesson_activities'>
 export type LessonExercise = Tables<'lesson_exercises'>
 export type QuizQuestion = Tables<'quiz_questions'>
 export type Category = Tables<'categories'>
