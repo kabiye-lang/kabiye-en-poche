@@ -1,0 +1,7 @@
+# Supabase Configuration
+SUPABASE_URL=https://your-project.supabase.co
+SUPABASE_ANON_KEY=your-anon-key-here
+
+# Optional: OpenAI API Key (if using OpenAI instead of Ollama)
+# OPENAI_API_KEY=your-openai-key-here
+

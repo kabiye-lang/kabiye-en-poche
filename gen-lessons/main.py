@@ -1,13 +1,53 @@
 import os
 import json
 import shutil
+import argparse
+import sys
+from dotenv import load_dotenv
+from supabase import create_client, Client
+
+# WORKAROUND: Fix for unstructured library bug (imports pi_heif instead of pillow_heif)
+try:
+    import pillow_heif
+    sys.modules['pi_heif'] = pillow_heif
+except ImportError:
+    pass  # pillow_heif not installed, but that's okay
+
 from langchain_community.document_loaders import PyPDFLoader
 from langchain_text_splitters import RecursiveCharacterTextSplitter
 from langchain.chains import RetrievalQA
 from langchain_core.prompts import PromptTemplate
 from langchain_community.vectorstores import FAISS
 
-# === STEP 1: Choose your LLM backend ===
+# Load environment variables
+load_dotenv()
+
+# === PARSE COMMAND LINE ARGUMENTS ===
+parser = argparse.ArgumentParser(description='Generate lesson content from database')
+parser.add_argument('--dry-run', action='store_true', 
+                    help='Generate content without inserting to database')
+parser.add_argument('--lessons', nargs='+', 
+                    help='Specific lesson IDs to process (space-separated). If not provided, processes all lessons.')
+
+args = parser.parse_args()
+
+# Print mode
+if args.dry_run:
+    print("🔍 DRY RUN MODE - No database inserts will be performed")
+if args.lessons:
+    print(f"📝 Processing specific lessons: {', '.join(args.lessons)}")
+
+# === STEP 1: Connect to Supabase ===
+supabase_url = os.getenv("SUPABASE_URL")
+supabase_key = os.getenv("SUPABASE_ANON_KEY")
+
+if not supabase_url or not supabase_key:
+    raise ValueError("Please set SUPABASE_URL and SUPABASE_ANON_KEY in your .env file")
+
+supabase: Client = create_client(supabase_url, supabase_key)
+print(f"✅ Connected to Supabase: {supabase_url}")
+
+# === STEP 2: Choose your LLM backend ===
 # For OpenAI:
 # from langchain.chat_models import ChatOpenAI
 # llm = ChatOpenAI(model="gpt-4o-mini", temperature=0)
@@ -15,63 +55,228 @@ from langchain_community.vectorstores import FAISS
 # Free alternative: Ollama (local Mistral, Llama 3, etc.)
 from langchain_ollama import ChatOllama
 llm = ChatOllama(model="mistral")  # run `ollama pull mistral` first
+print(f"✅ Using LLM: Ollama Mistral")
 
-# === STEP 2: Load all your PDFs ===
+# === STEP 3: Load all your PDFs (with multi-column support) ===
 pdf_folder = "../files/gpt"  # put all your Kabiyè PDFs here
 docs = []
+print(f"\n📚 Loading PDFs from {pdf_folder}...")
+
+# Try to use UnstructuredPDFLoader for better column handling
+try:
+    from langchain_community.document_loaders import UnstructuredPDFLoader
+    use_unstructured = True
+    print("  ℹ️  Using UnstructuredPDFLoader (better for multi-column PDFs)")
+except ImportError:
+    use_unstructured = False
+    print("  ℹ️  Using PyPDFLoader (install 'unstructured' package for better column handling)")
+    print("  💡 Run: pip install unstructured pdf2image pdfminer.six")
+
 for file in os.listdir(pdf_folder):
     if file.endswith(".pdf"):
-        loader = PyPDFLoader(os.path.join(pdf_folder, file))
-        docs.extend(loader.load())
+        pdf_path = os.path.join(pdf_folder, file)
+        try:
+            if use_unstructured:
+                # UnstructuredPDFLoader handles multi-column layouts better
+                # Specify French language for better OCR (PDFs are in French/Kabiyè)
+                loader = UnstructuredPDFLoader(
+                    pdf_path, 
+                    mode="elements",
+                    languages=["fra", "eng"]  # French + English fallback
+                )
+            else:
+                # Fallback to PyPDFLoader
+                loader = PyPDFLoader(pdf_path)
+            
+            docs.extend(loader.load())
+            print(f"  ✓ Loaded {file}")
+        except Exception as e:
+            print(f"  ✗ Failed to load {file}: {e}")
+            continue
 
-# === STEP 3: Split into chunks ===
+if len(docs) == 0:
+    print("❌ No PDFs loaded successfully. Check the PDF folder and file permissions.")
+    exit(1)
+
+print(f"✅ Loaded {len(docs)} PDF pages/elements")
+
+# === STEP 4: Split into chunks ===
+print(f"\n🔪 Splitting documents into chunks...")
 splitter = RecursiveCharacterTextSplitter(chunk_size=1000, chunk_overlap=100)
 chunks = splitter.split_documents(docs)
+print(f"✅ Created {len(chunks)} chunks")
 
-# === STEP 4: Build vector store ===
+# === STEP 5: Build vector store ===
+print(f"\n🧠 Building vector store...")
 from langchain_huggingface import HuggingFaceEmbeddings
 embeddings = HuggingFaceEmbeddings(model_name="sentence-transformers/all-MiniLM-L6-v2")
 
 db = FAISS.from_documents(chunks, embeddings)
 retriever = db.as_retriever(search_kwargs={"k": 3})  # Limit to top 3 most relevant chunks
+print(f"✅ Vector store ready")
 
-# === STEP 5: Lesson plan template ===
+# === STEP 6: Lesson content generation template ===
 prompt_template = """
-Create a Kabiyè lesson plan for the specific topic mentioned in the question.
+You are a Kabiyè language expert creating detailed lesson content.
 
-Context: {context}
+Context from Kabiyè language documents: {context}
 
-Requirements:
-- Focus ONLY on the specific topic
-- If "Alphabet and sounds": letters, pronunciation, sounds
-- If "Greetings": greeting words and phrases  
-- If "Numbers": counting and numbers
-- Do NOT include jobs, foreign aid, or unrelated content
+Lesson Information:
+- Title (EN): {title_en}
+- Title (FR): {title_fr}
+- Unit: {unit_name}
+- Category: {category_name}
+- Topics: {topics}
+- Objectives (EN): {objectives_en}
+- Objectives (FR): {objectives_fr}
+- Difficulty: {difficulty}
 
-Respond with ONLY valid JSON:
+Create comprehensive, engaging lesson content for this specific lesson. Focus ONLY on the topics mentioned above.
+
+Respond with ONLY valid JSON matching this structure:
 
 {{
-  "lesson_title": "Lesson about [specific topic]",
-  "objectives": ["Objective 1", "Objective 2"],
-  "key_vocabulary": [
-    {{"kabiye": "word1", "english": "meaning1"}},
-    {{"kabiye": "word2", "english": "meaning2"}}
+  "lesson_contents": [
+    {{
+      "title_en": "Section Title in English",
+      "title_fr": "Titre de section en français",
+      "content_en": "Detailed explanation in English. Make this thorough and educational, covering key concepts related to {title_en}.",
+      "content_fr": "Explication détaillée en français. Rendez cela complet et éducatif.",
+      "examples_en": [
+        {{"kabiye": "word1", "translation": "meaning1", "pronunciation": "how to say it"}},
+        {{"kabiye": "word2", "translation": "meaning2", "pronunciation": "how to say it"}}
+      ],
+      "examples_fr": [
+        {{"kabiye": "word1", "translation": "signification1", "pronunciation": "comment le dire"}},
+        {{"kabiye": "word2", "translation": "signification2", "pronunciation": "comment le dire"}}
+      ]
+    }}
   ],
-  "grammar_point": "Grammar related to topic",
-  "examples": [
-    {{"kabiye": "example1", "english": "translation1"}},
-    {{"kabiye": "example2", "english": "translation2"}}
+  "lesson_activities": [
+    {{
+      "activity_type": "listen_and_choose",
+      "position": 1,
+      "question_en": "Listen and select the correct word",
+      "question_fr": "Écoutez et sélectionnez le mot correct",
+      "instructions_en": "Tap the word you hear",
+      "instructions_fr": "Appuyez sur le mot que vous entendez",
+      "data": {{
+        "audio_word": "kabiye_word",
+        "options": ["option1", "option2", "option3"],
+        "correct_answer": "option1"
+      }}
+    }},
+    {{
+      "activity_type": "match_pairs",
+      "position": 2,
+      "question_en": "Match Kabiyè words with their meanings",
+      "question_fr": "Associez les mots Kabiyè à leur signification",
+      "instructions_en": "Drag to match each word with its meaning",
+      "instructions_fr": "Faites glisser pour associer chaque mot à sa signification",
+      "data": {{
+        "pairs": [
+          {{"kabiye": "word1", "english": "meaning1"}},
+          {{"kabiye": "word2", "english": "meaning2"}}
+        ]
+      }}
+    }},
+    {{
+      "activity_type": "order_words",
+      "position": 3,
+      "question_en": "Arrange the words to form a correct sentence",
+      "question_fr": "Disposez les mots pour former une phrase correcte",
+      "instructions_en": "Tap the words in the correct order",
+      "instructions_fr": "Appuyez sur les mots dans le bon ordre",
+      "data": {{
+        "words": ["word1", "word2", "word3"],
+        "correct_order": ["word2", "word1", "word3"],
+        "translation_en": "sentence meaning in English",
+        "translation_fr": "signification de la phrase en français"
+      }}
+    }}
   ],
-  "exercises": ["Exercise 1", "Exercise 2", "Exercise 3"],
-  "mini_dialogue": [
-    {{"kabiye": "dialogue1", "english": "translation1"}},
-    {{"kabiye": "dialogue2", "english": "translation2"}}
+  "lesson_exercises": [
+    {{
+      "exercise_type": "fill_in_blank",
+      "position": 1,
+      "title_en": "Fill in the Blanks",
+      "title_fr": "Remplir les blancs",
+      "instructions_en": "Complete the sentences with the correct words",
+      "instructions_fr": "Complétez les phrases avec les mots corrects",
+      "data": {{
+        "questions": [
+          {{
+            "sentence_en": "Complete sentence in English with ___",
+            "sentence_fr": "Phrase complète en français avec ___",
+            "answer": "kabiye_word",
+            "options": ["option1", "option2", "option3"]
+          }}
+        ]
+      }}
+    }},
+    {{
+      "exercise_type": "translation",
+      "position": 2,
+      "title_en": "Translation Practice",
+      "title_fr": "Pratique de traduction",
+      "instructions_en": "Translate from English to Kabiyè",
+      "instructions_fr": "Traduire de l'anglais au Kabiyè",
+      "data": {{
+        "questions": [
+          {{
+            "english": "English phrase",
+            "french": "Phrase française",
+            "answer": "kabiye_phrase",
+            "hints": ["hint1", "hint2"]
+          }}
+        ]
+      }}
+    }}
   ],
-  "cultural_note": "Cultural note about the topic"
+  "quiz_questions": [
+    {{
+      "position": 1,
+      "question_type": "multiple_choice",
+      "question_en": "Question in English about {title_en}?",
+      "question_fr": "Question en français?",
+      "options": [
+        {{"value": "option1", "label_en": "Option 1", "label_fr": "Option 1"}},
+        {{"value": "option2", "label_en": "Option 2", "label_fr": "Option 2"}},
+        {{"value": "option3", "label_en": "Option 3", "label_fr": "Option 3"}}
+      ],
+      "correct_answer": "option1",
+      "explanation_en": "Explanation in English",
+      "explanation_fr": "Explication en français"
+    }},
+    {{
+      "position": 2,
+      "question_type": "audio",
+      "question_en": "Listen and identify the word",
+      "question_fr": "Écoutez et identifiez le mot",
+      "options": [
+        {{"value": "word1", "label_en": "Word 1", "label_fr": "Mot 1"}},
+        {{"value": "word2", "label_en": "Word 2", "label_fr": "Mot 2"}}
+      ],
+      "correct_answer": "word1",
+      "explanation_en": "Explanation in English",
+      "explanation_fr": "Explication en français"
+    }}
+  ],
+  "cultural_note": {{
+    "title_en": "Cultural Insight",
+    "title_fr": "Aperçu culturel",
+    "content_en": "Cultural information related to {title_en}",
+    "content_fr": "Informations culturelles"
+  }}
 }}
+
+Remember: Create content specifically for {title_en}. Include at least 2 lesson content sections, 3 activities, 2 exercises, and 2-3 quiz questions.
 """
 
-PROMPT = PromptTemplate(template=prompt_template, input_variables=["context"])
+PROMPT = PromptTemplate(
+    template=prompt_template,
+    input_variables=["context", "title_en", "title_fr", "unit_name", "category_name", "topics", "objectives_en", "objectives_fr", "difficulty"]
+)
 
 qa_chain = RetrievalQA.from_chain_type(
     llm=llm,
@@ -80,16 +285,32 @@ qa_chain = RetrievalQA.from_chain_type(
     chain_type_kwargs={"prompt": PROMPT}
 )
 
-# === STEP 6: Generate lessons for multiple topics ===
-topics = [
-    "Alphabet and sounds",
-    # "Greetings and introductions",
-    # "Numbers and family",
-    # "Daily activities",
-    # "Food and market",
-    # "Culture and traditions"
-]
+# === STEP 7: Fetch lessons from database ===
+print(f"\n📖 Fetching lessons from database...")
 
+# Build query with optional filtering
+query = supabase.table("lessons").select(
+    "*, unit:units(id, code, title_en, title_fr), category:categories(id, name), lesson_topics(topic:topics(id, name))"
+)
+
+# Filter at database level if specific lessons requested
+if args.lessons:
+    query = query.in_("id", args.lessons)
+    print(f"📝 Filtering for specific lesson IDs at database level")
+
+response = query.execute()
+lessons = response.data
+
+if len(lessons) == 0:
+    if args.lessons:
+        print(f"❌ No lessons found with the specified IDs: {', '.join(args.lessons)}")
+    else:
+        print(f"❌ No lessons found in database")
+    exit(1)
+
+print(f"✅ Found {len(lessons)} lesson(s) to process")
+
+# === STEP 8: Setup output directories ===
 output_dir = "lessons_json"
 
 # Clean up existing files before generating new ones
@@ -99,6 +320,7 @@ if os.path.exists(output_dir):
 
 os.makedirs(output_dir, exist_ok=True)
 
+# === STEP 9: Helper functions ===
 def extract_and_validate_json(text):
     """Extract and validate JSON from text, handling common issues"""
     # Find JSON content by looking for the first { and last }
@@ -141,72 +363,275 @@ def extract_and_validate_json(text):
             except:
                 return None
 
-for topic in topics:
-    print(f"Generating lesson: {topic} ...")
+
+def insert_to_database(lesson_id, lesson_data):
+    """Insert lesson content directly to Supabase database"""
+    results = {
+        'lesson_contents': 0,
+        'lesson_activities': 0,
+        'lesson_exercises': 0,
+        'quiz_questions': 0,
+        'errors': []
+    }
     
-    # Try up to 3 times for each topic
+    try:
+        # Insert lesson contents
+        for content in lesson_data.get('lesson_contents', []):
+            try:
+                supabase.table('lesson_contents').insert({
+                    'lesson_id': lesson_id,
+                    'title_en': content.get('title_en', ''),
+                    'title_fr': content.get('title_fr', ''),
+                    'content_en': content.get('content_en', ''),
+                    'content_fr': content.get('content_fr', ''),
+                    'examples_en': content.get('examples_en', []),
+                    'examples_fr': content.get('examples_fr', [])
+                }).execute()
+                results['lesson_contents'] += 1
+            except Exception as e:
+                results['errors'].append(f"Content insert error: {str(e)}")
+        
+        # Insert lesson activities
+        for activity in lesson_data.get('lesson_activities', []):
+            try:
+                supabase.table('lesson_activities').insert({
+                    'lesson_id': lesson_id,
+                    'activity_type': activity.get('activity_type', ''),
+                    'position': activity.get('position', 0),
+                    'question_en': activity.get('question_en'),
+                    'question_fr': activity.get('question_fr'),
+                    'instructions_en': activity.get('instructions_en'),
+                    'instructions_fr': activity.get('instructions_fr'),
+                    'data': activity.get('data', {})
+                }).execute()
+                results['lesson_activities'] += 1
+            except Exception as e:
+                results['errors'].append(f"Activity insert error: {str(e)}")
+        
+        # Insert lesson exercises
+        for exercise in lesson_data.get('lesson_exercises', []):
+            try:
+                supabase.table('lesson_exercises').insert({
+                    'lesson_id': lesson_id,
+                    'exercise_type': exercise.get('exercise_type', ''),
+                    'position': exercise.get('position', 0),
+                    'title_en': exercise.get('title_en', ''),
+                    'title_fr': exercise.get('title_fr', ''),
+                    'instructions_en': exercise.get('instructions_en'),
+                    'instructions_fr': exercise.get('instructions_fr'),
+                    'data': exercise.get('data', {})
+                }).execute()
+                results['lesson_exercises'] += 1
+            except Exception as e:
+                results['errors'].append(f"Exercise insert error: {str(e)}")
+        
+        # Insert quiz questions
+        for question in lesson_data.get('quiz_questions', []):
+            try:
+                supabase.table('quiz_questions').insert({
+                    'lesson_id': lesson_id,
+                    'position': question.get('position', 0),
+                    'question_type': question.get('question_type', 'multiple_choice'),
+                    'question_en': question.get('question_en', ''),
+                    'question_fr': question.get('question_fr', ''),
+                    'options': question.get('options', []),
+                    'correct_answer': question.get('correct_answer', ''),
+                    'explanation_en': question.get('explanation_en'),
+                    'explanation_fr': question.get('explanation_fr')
+                }).execute()
+                results['quiz_questions'] += 1
+            except Exception as e:
+                results['errors'].append(f"Quiz question insert error: {str(e)}")
+                
+    except Exception as e:
+        results['errors'].append(f"General database error: {str(e)}")
+    
+    return results
+
+
+# === STEP 10: Generate content for each lesson ===
+successful_generations = 0
+failed_generations = []
+database_inserts = 0
+database_errors = []
+
+for lesson in lessons:
+    lesson_id = lesson['id']
+    title_en = lesson['title_en']
+    title_fr = lesson['title_fr']
+    difficulty = lesson['difficulty']
+    unit_name = lesson['unit']['title_en'] if lesson['unit'] else "Unknown"
+    category_name = lesson['category']['name'] if lesson['category'] else "Unknown"
+    topics = ", ".join([lt['topic']['name'] for lt in lesson.get('lesson_topics', [])])
+    objectives_en = ", ".join(lesson.get('objectives_en', []))
+    objectives_fr = ", ".join(lesson.get('objectives_fr', []))
+    
+    print(f"\n{'='*80}")
+    print(f"📝 Generating content for: {title_en}")
+    print(f"{'='*80}")
+    print(f"   Unit: {unit_name}")
+    print(f"   Category: {category_name}")
+    print(f"   Topics: {topics or 'None'}")
+    print(f"   Difficulty: {difficulty}")
+    
+    # Try up to 3 times for each lesson
     success = False
     for attempt in range(3):
         try:
-            # Make the query very specific about the topic with explicit instructions
-            if topic == "Alphabet and sounds":
-                specific_query = f"Create a lesson about Kabiyè alphabet, letters, pronunciation, and phonetic sounds. Include letters A-Z, pronunciation rules, and sound examples. Do NOT include food, jobs, or other topics."
-            elif topic == "Greetings and introductions":
-                specific_query = f"Create a lesson about Kabiyè greetings, hello, goodbye, introductions, and polite expressions. Do NOT include food, jobs, or other topics."
-            elif topic == "Numbers and family":
-                specific_query = f"Create a lesson about Kabiyè numbers 1-20 and family members (father, mother, brother, sister, etc.). Do NOT include food, jobs, or other topics."
-            else:
-                specific_query = f"Create a lesson about {topic} in Kabiyè language. Focus ONLY on {topic}. Do NOT include food, jobs, foreign aid, or other unrelated topics."
+            # Create specific query with all lesson context
+            query = f"""Generate comprehensive lesson content for: {title_en}
             
-            result = qa_chain.invoke({"query": specific_query})
+Focus on these topics: {topics if topics else title_en}
+This lesson is about: {objectives_en if objectives_en else 'teaching ' + title_en}
+
+Create engaging content with:
+- Multiple content sections explaining key concepts
+- Interactive activities (listen and choose, match pairs, order words)
+- Practice exercises (fill in blanks, translation)
+- Quiz questions to test understanding
+- Cultural notes when relevant
+
+Make sure everything is related to {title_en} and the topics: {topics}."""
+
+            # Invoke chain with all context
+            result = qa_chain.invoke({
+                "query": query,
+                "title_en": title_en,
+                "title_fr": title_fr,
+                "unit_name": unit_name,
+                "category_name": category_name,
+                "topics": topics or "General",
+                "objectives_en": objectives_en or "Learn about " + title_en,
+                "objectives_fr": objectives_fr or "Apprendre " + title_fr,
+                "difficulty": difficulty
+            })
+            
             result_text = result["result"] if isinstance(result, dict) else str(result)
             
             lesson_data = extract_and_validate_json(result_text)
             
-            if lesson_data:
-                # Validate that the lesson is actually about the requested topic
-                lesson_title = lesson_data.get("lesson_title", "").lower()
-                lesson_content = str(lesson_data).lower()
+            if lesson_data and 'lesson_contents' in lesson_data:
+                # Save JSON
+                slug = title_en.lower().replace(' ', '_').replace('/', '_').replace('?', '').replace('!', '')
+                json_filename = os.path.join(output_dir, f"{slug}_{lesson_id[:8]}.json")
                 
-                # Check if the lesson is about the requested topic
-                topic_keywords = {
-                    "Alphabet and sounds": ["alphabet", "letter", "sound", "pronunciation", "phonetic", "a-z"],
-                    "Greetings and introductions": ["greeting", "hello", "goodbye", "introduction", "polite"],
-                    "Numbers and family": ["number", "count", "family", "father", "mother", "brother", "sister"],
-                    "Daily activities": ["daily", "activity", "routine", "morning", "evening"],
-                    "Food and market": ["food", "market", "eat", "cook", "meal"],
-                    "Culture and traditions": ["culture", "tradition", "custom", "festival", "ceremony"]
+                # Add metadata to JSON
+                full_data = {
+                    "lesson_id": lesson_id,
+                    "lesson_title_en": title_en,
+                    "lesson_title_fr": title_fr,
+                    "unit": unit_name,
+                    "category": category_name,
+                    "topics": topics,
+                    "difficulty": difficulty,
+                    **lesson_data
                 }
                 
-                expected_keywords = topic_keywords.get(topic, [topic.lower()])
-                is_topic_relevant = any(keyword in lesson_title or keyword in lesson_content for keyword in expected_keywords)
+                with open(json_filename, "w", encoding="utf-8") as f:
+                    json.dump(full_data, f, indent=2, ensure_ascii=False)
+                print(f"✅ Saved JSON: {json_filename}")
                 
-                if is_topic_relevant:
-                    filename = os.path.join(output_dir, f"{topic.replace(' ', '_').lower()}.json")
-                    with open(filename, "w", encoding="utf-8") as f:
-                        json.dump(lesson_data, f, indent=2, ensure_ascii=False)
-                    print(f"✅ Saved {filename}")
-                    success = True
-                    break
-                else:
-                    if attempt < 2:
-                        print(f"⚠️  Attempt {attempt + 1} generated off-topic content, retrying...")
+                # Print generation summary
+                print(f"\n📊 Generated Content:")
+                print(f"   Contents: {len(lesson_data.get('lesson_contents', []))} section(s)")
+                print(f"   Activities: {len(lesson_data.get('lesson_activities', []))} activity(ies)")
+                print(f"   Exercises: {len(lesson_data.get('lesson_exercises', []))} exercise(s)")
+                print(f"   Quiz Questions: {len(lesson_data.get('quiz_questions', []))} question(s)")
+                
+                # Insert to database (unless dry-run)
+                if not args.dry_run:
+                    print(f"\n💾 Inserting to database...")
+                    insert_results = insert_to_database(lesson_id, lesson_data)
+                    
+                    if insert_results['errors']:
+                        print(f"⚠️  Database insert completed with errors:")
+                        for error in insert_results['errors']:
+                            print(f"   - {error}")
+                        database_errors.append({
+                            'lesson': title_en,
+                            'errors': insert_results['errors']
+                        })
                     else:
-                        print(f"❌ Generated lesson is not about {topic} after 3 attempts")
-                        print(f"Generated title: {lesson_title}")
-                        print("Raw output:", result_text[:500])
-            else:
-                if attempt < 2:  # Don't print error on last attempt
-                    print(f"⚠️  Attempt {attempt + 1} failed, retrying...")
+                        print(f"✅ Database insert successful:")
+                        print(f"   Inserted {insert_results['lesson_contents']} content(s)")
+                        print(f"   Inserted {insert_results['lesson_activities']} activity(ies)")
+                        print(f"   Inserted {insert_results['lesson_exercises']} exercise(s)")
+                        print(f"   Inserted {insert_results['quiz_questions']} quiz question(s)")
+                        database_inserts += 1
                 else:
-                    print(f"❌ Failed to generate valid JSON for {topic} after 3 attempts")
+                    print(f"\n🔍 Dry-run mode: Skipping database insert")
+                
+                successful_generations += 1
+                success = True
+                break
+            else:
+                if attempt < 2:
+                    print(f"⚠️  Attempt {attempt + 1} failed to generate valid content, retrying...")
+                else:
+                    print(f"❌ Failed to generate valid content after 3 attempts")
+                    failed_generations.append(title_en)
                     print("Raw output:", result_text[:500])
         except Exception as e:
             if attempt < 2:
                 print(f"⚠️  Attempt {attempt + 1} failed with error: {e}, retrying...")
             else:
-                print(f"❌ Error generating lesson for {topic}: {e}")
+                print(f"❌ Error generating content: {e}")
+                failed_generations.append(title_en)
                 if 'result_text' in locals():
                     print("Raw output:", result_text[:300])
-                elif 'result' in locals():
-                    print("Raw output:", str(result)[:300])
+
+# === STEP 11: Final summary ===
+print(f"\n{'='*80}")
+print(f"✨ Generation Complete!")
+print(f"{'='*80}")
+
+if args.dry_run:
+    print(f"🔍 DRY RUN MODE - No database changes were made")
+
+print(f"\n📊 Statistics:")
+print(f"   Total lessons processed: {len(lessons)}")
+print(f"   Successfully generated: {successful_generations}")
+print(f"   Failed generations: {len(failed_generations)}")
+
+if not args.dry_run:
+    print(f"   Database inserts: {database_inserts}")
+    print(f"   Database errors: {len(database_errors)}")
+
+if failed_generations:
+    print(f"\n❌ Failed lessons:")
+    for lesson_title in failed_generations:
+        print(f"   - {lesson_title}")
+
+if database_errors and not args.dry_run:
+    print(f"\n⚠️  Lessons with database errors:")
+    for error_info in database_errors:
+        print(f"   - {error_info['lesson']}")
+        for error in error_info['errors']:
+            print(f"     • {error}")
+
+print(f"\n📁 JSON files saved to: {output_dir}/")
+
+if args.dry_run:
+    print(f"\n💡 Next steps:")
+    print(f"   1. Review the JSON files in {output_dir}/")
+    print(f"   2. Run without --dry-run to insert to database:")
+    print(f"      python main.py")
+else:
+    print(f"\n✅ Content has been inserted to your Supabase database!")
+    print(f"\n💡 Next steps:")
+    print(f"   1. Verify the data in your Supabase dashboard")
+    print(f"   2. Check lesson_contents, lesson_activities, lesson_exercises, quiz_questions tables")
+    print(f"   3. Test the lessons in your app")
+
+print(f"\n📚 Usage examples:")
+print(f"   # Generate for all lessons:")
+print(f"   python main.py")
+print(f"")
+print(f"   # Generate for specific lessons:")
+print(f"   python main.py --lessons abc123 def456")
+print(f"")
+print(f"   # Dry run (no database insert):")
+print(f"   python main.py --dry-run")
+print(f"")
+print(f"   # Dry run for specific lessons:")
+print(f"   python main.py --dry-run --lessons abc123 def456")
