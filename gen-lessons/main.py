@@ -78,31 +78,31 @@ except ImportError:
     print("  ℹ️  Using PyPDFLoader (install 'unstructured' package for better column handling)")
     print("  💡 Run: pip install unstructured pdf2image pdfminer.six")
 
-# for file in os.listdir(pdf_folder):
-#     if file.endswith(".pdf"):
-#         pdf_path = os.path.join(pdf_folder, file)
-#         try:
-#             if use_unstructured:
-#                 # UnstructuredPDFLoader handles multi-column layouts better
-#                 # Specify French language for better OCR (PDFs are in French/Kabiyè)
-#                 loader = UnstructuredPDFLoader(
-#                     pdf_path, 
-#                     mode="elements",
-#                     languages=["fra", "eng"]  # French + English fallback
-#                 )
-#             else:
-#                 # Fallback to PyPDFLoader
-#                 loader = PyPDFLoader(pdf_path)
+for file in os.listdir(pdf_folder):
+    if file.endswith(".pdf"):
+        pdf_path = os.path.join(pdf_folder, file)
+        try:
+            if use_unstructured:
+                # UnstructuredPDFLoader handles multi-column layouts better
+                # Specify French language for better OCR (PDFs are in French/Kabiyè)
+                loader = UnstructuredPDFLoader(
+                    pdf_path, 
+                    mode="elements",
+                    languages=["fra", "eng"]  # French + English fallback
+                )
+            else:
+                # Fallback to PyPDFLoader
+                loader = PyPDFLoader(pdf_path)
             
-#             docs.extend(loader.load())
-#             print(f"  ✓ Loaded {file}")
-#         except Exception as e:
-#             print(f"  ✗ Failed to load {file}: {e}")
-#             continue
+            docs.extend(loader.load())
+            print(f"  ✓ Loaded {file}")
+        except Exception as e:
+            print(f"  ✗ Failed to load {file}: {e}")
+            continue
 
-# if len(docs) == 0:
-#     print("❌ No PDFs loaded successfully. Check the PDF folder and file permissions.")
-#     exit(1)
+if len(docs) == 0:
+    print("❌ No PDFs loaded successfully. Check the PDF folder and file permissions.")
+    exit(1)
 
 pdf_load_time = time.time() - pdf_load_start
 print(f"✅ Loaded {len(docs)} PDF pages/elements in {pdf_load_time:.1f}s")
