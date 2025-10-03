@@ -57,6 +57,19 @@ python main.py --dry-run --lessons lesson-id-1
 |--------|-------------|
 | `--dry-run` | Generate JSON only, no database insert |
 | `--lessons ID [ID ...]` | Process only specific lesson IDs |
+| `--rebuild-vector-store` | Force rebuild of vector store cache (use when PDFs/dictionary updated) |
+
+### Vector Store Caching ⚡
+
+The script caches processed PDFs and dictionary in `vector_store_cache/` directory:
+- **First run**: ~18s (loads everything, builds cache)
+- **Subsequent runs**: <1s (loads from cache)
+- **Rebuild when**: PDFs updated, dictionary changed, or chunk size modified
+
+```bash
+# Force rebuild cache
+python main.py --rebuild-vector-store --dry-run
+```
 
 ## What Gets Generated
 

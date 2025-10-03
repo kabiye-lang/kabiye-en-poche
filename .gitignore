@@ -49,3 +49,6 @@ expo-env.d.ts
 
 # VSCode
 !.vscode
+
+# gen-lessons
+gen-lessons/vector_store_cache/

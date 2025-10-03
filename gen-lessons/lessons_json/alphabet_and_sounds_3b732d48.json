@@ -9,61 +9,61 @@
   "lesson_contents": [
     {
       "title_en": "Kabiyè Alphabet",
-      "title_fr": "Alphabet kabiyè",
-      "content_en": "Learn the Kabiyè alphabet letters and special characters. The Kabiyè language uses a Latin script with some additional characters.",
-      "content_fr": "Apprenez l’alphabet kabiyè et les caractères spéciaux. La langue kabiyè utilise un écriture latine avec quelques caractères supplémentaires.",
+      "title_fr": "Alphabet Kabiyè",
+      "content_en": "The Kabiyè alphabet is based on a phonological analysis of the language. Each symbol orthographically (graphéme) like p, t, kp, ñ, e, iy, etc., represents a single phoneme (useful sound) in the reference dialect and each phoneme is written only once.",
+      "content_fr": "L'alphabet kabiyè est basé sur une analyse phonologique de la langue. Chaque symbole orthographique (graphéme) comme p, t, kp, ñ, e, iy, etc., représente un seul phonème (son utile) dans le dialecte de référence et chaque phonème est écrit d'une seule façon.",
       "examples_en": [
         {
-          "kabiye": "ɛsɔdaa",
-          "translation": "ciel",
-          "pronunciation": "ɛsɔ́dáá"
+          "kabiye": "p",
+          "translation": "p",
+          "pronunciation": "p"
         },
         {
-          "kabiye": "ki-₁",
-          "translation": "il, elle (pron. pers. sujet)",
-          "pronunciation": "ki"
+          "kabiye": "t",
+          "translation": "t",
+          "pronunciation": "t"
         }
       ],
       "examples_fr": [
         {
-          "kabiye": "ɛsɔdaa",
-          "translation": "ciel",
-          "pronunciation": "ɛsɔ́dáá"
+          "kabiye": "p",
+          "translation": "p",
+          "pronunciation": "p"
         },
         {
-          "kabiye": "ki-₁",
-          "translation": "il, elle (pron. pers. sujet)",
-          "pronunciation": "ki"
+          "kabiye": "t",
+          "translation": "t",
+          "pronunciation": "t"
         }
       ]
     },
     {
-      "title_en": "Kabiyè Phonetics and Tones",
-      "title_fr": "Phonétique et tons kabiyè",
-      "content_en": "Recognize consonant clusters and unique consonants (kp, gb, ɖ, ŋ). Understand the Kabiyè language's syllable structure and pronunciation patterns.",
-      "content_fr": "Reconnaissez les groupes de consonnes et les consonnes spécifiques (kp, gb, ɖ, ŋ). Comprendre la structure syllabique et les schémas de prononciation de la langue kabiyè.",
+      "title_en": "Consonant Clusters and Unique Consonants",
+      "title_fr": "Groupes de consonnes et consonnes spécifiques",
+      "content_en": "Kabiyè has unique consonants like kp, gb, ɖ, ŋ. These are called consonant clusters and they have specific pronunciation patterns.",
+      "content_fr": "Le kabiye a des consonnes spécifiques comme kp, gb, ɖ, ŋ. Ces groupes de consonnes ont des schémas de prononciation spécifiques.",
       "examples_en": [
         {
-          "kabiye": "Ɛsɔ",
-          "translation": "Dieu",
-          "pronunciation": "ɛsɔ́"
+          "kabiye": "kp",
+          "translation": "kp",
+          "pronunciation": "kp"
         },
         {
-          "kabiye": "ki-₁",
-          "translation": "son, sa, ses (adj. poss.)",
-          "pronunciation": "ki"
+          "kabiye": "gb",
+          "translation": "gb",
+          "pronunciation": "gb"
         }
       ],
       "examples_fr": [
         {
-          "kabiye": "Ɛsɔ",
-          "translation": "Dieu",
-          "pronunciation": "ɛsɔ́"
+          "kabiye": "kp",
+          "translation": "kp",
+          "pronunciation": "kp"
         },
         {
-          "kabiye": "ki-₁",
-          "translation": "son, sa, ses (adj. poss.)",
-          "pronunciation": "ki"
+          "kabiye": "gb",
+          "translation": "gb",
+          "pronunciation": "gb"
         }
       ]
     }
@@ -72,35 +72,36 @@
     {
       "activity_type": "listen_and_choose",
       "position": 1,
-      "question_en": "Listen and select the correct word (ɛsɔdaa or ki-₁)",
-      "question_fr": "Écoutez et sélectionnez le mot correct (ɛsɔdaa ou ki-₁)",
-      "instructions_en": "Tap the word you hear",
-      "instructions_fr": "Appuyez sur le mot que vous entendez",
+      "question_en": "Listen and select the correct letter",
+      "question_fr": "Écoutez et sélectionnez la lettre correcte",
+      "instructions_en": "Tap the letter you hear",
+      "instructions_fr": "Appuyez sur la lettre que vous entendez",
       "data": {
-        "audio_word": "kabiye_word",
+        "audio_letter": "kabiye_letter",
         "options": [
-          "ɛsɔdaa",
-          "ki-₁"
+          "p",
+          "t",
+          "kp"
         ],
-        "correct_answer": "kabiye_word"
+        "correct_answer": "kabiye_letter"
       }
     },
     {
       "activity_type": "match_pairs",
       "position": 2,
-      "question_en": "Match Kabiyè words with their meanings",
-      "question_fr": "Associez les mots Kabiyè à leur signification",
-      "instructions_en": "Drag to match each word with its meaning",
-      "instructions_fr": "Faites glisser pour associer chaque mot à sa signification",
+      "question_en": "Match Kabiyè letters with their sounds",
+      "question_fr": "Associez les lettres kabiyè à leur son",
+      "instructions_en": "Drag to match each letter with its sound",
+      "instructions_fr": "Faites glisser pour associer chaque lettre à son son",
       "data": {
         "pairs": [
           {
-            "kabiye": "ɛsɔdaa",
-            "english": "ciel"
+            "kabiye": "p",
+            "sound": "p"
           },
           {
-            "kabiye": "ki-₁",
-            "english": "il, elle (pron. pers. sujet)"
+            "kabiye": "t",
+            "sound": "t"
           }
         ]
       }
@@ -108,21 +109,23 @@
     {
       "activity_type": "order_words",
       "position": 3,
-      "question_en": "Arrange the words to form a correct sentence",
-      "question_fr": "Disposez les mots pour former une phrase correcte",
-      "instructions_en": "Tap the words in the correct order",
-      "instructions_fr": "Appuyez sur les mots dans le bon ordre",
+      "question_en": "Arrange the letters to form a Kabiyè word",
+      "question_fr": "Disposez les lettres pour former un mot kabiyè",
+      "instructions_en": "Tap the letters in the correct order",
+      "instructions_fr": "Appuyez sur les lettres dans le bon ordre",
       "data": {
-        "words": [
-          "ki-₁",
-          "Ɛsɔ"
+        "letters": [
+          "p",
+          "t",
+          "k"
         ],
         "correct_order": [
-          "Ɛsɔ",
-          "ki-₁"
+          "p",
+          "t",
+          "k"
         ],
-        "translation_en": "God",
-        "translation_fr": "Dieu"
+        "translation_en": "word meaning in English",
+        "translation_fr": "signification du mot en français"
       }
     }
   ],
@@ -132,17 +135,16 @@
       "position": 1,
       "title_en": "Fill in the Blanks",
       "title_fr": "Remplir les blancs",
-      "instructions_en": "Complete the sentences with the correct words",
-      "instructions_fr": "Complétez les phrases avec les mots corrects",
+      "instructions_en": "Complete the sentences with the correct letters",
+      "instructions_fr": "Complétez les phrases avec les lettres correctes",
       "data": {
-        "questions": [
+        "sentences": [
           {
-            "sentence_en": "The sky is called ___ in Kabiyè.",
-            "sentence_fr": "Le ciel s'appelle ___ en Kabiyè.",
-            "answer": "ɛsɔdaa",
-            "options": [
-              "ki-₁",
-              "Ɛsɔdaa"
+            "sentence_en": "Complete sentence in English with ___ and ___",
+            "sentence_fr": "Phrase complète en français avec ___ et ___",
+            "answer": [
+              "k",
+              "p"
             ]
           }
         ]
@@ -158,11 +160,12 @@
       "data": {
         "questions": [
           {
-            "english": "God is called ___ in Kabiyè.",
-            "french": "Dieu s'appelle ___ en Kabiyè.",
-            "answer": "Ɛsɔ",
+            "english": "English phrase",
+            "french": "Phrase française",
+            "answer": "kabiye_phrase",
             "hints": [
-              "What do we call God in English?"
+              "Hint 1",
+              "Hint 2"
             ]
           }
         ]
@@ -173,44 +176,55 @@
     {
       "position": 1,
       "question_type": "multiple_choice",
-      "question_en": "What is the Kabiyè word for 'sky'?",
-      "question_fr": "Quel est le mot kabiyè pour 'ciel'?",
+      "question_en": "What is the Kabiyè letter for 't'?",
+      "question_fr": "Quelle est la lettre kabiyè pour 't'?",
       "options": [
         {
-          "value": "ɛsɔdaa",
-          "label_en": "ɛsɔdaa",
-          "label_fr": "ɛsɔdaa"
+          "value": "p",
+          "label_en": "P",
+          "label_fr": "P"
         },
         {
-          "value": "ki-₁",
-          "label_en": "ki-₁",
-          "label_fr": "ki-₁"
+          "value": "t",
+          "label_en": "T",
+          "label_fr": "T"
+        },
+        {
+          "value": "k",
+          "label_en": "K",
+          "label_fr": "K"
         }
       ],
-      "correct_answer": "ɛsɔdaa",
-      "explanation_en": "In Kabiyè, the word for 'sky' is ɛsɔdaa.",
-      "explanation_fr": "En Kabiyè, le mot pour 'ciel' est ɛsɔdaa."
+      "correct_answer": "t",
+      "explanation_en": "The Kabiyè letter for 't' is 't'.",
+      "explanation_fr": "La lettre kabiyè pour 't' est 't'."
     },
     {
       "position": 2,
       "question_type": "audio",
-      "question_en": "Listen and identify the word (ɛsɔdaa)",
-      "question_fr": "Écoutez et sélectionnez le mot (ɛsɔdaa)",
-      "instructions_en": "Tap the correct audio clip for ɛsɔdaa",
-      "instructions_fr": "Sélectionnez l'audio correct pour ɛsɔdaa",
-      "data": {
-        "audio_options": [
-          "kabiye_word1",
-          "kabiye_word2"
-        ],
-        "correct_answer": "kabiye_word1"
-      }
+      "question_en": "Listen and identify the Kabiyè letter",
+      "question_fr": "Écoutez et identifiez la lettre kabiyè",
+      "options": [
+        {
+          "value": "p",
+          "label_en": "P",
+          "label_fr": "P"
+        },
+        {
+          "value": "t",
+          "label_en": "T",
+          "label_fr": "T"
+        }
+      ],
+      "correct_answer": "p",
+      "explanation_en": "The Kabiyè letter you heard is 'p'.",
+      "explanation_fr": "La lettre kabiyè que vous avez entendue est 'p'."
     }
   ],
   "cultural_note": {
     "title_en": "Cultural Insight",
     "title_fr": "Aperçu culturel",
-    "content_en": "The Kabiyè language is spoken by the Kabiye people, a group of ethnicities in Togo and Benin. Their rich cultural traditions include unique music, dance, and arts.",
-    "content_fr": "La langue kabiyè est parlée par les peuples Kabiye, un groupe d'ethnies au Togo et au Bénin. Les traditions culturelles riches de ce peuple comprennent de la musique, danse et arts uniques."
+    "content_en": "The Kabiyè language is spoken by the Kabiyè people, one of the largest ethnic groups in Benin and Togo.",
+    "content_fr": "La langue kabiyè est parlée par le peuple Kabiyè, l'un des groupes ethniques les plus importants du Bénin et du Togo."
   }
 }
