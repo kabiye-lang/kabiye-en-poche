@@ -49,7 +49,7 @@ expo-env.d.ts
 # utils/data/alphabet.json
 
 # VSCode
-!.vscode
+.vscode
 
 ### GITIGNORE END ###
 

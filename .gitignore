@@ -52,3 +52,8 @@ expo-env.d.ts
 
 # gen-lessons
 gen-lessons/vector_store_cache/
+gen-lessons/lessons_json/
+gen-lessons/db_lessons/
+gen-lessons/lesson_prompts/
+gen-lessons/*.log
+gen-lessons/__pycache__/

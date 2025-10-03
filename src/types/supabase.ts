@@ -133,6 +133,7 @@ export interface Database {
           id: string
           image_url: string | null
           lesson_id: string
+          position: number
           title_en: string
           title_fr: string
         }
@@ -147,6 +148,7 @@ export interface Database {
           id?: string
           image_url?: string | null
           lesson_id: string
+          position?: number
           title_en: string
           title_fr: string
         }
@@ -161,61 +163,13 @@ export interface Database {
           id?: string
           image_url?: string | null
           lesson_id?: string
+          position?: number
           title_en?: string
           title_fr?: string
         }
         Relationships: [
           {
             foreignKeyName: 'lesson_contents_lesson_id_fkey'
-            columns: ['lesson_id']
-            referencedRelation: 'lessons'
-            referencedColumns: ['id']
-          },
-        ]
-      }
-      lesson_exercises: {
-        Row: {
-          audio_url: string | null
-          created_at: string | null
-          data: Json
-          exercise_type: string
-          id: string
-          instructions_en: string | null
-          instructions_fr: string | null
-          lesson_id: string
-          position: number
-          title_en: string
-          title_fr: string
-        }
-        Insert: {
-          audio_url?: string | null
-          created_at?: string | null
-          data: Json
-          exercise_type: string
-          id?: string
-          instructions_en?: string | null
-          instructions_fr?: string | null
-          lesson_id: string
-          position?: number
-          title_en: string
-          title_fr: string
-        }
-        Update: {
-          audio_url?: string | null
-          created_at?: string | null
-          data?: Json
-          exercise_type?: string
-          id?: string
-          instructions_en?: string | null
-          instructions_fr?: string | null
-          lesson_id?: string
-          position?: number
-          title_en?: string
-          title_fr?: string
-        }
-        Relationships: [
-          {
-            foreignKeyName: 'lesson_exercises_lesson_id_fkey'
             columns: ['lesson_id']
             referencedRelation: 'lessons'
             referencedColumns: ['id']
@@ -305,7 +259,6 @@ export interface Database {
       lesson_activities: {
         Row: {
           activity_type: string
-          audio_url: string | null
           created_at: string | null
           data: Json
           id: string
@@ -319,7 +272,6 @@ export interface Database {
         }
         Insert: {
           activity_type: string
-          audio_url?: string | null
           created_at?: string | null
           data?: Json
           id?: string
@@ -333,7 +285,6 @@ export interface Database {
         }
         Update: {
           activity_type?: string
-          audio_url?: string | null
           created_at?: string | null
           data?: Json
           id?: string
@@ -350,55 +301,6 @@ export interface Database {
             foreignKeyName: 'lesson_activities_lesson_id_fkey'
             columns: ['lesson_id']
             isOneToOne: false
-            referencedRelation: 'lessons'
-            referencedColumns: ['id']
-          },
-        ]
-      }
-      quiz_questions: {
-        Row: {
-          correct_answer: string
-          created_at: string | null
-          explanation_en: string | null
-          explanation_fr: string | null
-          id: string
-          lesson_id: string
-          options: Json
-          position: number
-          question_en: string
-          question_fr: string
-          question_type: string
-        }
-        Insert: {
-          correct_answer: string
-          created_at?: string | null
-          explanation_en?: string | null
-          explanation_fr?: string | null
-          id?: string
-          lesson_id: string
-          options: Json
-          position?: number
-          question_en: string
-          question_fr: string
-          question_type: string
-        }
-        Update: {
-          correct_answer?: string
-          created_at?: string | null
-          explanation_en?: string | null
-          explanation_fr?: string | null
-          id?: string
-          lesson_id?: string
-          options?: Json
-          position?: number
-          question_en?: string
-          question_fr?: string
-          question_type?: string
-        }
-        Relationships: [
-          {
-            foreignKeyName: 'quiz_questions_lesson_id_fkey'
-            columns: ['lesson_id']
             referencedRelation: 'lessons'
             referencedColumns: ['id']
           },
@@ -484,8 +386,6 @@ export type Unit = Tables<'units'>
 export type Lesson = Tables<'lessons'>
 export type LessonContent = Tables<'lesson_contents'>
 export type LessonActivity = Tables<'lesson_activities'>
-export type LessonExercise = Tables<'lesson_exercises'>
-export type QuizQuestion = Tables<'quiz_questions'>
 export type Category = Tables<'categories'>
 export type Topic = Tables<'topics'>
 export type AlphabetLetter = Tables<'alphabet_letters'>
@@ -499,9 +399,8 @@ export type UnitWithLessons = Unit & {
 export type LessonWithContent = Lesson & {
   unit: Unit
   category: Category | null
-  content: LessonContent | null
-  quiz_questions: QuizQuestion[]
-  exercises: LessonExercise[]
+  contents: LessonContent[] // UPDATED: Array to support multiple content sections
+  activities: LessonActivity[] // UPDATED: Single activities array
 }
 
 export type LessonWithProgress = Lesson & {

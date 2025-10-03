@@ -1,3 +1,5 @@
+import type { LessonActivity } from '@/types/supabase'
+
 import { useEffect, useState } from 'react'
 import { ScrollView, TouchableOpacity } from 'react-native'
 
@@ -6,16 +8,31 @@ import { useLingui } from '@lingui/react/macro'
 import { Button, Card, Text, View } from '@/components/ui'
 
 interface QuizStepProps {
-  questionType: 'multiple_choice' | 'true_false' | 'fill_blank'
-  question: string
-  options: string[]
-  correctAnswer: string
-  explanation?: string
+  activity: LessonActivity
+  currentLanguage: 'en' | 'fr'
   onAnswer: (isCorrect: boolean, answer: string) => void
 }
 
-const QuizStep = ({ questionType, question, options, correctAnswer, explanation, onAnswer }: QuizStepProps) => {
+const QuizStep = ({ activity, currentLanguage, onAnswer }: QuizStepProps) => {
   const { t } = useLingui()
+
+  // Extract data from activity
+  const activityData = activity.data as any
+  const question = (currentLanguage === 'en' ? activity.question_en : activity.question_fr) || ''
+  const instructions = (currentLanguage === 'en' ? activity.instructions_en : activity.instructions_fr) || ''
+
+  // Get options and explanation with language fallback
+  const optionsData = activityData?.options
+  const options = optionsData?.[currentLanguage] || optionsData?.en || []
+  const correctAnswerData = activityData?.correct_answer
+  // correct_answer can be either a string or an object with language keys
+  const correctAnswer =
+    typeof correctAnswerData === 'object'
+      ? correctAnswerData?.[currentLanguage] || correctAnswerData?.en || ''
+      : correctAnswerData || ''
+  const explanationData = activityData?.explanation
+  const explanation = explanationData?.[currentLanguage] || explanationData?.en || undefined
+
   const [selectedIndex, setSelectedIndex] = useState<number | null>(null)
   const [showFeedback, setShowFeedback] = useState(false)
 
@@ -34,8 +51,8 @@ const QuizStep = ({ questionType, question, options, correctAnswer, explanation,
 
   const handleContinue = () => {
     if (selectedIndex === null) return
-    const isCorrect = selectedIndex.toString() === correctAnswer
     const selectedAnswer = options[selectedIndex]
+    const isCorrect = selectedAnswer === correctAnswer
     onAnswer(isCorrect, selectedAnswer)
   }
 
@@ -49,11 +66,18 @@ const QuizStep = ({ questionType, question, options, correctAnswer, explanation,
           </Text>
         </Card>
 
+        {/* Instructions */}
+        {instructions && (
+          <Text variant="body" className="mb-4 text-center text-text-grey dark:text-gray-400">
+            {instructions}
+          </Text>
+        )}
+
         {/* Options */}
         <View className="mb-4 gap-3">
-          {options.map((option, index) => {
+          {options.map((option: string, index: number) => {
             const isSelected = selectedIndex === index
-            const isCorrect = index.toString() === correctAnswer
+            const isCorrect = option === correctAnswer
             const showCorrect = showFeedback && isCorrect
             const showIncorrect = showFeedback && isSelected && !isCorrect
 
@@ -111,7 +135,7 @@ const QuizStep = ({ questionType, question, options, correctAnswer, explanation,
         {showFeedback && (
           <Card
             className={`mb-4 p-4 ${
-              selectedIndex?.toString() === correctAnswer
+              options[selectedIndex!] === correctAnswer
                 ? 'bg-green-50 dark:bg-green-900/20'
                 : 'bg-red-50 dark:bg-red-900/20'
             }`}
@@ -120,12 +144,12 @@ const QuizStep = ({ questionType, question, options, correctAnswer, explanation,
               variant="h6"
               weight="bold"
               className={`mb-2 ${
-                selectedIndex?.toString() === correctAnswer
+                options[selectedIndex!] === correctAnswer
                   ? 'text-green-700 dark:text-green-300'
                   : 'text-red-700 dark:text-red-300'
               }`}
             >
-              {selectedIndex?.toString() === correctAnswer ? t`Correct! 🎉` : t`Not quite right`}
+              {options[selectedIndex!] === correctAnswer ? t`Correct! 🎉` : t`Not quite right`}
             </Text>
             {explanation && (
               <Text variant="body" className="text-text-dark dark:text-gray-100">

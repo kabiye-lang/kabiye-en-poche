@@ -1,21 +1,21 @@
 import type { LessonActivity } from '@/types/supabase'
 
 import { useEffect, useState } from 'react'
-import { ActivityIndicator, ScrollView, TouchableOpacity } from 'react-native'
+import { ActivityIndicator, ScrollView, TextInput, TouchableOpacity } from 'react-native'
 
 import { useLingui } from '@lingui/react/macro'
-import { SpeakerHighIcon, SpeakerSlashIcon } from 'phosphor-react-native'
+import { LightbulbIcon, SpeakerHighIcon, SpeakerSlashIcon } from 'phosphor-react-native'
 
 import { Button, Card, Text, View } from '@/components/ui'
 import { useAudio } from '@/hooks/use-audio'
 
-interface ListenChooseStepProps {
+interface ListenTypeStepProps {
   activity: LessonActivity
   currentLanguage: 'en' | 'fr'
   onAnswer: (isCorrect: boolean, answer: string) => void
 }
 
-const ListenChooseStep = ({ activity, currentLanguage, onAnswer }: ListenChooseStepProps) => {
+const ListenTypeStep = ({ activity, currentLanguage, onAnswer }: ListenTypeStepProps) => {
   const { t } = useLingui()
   const { playAudio, stopAudio, isPlaying, isLoading } = useAudio()
 
@@ -23,22 +23,20 @@ const ListenChooseStep = ({ activity, currentLanguage, onAnswer }: ListenChooseS
   const activityData = activity.data as any
   const question = (currentLanguage === 'en' ? activity.question_en : activity.question_fr) || ''
   const instructions = (currentLanguage === 'en' ? activity.instructions_en : activity.instructions_fr) || ''
-  const audioUrl = activityData?.audio_url // Audio URL comes from data only
-
-  // Options are not localized - they are plain strings (Kabiyè words)
-  const options = activityData?.options || []
+  const audioUrl = activityData?.audio_url
   const correctAnswer = activityData?.correct_answer || ''
-
-  // Translation is stored separately in the data
+  const hints = activityData?.hints || []
   const translation = currentLanguage === 'en' ? activityData?.translation_en : activityData?.translation_fr
 
-  const [selectedIndex, setSelectedIndex] = useState<number | null>(null)
+  const [userAnswer, setUserAnswer] = useState('')
   const [showFeedback, setShowFeedback] = useState(false)
+  const [showHints, setShowHints] = useState(false)
 
   // Reset state when question changes (new activity)
   useEffect(() => {
-    setSelectedIndex(null)
+    setUserAnswer('')
     setShowFeedback(false)
+    setShowHints(false)
   }, [question, correctAnswer])
 
   // Auto-play audio when component mounts or changes
@@ -53,19 +51,15 @@ const ListenChooseStep = ({ activity, currentLanguage, onAnswer }: ListenChooseS
     }
   }, [audioUrl])
 
-  const handleSelectAnswer = (index: number) => {
-    if (showFeedback) return
-    setSelectedIndex(index)
-    // Show instant feedback
+  const handleCheck = () => {
+    if (!userAnswer.trim()) return
     setShowFeedback(true)
   }
 
   const handleContinue = () => {
-    if (selectedIndex === null) return
-    const selectedAnswer = options[selectedIndex]
-    const isCorrect = selectedAnswer === correctAnswer
-    stopAudio() // Stop audio when moving to next step
-    onAnswer(isCorrect, selectedAnswer)
+    const isCorrect = userAnswer.trim().toLowerCase() === correctAnswer.toLowerCase()
+    stopAudio()
+    onAnswer(isCorrect, userAnswer.trim())
   }
 
   const handleToggleAudio = async () => {
@@ -77,6 +71,8 @@ const ListenChooseStep = ({ activity, currentLanguage, onAnswer }: ListenChooseS
       await playAudio(audioUrl)
     }
   }
+
+  const isCorrect = userAnswer.trim().toLowerCase() === correctAnswer.toLowerCase()
 
   return (
     <View className="flex-1">
@@ -130,94 +126,86 @@ const ListenChooseStep = ({ activity, currentLanguage, onAnswer }: ListenChooseS
           </Text>
         )}
 
-        {/* Options */}
-        <View className="mb-4 gap-3">
-          {options.map((option: string, index: number) => {
-            const isSelected = selectedIndex === index
-            const isCorrect = option === correctAnswer
-            const showCorrect = showFeedback && isCorrect
-            const showIncorrect = showFeedback && isSelected && !isCorrect
+        {/* Hints Button */}
+        {hints.length > 0 && (
+          <TouchableOpacity
+            onPress={() => setShowHints(!showHints)}
+            className="mb-4 flex-row items-center justify-center gap-2"
+          >
+            <LightbulbIcon size={20} color="#f59e0b" weight="fill" />
+            <Text variant="body" className="text-amber-600 dark:text-amber-400">
+              {showHints ? t`Hide hints` : t`Show hints`}
+            </Text>
+          </TouchableOpacity>
+        )}
 
-            return (
-              <TouchableOpacity
-                key={index}
-                onPress={() => handleSelectAnswer(index)}
-                disabled={showFeedback}
-                className={`rounded-xl border-2 p-4 ${
-                  showCorrect
-                    ? 'border-green-500 bg-green-50 dark:bg-green-900/20'
-                    : showIncorrect
-                      ? 'border-red-500 bg-red-50 dark:bg-red-900/20'
-                      : isSelected
-                        ? 'border-primary bg-primary/10'
-                        : 'border-gray-200 bg-white dark:border-gray-700 dark:bg-gray-800'
-                }`}
-              >
-                <View className="flex-row items-center">
-                  {/* Radio Button */}
-                  <View
-                    className={`mr-3 h-6 w-6 items-center justify-center rounded-full border-2 ${
-                      showCorrect
-                        ? 'border-green-500 bg-green-500'
-                        : showIncorrect
-                          ? 'border-red-500 bg-red-500'
-                          : isSelected
-                            ? 'border-primary bg-primary'
-                            : 'border-gray-300 dark:border-gray-600'
-                    }`}
-                  >
-                    {(isSelected || showCorrect) && <View className="h-3 w-3 rounded-full bg-white" />}
-                  </View>
+        {/* Hints Display */}
+        {showHints && hints.length > 0 && (
+          <Card className="mb-4 bg-amber-50 p-4 dark:bg-amber-900/20">
+            {hints.map((hint: string, index: number) => (
+              <Text key={index} variant="body" className="mb-1 text-amber-900 dark:text-amber-200">
+                💡 {hint}
+              </Text>
+            ))}
+          </Card>
+        )}
 
-                  {/* Option Text */}
-                  <Text
-                    variant="h6"
-                    weight="bold"
-                    className={`flex-1 ${
-                      showCorrect
-                        ? 'text-green-700 dark:text-green-300'
-                        : showIncorrect
-                          ? 'text-red-700 dark:text-red-300'
-                          : 'text-text-dark dark:text-gray-100'
-                    }`}
-                  >
-                    {option}
-                  </Text>
-                </View>
-              </TouchableOpacity>
-            )
-          })}
-        </View>
+        {/* Text Input */}
+        <Card className="mb-4 p-4">
+          <TextInput
+            value={userAnswer}
+            onChangeText={setUserAnswer}
+            placeholder={t`Type what you hear...`}
+            placeholderTextColor="#9ca3af"
+            editable={!showFeedback}
+            className={`min-h-[80px] rounded-lg border-2 p-4 text-lg ${
+              showFeedback
+                ? isCorrect
+                  ? 'border-green-500 bg-green-50 dark:bg-green-900/20'
+                  : 'border-red-500 bg-red-50 dark:bg-red-900/20'
+                : 'border-gray-300 bg-white dark:border-gray-600 dark:bg-gray-800'
+            } text-text-dark dark:text-gray-100`}
+            multiline
+            autoCapitalize="none"
+            autoCorrect={false}
+          />
+        </Card>
 
         {/* Feedback */}
         {showFeedback && (
           <Card
-            className={`mb-4 p-4 ${
-              options[selectedIndex!] === correctAnswer
-                ? 'bg-green-50 dark:bg-green-900/20'
-                : 'bg-red-50 dark:bg-red-900/20'
-            }`}
+            className={`mb-4 p-4 ${isCorrect ? 'bg-green-50 dark:bg-green-900/20' : 'bg-red-50 dark:bg-red-900/20'}`}
           >
             <Text
               variant="h6"
-              weight="bold"
-              className={`${
-                options[selectedIndex!] === correctAnswer
-                  ? 'text-green-700 dark:text-green-300'
-                  : 'text-red-700 dark:text-red-300'
-              }`}
+              weight="semibold"
+              className={`mb-2 ${isCorrect ? 'text-green-700 dark:text-green-300' : 'text-red-700 dark:text-red-300'}`}
             >
-              {options[selectedIndex!] === correctAnswer ? t`Correct! 🎉` : t`Not quite right`}
+              {isCorrect ? t`Correct! ✓` : t`Not quite right ✗`}
             </Text>
+            {!isCorrect && (
+              <View>
+                <Text variant="body" className="text-gray-700 dark:text-gray-300">
+                  {t`Correct answer:`} <Text weight="bold">{correctAnswer}</Text>
+                </Text>
+              </View>
+            )}
           </Card>
         )}
 
+        {/* Add some bottom padding */}
         <View className="h-24" />
       </ScrollView>
 
-      {/* Bottom Button */}
+      {/* Bottom Action Button */}
       <View className="border-t border-gray-200 bg-white px-6 py-4 dark:border-gray-700 dark:bg-gray-800">
-        {showFeedback && (
+        {!showFeedback ? (
+          <Button variant="primary" onPress={handleCheck} disabled={!userAnswer.trim()} className="w-full">
+            <Text variant="body" weight="bold" className="text-white">
+              {t`Check Answer`}
+            </Text>
+          </Button>
+        ) : (
           <Button variant="primary" onPress={handleContinue} className="w-full">
             <Text variant="body" weight="bold" className="text-white">
               {t`Continue`}
@@ -229,4 +217,4 @@ const ListenChooseStep = ({ activity, currentLanguage, onAnswer }: ListenChooseS
   )
 }
 
-export default ListenChooseStep
+export default ListenTypeStep

@@ -38,6 +38,7 @@ import { defineMessage as msg } from '@lingui/core/macro'
 import { ThemeProvider } from '@react-navigation/native'
 import { QueryClientProvider } from '@tanstack/react-query'
 import { useColorScheme } from 'nativewind'
+import { Toaster } from 'sonner-native'
 
 import i18n, { I18nProvider } from '@/i18n'
 import { queryClient } from '@/lib/query-client'
@@ -198,6 +199,7 @@ function RootLayoutNav() {
                   }}
                 />
               </Stack>
+              <Toaster />
             </GestureHandlerRootView>
           </I18nProvider>
         </ThemeProvider>

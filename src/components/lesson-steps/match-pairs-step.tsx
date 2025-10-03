@@ -1,3 +1,5 @@
+import type { LessonActivity } from '@/types/supabase'
+
 import { useEffect, useState } from 'react'
 import { ScrollView, TouchableOpacity } from 'react-native'
 
@@ -6,8 +8,8 @@ import { useLingui } from '@lingui/react/macro'
 import { Button, Card, Text, View } from '@/components/ui'
 
 interface MatchPairsStepProps {
-  question: string
-  pairs: { left: string; right: string }[]
+  activity: LessonActivity
+  currentLanguage: 'en' | 'fr'
   onAnswer: (isCorrect: boolean, answer: string) => void
 }
 
@@ -16,14 +18,28 @@ interface SelectedPair {
   side: 'left' | 'right'
 }
 
-const MatchPairsStep = ({ question, pairs, onAnswer }: MatchPairsStepProps) => {
+const MatchPairsStep = ({ activity, currentLanguage, onAnswer }: MatchPairsStepProps) => {
   const { t } = useLingui()
+
+  // Extract data from activity
+  const activityData = activity.data as any
+  const question = (currentLanguage === 'en' ? activity.question_en : activity.question_fr) || ''
+  const instructions = (currentLanguage === 'en' ? activity.instructions_en : activity.instructions_fr) || ''
+
+  // Transform pairs to use correct language for 'right' values
+  const rawPairs = activityData?.pairs || []
+  const pairs = rawPairs.map((pair: any) => ({
+    left: pair.left,
+    right: typeof pair.right === 'object' ? pair.right[currentLanguage] || pair.right.en || pair.right : pair.right,
+  }))
+
   const [leftItems, setLeftItems] = useState<string[]>([])
   const [rightItems, setRightItems] = useState<string[]>([])
   const [selected, setSelected] = useState<SelectedPair | null>(null)
   const [matched, setMatched] = useState<Set<string>>(new Set())
   const [showFeedback, setShowFeedback] = useState(false)
 
+  // Reset state and shuffle when question changes (new activity)
   useEffect(() => {
     // Shuffle both sides independently
     const shuffleArray = <T,>(array: T[]): T[] => {
@@ -35,9 +51,15 @@ const MatchPairsStep = ({ question, pairs, onAnswer }: MatchPairsStepProps) => {
       return shuffled
     }
 
-    setLeftItems(shuffleArray(pairs.map((p) => p.left)))
-    setRightItems(shuffleArray(pairs.map((p) => p.right)))
-  }, [pairs])
+    // Reset state
+    setSelected(null)
+    setMatched(new Set())
+    setShowFeedback(false)
+
+    // Shuffle items
+    setLeftItems(shuffleArray(pairs.map((p: { left: string; right: string }) => p.left)))
+    setRightItems(shuffleArray(pairs.map((p: { left: string; right: string }) => p.right)))
+  }, [question, pairs])
 
   const handleSelect = (value: string, side: 'left' | 'right') => {
     if (matched.has(value)) return
@@ -51,7 +73,7 @@ const MatchPairsStep = ({ question, pairs, onAnswer }: MatchPairsStepProps) => {
     } else {
       // Second selection from opposite side - check if match
       const isMatch = pairs.some(
-        (pair) =>
+        (pair: { left: string; right: string }) =>
           (pair.left === selected.value && pair.right === value) ||
           (pair.left === value && pair.right === selected.value)
       )
@@ -103,7 +125,7 @@ const MatchPairsStep = ({ question, pairs, onAnswer }: MatchPairsStepProps) => {
         </Card>
 
         <Text variant="body" className="mb-4 text-center text-text-grey dark:text-gray-400">
-          {t`Tap pairs to match them`}
+          {instructions || t`Tap pairs to match them`}
         </Text>
 
         {/* Two columns for matching */}

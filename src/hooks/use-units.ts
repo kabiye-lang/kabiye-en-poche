@@ -321,12 +321,35 @@ export function useCompleteLesson() {
   })
 }
 
-// Get lesson content
+// Reset all progress
+export function useResetProgress() {
+  const queryClient = useQueryClient()
+
+  return useMutation({
+    mutationFn: async () => {
+      await localProgressStorage.clearAll()
+    },
+    onSuccess: () => {
+      // Invalidate all related queries to refresh UI
+      queryClient.invalidateQueries({ queryKey: unitKeys.all })
+      queryClient.invalidateQueries({ queryKey: ['next-lesson'] })
+      queryClient.invalidateQueries({ queryKey: ['progress-summary'] })
+    },
+  })
+}
+
+// Get lesson content (DEPRECATED: use useLessonContents instead)
 export function useLessonContent(lessonId: string) {
   return useQuery({
     queryKey: ['lesson-content', lessonId],
     queryFn: async () => {
-      const { data, error } = await supabase.from('lesson_contents').select('*').eq('lesson_id', lessonId).single()
+      const { data, error } = await supabase
+        .from('lesson_contents')
+        .select('*')
+        .eq('lesson_id', lessonId)
+        .order('position', { ascending: true })
+        .limit(1)
+        .single()
 
       if (error) throw error
       return data
@@ -335,13 +358,13 @@ export function useLessonContent(lessonId: string) {
   })
 }
 
-// Get lesson exercises
-export function useLessonExercises(lessonId: string) {
+// Get all lesson contents (supports multiple content sections per lesson)
+export function useLessonContents(lessonId: string) {
   return useQuery({
-    queryKey: ['lesson-exercises', lessonId],
+    queryKey: ['lesson-contents', lessonId],
     queryFn: async () => {
       const { data, error } = await supabase
-        .from('lesson_exercises')
+        .from('lesson_contents')
         .select('*')
         .eq('lesson_id', lessonId)
         .order('position', { ascending: true })
@@ -353,23 +376,8 @@ export function useLessonExercises(lessonId: string) {
   })
 }
 
-// Get quiz questions for a lesson (DEPRECATED - use useLessonActivities instead)
-export function useQuizQuestions(lessonId: string) {
-  return useQuery({
-    queryKey: ['quiz-questions', lessonId],
-    queryFn: async (): Promise<any[]> => {
-      const { data, error } = await supabase
-        .from('quiz_questions')
-        .select('*')
-        .eq('lesson_id', lessonId)
-        .order('position', { ascending: true })
-
-      if (error) throw error
-      return data || []
-    },
-    enabled: !!lessonId,
-  })
-}
+// REMOVED: useLessonExercises and useQuizQuestions
+// Both have been consolidated into useLessonActivities below
 
 // Get all lesson activities (unified quiz questions and exercises)
 export function useLessonActivities(lessonId: string) {

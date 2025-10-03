@@ -1,4 +1,6 @@
-import { useState } from 'react'
+import type { LessonActivity } from '@/types/supabase'
+
+import { useEffect, useState } from 'react'
 import { ScrollView, TouchableOpacity } from 'react-native'
 
 import { useLingui } from '@lingui/react/macro'
@@ -7,18 +9,32 @@ import { ArrowsClockwiseIcon } from 'phosphor-react-native'
 import { Button, Card, Text, View } from '@/components/ui'
 
 interface OrderWordsStepProps {
-  question: string
-  words: string[]
-  correctOrder: string[]
+  activity: LessonActivity
+  currentLanguage: 'en' | 'fr'
   onAnswer: (isCorrect: boolean, answer: string) => void
 }
 
-const OrderWordsStep = ({ question, words, correctOrder, onAnswer }: OrderWordsStepProps) => {
+const OrderWordsStep = ({ activity, currentLanguage, onAnswer }: OrderWordsStepProps) => {
   const { t } = useLingui()
+
+  // Extract data from activity
+  const activityData = activity.data as any
+  const question = (currentLanguage === 'en' ? activity.question_en : activity.question_fr) || ''
+  const instructions = (currentLanguage === 'en' ? activity.instructions_en : activity.instructions_fr) || ''
+  const words = activityData?.words || []
+  const correctOrder = activityData?.correct_order || []
   const [availableWords, setAvailableWords] = useState<string[]>([...words])
   const [orderedWords, setOrderedWords] = useState<string[]>([])
   const [showFeedback, setShowFeedback] = useState(false)
   const [isCorrect, setIsCorrect] = useState(false)
+
+  // Reset state when question changes (new activity)
+  useEffect(() => {
+    setAvailableWords([...words])
+    setOrderedWords([])
+    setShowFeedback(false)
+    setIsCorrect(false)
+  }, [question, words])
 
   const handleSelectWord = (word: string) => {
     setAvailableWords(availableWords.filter((w) => w !== word))
@@ -57,7 +73,7 @@ const OrderWordsStep = ({ question, words, correctOrder, onAnswer }: OrderWordsS
         </Card>
 
         <Text variant="body" className="mb-4 text-center text-text-grey dark:text-gray-400">
-          {t`Tap words in the correct order`}
+          {instructions || t`Tap words in the correct order`}
         </Text>
 
         {/* Ordered Words Area */}

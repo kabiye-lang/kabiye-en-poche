@@ -34,6 +34,7 @@ pytesseract>=0.3.13
 # === Machine Learning ===
 torch>=2.0.0
 transformers>=4.30.0
+sentencepiece>=0.1.99
 scikit-learn>=1.0.0
 numpy>=2.0.0,<3.0.0
 scipy>=1.10.0

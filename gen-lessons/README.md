@@ -6,10 +6,12 @@ Automatically generates lesson content (explanations, activities, exercises, qui
 
 ✅ **Multi-source RAG**: Combines PDF books + dictionary for accurate content  
 ✅ **9,000+ dictionary entries**: Automatic retrieval of words with pronunciations, definitions, and examples  
-✅ **Multi-column PDF support**: Proper handling of academic 2-column PDFs  
+✅ **NLLB Translation Model**: Optional Meta NLLB-200 integration for enhanced Kabiyè translations  
+✅ **Multi-column PDF support**: Optional UnstructuredPDFLoader for complex PDFs (use `--complex-pdf`)  
 ✅ **French language OCR**: Optimized for French/Kabiyè text extraction  
 ✅ **Direct database insert**: Generates and inserts to Supabase in one step  
 ✅ **Performance tracking**: Detailed timing logs for each step  
+✅ **Smart caching**: Vector store and HuggingFace models cached for faster runs  
 
 ## Quick Start
 
@@ -35,6 +37,32 @@ python main.py --dry-run  # Test first
 python main.py            # Run for real
 ```
 
+## Alternative: Generate Prompts for Gemini
+
+If you prefer using **Google Gemini** instead of local Ollama, you can generate pre-formatted prompts:
+
+```bash
+# Generate prompts for all lessons from Supabase
+python generate_lesson_prompts.py
+
+# Output: gen-lessons/lesson_prompts/*.txt (one file per lesson)
+```
+
+This script:
+- ✅ Connects to Supabase and fetches all lessons with metadata
+- ✅ Generates a detailed, structured prompt for each lesson
+- ✅ Includes lesson ID, title, objectives, topics, unit, category, difficulty
+- ✅ Provides complete SQL templates for Gemini to fill in
+- ✅ Saves prompts as `.txt` files ready to copy-paste into Gemini
+
+**How to use generated prompts:**
+1. Run `python generate_lesson_prompts.py`
+2. Open any prompt file in `lesson_prompts/` (e.g., `alphabet-and-sounds-3b732d48.txt`)
+3. Copy the entire content
+4. Paste into Google Gemini along with your Kabiyè PDF files
+5. Gemini will generate complete SQL statements to insert lesson content and activities
+6. Copy the SQL output and run it in your Supabase SQL Editor
+
 ## Usage
 
 ```bash
@@ -58,6 +86,8 @@ python main.py --dry-run --lessons lesson-id-1
 | `--dry-run` | Generate JSON only, no database insert |
 | `--lessons ID [ID ...]` | Process only specific lesson IDs |
 | `--rebuild-vector-store` | Force rebuild of vector store cache (use when PDFs/dictionary updated) |
+| `--complex-pdf` | Use UnstructuredPDFLoader for multi-column PDFs (slower but more accurate) |
+| `--use-nllb` | Enable NLLB translation model for enhanced content generation (downloads ~2.5GB on first run) |
 
 ### Vector Store Caching ⚡
 
@@ -96,9 +126,50 @@ The script automatically loads **~9,000 Kabiyè-French dictionary entries** from
 
 If the dictionary folder is not found, the script continues with PDF-only content.
 
+## NLLB Translation Model Integration
+
+The script optionally integrates **Meta's NLLB-200 (No Language Left Behind)** translation model for enhanced Kabiyè content generation.
+
+### What NLLB Does:
+- Generates real-time translations between English ↔ Kabiyè ↔ French
+- Creates supplementary translation examples for lessons
+- Validates translations against your dictionary
+- Provides alternative translations when dictionary entries are missing
+
+### How to Use:
+```bash
+# Enable NLLB with --use-nllb flag
+python main.py --use-nllb
+
+# Combine with other flags
+python main.py --use-nllb --dry-run --lessons lesson-id-1
+```
+
+### First Run:
+- Downloads ~2.5GB model from HuggingFace
+- Cached in `~/.cache/huggingface/` for future runs
+- Subsequent runs load instantly from cache
+
+### Quality Hierarchy:
+1. **Gold**: Dictionary entries (9,000+ curated words)
+2. **Silver**: NLLB translations validated against dictionary
+3. **Bronze**: Pure NLLB translations (flagged for review)
+
+### Performance:
+- Model loading: ~10-30s (first run), <1s (cached)
+- Per-translation: ~0.5-2s depending on hardware
+- GPU acceleration: Automatic if CUDA available
+
+### Requirements:
+```bash
+pip install transformers torch sentencepiece
+```
+
+**Note**: NLLB is optional. Without it, the script uses only PDF + dictionary content (still very effective).
+
 ## Multi-Column PDF Support
 
-The script automatically detects and uses `UnstructuredPDFLoader` for better handling of multi-column PDFs (common in academic documents). Falls back to `PyPDFLoader` if unstructured is not installed.
+By default, the script uses fast `PyPDFLoader`. For complex multi-column PDFs, use `--complex-pdf` flag to enable `UnstructuredPDFLoader` (slower but more accurate).
 
 **For best results with 2-column PDFs:**
 ```bash

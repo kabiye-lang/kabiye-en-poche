@@ -4,15 +4,17 @@ import * as Application from 'expo-application'
 import { useRouter } from 'expo-router'
 
 import { useLingui } from '@lingui/react/macro'
+import { toast } from 'sonner-native'
 
 import { BookOpenTextIcon, CaretRightIcon, GearIcon, GlobeIcon, TrashIcon, UserIcon } from '@/components/icons'
 import { Card, ScreenTitle, Text, View } from '@/components/ui'
-import { useAppProgressSummary } from '@/hooks/use-app-data'
+import { useAppProgressSummary, useAppResetProgress } from '@/hooks/use-app-data'
 
 const ProfileScreen = () => {
   const { t, i18n } = useLingui()
   const router = useRouter()
   const { data: progressSummary, isLoading: progressLoading } = useAppProgressSummary()
+  const resetProgressMutation = useAppResetProgress()
 
   // Resources data from the original resources screen
   const listItems: {
@@ -103,9 +105,18 @@ const ProfileScreen = () => {
       {
         text: t`Reset`,
         style: 'destructive',
-        onPress: () => {
-          // TODO: Implement reset progress functionality
-          Alert.alert(t`Progress Reset`, t`Your progress has been reset.`)
+        onPress: async () => {
+          try {
+            await resetProgressMutation.mutateAsync()
+            toast.success(t`Success`, {
+              description: t`Your progress has been reset successfully.`,
+            })
+          } catch (error) {
+            toast.error(t`Error`, {
+              description: t`Failed to reset progress. Please try again.`,
+            })
+            console.error('Error resetting progress:', error)
+          }
         },
       },
     ])

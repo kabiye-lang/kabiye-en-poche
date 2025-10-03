@@ -1,4 +1,5 @@
 // Lesson step types for the progressive lesson flow
+import type { LessonActivity } from './supabase'
 
 export type StepType =
   | 'content'
@@ -6,8 +7,12 @@ export type StepType =
   | 'exercise'
   | 'quiz'
   | 'listen_choose'
+  | 'listen_type'
   | 'match_pairs'
   | 'order_words'
+  | 'fill_blank'
+  | 'multiple_choice'
+  | 'true_false'
   | 'completion'
 
 export interface BaseStep {
@@ -16,8 +21,21 @@ export interface BaseStep {
   order: number
 }
 
+export interface ActivityStep extends BaseStep {
+  type:
+    | 'listen_choose'
+    | 'listen_type'
+    | 'match_pairs'
+    | 'order_words'
+    | 'fill_blank'
+    | 'multiple_choice'
+    | 'true_false'
+  activity: LessonActivity
+}
+
 export interface ContentStep extends BaseStep {
   type: 'content'
+  title?: string
   content: string
   examples?: {
     kabiye: string
@@ -49,6 +67,7 @@ export interface QuizStep extends BaseStep {
   type: 'quiz'
   questionType: 'multiple_choice' | 'true_false' | 'fill_blank'
   question: string
+  instructions?: string
   options: string[]
   correctAnswer: string
   explanation?: string
@@ -57,6 +76,7 @@ export interface QuizStep extends BaseStep {
 export interface ListenChooseStep extends BaseStep {
   type: 'listen_choose'
   question: string
+  instructions?: string
   options: string[]
   correctAnswer: string
   audioUrl?: string
@@ -65,12 +85,14 @@ export interface ListenChooseStep extends BaseStep {
 export interface MatchPairsStep extends BaseStep {
   type: 'match_pairs'
   question: string
+  instructions?: string
   pairs: { left: string; right: string }[]
 }
 
 export interface OrderWordsStep extends BaseStep {
   type: 'order_words'
   question: string
+  instructions?: string
   words: string[]
   correctOrder: string[]
 }
@@ -89,6 +111,7 @@ export type LessonStep =
   | ListenChooseStep
   | MatchPairsStep
   | OrderWordsStep
+  | ActivityStep
   | CompletionStep
 
 export interface LessonProgress {

@@ -7,12 +7,12 @@ import {
   useLesson,
   useLessonActivities,
   useLessonContent,
-  useLessonExercises,
+  useLessonContents,
   useLessons,
   useLessonsWithProgress,
   useNextLesson,
   useProgressSummary,
-  useQuizQuestions,
+  useResetProgress,
   useUnit,
   useUnits,
   useUnitWithLessons,
@@ -45,8 +45,8 @@ export function useAppLessonContent(lessonId: string) {
   return useLessonContent(lessonId)
 }
 
-export function useAppLessonExercises(lessonId: string) {
-  return useLessonExercises(lessonId)
+export function useAppLessonContents(lessonId: string) {
+  return useLessonContents(lessonId)
 }
 
 export function useAppLessonActivities(lessonId: string) {
@@ -74,9 +74,8 @@ export function useAppCompleteLesson() {
   return useCompleteLesson()
 }
 
-// Quiz
-export function useAppQuizQuestions(lessonId: string) {
-  return useQuizQuestions(lessonId)
+export function useAppResetProgress() {
+  return useResetProgress()
 }
 
 // Alphabet Letters
