@@ -4,8 +4,8 @@ import { useEffect, useState } from 'react'
 import { ScrollView, TouchableOpacity } from 'react-native'
 
 import { useLingui } from '@lingui/react/macro'
-import { ArrowsClockwiseIcon } from 'phosphor-react-native'
 
+import { ArrowsClockwiseIcon } from '@/components/icons'
 import { Button, Card, Text, View } from '@/components/ui'
 import { useLanguage } from '@/hooks/use-language'
 

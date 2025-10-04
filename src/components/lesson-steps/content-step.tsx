@@ -1,8 +1,8 @@
 import { ScrollView, TouchableOpacity } from 'react-native'
 
 import { useLingui } from '@lingui/react/macro'
-import { SpeakerHighIcon } from 'phosphor-react-native'
 
+import { SpeakerHighIcon } from '@/components/icons'
 import { Button, Card, Text, View } from '@/components/ui'
 import { useAudio } from '@/hooks/use-audio'
 import { getDifficultyBgClass, getDifficultyLabel, getDifficultyTextClass } from '@/utils/difficulty'

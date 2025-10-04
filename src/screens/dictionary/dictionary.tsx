@@ -4,8 +4,8 @@ import { ActivityIndicator, ScrollView, TextInput, TouchableOpacity } from 'reac
 import { Link, router } from 'expo-router'
 
 import { useLingui } from '@lingui/react/macro'
-import { MagnifyingGlassIcon, SparkleIcon } from 'phosphor-react-native'
 
+import { MagnifyingGlassIcon, SparkleIcon } from '@/components/icons'
 import { Card, Text, View } from '@/components/ui'
 import { useDebounce } from '@/hooks/use-debounce'
 import { useAvailableLetters, useRandomEntries, useSearchDictionary } from '@/hooks/use-dictionary'

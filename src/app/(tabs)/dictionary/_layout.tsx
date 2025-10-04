@@ -3,7 +3,8 @@ import { Pressable } from 'react-native'
 import { Link, Stack } from 'expo-router'
 
 import { useLingui } from '@lingui/react/macro'
-import { FilePdfIcon } from 'phosphor-react-native'
+
+import { FilePdfIcon } from '@/components/icons'
 
 export default function TabDictionaryLayout() {
   const { t } = useLingui()

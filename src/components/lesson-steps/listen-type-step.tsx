@@ -4,8 +4,8 @@ import { useEffect, useState } from 'react'
 import { ActivityIndicator, ScrollView, TextInput, TouchableOpacity } from 'react-native'
 
 import { useLingui } from '@lingui/react/macro'
-import { LightbulbIcon, SpeakerHighIcon, SpeakerSlashIcon } from 'phosphor-react-native'
 
+import { LightbulbIcon, SpeakerHighIcon, SpeakerSlashIcon } from '@/components/icons'
 import { Button, Card, Text, View } from '@/components/ui'
 import { useAudio } from '@/hooks/use-audio'
 import { useLanguage } from '@/hooks/use-language'

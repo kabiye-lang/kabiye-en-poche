@@ -3,8 +3,8 @@ import { TouchableOpacity } from 'react-native'
 import { router } from 'expo-router'
 
 import { useLingui } from '@lingui/react/macro'
-import { CheckCircleIcon, HouseIcon } from 'phosphor-react-native'
 
+import { CheckCircleIcon, HouseIcon } from '@/components/icons'
 import { Button, Card, Text, View } from '@/components/ui'
 
 interface CompletionStepProps {

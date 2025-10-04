@@ -5,8 +5,8 @@ import { Link, useLocalSearchParams } from 'expo-router'
 
 import { useLingui } from '@lingui/react/macro'
 import { useHeaderHeight } from '@react-navigation/elements'
-import { ArrowRightIcon } from 'phosphor-react-native'
 
+import { ArrowRightIcon } from '@/components/icons'
 import { Card, Text, View } from '@/components/ui'
 import { useEntry } from '@/hooks/use-dictionary'
 import { useLanguage } from '@/hooks/use-language'

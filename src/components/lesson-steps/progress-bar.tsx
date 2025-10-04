@@ -3,8 +3,7 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context'
 
 import { router } from 'expo-router'
 
-import { XIcon } from 'phosphor-react-native'
-
+import { XIcon } from '@/components/icons'
 import { Text, View } from '@/components/ui'
 
 interface ProgressBarProps {
