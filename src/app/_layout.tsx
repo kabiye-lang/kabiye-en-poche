@@ -176,8 +176,9 @@ function RootLayoutNav() {
                 <Stack.Screen
                   name="word/[id]"
                   /*getId={() => String(Date.now())}*/ options={{
-                    // title: '',
-                    // headerShown: false,
+                    title: '',
+                    headerBackButtonDisplayMode: 'minimal',
+                    headerBackTitle: '',
                     headerTransparent: true,
                   }}
                 />

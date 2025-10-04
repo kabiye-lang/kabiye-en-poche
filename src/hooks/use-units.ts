@@ -79,7 +79,7 @@ export function useUnitWithLessons(unitId: string) {
         .single()
 
       if (error) throw error
-      return data
+      return data as unknown as UnitWithLessons
     },
     enabled: !!unitId,
   })

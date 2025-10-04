@@ -21,6 +21,10 @@ msgstr "Learn Kabiyè"
 #~ msgid "Complete Lesson"
 #~ msgstr "Complete Lesson"
 
+#: src/app/(tabs)/dictionary/_layout.tsx
+msgid "PDF Dictionary"
+msgstr "PDF Dictionary"
+
 #: src/screens/profile.tsx
 msgid "Lexilogos Dictionary"
 msgstr "Lexilogos Dictionary"
@@ -30,8 +34,8 @@ msgstr "Lexilogos Dictionary"
 #~ msgstr "Audio"
 
 #: src/screens/dictionary/dictionary.tsx
-msgid "Get tips to improve your learning"
-msgstr "Get tips to improve your learning"
+#~ msgid "Get tips to improve your learning"
+#~ msgstr "Get tips to improve your learning"
 
 #: src/screens/home.tsx
 #: src/screens/profile.tsx
@@ -45,6 +49,18 @@ msgstr "Failed to complete lesson. Please try again."
 #: src/screens/home.tsx
 msgid "Great job on finishing the course"
 msgstr "Great job on finishing the course"
+
+#: src/screens/dictionary/word.tsx
+msgid "Definitions"
+msgstr "Definitions"
+
+#: src/screens/dictionary/word.tsx
+msgid "Word not found"
+msgstr "Word not found"
+
+#: src/screens/dictionary/browse-letter.tsx
+msgid "Loading entries..."
+msgstr "Loading entries..."
 
 #: src/screens/terms-and-conditions.tsx
 msgid "Terms and conditions are not available"
@@ -66,6 +82,12 @@ msgstr "Welcome to Kabiyè en Poche"
 #~ msgid "Content"
 #~ msgstr "Content"
 
+#. placeholder {0}: entry.subEntries.length
+#. placeholder {1}: entry.subEntries.length === 1 ? 'expression' : 'expressions'
+#: src/screens/dictionary/browse-letter.tsx
+msgid "+{0} {1}"
+msgstr "+{0} {1}"
+
 #: src/screens/profile.tsx
 msgid "Académie Kabiyè"
 msgstr "Académie Kabiyè"
@@ -86,6 +108,11 @@ msgstr "Please check back later"
 msgid "Kabiyè language resources"
 msgstr "Kabiyè language resources"
 
+#. placeholder {0}: searchResults.length
+#: src/screens/dictionary/dictionary.tsx
+msgid "See all {0} results"
+msgstr "See all {0} results"
+
 #: src/components/lesson-steps/completion-step.tsx
 msgid "Lesson Complete!"
 msgstr "Lesson Complete!"
@@ -98,9 +125,18 @@ msgstr "Check"
 msgid "Terms not found"
 msgstr "Terms not found"
 
+#: src/app/(tabs)/dictionary/_layout.tsx
+#: src/screens/dictionary/search.tsx
+msgid "Search Results"
+msgstr "Search Results"
+
 #: src/screens/privacy-policy.tsx
 msgid "Privacy policy is not available"
 msgstr "Privacy policy is not available"
+
+#: src/screens/dictionary/search.tsx
+msgid "No results found"
+msgstr "No results found"
 
 #: src/screens/unit.tsx
 msgid "Loading unit..."
@@ -126,9 +162,24 @@ msgstr "Transcript"
 msgid "Loading privacy policy..."
 msgstr "Loading privacy policy..."
 
+#. placeholder {0}: searchResults.length
+#. placeholder {1}: searchResults.length === 1 ? 'result' : 'results'
+#: src/screens/dictionary/search.tsx
+msgid "{0} {1} for \"{query}\""
+msgstr "{0} {1} for \"{query}\""
+
 #: src/components/lesson-steps/content-step.tsx
 msgid "Tap the speaker icon to hear pronunciation"
 msgstr "Tap the speaker icon to hear pronunciation"
+
+#: src/screens/dictionary/search.tsx
+msgid "Searching..."
+msgstr "Searching..."
+
+#: src/app/(tabs)/dictionary/_layout.tsx
+#: src/screens/dictionary/dictionary.tsx
+msgid "Browse by Letter"
+msgstr "Browse by Letter"
 
 #: src/screens/alphabet-letter.tsx
 #~ msgid "An error occurred..."
@@ -145,6 +196,10 @@ msgstr "Loading dictionary..."
 #: src/screens/lesson-old.tsx
 #~ msgid "Got it!"
 #~ msgstr "Got it!"
+
+#: src/screens/dictionary/dictionary.tsx
+msgid "Search for a word..."
+msgstr "Search for a word..."
 
 #: src/screens/alphabet-list.tsx
 msgid "Error loading alphabet"
@@ -169,6 +224,10 @@ msgstr "Learning Resources"
 #: src/screens/unit.tsx
 msgid "This unit does not exist"
 msgstr "This unit does not exist"
+
+#: src/screens/dictionary/browse-letter.tsx
+msgid "Letter \"{letter}\""
+msgstr "Letter \"{letter}\""
 
 #: src/screens/profile.tsx
 msgid "Join our community to contribute to the development of the application"
@@ -201,6 +260,10 @@ msgstr "Failed to load lesson"
 #: src/screens/home.tsx
 msgid "Units temporarily unavailable"
 msgstr "Units temporarily unavailable"
+
+#: src/screens/dictionary/word.tsx
+msgid "Related Expressions"
+msgstr "Related Expressions"
 
 #: src/screens/unit.tsx
 msgid "No lessons available"
@@ -237,6 +300,10 @@ msgstr "This letter does not exist"
 msgid "Lesson not found"
 msgstr "Lesson not found"
 
+#: src/screens/dictionary/word.tsx
+msgid "Plural:"
+msgstr "Plural:"
+
 #: src/components/lesson-steps/completion-step.tsx
 msgid "correct"
 msgstr "correct"
@@ -252,6 +319,10 @@ msgstr "Loading letter..."
 #: src/screens/home.tsx
 msgid "Let's Learn Together!"
 msgstr "Let's Learn Together!"
+
+#: src/screens/dictionary/word.tsx
+msgid "See Also"
+msgstr "See Also"
 
 #: src/components/lesson-steps/order-words-step.tsx
 #: src/screens/profile.tsx
@@ -308,9 +379,24 @@ msgstr "Error"
 msgid "The"
 msgstr "The"
 
+#: src/screens/dictionary/search.tsx
+msgid "Kabiyè"
+msgstr "Kabiyè"
+
 #: src/components/lesson-steps/order-words-step.tsx
 msgid "Tap words in the correct order"
 msgstr "Tap words in the correct order"
+
+#: src/screens/dictionary/browse-letter.tsx
+msgid "No words start with this letter"
+msgstr "No words start with this letter"
+
+#. placeholder {0}: entries.length
+#. placeholder {1}: hasNextPage ? '+' : ''
+#. placeholder {2}: entries.length === 1 ? 'entry' : 'entries'
+#: src/screens/dictionary/browse-letter.tsx
+msgid "{0}{1} {2}"
+msgstr "{0}{1} {2}"
 
 #: src/screens/home.tsx
 #: src/screens/home.tsx
@@ -345,12 +431,18 @@ msgid "Perfect! Correct order! 🎉"
 msgstr "Perfect! Correct order! 🎉"
 
 #: src/app/(tabs)/_layout.tsx
+#: src/app/(tabs)/dictionary/_layout.tsx
 msgid "Dictionary"
 msgstr "Dictionary"
 
 #: src/screens/profile.tsx
 msgid "Overall Progress"
 msgstr "Overall Progress"
+
+#: src/screens/dictionary/browse-letter.tsx
+#: src/screens/dictionary/search.tsx
+msgid "Please try again later"
+msgstr "Please try again later"
 
 #: src/screens/profile.tsx
 msgid "Change language in device settings"
@@ -378,6 +470,10 @@ msgstr "No lessons available yet"
 #~ msgid "Show More"
 #~ msgstr "Show More"
 
+#: src/screens/dictionary/dictionary.tsx
+msgid "Word of the Day"
+msgstr "Word of the Day"
+
 #: src/screens/home.tsx
 #: src/screens/unit.tsx
 msgid "Please check your connection and try again"
@@ -399,6 +495,7 @@ msgstr "Conversation"
 msgid "Terms and conditions of use"
 msgstr "Terms and conditions of use"
 
+#: src/screens/dictionary/word.tsx
 #: src/screens/home.tsx
 #: src/screens/home.tsx
 msgid "Loading..."
@@ -430,6 +527,14 @@ msgstr "This unit is temporarily unavailable"
 #: src/screens/learn.tsx
 msgid "Under Maintenance"
 msgstr "Under Maintenance"
+
+#: src/screens/dictionary/search.tsx
+msgid "Try searching with different keywords"
+msgstr "Try searching with different keywords"
+
+#: src/screens/dictionary/browse-letter.tsx
+msgid "No entries found"
+msgstr "No entries found"
 
 #: src/components/lesson-steps/order-words-step.tsx
 msgid "Your answer will appear here"
@@ -559,6 +664,10 @@ msgstr "Loading lesson..."
 msgid "Units completed"
 msgstr "Units completed"
 
+#: src/screens/dictionary/search.tsx
+msgid "English"
+msgstr "English"
+
 #: src/screens/learn.tsx
 msgid "Failed to load learning units"
 msgstr "Failed to load learning units"
@@ -595,6 +704,10 @@ msgstr "Loading alphabet..."
 #~ msgid "Lesson"
 #~ msgstr "Lesson"
 
+#: src/screens/dictionary/search.tsx
+msgid "French"
+msgstr "French"
+
 #: src/utils/difficulty.ts
 msgid "Intermediate"
 msgstr "Intermediate"
@@ -614,6 +727,14 @@ msgstr "How we collect and use your data"
 #: src/screens/keyboard.tsx
 msgid "Space"
 msgstr "Space"
+
+#: src/screens/dictionary/browse-letter.tsx
+msgid "Error loading entries"
+msgstr "Error loading entries"
+
+#: src/screens/dictionary/word.tsx
+msgid "The word you're looking for doesn't exist in our dictionary"
+msgstr "The word you're looking for doesn't exist in our dictionary"
 
 #: src/screens/learn.tsx
 #: src/screens/unit.tsx
@@ -671,6 +792,10 @@ msgstr "Your Score"
 msgid "Temporarily Unavailable"
 msgstr "Temporarily Unavailable"
 
+#: src/screens/dictionary/search.tsx
+msgid "Error loading results"
+msgstr "Error loading results"
+
 #: src/app/(tabs)/_layout.tsx
 #: src/screens/profile.tsx
 msgid "Profile"
@@ -679,6 +804,10 @@ msgstr "Profile"
 #: src/screens/keyboard.tsx
 msgid "key allows you to capitalize. Long press to lock CAPS mode."
 msgstr "key allows you to capitalize. Long press to lock CAPS mode."
+
+#: src/screens/dictionary/word.tsx
+msgid "Examples:"
+msgstr "Examples:"
 
 #: src/screens/home.tsx
 msgid "All lessons completed! 🎉"
@@ -695,6 +824,10 @@ msgstr "Learn the Basics"
 #: src/screens/terms-and-conditions.tsx
 msgid "Loading terms..."
 msgstr "Loading terms..."
+
+#: src/screens/dictionary/word.tsx
+msgid "Variant Forms"
+msgstr "Variant Forms"
 
 #: src/screens/keyboard.tsx
 msgid "Clear"
@@ -736,6 +869,10 @@ msgstr "This unit is not available"
 #: src/screens/home.tsx
 #~ msgid "Reference Materials"
 #~ msgstr "Reference Materials"
+
+#: src/screens/dictionary/word.tsx
+msgid "Related Words"
+msgstr "Related Words"
 
 #: src/screens/unit.tsx
 msgid "Unit not found"
