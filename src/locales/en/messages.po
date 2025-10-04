@@ -74,6 +74,10 @@ msgstr "Académie Kabiyè"
 msgid "Audio content will be available soon."
 msgstr "Audio content will be available soon."
 
+#: src/screens/profile.tsx
+msgid "Failed to reset progress. Please try again."
+msgstr "Failed to reset progress. Please try again."
+
 #: src/screens/unit.tsx
 msgid "Please check back later"
 msgstr "Please check back later"
@@ -110,6 +114,10 @@ msgstr "Perfect! You're a star! 🌟"
 msgid "Back to Learn"
 msgstr "Back to Learn"
 
+#: src/screens/profile.tsx
+msgid "Your progress has been reset successfully."
+msgstr "Your progress has been reset successfully."
+
 #: src/components/lesson-steps/audio-step.tsx
 msgid "Transcript"
 msgstr "Transcript"
@@ -117,6 +125,10 @@ msgstr "Transcript"
 #: src/screens/privacy-policy.tsx
 msgid "Loading privacy policy..."
 msgstr "Loading privacy policy..."
+
+#: src/components/lesson-steps/content-step.tsx
+msgid "Tap the speaker icon to hear pronunciation"
+msgstr "Tap the speaker icon to hear pronunciation"
 
 #: src/screens/alphabet-letter.tsx
 #~ msgid "An error occurred..."
@@ -203,6 +215,10 @@ msgstr "Lesson content will be available soon."
 msgid "Learning Units"
 msgstr "Learning Units"
 
+#: src/components/lesson-steps/listen-type-step.tsx
+msgid "Correct answer:"
+msgstr "Correct answer:"
+
 #: src/app/_layout.tsx
 #: src/screens/profile.tsx
 msgid "Privacy Policy"
@@ -284,6 +300,7 @@ msgid "Perfect! All pairs matched! 🎉"
 msgstr "Perfect! All pairs matched! 🎉"
 
 #: src/screens/lesson.tsx
+#: src/screens/profile.tsx
 msgid "Error"
 msgstr "Error"
 
@@ -314,6 +331,10 @@ msgstr "Tap to start"
 #~ msgid "Learning Tips"
 #~ msgstr "Learning Tips"
 
+#: src/utils/difficulty.ts
+msgid "Beginner"
+msgstr "Beginner"
+
 #: src/screens/home.tsx
 #: src/screens/learn.tsx
 msgid "Coming Soon"
@@ -341,6 +362,7 @@ msgstr "Support"
 
 #: src/components/lesson-steps/audio-step.tsx
 #: src/components/lesson-steps/listen-choose-step.tsx
+#: src/components/lesson-steps/listen-type-step.tsx
 msgid "No audio available"
 msgstr "No audio available"
 
@@ -361,9 +383,13 @@ msgstr "No lessons available yet"
 msgid "Please check your connection and try again"
 msgstr "Please check your connection and try again"
 
+#: src/components/lesson-steps/listen-type-step.tsx
+msgid "Hide hints"
+msgstr "Hide hints"
+
 #: src/screens/profile.tsx
-msgid "Progress Reset"
-msgstr "Progress Reset"
+#~ msgid "Progress Reset"
+#~ msgstr "Progress Reset"
 
 #: src/components/lesson-steps/audio-step.tsx
 msgid "Conversation"
@@ -425,9 +451,18 @@ msgstr "Join the community"
 msgid "Kabiyè Essékuliye"
 msgstr "Kabiyè Essékuliye"
 
+#: src/components/lesson-steps/listen-type-step.tsx
+msgid "Type what you hear..."
+msgstr "Type what you hear..."
+
 #: src/screens/profile.tsx
 msgid "Cancel"
 msgstr "Cancel"
+
+#: src/components/lesson-steps/fill-blank-step.tsx
+#: src/components/lesson-steps/listen-type-step.tsx
+msgid "Not quite right ✗"
+msgstr "Not quite right ✗"
 
 #: src/screens/profile.tsx
 msgid "Progress Overview"
@@ -445,6 +480,11 @@ msgstr "Lessons completed"
 #: src/screens/unit.tsx
 msgid "This unit is coming soon!"
 msgstr "This unit is coming soon!"
+
+#: src/components/lesson-steps/fill-blank-step.tsx
+#: src/components/lesson-steps/listen-type-step.tsx
+msgid "Correct! ✓"
+msgstr "Correct! ✓"
 
 #: src/screens/profile.tsx
 msgid "App Language"
@@ -473,6 +513,10 @@ msgstr "Kabiyè Tanaou"
 #: src/components/lesson-steps/content-step.tsx
 msgid "Examples"
 msgstr "Examples"
+
+#: src/components/lesson-steps/listen-type-step.tsx
+msgid "Show hints"
+msgstr "Show hints"
 
 #: src/screens/keyboard.tsx
 msgid "Copy"
@@ -526,6 +570,7 @@ msgstr "Keyboard"
 
 #: src/components/lesson-steps/audio-step.tsx
 #: src/components/lesson-steps/listen-choose-step.tsx
+#: src/components/lesson-steps/listen-type-step.tsx
 msgid "Tap to listen"
 msgstr "Tap to listen"
 
@@ -550,6 +595,10 @@ msgstr "Loading alphabet..."
 #~ msgid "Lesson"
 #~ msgstr "Lesson"
 
+#: src/utils/difficulty.ts
+msgid "Intermediate"
+msgstr "Intermediate"
+
 #: src/screens/privacy-policy.tsx
 msgid "Privacy Policy not found"
 msgstr "Privacy Policy not found"
@@ -570,6 +619,10 @@ msgstr "Space"
 #: src/screens/unit.tsx
 msgid "Completed"
 msgstr "Completed"
+
+#: src/components/lesson-steps/listen-type-step.tsx
+msgid "Check Answer"
+msgstr "Check Answer"
 
 #: src/screens/lesson-old.tsx
 #~ msgid "Quiz"
@@ -600,6 +653,10 @@ msgstr "Grapheme"
 #: src/screens/dictionary/dictionary-pdf.tsx
 msgid "Please check your internet connection and try again"
 msgstr "Please check your internet connection and try again"
+
+#: src/utils/difficulty.ts
+msgid "Advanced"
+msgstr "Advanced"
 
 #: src/screens/unit.tsx
 msgid "Lessons temporarily unavailable"
@@ -646,7 +703,9 @@ msgstr "Clear"
 #: src/components/lesson-steps/audio-step.tsx
 #: src/components/lesson-steps/completion-step.tsx
 #: src/components/lesson-steps/content-step.tsx
+#: src/components/lesson-steps/fill-blank-step.tsx
 #: src/components/lesson-steps/listen-choose-step.tsx
+#: src/components/lesson-steps/listen-type-step.tsx
 #: src/components/lesson-steps/match-pairs-step.tsx
 #: src/components/lesson-steps/order-words-step.tsx
 #: src/components/lesson-steps/quiz-step.tsx
@@ -656,17 +715,19 @@ msgstr "Continue"
 
 #: src/components/lesson-steps/audio-step.tsx
 #: src/components/lesson-steps/listen-choose-step.tsx
+#: src/components/lesson-steps/listen-type-step.tsx
 msgid "Playing... (Tap to stop)"
 msgstr "Playing... (Tap to stop)"
 
 #: src/components/lesson-steps/audio-step.tsx
 #: src/components/lesson-steps/listen-choose-step.tsx
+#: src/components/lesson-steps/listen-type-step.tsx
 msgid "Loading audio..."
 msgstr "Loading audio..."
 
 #: src/screens/profile.tsx
-msgid "Your progress has been reset."
-msgstr "Your progress has been reset."
+#~ msgid "Your progress has been reset."
+#~ msgstr "Your progress has been reset."
 
 #: src/screens/unit.tsx
 msgid "This unit is not available"
@@ -683,3 +744,7 @@ msgstr "Unit not found"
 #: src/components/lesson-steps/completion-step.tsx
 msgid "out of"
 msgstr "out of"
+
+#: src/screens/profile.tsx
+msgid "Success"
+msgstr "Success"
