@@ -155,6 +155,7 @@ export function useLessonsWithProgress(unitId: string) {
             ...lesson,
             is_completed: isCompleted,
             is_locked: isLocked,
+            progress_percentage: isCompleted ? 100 : 0,
             progress: userProgress
               ? {
                   id: userProgress.lessonId,

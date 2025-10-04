@@ -63,6 +63,29 @@ This script:
 5. Gemini will generate complete SQL statements to insert lesson content and activities
 6. Copy the SQL output and run it in your Supabase SQL Editor
 
+## Audio Generation 🎵
+
+After generating lesson content, you can automatically generate audio pronunciation files for all Kabiyè words using **Meta MMS TTS**:
+
+```bash
+# Generate audio for all lessons
+python generate_audio.py
+
+# Generate audio for a specific lesson
+python generate_audio.py --lesson lesson-id-1
+
+# Test without updating database
+python generate_audio.py --dry-run
+```
+
+**What it does:**
+- 🎵 Generates high-quality Kabiyè pronunciation audio using Meta MMS TTS
+- 💾 Saves WAV files (16kHz, mono) to `audio_files/` directory
+- 🔄 Automatically updates database with audio URLs
+- 🎯 Processes both lesson examples and audio-based activities
+
+**See [AUDIO_GENERATION_README.md](./AUDIO_GENERATION_README.md) for complete documentation.**
+
 ## Usage
 
 ```bash

@@ -6,8 +6,6 @@ import { useLingui } from '@lingui/react/macro'
 export function useLanguage() {
   const { i18n } = useLingui()
   const currentLanguage = i18n.locale as 'en' | 'fr'
-  const isFrench = currentLanguage === 'fr'
-  const isEnglish = currentLanguage === 'en'
 
   /**
    * Get the appropriate field name based on current language
@@ -51,8 +49,6 @@ export function useLanguage() {
 
   return {
     currentLanguage,
-    isFrench,
-    isEnglish,
     getField,
     getValue,
     getArrayValue,

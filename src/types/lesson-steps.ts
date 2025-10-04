@@ -37,10 +37,7 @@ export interface ContentStep extends BaseStep {
   type: 'content'
   title?: string
   content: string
-  examples?: {
-    kabiye: string
-    translation: string
-  }[]
+  examples?: any // Raw examples from database, transformed in ContentStep component
 }
 
 export interface AudioStep extends BaseStep {

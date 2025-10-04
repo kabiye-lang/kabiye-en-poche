@@ -6,10 +6,10 @@ import { ScrollView, TouchableOpacity } from 'react-native'
 import { useLingui } from '@lingui/react/macro'
 
 import { Button, Card, Text, View } from '@/components/ui'
+import { useLanguage } from '@/hooks/use-language'
 
 interface MatchPairsStepProps {
   activity: LessonActivity
-  currentLanguage: 'en' | 'fr'
   onAnswer: (isCorrect: boolean, answer: string) => void
 }
 
@@ -18,13 +18,14 @@ interface SelectedPair {
   side: 'left' | 'right'
 }
 
-const MatchPairsStep = ({ activity, currentLanguage, onAnswer }: MatchPairsStepProps) => {
+const MatchPairsStep = ({ activity, onAnswer }: MatchPairsStepProps) => {
   const { t } = useLingui()
+  const { getValue, currentLanguage } = useLanguage()
 
   // Extract data from activity
   const activityData = activity.data as any
-  const question = (currentLanguage === 'en' ? activity.question_en : activity.question_fr) || ''
-  const instructions = (currentLanguage === 'en' ? activity.instructions_en : activity.instructions_fr) || ''
+  const question = getValue(activity, 'question') || ''
+  const instructions = getValue(activity, 'instructions') || ''
 
   // Transform pairs to use correct language for 'right' values
   const rawPairs = activityData?.pairs || []

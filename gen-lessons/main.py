@@ -528,13 +528,9 @@ Based ONLY on the context above, respond with valid JSON matching this structure
       "title_fr": "Titre de section en français",
       "content_en": "Detailed explanation in English. Make this thorough and educational.",
       "content_fr": "Explication détaillée en français. Rendez cela complet et éducatif.",
-      "examples_en": [
-        {{"kabiye": "word1", "translation": "meaning1", "pronunciation": "how to say it"}},
-        {{"kabiye": "word2", "translation": "meaning2", "pronunciation": "how to say it"}}
-      ],
-      "examples_fr": [
-        {{"kabiye": "word1", "translation": "signification1", "pronunciation": "comment le dire"}},
-        {{"kabiye": "word2", "translation": "signification2", "pronunciation": "comment le dire"}}
+      "examples": [
+        {{"kbp": "word1", "en": "meaning1", "fr": "signification1", "pronunciation": "how to say it", "audio_url": "https://example.com/audio/word1.mp3"}},
+        {{"kbp": "word2", "en": "meaning2", "fr": "signification2", "pronunciation": "how to say it", "audio_url": "https://example.com/audio/word2.mp3"}}
       ]
     }}
   ],
@@ -665,6 +661,9 @@ IMPORTANT REMINDERS:
 - If you cannot find relevant Kabiyè words in the context, use what is available even if simple
 - Every word must be verifiable in the provided context
 - All activities go in the single "lesson_activities" array with sequential positions (0, 1, 2, ...)
+- **CRITICAL: Include 10-20 examples per section (more examples = better learning)**
+- **CRITICAL: Each example MUST include an audio_url field**
+- **CRITICAL: Be careful to exclude any offensive or inappropriate words from examples**
 """
 
 PROMPT = PromptTemplate(
@@ -894,8 +893,7 @@ def insert_to_database(lesson_id, lesson_data):
                     'title_fr': content.get('title_fr', ''),
                     'content_en': content.get('content_en', ''),
                     'content_fr': content.get('content_fr', ''),
-                    'examples_en': content.get('examples_en', []),
-                    'examples_fr': content.get('examples_fr', [])
+                    'examples': content.get('examples', [])
                 }).execute()
                 results['lesson_contents'] += 1
             except Exception as e:
@@ -1042,19 +1040,13 @@ Focus on simple, common English words related to {topics if topics else title_en
                         'title_fr': section['title_fr'],
                         'content_en': section['content'],
                         'content_fr': section['content_fr'],
-                        'examples_en': [
+                        'examples': [
                             {
-                                'kabiye': v['kabiye'],
-                                'translation': v['english'],
-                                'pronunciation': v.get('pronunciation', v['kabiye'])
-                            }
-                            for v in section_vocab
-                        ],
-                        'examples_fr': [
-                            {
-                                'kabiye': v['kabiye'],
-                                'translation': v['french'],
-                                'pronunciation': v.get('pronunciation', v['kabiye'])
+                                'kbp': v['kabiye'],
+                                'en': v['english'],
+                                'fr': v['french'],
+                                'pronunciation': v.get('pronunciation', v['kabiye']),
+                                'audio_url': f"https://example.com/audio/{v['kabiye'].lower()}.mp3"  # Placeholder URL
                             }
                             for v in section_vocab
                         ]

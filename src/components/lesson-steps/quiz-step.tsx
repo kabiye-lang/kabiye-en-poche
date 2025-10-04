@@ -6,32 +6,30 @@ import { ScrollView, TouchableOpacity } from 'react-native'
 import { useLingui } from '@lingui/react/macro'
 
 import { Button, Card, Text, View } from '@/components/ui'
+import { useLanguage } from '@/hooks/use-language'
 
 interface QuizStepProps {
   activity: LessonActivity
-  currentLanguage: 'en' | 'fr'
   onAnswer: (isCorrect: boolean, answer: string) => void
 }
 
-const QuizStep = ({ activity, currentLanguage, onAnswer }: QuizStepProps) => {
+const QuizStep = ({ activity, onAnswer }: QuizStepProps) => {
   const { t } = useLingui()
-
+  const { getValue, currentLanguage } = useLanguage()
   // Extract data from activity
   const activityData = activity.data as any
-  const question = (currentLanguage === 'en' ? activity.question_en : activity.question_fr) || ''
-  const instructions = (currentLanguage === 'en' ? activity.instructions_en : activity.instructions_fr) || ''
+  const question = getValue(activity, 'question') || ''
+  const instructions = getValue(activity, 'instructions') || ''
 
   // Get options and explanation with language fallback
   const optionsData = activityData?.options
-  const options = optionsData?.[currentLanguage] || optionsData?.en || []
+  const options = optionsData?.[currentLanguage] || []
   const correctAnswerData = activityData?.correct_answer
   // correct_answer can be either a string or an object with language keys
   const correctAnswer =
-    typeof correctAnswerData === 'object'
-      ? correctAnswerData?.[currentLanguage] || correctAnswerData?.en || ''
-      : correctAnswerData || ''
+    typeof correctAnswerData === 'object' ? correctAnswerData?.[currentLanguage] || '' : correctAnswerData || ''
   const explanationData = activityData?.explanation
-  const explanation = explanationData?.[currentLanguage] || explanationData?.en || undefined
+  const explanation = explanationData?.[currentLanguage] || undefined
 
   const [selectedIndex, setSelectedIndex] = useState<number | null>(null)
   const [showFeedback, setShowFeedback] = useState(false)

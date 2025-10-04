@@ -95,11 +95,8 @@ CREATE TABLE lesson_contents (
   title_fr TEXT NOT NULL,
   content_en TEXT NOT NULL,
   content_fr TEXT NOT NULL,
-  examples_en JSONB,
-  examples_fr JSONB,
-  audio_url TEXT,
-  image_url TEXT,
-  has_quiz BOOLEAN DEFAULT false,
+  examples JSONB,
+  position INTEGER DEFAULT 0,
   created_at TIMESTAMPTZ DEFAULT now()
 );
 ```
@@ -138,7 +135,7 @@ DELETE FROM lesson_contents WHERE lesson_id = '{lesson_id}';
 
 ### **Step 2: Insert lesson contents (2-4 sections)**
 ```sql
-INSERT INTO lesson_contents (lesson_id, position, title_en, title_fr, content_en, content_fr, examples_en, examples_fr)
+INSERT INTO lesson_contents (lesson_id, position, title_en, title_fr, content_en, content_fr, examples)
 VALUES
   (
     '{lesson_id}',
@@ -148,10 +145,8 @@ VALUES
     'Detailed educational content in English about {title_en}. Make this thorough and informative. Explain the key concepts clearly...',
     'Contenu éducatif détaillé en français sur {title_fr}. Rendez cela complet et informatif. Expliquez les concepts clés clairement...',
     '[
-      {{"kabiye": "word_from_pdf", "english": "translation", "pronunciation": "how to say"}}
-    ]'::jsonb,
-    '[
-      {{"kabiye": "word_from_pdf", "french": "traduction", "pronunciation": "comment dire"}}
+      {{"kbp": "word_from_pdf", "en": "english translation", "fr": "traduction française", "pronunciation": "how to say", "audio_url": "https://example.com/audio/word.mp3"}},
+      {{"kbp": "another_word", "en": "another meaning", "fr": "autre signification", "pronunciation": "pronunciation", "audio_url": "https://example.com/audio/word2.mp3"}}
     ]'::jsonb
   ),
   (
@@ -162,10 +157,8 @@ VALUES
     'More detailed content with practical examples from the PDFs...',
     'Contenu plus détaillé avec des exemples pratiques des PDFs...',
     '[
-      {{"kabiye": "example_word", "english": "meaning", "pronunciation": "pronunciation"}}
-    ]'::jsonb,
-    '[
-      {{"kabiye": "example_word", "french": "signification", "pronunciation": "prononciation"}}
+      {{"kbp": "example_word", "en": "english meaning", "fr": "signification française", "pronunciation": "pronunciation", "audio_url": "https://example.com/audio/example.mp3"}},
+      {{"kbp": "another_example", "en": "another meaning", "fr": "autre signification", "pronunciation": "pronunciation2", "audio_url": "https://example.com/audio/example2.mp3"}}
     ]'::jsonb
   );
 ```
@@ -175,6 +168,9 @@ VALUES
 - Position values should be sequential starting from 0 (e.g., 0, 1, 2, 3)
 - Separate multiple sections with commas
 - Don't force multiple sections if one comprehensive section is sufficient
+- **IMPORTANT:** Include 10-20 examples per section (more examples = better learning)
+- **IMPORTANT:** Each example MUST include an `audio_url` field for pronunciation
+- **CRITICAL:** Be careful to exclude offensive or inappropriate words from examples
 
 ### **Step 3: Insert lesson activities (24 activities total - 7 types)**
 ```sql
@@ -213,10 +209,12 @@ Focus on:
 
 **For each section:**
 - Provide clear, educational content
-- Include 3-5 relevant examples with Kabiyè words from PDFs
+- Include 10-20 relevant examples with Kabiyè words from PDFs (more examples help learners practice)
 - Give pronunciation guidance
 - Translate to both English and French
 - Format examples as JSONB arrays
+- **IMPORTANT:** Be careful to exclude any words that could be offensive or inappropriate
+- Each example should include an `audio_url` field for pronunciation audio
 
 ---
 
@@ -376,6 +374,8 @@ Your 24 activities should be organized as follows:
 7. **Difficulty-Appropriate:** Match the {difficulty} level
 8. **Cultural Context:** Include cultural notes if available in PDFs
 9. **Progressive Difficulty:** Within each activity type, make activities progressively more challenging
+10. **Rich Examples:** Include 10-20 examples per section with audio_url for each
+11. **Appropriate Content:** Carefully exclude any offensive or inappropriate words from all examples
 
 ---
 
@@ -394,6 +394,9 @@ Before submitting, verify:
 - [ ] Each set of 3 activities of the same type are varied and progressive
 - [ ] JSONB fields are properly escaped with single quotes in SQL
 - [ ] All text strings with apostrophes are properly escaped (use '' or \\')
+- [ ] **Each section includes 10-20 examples (not just 2-5)**
+- [ ] **Every example includes an `audio_url` field**
+- [ ] **No offensive or inappropriate words in any examples**
 
 ---
 
@@ -434,10 +437,10 @@ DELETE FROM lesson_contents WHERE lesson_id = '{lesson_id}';
 
 -- Step 2: Insert lesson contents (1-4 sections as needed)
 -- Example with 2 sections (use 1 for simple lessons, up to 4 for complex ones)
-INSERT INTO lesson_contents (lesson_id, position, title_en, title_fr, content_en, content_fr, examples_en, examples_fr)
+INSERT INTO lesson_contents (lesson_id, position, title_en, title_fr, content_en, content_fr, examples)
 VALUES
-  ('{lesson_id}', 0, 'Section 1 Title', 'Titre Section 1', 'Content...', 'Contenu...', '[...]'::jsonb, '[...]'::jsonb),
-  ('{lesson_id}', 1, 'Section 2 Title', 'Titre Section 2', 'Content...', 'Contenu...', '[...]'::jsonb, '[...]'::jsonb);
+  ('{lesson_id}', 0, 'Section 1 Title', 'Titre Section 1', 'Content...', 'Contenu...', '[{{"kbp": "word", "en": "translation", "fr": "traduction", "pronunciation": "...", "audio_url": "..."}}]'::jsonb),
+  ('{lesson_id}', 1, 'Section 2 Title', 'Titre Section 2', 'Content...', 'Contenu...', '[{{"kbp": "word", "en": "translation", "fr": "traduction", "pronunciation": "...", "audio_url": "..."}}]'::jsonb);
   -- Add more sections only if needed for understanding
 
 -- Step 3: Insert lesson activities (24 total - 7 valid types)

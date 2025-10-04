@@ -7,20 +7,20 @@ import { useLingui } from '@lingui/react/macro'
 import { ArrowsClockwiseIcon } from 'phosphor-react-native'
 
 import { Button, Card, Text, View } from '@/components/ui'
+import { useLanguage } from '@/hooks/use-language'
 
 interface OrderWordsStepProps {
   activity: LessonActivity
-  currentLanguage: 'en' | 'fr'
   onAnswer: (isCorrect: boolean, answer: string) => void
 }
 
-const OrderWordsStep = ({ activity, currentLanguage, onAnswer }: OrderWordsStepProps) => {
+const OrderWordsStep = ({ activity, onAnswer }: OrderWordsStepProps) => {
   const { t } = useLingui()
-
+  const { getValue } = useLanguage()
   // Extract data from activity
   const activityData = activity.data as any
-  const question = (currentLanguage === 'en' ? activity.question_en : activity.question_fr) || ''
-  const instructions = (currentLanguage === 'en' ? activity.instructions_en : activity.instructions_fr) || ''
+  const question = getValue(activity, 'question') || ''
+  const instructions = getValue(activity, 'instructions') || ''
   const words = activityData?.words || []
   const correctOrder = activityData?.correct_order || []
   const [availableWords, setAvailableWords] = useState<string[]>([...words])

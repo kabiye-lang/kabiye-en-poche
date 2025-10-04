@@ -9,7 +9,7 @@ import { CaretRightIcon, CheckCircleIcon, LockIcon } from '@/components/icons'
 import { Card, ScreenTitle, Text, View } from '@/components/ui'
 import { useAppLessonsWithProgress, useAppUnits } from '@/hooks/use-app-data'
 import { useLanguage } from '@/hooks/use-language'
-import { brandColors } from '@/utils/design-system-nativewind'
+import { getDifficultyColor, getDifficultyLabel } from '@/utils/difficulty'
 
 const LearnScreen = () => {
   const { t } = useLingui()
@@ -178,7 +178,7 @@ interface LessonItemProps {
     id: string
     title_en: string
     title_fr: string
-    difficulty: 'Beginner' | 'Intermediate' | 'Advanced'
+    difficulty: 'beginner' | 'intermediate' | 'advanced'
     is_completed: boolean
     is_locked: boolean
   }
@@ -189,19 +189,8 @@ const LessonItem = ({ lesson }: LessonItemProps) => {
   const { getValue } = useLanguage()
 
   const lessonTitle = getValue(lesson, 'title')
-
-  const getDifficultyColor = (difficulty: string) => {
-    switch (difficulty) {
-      case 'Beginner':
-        return '#4CAF50'
-      case 'Intermediate':
-        return '#FF9800'
-      case 'Advanced':
-        return '#F44336'
-      default:
-        return brandColors.primary
-    }
-  }
+  const difficultyLabel = getDifficultyLabel(lesson.difficulty)
+  const difficultyColor = getDifficultyColor(lesson.difficulty)
 
   if (lesson.is_locked) {
     return (
@@ -215,9 +204,9 @@ const LessonItem = ({ lesson }: LessonItemProps) => {
             {t`Complete previous lesson to unlock`}
           </Text>
         </View>
-        <View className="rounded px-2 py-1" style={{ backgroundColor: getDifficultyColor(lesson.difficulty) + '20' }}>
-          <Text variant="caption" style={{ color: getDifficultyColor(lesson.difficulty) }}>
-            {lesson.difficulty}
+        <View className="rounded px-2 py-1" style={{ backgroundColor: difficultyColor + '20' }}>
+          <Text variant="caption" style={{ color: difficultyColor }}>
+            {difficultyLabel}
           </Text>
         </View>
       </View>
@@ -245,9 +234,9 @@ const LessonItem = ({ lesson }: LessonItemProps) => {
               {lesson.is_completed ? t`Completed` : t`Tap to start`}
             </Text>
           </View>
-          <View className="rounded px-2 py-1" style={{ backgroundColor: getDifficultyColor(lesson.difficulty) + '20' }}>
-            <Text variant="caption" style={{ color: getDifficultyColor(lesson.difficulty) }}>
-              {lesson.difficulty}
+          <View className="rounded px-2 py-1" style={{ backgroundColor: difficultyColor + '20' }}>
+            <Text variant="caption" style={{ color: difficultyColor }}>
+              {difficultyLabel}
             </Text>
           </View>
         </View>

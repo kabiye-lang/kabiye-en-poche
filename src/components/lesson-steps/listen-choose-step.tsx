@@ -8,21 +8,22 @@ import { SpeakerHighIcon, SpeakerSlashIcon } from 'phosphor-react-native'
 
 import { Button, Card, Text, View } from '@/components/ui'
 import { useAudio } from '@/hooks/use-audio'
+import { useLanguage } from '@/hooks/use-language'
 
 interface ListenChooseStepProps {
   activity: LessonActivity
-  currentLanguage: 'en' | 'fr'
   onAnswer: (isCorrect: boolean, answer: string) => void
 }
 
-const ListenChooseStep = ({ activity, currentLanguage, onAnswer }: ListenChooseStepProps) => {
+const ListenChooseStep = ({ activity, onAnswer }: ListenChooseStepProps) => {
   const { t } = useLingui()
+  const { getValue } = useLanguage()
   const { playAudio, stopAudio, isPlaying, isLoading } = useAudio()
 
   // Extract data from activity
   const activityData = activity.data as any
-  const question = (currentLanguage === 'en' ? activity.question_en : activity.question_fr) || ''
-  const instructions = (currentLanguage === 'en' ? activity.instructions_en : activity.instructions_fr) || ''
+  const question = getValue(activity, 'question') || ''
+  const instructions = getValue(activity, 'instructions') || ''
   const audioUrl = activityData?.audio_url // Audio URL comes from data only
 
   // Options are not localized - they are plain strings (Kabiyè words)
@@ -30,7 +31,7 @@ const ListenChooseStep = ({ activity, currentLanguage, onAnswer }: ListenChooseS
   const correctAnswer = activityData?.correct_answer || ''
 
   // Translation is stored separately in the data
-  const translation = currentLanguage === 'en' ? activityData?.translation_en : activityData?.translation_fr
+  const translation = getValue(activityData, 'translation') || ''
 
   const [selectedIndex, setSelectedIndex] = useState<number | null>(null)
   const [showFeedback, setShowFeedback] = useState(false)

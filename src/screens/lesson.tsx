@@ -28,7 +28,7 @@ const LessonScreen = () => {
   const { t } = useLingui()
   const { id } = useLocalSearchParams()
   const lessonId = id as string
-  const { getValue, getJsonValue, currentLanguage } = useLanguage()
+  const { getValue } = useLanguage()
 
   const { data: lesson, isLoading: lessonLoading, error: lessonError } = useAppLesson(lessonId)
   const { data: contents, isLoading: contentsLoading } = useAppLessonContents(lessonId)
@@ -51,7 +51,6 @@ const LessonScreen = () => {
     contents.forEach((content, contentIndex) => {
       // Content + Examples step
       const contentText = getValue(content, 'content')
-      const examples = getJsonValue<any, { kabiye: string; english?: string; french?: string }[]>(content, 'examples')
 
       if (contentText) {
         builtSteps.push({
@@ -60,21 +59,7 @@ const LessonScreen = () => {
           order: stepOrder++,
           content: contentText,
           title: getValue(content, 'title') || undefined,
-          examples: examples?.map((ex) => ({
-            kabiye: ex.kabiye,
-            translation: ex.english || ex.french || '',
-          })),
-        })
-      }
-
-      // Audio step (if available for this content section)
-      if (content.audio_url) {
-        builtSteps.push({
-          id: `audio-${contentIndex}`,
-          type: 'audio',
-          order: stepOrder++,
-          audioType: 'single',
-          audioUrl: content.audio_url,
+          examples: content.examples || undefined, // Pass raw examples, ContentStep will transform them
         })
       }
     })
@@ -100,7 +85,7 @@ const LessonScreen = () => {
     })
 
     setSteps(builtSteps)
-  }, [lesson, contents, activities, getValue, getJsonValue, currentLanguage])
+  }, [lesson, contents, activities, getValue])
 
   const handleStepComplete = () => {
     if (currentStepIndex < steps.length - 1) {
@@ -213,8 +198,9 @@ const LessonScreen = () => {
       <View className="flex-1">
         {currentStep.type === 'content' ? (
           <ContentStep
-            title={getValue(lesson, 'title') || undefined}
+            lessonTitle={getValue(lesson, 'title') || undefined}
             difficulty={lesson?.difficulty}
+            title={currentStep.title}
             content={currentStep.content}
             examples={currentStep.examples}
             onContinue={handleStepComplete}
@@ -232,47 +218,27 @@ const LessonScreen = () => {
         ) : null}
 
         {currentStep.type === 'multiple_choice' || currentStep.type === 'true_false' ? (
-          <QuizStep activity={currentStep.activity} currentLanguage={currentLanguage} onAnswer={handleQuizAnswer} />
+          <QuizStep activity={currentStep.activity} onAnswer={handleQuizAnswer} />
         ) : null}
 
         {currentStep.type === 'fill_blank' ? (
-          <FillBlankStep
-            activity={currentStep.activity}
-            currentLanguage={currentLanguage}
-            onAnswer={handleQuizAnswer}
-          />
+          <FillBlankStep activity={currentStep.activity} onAnswer={handleQuizAnswer} />
         ) : null}
 
         {currentStep.type === 'listen_choose' && 'activity' in currentStep && (
-          <ListenChooseStep
-            activity={currentStep.activity}
-            currentLanguage={currentLanguage}
-            onAnswer={handleQuizAnswer}
-          />
+          <ListenChooseStep activity={currentStep.activity} onAnswer={handleQuizAnswer} />
         )}
 
         {currentStep.type === 'listen_type' && 'activity' in currentStep && (
-          <ListenTypeStep
-            activity={currentStep.activity}
-            currentLanguage={currentLanguage}
-            onAnswer={handleQuizAnswer}
-          />
+          <ListenTypeStep activity={currentStep.activity} onAnswer={handleQuizAnswer} />
         )}
 
         {currentStep.type === 'match_pairs' && 'activity' in currentStep && (
-          <MatchPairsStep
-            activity={currentStep.activity}
-            currentLanguage={currentLanguage}
-            onAnswer={handleQuizAnswer}
-          />
+          <MatchPairsStep activity={currentStep.activity} onAnswer={handleQuizAnswer} />
         )}
 
         {currentStep.type === 'order_words' && 'activity' in currentStep && (
-          <OrderWordsStep
-            activity={currentStep.activity}
-            currentLanguage={currentLanguage}
-            onAnswer={handleQuizAnswer}
-          />
+          <OrderWordsStep activity={currentStep.activity} onAnswer={handleQuizAnswer} />
         )}
 
         {currentStep.type === 'completion' ? (

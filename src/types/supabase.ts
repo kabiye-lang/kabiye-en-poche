@@ -1,6 +1,11 @@
 export type Json = string | number | boolean | null | { [key: string]: Json | undefined } | Json[]
 
 export interface Database {
+  // Allows to automatically instantiate createClient with right options
+  // instead of createClient<Database, { PostgrestVersion: 'XX' }>(URL, KEY)
+  __InternalSupabase: {
+    PostgrestVersion: '13.0.5'
+  }
   public: {
     Tables: {
       alphabet_letters: {
@@ -121,49 +126,83 @@ export interface Database {
         }
         Relationships: []
       }
+      lesson_activities: {
+        Row: {
+          activity_type: string
+          created_at: string | null
+          data: Json
+          id: string
+          instructions_en: string | null
+          instructions_fr: string | null
+          lesson_id: string
+          position: number
+          question_en: string | null
+          question_fr: string | null
+        }
+        Insert: {
+          activity_type: string
+          created_at?: string | null
+          data?: Json
+          id?: string
+          instructions_en?: string | null
+          instructions_fr?: string | null
+          lesson_id: string
+          position?: number
+          question_en?: string | null
+          question_fr?: string | null
+        }
+        Update: {
+          activity_type?: string
+          created_at?: string | null
+          data?: Json
+          id?: string
+          instructions_en?: string | null
+          instructions_fr?: string | null
+          lesson_id?: string
+          position?: number
+          question_en?: string | null
+          question_fr?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: 'lesson_activities_lesson_id_fkey'
+            columns: ['lesson_id']
+            referencedRelation: 'lessons'
+            referencedColumns: ['id']
+          },
+        ]
+      }
       lesson_contents: {
         Row: {
-          audio_url: string | null
           content_en: string
           content_fr: string
           created_at: string | null
-          examples_en: Json | null
-          examples_fr: Json | null
-          has_quiz: boolean | null
+          examples: Json | null
           id: string
-          image_url: string | null
           lesson_id: string
-          position: number
+          position: number | null
           title_en: string
           title_fr: string
         }
         Insert: {
-          audio_url?: string | null
           content_en: string
           content_fr: string
           created_at?: string | null
-          examples_en?: Json | null
-          examples_fr?: Json | null
-          has_quiz?: boolean | null
+          examples?: Json | null
           id?: string
-          image_url?: string | null
           lesson_id: string
-          position?: number
+          position?: number | null
           title_en: string
           title_fr: string
         }
         Update: {
-          audio_url?: string | null
           content_en?: string
           content_fr?: string
           created_at?: string | null
-          examples_en?: Json | null
-          examples_fr?: Json | null
-          has_quiz?: boolean | null
+          examples?: Json | null
           id?: string
-          image_url?: string | null
           lesson_id?: string
-          position?: number
+          position?: number | null
           title_en?: string
           title_fr?: string
         }
@@ -208,7 +247,7 @@ export interface Database {
         Row: {
           category_id: string | null
           created_at: string | null
-          difficulty: 'Beginner' | 'Intermediate' | 'Advanced'
+          difficulty: Database['public']['Enums']['difficulty_level']
           id: string
           objectives_en: string[] | null
           objectives_fr: string[] | null
@@ -220,7 +259,7 @@ export interface Database {
         Insert: {
           category_id?: string | null
           created_at?: string | null
-          difficulty: 'Beginner' | 'Intermediate' | 'Advanced'
+          difficulty: Database['public']['Enums']['difficulty_level']
           id?: string
           objectives_en?: string[] | null
           objectives_fr?: string[] | null
@@ -232,7 +271,7 @@ export interface Database {
         Update: {
           category_id?: string | null
           created_at?: string | null
-          difficulty?: 'Beginner' | 'Intermediate' | 'Advanced'
+          difficulty?: Database['public']['Enums']['difficulty_level']
           id?: string
           objectives_en?: string[] | null
           objectives_fr?: string[] | null
@@ -252,56 +291,6 @@ export interface Database {
             foreignKeyName: 'lessons_unit_id_fkey'
             columns: ['unit_id']
             referencedRelation: 'units'
-            referencedColumns: ['id']
-          },
-        ]
-      }
-      lesson_activities: {
-        Row: {
-          activity_type: string
-          created_at: string | null
-          data: Json
-          id: string
-          image_url: string | null
-          instructions_en: string | null
-          instructions_fr: string | null
-          lesson_id: string
-          position: number
-          question_en: string | null
-          question_fr: string | null
-        }
-        Insert: {
-          activity_type: string
-          created_at?: string | null
-          data?: Json
-          id?: string
-          image_url?: string | null
-          instructions_en?: string | null
-          instructions_fr?: string | null
-          lesson_id: string
-          position?: number
-          question_en?: string | null
-          question_fr?: string | null
-        }
-        Update: {
-          activity_type?: string
-          created_at?: string | null
-          data?: Json
-          id?: string
-          image_url?: string | null
-          instructions_en?: string | null
-          instructions_fr?: string | null
-          lesson_id?: string
-          position?: number
-          question_en?: string | null
-          question_fr?: string | null
-        }
-        Relationships: [
-          {
-            foreignKeyName: 'lesson_activities_lesson_id_fkey'
-            columns: ['lesson_id']
-            isOneToOne: false
-            referencedRelation: 'lessons'
             referencedColumns: ['id']
           },
         ]
@@ -332,7 +321,7 @@ export interface Database {
           description_fr: string | null
           id: string
           position: number
-          status: 'available' | 'coming_soon' | 'maintenance' | 'disabled' | null
+          status: Database['public']['Enums']['unit_status'] | null
           title_en: string
           title_fr: string
         }
@@ -343,7 +332,7 @@ export interface Database {
           description_fr?: string | null
           id?: string
           position: number
-          status?: 'available' | 'coming_soon' | 'maintenance' | 'disabled' | null
+          status?: Database['public']['Enums']['unit_status'] | null
           title_en: string
           title_fr: string
         }
@@ -354,7 +343,7 @@ export interface Database {
           description_fr?: string | null
           id?: string
           position?: number
-          status?: 'available' | 'coming_soon' | 'maintenance' | 'disabled' | null
+          status?: Database['public']['Enums']['unit_status'] | null
           title_en?: string
           title_fr?: string
         }
@@ -368,7 +357,8 @@ export interface Database {
       [_ in never]: never
     }
     Enums: {
-      [_ in never]: never
+      difficulty_level: 'beginner' | 'intermediate' | 'advanced'
+      unit_status: 'available' | 'coming_soon' | 'maintenance' | 'disabled'
     }
     CompositeTypes: {
       [_ in never]: never
@@ -376,20 +366,26 @@ export interface Database {
   }
 }
 
-// Helper types
 export type Tables<T extends keyof Database['public']['Tables']> = Database['public']['Tables'][T]['Row']
-export type Insertables<T extends keyof Database['public']['Tables']> = Database['public']['Tables'][T]['Insert']
-export type Updateables<T extends keyof Database['public']['Tables']> = Database['public']['Tables'][T]['Update']
-
-// Specific table types
-export type Unit = Tables<'units'>
 export type Lesson = Tables<'lessons'>
+export type Unit = Tables<'units'>
 export type LessonContent = Tables<'lesson_contents'>
 export type LessonActivity = Tables<'lesson_activities'>
 export type Category = Tables<'categories'>
 export type Topic = Tables<'topics'>
 export type AlphabetLetter = Tables<'alphabet_letters'>
 export type CmsPage = Tables<'cms_pages'>
+export type DifficultyLevel = Database['public']['Enums']['difficulty_level']
+export type UnitStatus = Database['public']['Enums']['unit_status']
+
+// Example type for the unified structure
+export interface Example {
+  kbp: string
+  en: string
+  fr: string
+  pronunciation?: string
+  audio_url?: string
+}
 
 // Extended types with relationships
 export type UnitWithLessons = Unit & {
@@ -399,31 +395,12 @@ export type UnitWithLessons = Unit & {
 export type LessonWithContent = Lesson & {
   unit: Unit
   category: Category | null
-  contents: LessonContent[] // UPDATED: Array to support multiple content sections
-  activities: LessonActivity[] // UPDATED: Single activities array
+  contents: LessonContent[]
+  activities: LessonActivity[]
 }
 
 export type LessonWithProgress = Lesson & {
   is_completed: boolean
   is_locked: boolean
-  progress: {
-    id: string
-    user_id: string
-    lesson_id: string
-    completed_at: string
-    score: number | null
-    created_at: string
-    updated_at: string
-  } | null
-}
-
-export type UserProgress = {
-  id: string
-  user_id: string
-  lesson_id: string
-  is_completed: boolean
-  completed_at: string
-  score: number | null
-  created_at: string
-  updated_at: string
+  progress_percentage: number
 }

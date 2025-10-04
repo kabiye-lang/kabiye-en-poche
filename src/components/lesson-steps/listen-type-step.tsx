@@ -8,25 +8,26 @@ import { LightbulbIcon, SpeakerHighIcon, SpeakerSlashIcon } from 'phosphor-react
 
 import { Button, Card, Text, View } from '@/components/ui'
 import { useAudio } from '@/hooks/use-audio'
+import { useLanguage } from '@/hooks/use-language'
 
 interface ListenTypeStepProps {
   activity: LessonActivity
-  currentLanguage: 'en' | 'fr'
   onAnswer: (isCorrect: boolean, answer: string) => void
 }
 
-const ListenTypeStep = ({ activity, currentLanguage, onAnswer }: ListenTypeStepProps) => {
+const ListenTypeStep = ({ activity, onAnswer }: ListenTypeStepProps) => {
   const { t } = useLingui()
+  const { getValue } = useLanguage()
   const { playAudio, stopAudio, isPlaying, isLoading } = useAudio()
 
   // Extract data from activity
   const activityData = activity.data as any
-  const question = (currentLanguage === 'en' ? activity.question_en : activity.question_fr) || ''
-  const instructions = (currentLanguage === 'en' ? activity.instructions_en : activity.instructions_fr) || ''
+  const question = getValue(activity, 'question') || ''
+  const instructions = getValue(activity, 'instructions') || ''
   const audioUrl = activityData?.audio_url
   const correctAnswer = activityData?.correct_answer || ''
   const hints = activityData?.hints || []
-  const translation = currentLanguage === 'en' ? activityData?.translation_en : activityData?.translation_fr
+  const translation = getValue(activityData, 'translation') || ''
 
   const [userAnswer, setUserAnswer] = useState('')
   const [showFeedback, setShowFeedback] = useState(false)
