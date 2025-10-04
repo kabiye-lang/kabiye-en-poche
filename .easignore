@@ -52,7 +52,7 @@ expo-env.d.ts
 .vscode
 
 ### GITIGNORE END ###
-
+.git/
 files/
 docs/
 .husky/
