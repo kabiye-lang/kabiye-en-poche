@@ -23,6 +23,8 @@ export default ({ config }: ConfigContext): ExpoConfig => ({
     infoPlist: {
       ITSAppUsesNonExemptEncryption: false,
       CFBundleAllowMixedLocalizations: true,
+      NSUserTrackingUsageDescription:
+        'This allows Kabiyè en poche to provide you with personalized learning recommendations and content.',
     },
   },
   android: {
