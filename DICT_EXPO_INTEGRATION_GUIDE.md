@@ -51,12 +51,13 @@ export interface EntryData {
   letter: string
   headword: string
   plural?: string
+  mainEntry?: string  // If present, this is a redirect entry - fetch this headword for full definition
   variantRefs: Array<{ variant: string; pronunciation?: string }>
   pronunciations: string[]
   crossRefs: Array<{ type: string; targets: string[] }>
-  lexRefs: Array<{ type: string; targets: string[] }>
   grammaticalInfo?: string
   senses: Array<{
+    senseNumber?: string | number  // Sense number for display
     definitions: Array<{
       definition: string
       grammar?: string
@@ -66,11 +67,13 @@ export interface EntryData {
       }
     }>
     examples: Array<{ source?: string; translation?: string }>
+    lexRefs: Array<{ type: string; targets: string[] }>  // Moved from entry level to sense level
   }>
   subEntries: Array<{
     type: string
     headword: string
     senses: Array<{
+      senseNumber?: string | number
       definitions: Array<{
         definition: string
         grammar?: string
@@ -80,6 +83,7 @@ export interface EntryData {
         }
       }>
       examples: Array<{ source?: string; translation?: string }>
+      lexRefs: Array<{ type: string; targets: string[] }>
     }>
   }>
   publishRoot?: string
@@ -148,12 +152,11 @@ const { data, error } = await supabase.rpc('get_random_entries', {
 ### Get Available Letters
 
 ```typescript
-const { data, error } = await supabase
-  .from('dictionary_entries')
-  .select('letter')
-  .order('letter')
+// Efficient method using RPC function (recommended)
+const { data, error } = await supabase.rpc('get_available_letters')
 
-const uniqueLetters = [...new Set(data?.map(item => item.letter) || [])]
+// data is array of { letter: string }
+const letters = data?.map(item => item.letter) || []
 ```
 
 ### Get Statistics
@@ -165,6 +168,63 @@ const { data, error } = await supabase
   .single()
 
 // Returns: { total_entries, total_letters, french_definitions, english_definitions, ... }
+```
+
+---
+
+## 🔄 Handling Redirect Entries
+
+Some entries have a `mainEntry` field, indicating they redirect to a main entry. Simply display a message with a link:
+
+```typescript
+// File: components/EntryView.tsx
+import { supabase } from '@/lib/supabase'
+import type { DictionaryEntry } from '@/types/dictionary'
+
+export function EntryView({ entry }: { entry: DictionaryEntry }) {
+  // Check if this is a redirect entry
+  if (entry.entry_data.mainEntry) {
+    return (
+      <View style={styles.redirectContainer}>
+        <Text style={styles.redirectText}>
+          See main entry: 
+        </Text>
+        <TouchableOpacity
+          onPress={async () => {
+            const { data } = await supabase.rpc('get_entry_by_headword', {
+              headword_param: entry.entry_data.mainEntry
+            })
+            if (data?.[0]) {
+              // Navigate to the main entry
+              navigation.push('EntryDetail', { entry: data[0] })
+            }
+          }}
+        >
+          <Text style={styles.mainEntryLink}>
+            {entry.entry_data.mainEntry}
+          </Text>
+        </TouchableOpacity>
+      </View>
+    )
+  }
+
+  // Regular entry display
+  return (
+    <View>
+      <Text style={styles.headword}>{entry.headword}</Text>
+      {/* ... rest of your entry display ... */}
+    </View>
+  )
+}
+```
+
+### Helper Function (Optional)
+
+```typescript
+// File: lib/dictionary-helpers.ts
+export function isRedirectEntry(entry: DictionaryEntry): boolean {
+  return !!entry.entry_data.mainEntry
+}
 ```
 
 ---
@@ -292,18 +352,15 @@ export function useRandomEntries(count = 5) {
   })
 }
 
-// Get available letters
+// Get available letters (efficient RPC-based implementation)
 export function useAvailableLetters() {
   return useQuery({
     queryKey: ['dictionary', 'letters'],
     queryFn: async () => {
-      const { data, error } = await supabase
-        .from('dictionary_entries')
-        .select('letter')
-        .order('letter')
+      const { data, error } = await supabase.rpc('get_available_letters')
       
       if (error) throw error
-      return [...new Set(data?.map(item => item.letter) || [])]
+      return (data as { letter: string }[])?.map(item => item.letter) || []
     },
     staleTime: Infinity,
   })

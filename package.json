@@ -16,6 +16,7 @@
     "clean": "rm -rf node_modules && rm -rf package-lock.json && npm i",
     "renovate": "node ./renovate.js && ncu -u",
     "postrenovate": "npm run clean",
+    "bundle:analyze": "EXPO_ATLAS=true npx expo start --clear --no-dev",
     "pretestflight": "npm run i18n:extract",
     "testflight": "npx testflight",
     "i18n:extract": "lingui extract",

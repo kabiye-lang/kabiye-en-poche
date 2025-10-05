@@ -25,6 +25,10 @@ msgstr "Dictionnaire PDF"
 msgid "Lexilogos Dictionary"
 msgstr "Dictionnaire Lexilogos"
 
+#: src/screens/dictionary/search.tsx
+msgid "Searching in English"
+msgstr "Recherche en anglais"
+
 #: src/screens/dictionary/dictionary.tsx
 #~ msgid "Get tips to improve your learning"
 #~ msgstr "Obtenez des conseils pour améliorer votre apprentissage"
@@ -66,11 +70,19 @@ msgstr "Aucune donnée de progression disponible"
 msgid "Welcome to Kabiyè en Poche"
 msgstr "Bienvenue dans Kabiyè en Poche"
 
+#: src/screens/dictionary/dictionary.tsx
+msgid "Find Kabiyè words in English..."
+msgstr "Trouver des mots Kabiyè en anglais..."
+
 #. placeholder {0}: entry.subEntries.length
 #. placeholder {1}: entry.subEntries.length === 1 ? 'expression' : 'expressions'
 #: src/screens/dictionary/browse-letter.tsx
 msgid "+{0} {1}"
 msgstr "+{0} {1}"
+
+#: src/screens/dictionary/dictionary.tsx
+msgid "Find Kabiyè words in French..."
+msgstr "Trouver des mots Kabiyè en français..."
 
 #: src/screens/profile.tsx
 msgid "Académie Kabiyè"
@@ -91,6 +103,10 @@ msgstr "Veuillez revenir plus tard"
 #: src/screens/profile.tsx
 msgid "Kabiyè language resources"
 msgstr "Ressources de la langue Kabiyè"
+
+#: src/screens/dictionary/search.tsx
+msgid "Searching in French"
+msgstr "Recherche en français"
 
 #. placeholder {0}: searchResults.length
 #: src/screens/dictionary/dictionary.tsx
@@ -174,8 +190,8 @@ msgid "Loading dictionary..."
 msgstr "Chargement du dictionnaire..."
 
 #: src/screens/dictionary/dictionary.tsx
-msgid "Search for a word..."
-msgstr "Rechercher un mot..."
+#~ msgid "Search for a word..."
+#~ msgstr "Rechercher un mot..."
 
 #: src/screens/alphabet-list.tsx
 msgid "Error loading alphabet"
@@ -201,6 +217,10 @@ msgstr "Ressources d'apprentissage"
 msgid "This unit does not exist"
 msgstr "Cette unité n'existe pas"
 
+#: src/screens/dictionary/dictionary.tsx
+msgid "Search in English to find matching Kabiyè words"
+msgstr "Rechercher en anglais pour trouver des mots Kabiyè correspondants"
+
 #: src/screens/dictionary/browse-letter.tsx
 msgid "Letter \"{letter}\""
 msgstr "Lettre \"{letter}\""
@@ -216,6 +236,10 @@ msgstr "Actuel"
 #: src/components/lesson-steps/completion-step.tsx
 msgid "Great job! 🎉"
 msgstr "Excellent travail ! 🎉"
+
+#: src/screens/dictionary/dictionary.tsx
+msgid "Français"
+msgstr "Français"
 
 #: src/screens/home.tsx
 msgid "Tap to continue"
@@ -321,6 +345,10 @@ msgstr "Cette unité est en maintenance"
 msgid "Loading learning units..."
 msgstr "Chargement des unités d'apprentissage..."
 
+#: src/screens/dictionary/word.tsx
+msgid "Related Words:"
+msgstr "Mots connexes :"
+
 #: src/screens/lesson.tsx
 msgid "Great job! You've completed this lesson."
 msgstr "Excellent travail ! Vous avez terminé cette leçon."
@@ -338,6 +366,10 @@ msgstr "Bien joué ! Continue à t'entraîner ! 💪"
 msgid "Perfect! All pairs matched! 🎉"
 msgstr "Parfait ! Toutes les paires associées ! 🎉"
 
+#: src/screens/dictionary/word.tsx
+msgid "View main entry:"
+msgstr "Voir l'entrée principale :"
+
 #: src/screens/lesson.tsx
 #: src/screens/profile.tsx
 msgid "Error"
@@ -347,6 +379,7 @@ msgstr "Erreur"
 msgid "The"
 msgstr "La"
 
+#: src/screens/dictionary/dictionary.tsx
 #: src/screens/dictionary/search.tsx
 msgid "Kabiyè"
 msgstr "Kabiyè"
@@ -415,6 +448,10 @@ msgstr "Changer la langue dans les paramètres de l'appareil"
 #: src/screens/profile.tsx
 msgid "Support"
 msgstr "Support"
+
+#: src/screens/dictionary/word.tsx
+msgid "This is a variant form. See the main entry for the full definition."
+msgstr "Ceci est une forme variante. Consultez l'entrée principale pour la définition complète."
 
 #: src/components/lesson-steps/audio-step.tsx
 #: src/components/lesson-steps/listen-choose-step.tsx
@@ -611,6 +648,7 @@ msgstr "Chargement de la leçon..."
 msgid "Units completed"
 msgstr "Unités terminées"
 
+#: src/screens/dictionary/dictionary.tsx
 #: src/screens/dictionary/search.tsx
 msgid "English"
 msgstr "Anglais"
@@ -624,6 +662,10 @@ msgstr "Échec du chargement des unités d'apprentissage"
 msgid "Keyboard"
 msgstr "Clavier"
 
+#: src/screens/dictionary/search.tsx
+msgid "Searching in Kabiyè"
+msgstr "Recherche en Kabiyè"
+
 #: src/components/lesson-steps/audio-step.tsx
 #: src/components/lesson-steps/listen-choose-step.tsx
 #: src/components/lesson-steps/listen-type-step.tsx
@@ -633,6 +675,10 @@ msgstr "Appuyez pour écouter"
 #: src/app/_layout.tsx
 msgid "Terms and Conditions"
 msgstr "Conditions Générales"
+
+#: src/screens/dictionary/dictionary.tsx
+msgid "Search Kabiyè words..."
+msgstr "Rechercher des mots Kabiyè..."
 
 #: src/screens/learn.tsx
 #: src/screens/unit.tsx
@@ -691,6 +737,10 @@ msgstr "Pas tout à fait. Réessayez !"
 #: src/app/(tabs)/_layout.tsx
 msgid "Learn"
 msgstr "Apprendre"
+
+#: src/screens/dictionary/dictionary.tsx
+msgid "Search in French to find matching Kabiyè words"
+msgstr "Rechercher en français pour trouver des mots Kabiyè correspondants"
 
 #: src/screens/profile.tsx
 #: src/screens/profile.tsx
@@ -790,12 +840,16 @@ msgid "This unit is not available"
 msgstr "Cette unité n'est pas disponible"
 
 #: src/screens/dictionary/word.tsx
-msgid "Related Words"
-msgstr "Mots connexes"
+#~ msgid "Related Words"
+#~ msgstr "Mots connexes"
 
 #: src/screens/unit.tsx
 msgid "Unit not found"
 msgstr "Unité non trouvée"
+
+#: src/screens/dictionary/dictionary.tsx
+msgid "Search for Kabiyè words and see their translations"
+msgstr "Rechercher des mots Kabiyè et voir leurs traductions"
 
 #: src/components/lesson-steps/completion-step.tsx
 msgid "out of"

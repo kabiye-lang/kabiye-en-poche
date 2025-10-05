@@ -9,10 +9,13 @@ import { MagnifyingGlassIcon, SparkleIcon } from '@/components/icons'
 import { Card, Text, View } from '@/components/ui'
 import { useDebounce } from '@/hooks/use-debounce'
 import { useAvailableLetters, useRandomEntries, useSearchDictionary } from '@/hooks/use-dictionary'
+import { useLanguage } from '@/hooks/use-language'
 
 const DictionaryScreen: React.FC = () => {
   const { t } = useLingui()
+  const { currentLanguage } = useLanguage()
   const [searchQuery, setSearchQuery] = useState('')
+  const [searchMode, setSearchMode] = useState<'kabiye' | 'translation'>('kabiye')
   const debouncedQuery = useDebounce(searchQuery, 300)
 
   // Fetch random entries for "Word of the Day"
@@ -21,17 +24,36 @@ const DictionaryScreen: React.FC = () => {
   // Fetch available letters for alphabet browsing
   const { data: letters, isLoading: isLoadingLetters } = useAvailableLetters()
 
+  // Determine search language based on mode
+  const searchLanguage: 'all' | 'fr' | 'en' = searchMode === 'kabiye' ? 'all' : currentLanguage
+
   // Search dictionary (only when user types)
   const {
     data: searchResults,
     isLoading: isSearching,
     isFetching,
-  } = useSearchDictionary(debouncedQuery, 'all', debouncedQuery.length >= 2)
+  } = useSearchDictionary(debouncedQuery, searchLanguage, debouncedQuery.length >= 2)
 
   const handleSearch = () => {
     if (searchQuery.trim()) {
-      router.push(`/dictionary/search?q=${encodeURIComponent(searchQuery)}`)
+      router.push(`/dictionary/search?q=${encodeURIComponent(searchQuery)}&lang=${searchLanguage}&mode=${searchMode}`)
     }
+  }
+
+  const getPlaceholder = () => {
+    if (searchMode === 'kabiye') {
+      return t`Search Kabiyè words...`
+    }
+    return currentLanguage === 'fr' ? t`Find Kabiyè words in French...` : t`Find Kabiyè words in English...`
+  }
+
+  const getHelperText = () => {
+    if (searchMode === 'kabiye') {
+      return t`Search for Kabiyè words and see their translations`
+    }
+    return currentLanguage === 'fr'
+      ? t`Search in French to find matching Kabiyè words`
+      : t`Search in English to find matching Kabiyè words`
   }
 
   const showSearchResults = debouncedQuery.length >= 2 && searchResults
@@ -39,13 +61,55 @@ const DictionaryScreen: React.FC = () => {
   return (
     <View flex className="bg-bg-grey dark:bg-gray-900">
       <View className="px-2.5 py-2.5">
+        {/* Mode Tabs */}
+        <View className="mb-3 flex-row gap-2">
+          <TouchableOpacity
+            onPress={() => setSearchMode('kabiye')}
+            className={`flex-1 items-center rounded-lg px-4 py-2.5 ${
+              searchMode === 'kabiye'
+                ? 'bg-primary'
+                : 'border border-gray-300 bg-white dark:border-gray-600 dark:bg-gray-800'
+            }`}
+          >
+            <Text
+              variant="body"
+              weight="semibold"
+              className={searchMode === 'kabiye' ? 'text-white' : 'text-text-dark dark:text-gray-100'}
+            >
+              {t`Kabiyè`}
+            </Text>
+          </TouchableOpacity>
+          <TouchableOpacity
+            onPress={() => setSearchMode('translation')}
+            className={`flex-1 items-center rounded-lg px-4 py-2.5 ${
+              searchMode === 'translation'
+                ? 'bg-primary'
+                : 'border border-gray-300 bg-white dark:border-gray-600 dark:bg-gray-800'
+            }`}
+          >
+            <Text
+              variant="body"
+              weight="semibold"
+              className={searchMode === 'translation' ? 'text-white' : 'text-text-dark dark:text-gray-100'}
+            >
+              {currentLanguage === 'fr' ? t`Français` : t`English`}
+            </Text>
+          </TouchableOpacity>
+        </View>
+
+        {/* Helper Text */}
+        <Text variant="caption" className="mb-2 text-text-grey dark:text-gray-400">
+          {getHelperText()}
+        </Text>
+
+        {/* Search Bar */}
         <View className="flex-row items-center rounded-lg border border-gray-300 bg-white px-3 py-2 dark:border-gray-600 dark:bg-gray-800">
           <MagnifyingGlassIcon size={24} className="mr-2.5 text-text-grey dark:text-gray-400" />
           <TextInput
             value={searchQuery}
             onChangeText={setSearchQuery}
             onSubmitEditing={handleSearch}
-            placeholder={t`Search for a word...`}
+            placeholder={getPlaceholder()}
             className="flex-1 text-base text-gray-900 dark:text-gray-100"
             placeholderTextColor="#9CA3AF"
             returnKeyType="search"
@@ -105,7 +169,9 @@ const DictionaryScreen: React.FC = () => {
                     )}
                     {entry.entry_data.senses[0]?.definitions[0] && (
                       <Text variant="body" className="mt-2 text-text-dark dark:text-gray-200">
-                        {entry.entry_data.senses[0].definitions[0].translations.fr}
+                        {currentLanguage === 'fr'
+                          ? entry.entry_data.senses[0].definitions[0].translations.fr
+                          : entry.entry_data.senses[0].definitions[0].translations.en}
                       </Text>
                     )}
                   </Card>

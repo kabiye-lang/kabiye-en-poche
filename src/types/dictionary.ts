@@ -13,12 +13,13 @@ export interface EntryData {
   letter: string
   headword: string
   plural?: string
+  mainEntry?: string // If present, this is a redirect entry - fetch this headword for full definition
   variantRefs: { variant: string; pronunciation?: string }[]
   pronunciations: string[]
   crossRefs: { type: string; targets: string[] }[]
-  lexRefs: { type: string; targets: string[] }[]
   grammaticalInfo?: string
   senses: {
+    senseNumber?: string | number // Sense number for display
     definitions: {
       definition: string
       grammar?: string
@@ -28,11 +29,13 @@ export interface EntryData {
       }
     }[]
     examples: { source?: string; translation?: string }[]
+    lexRefs: { type: string; targets: string[] }[] // Moved from entry level to sense level
   }[]
   subEntries: {
     type: string
     headword: string
     senses: {
+      senseNumber?: string | number
       definitions: {
         definition: string
         grammar?: string
@@ -42,6 +45,7 @@ export interface EntryData {
         }
       }[]
       examples: { source?: string; translation?: string }[]
+      lexRefs: { type: string; targets: string[] }[]
     }[]
   }[]
   publishRoot?: string

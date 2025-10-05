@@ -91,15 +91,16 @@ export function useRandomEntries(count = 5) {
 
 /**
  * Get all available letters in the dictionary
+ * Uses an RPC function to efficiently get distinct letters at the database level
  */
 export function useAvailableLetters() {
   return useQuery({
     queryKey: ['dictionary', 'letters'],
     queryFn: async () => {
-      const { data, error } = await supabase.from('dictionary_entries').select('letter').order('letter')
+      const { data, error } = await supabase.rpc('get_available_letters' as never)
 
       if (error) throw error
-      return [...new Set(data?.map((item) => item.letter) || [])]
+      return (data as { letter: string }[])?.map((item) => item.letter) || []
     },
     staleTime: Infinity,
   })

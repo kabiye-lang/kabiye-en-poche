@@ -9,10 +9,20 @@ import { Card, Text, View } from '@/components/ui'
 import { useSearchDictionary } from '@/hooks/use-dictionary'
 
 const SearchResultsScreen: React.FC = () => {
-  const { q: query } = useLocalSearchParams<{ q: string }>()
+  const { q: query, lang, mode } = useLocalSearchParams<{ q: string; lang?: string; mode?: string }>()
   const { t } = useLingui()
 
-  const { data: searchResults, isLoading, error } = useSearchDictionary(query || '', 'all', !!query)
+  const searchLanguage = (lang as 'all' | 'fr' | 'en') || 'all'
+  const searchMode = (mode as 'kabiye' | 'translation') || 'kabiye'
+
+  const { data: searchResults, isLoading, error } = useSearchDictionary(query || '', searchLanguage, !!query)
+
+  const getSearchModeLabel = () => {
+    if (searchMode === 'kabiye') {
+      return t`Searching in Kabiyè`
+    }
+    return searchLanguage === 'fr' ? t`Searching in French` : t`Searching in English`
+  }
 
   if (isLoading) {
     return (
@@ -57,7 +67,10 @@ const SearchResultsScreen: React.FC = () => {
         <Text variant="h5" weight="semibold">
           {t`Search Results`}
         </Text>
-        <Text variant="body" className="mt-1 text-text-grey dark:text-gray-400">
+        <Text variant="caption" className="mt-1 text-text-grey dark:text-gray-400">
+          {getSearchModeLabel()}
+        </Text>
+        <Text variant="body" className="mt-1 text-text-dark dark:text-gray-200">
           {t`${searchResults.length} ${searchResults.length === 1 ? 'result' : 'results'} for "${query}"`}
         </Text>
       </View>
