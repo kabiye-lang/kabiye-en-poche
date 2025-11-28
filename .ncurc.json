@@ -63,6 +63,7 @@
     "expo-mail-composer",
     "expo-manifests",
     "expo-maps",
+    "expo-mcp",
     "expo-media-library",
     "expo-mesh-gradient",
     "expo-module-template",
