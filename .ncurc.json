@@ -112,6 +112,7 @@
     "react-native-svg",
     "react-native-view-shot",
     "react-native-webview",
+    "react-server-dom-webpack",
     "sentry-expo",
     "unimodules-app-loader",
     "unimodules-image-loader-interface",
