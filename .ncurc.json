@@ -16,6 +16,7 @@
     "@react-native-segmented-control/segmented-control",
     "@stripe/stripe-react-native",
     "eslint-config-expo",
+    "expo-age-range",
     "expo-analytics-amplitude",
     "expo-app-auth",
     "expo-app-loader-provider",
