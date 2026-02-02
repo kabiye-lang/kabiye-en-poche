@@ -11,14 +11,6 @@ export default ({ config }: ConfigContext): ExpoConfig => ({
   icon: './src/assets/images/icon.png',
   scheme: 'kabiye',
   userInterfaceStyle: 'automatic',
-  splash: {
-    image: './src/assets/images/splash-icon-light.png',
-    dark: {
-      image: './src/assets/images/splash-icon-dark.png',
-      backgroundColor: '#000000',
-    },
-    imageWidth: 200,
-  },
   assetBundlePatterns: ['**/*'],
   ios: {
     icon: './src/assets/images/ios-icon.icon',
@@ -45,6 +37,18 @@ export default ({ config }: ConfigContext): ExpoConfig => ({
     favicon: './src/assets/images/favicon.png',
   },
   plugins: [
+    [
+      'expo-splash-screen',
+      {
+        backgroundColor: '#ffffff',
+        image: './src/assets/images/splash-icon.png',
+        dark: {
+          image: './src/assets/images/splash-icon-dark.png',
+          backgroundColor: '#000000',
+        },
+        imageWidth: 200,
+      },
+    ],
     [
       'expo-build-properties',
       {
