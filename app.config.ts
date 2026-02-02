@@ -12,12 +12,16 @@ export default ({ config }: ConfigContext): ExpoConfig => ({
   scheme: 'kabiye',
   userInterfaceStyle: 'automatic',
   splash: {
-    image: './src/assets/images/splash.png',
-    resizeMode: 'contain',
-    backgroundColor: '#ffffff',
+    image: './src/assets/images/splash-icon-light.png',
+    dark: {
+      image: './src/assets/images/splash-icon-dark.png',
+      backgroundColor: '#000000',
+    },
+    imageWidth: 200,
   },
   assetBundlePatterns: ['**/*'],
   ios: {
+    icon: './src/assets/images/ios-icon.icon',
     bundleIdentifier: 'com.kabiyeenpoche.app',
     supportsTablet: true,
     infoPlist: {
@@ -41,6 +45,13 @@ export default ({ config }: ConfigContext): ExpoConfig => ({
     favicon: './src/assets/images/favicon.png',
   },
   plugins: [
+    [
+      'expo-build-properties',
+      {
+        buildReactNativeFromSource: true,
+        useHermesV1: true,
+      },
+    ],
     'expo-router',
     [
       'expo-localization',
@@ -74,5 +85,6 @@ export default ({ config }: ConfigContext): ExpoConfig => ({
   },
   updates: {
     url: 'https://u.expo.dev/804c3e23-d136-4f76-81b4-c0ec5ba01117',
+    enableBsdiffPatchSupport: true,
   },
 })
