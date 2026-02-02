@@ -11,5 +11,3 @@ declare module 'phosphor-react-native' {
     className?: string
   }
 }
-
-/// <reference types="nativewind/types" />

@@ -1,3 +1,38 @@
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+@import 'tailwindcss';
+@import 'uniwind';
+
+@theme {
+  /* Brand colors from design system */
+  --color-primary: #6200ee;
+  --color-secondary: #03dac6;
+  --color-accent: #ff5722;
+  --color-bg-grey: #f5f5f5;
+  --color-text-dark: #212121;
+  --color-text-light: #ffffff;
+  --color-text-grey: #757575;
+
+  /* Font families - IBM Plex Sans Hebrew */
+  --font-ibm-thin: 'IBMPlexSansHebrew_100Thin';
+  --font-ibm-extralight: 'IBMPlexSansHebrew_200ExtraLight';
+  --font-ibm-light: 'IBMPlexSansHebrew_300Light';
+  --font-ibm-regular: 'IBMPlexSansHebrew_400Regular';
+  --font-ibm-medium: 'IBMPlexSansHebrew_500Medium';
+  --font-ibm-semibold: 'IBMPlexSansHebrew_600SemiBold';
+  --font-ibm-bold: 'IBMPlexSansHebrew_700Bold';
+
+  /* Font families - Figtree */
+  --font-fig-light: 'Figtree_300Light';
+  --font-fig-light-italic: 'Figtree_300Light_Italic';
+  --font-fig-regular: 'Figtree_400Regular';
+  --font-fig-regular-italic: 'Figtree_400Regular_Italic';
+  --font-fig-medium: 'Figtree_500Medium';
+  --font-fig-medium-italic: 'Figtree_500Medium_Italic';
+  --font-fig-semibold: 'Figtree_600SemiBold';
+  --font-fig-semibold-italic: 'Figtree_600SemiBold_Italic';
+  --font-fig-bold: 'Figtree_700Bold';
+  --font-fig-bold-italic: 'Figtree_700Bold_Italic';
+  --font-fig-extrabold: 'Figtree_800ExtraBold';
+  --font-fig-extrabold-italic: 'Figtree_800ExtraBold_Italic';
+  --font-fig-black: 'Figtree_900Black';
+  --font-fig-black-italic: 'Figtree_900Black_Italic';
+}

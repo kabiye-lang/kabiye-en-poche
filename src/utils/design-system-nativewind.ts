@@ -8,7 +8,7 @@ import { DarkTheme, DefaultTheme } from '@react-navigation/native'
 import { Appearance } from './types'
 
 // =============
-// | NativeWind Design System |
+// | Uniwind Design System |
 // =============
 
 // Brand colors - used in navigation themes

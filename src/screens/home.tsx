@@ -20,13 +20,13 @@ const HomeScreen = () => {
     if (nextLessonLoading) {
       return (
         <View className="mb-5">
-          <Text variant="h5" weight="semibold" className="mb-2.5 text-text-dark dark:text-gray-100">
+          <Text variant="h5" weight="semibold" className="text-text-dark mb-2.5 dark:text-gray-100">
             {t`Continue Learning`}
           </Text>
           <Card className="h-[120px] px-4 py-2.5">
             <View className="flex-1 items-center justify-center">
               <ActivityIndicator size="small" className="text-primary" />
-              <Text variant="caption" className="mt-2 text-text-grey dark:text-gray-400">
+              <Text variant="caption" className="text-text-grey mt-2 dark:text-gray-400">
                 {t`Loading...`}
               </Text>
             </View>
@@ -38,15 +38,15 @@ const HomeScreen = () => {
     if (!nextLesson) {
       return (
         <View className="mb-5">
-          <Text variant="h5" weight="semibold" className="mb-2.5 text-text-dark dark:text-gray-100">
+          <Text variant="h5" weight="semibold" className="text-text-dark mb-2.5 dark:text-gray-100">
             {t`Continue Learning`}
           </Text>
           <Card className="h-[120px] px-4 py-2.5">
             <View className="flex-1 items-center justify-center">
-              <Text variant="h6" className="text-center text-primary dark:text-gray-100">
+              <Text variant="h6" className="text-primary text-center dark:text-gray-100">
                 {t`All lessons completed! 🎉`}
               </Text>
-              <Text variant="caption" className="mt-2 text-center text-text-grey dark:text-gray-400">
+              <Text variant="caption" className="text-text-grey mt-2 text-center dark:text-gray-400">
                 {t`Great job on finishing the course`}
               </Text>
             </View>
@@ -57,7 +57,7 @@ const HomeScreen = () => {
 
     return (
       <View className="mb-5">
-        <Text variant="h5" weight="semibold" className="mb-2.5 text-text-dark dark:text-gray-100">
+        <Text variant="h5" weight="semibold" className="text-text-dark mb-2.5 dark:text-gray-100">
           {t`Continue Learning`}
         </Text>
         <Card className="h-[120px] px-4 py-2.5">
@@ -65,10 +65,10 @@ const HomeScreen = () => {
             <TouchableOpacity className="flex-1">
               <View className="flex-1 flex-row items-center">
                 <View className="flex-1">
-                  <Text variant="h6" weight="bold" className="mb-1 text-primary dark:text-gray-100">
+                  <Text variant="h6" weight="bold" className="text-primary mb-1 dark:text-gray-100">
                     {getValue(nextLesson, 'title')}
                   </Text>
-                  <Text variant="caption" className="mb-1 text-text-grey dark:text-gray-400">
+                  <Text variant="caption" className="text-text-grey mb-1 dark:text-gray-400">
                     {nextLesson.difficulty}
                   </Text>
                   <Text variant="caption" className="text-primary dark:text-gray-100">
@@ -90,7 +90,7 @@ const HomeScreen = () => {
     if (unitsLoading) {
       return (
         <View className="mb-5">
-          <Text variant="h5" weight="semibold" className="mb-2.5 text-text-dark dark:text-gray-100">
+          <Text variant="h5" weight="semibold" className="text-text-dark mb-2.5 dark:text-gray-100">
             {t`Learning Units`}
           </Text>
           <View className="flex-row flex-wrap justify-between">
@@ -99,7 +99,7 @@ const HomeScreen = () => {
                 <Card className="h-[170px] px-4 py-2.5">
                   <View className="flex-1 items-center justify-center">
                     <ActivityIndicator size="small" className="text-primary" />
-                    <Text variant="caption" className="mt-2 text-text-grey dark:text-gray-400">
+                    <Text variant="caption" className="text-text-grey mt-2 dark:text-gray-400">
                       {t`Loading...`}
                     </Text>
                   </View>
@@ -114,15 +114,15 @@ const HomeScreen = () => {
     if (unitsError) {
       return (
         <View className="mb-5">
-          <Text variant="h5" weight="semibold" className="mb-2.5 text-text-dark dark:text-gray-100">
+          <Text variant="h5" weight="semibold" className="text-text-dark mb-2.5 dark:text-gray-100">
             {t`Learning Units`}
           </Text>
           <Card className="h-[170px] px-4 py-2.5">
             <View className="flex-1 items-center justify-center">
-              <Text variant="h6" className="text-center text-primary dark:text-gray-100">
+              <Text variant="h6" className="text-primary text-center dark:text-gray-100">
                 {t`Units temporarily unavailable`}
               </Text>
-              <Text variant="caption" className="mt-2 text-center text-text-grey dark:text-gray-400">
+              <Text variant="caption" className="text-text-grey mt-2 text-center dark:text-gray-400">
                 {t`Please check your connection and try again`}
               </Text>
             </View>
@@ -133,7 +133,7 @@ const HomeScreen = () => {
 
     return (
       <View className="mb-5">
-        <Text variant="h5" weight="semibold" className="mb-2.5 text-text-dark dark:text-gray-100">
+        <Text variant="h5" weight="semibold" className="text-text-dark mb-2.5 dark:text-gray-100">
           {t`Let's Learn Together!`}
         </Text>
         <View className="flex-row flex-wrap justify-between">
@@ -150,10 +150,10 @@ const HomeScreen = () => {
                     <Link href={`/unit/${unit.id}`} asChild>
                       <TouchableOpacity className="flex-1">
                         <View className="flex-1">
-                          <Text variant="h6" weight="bold" className="mt-2.5 text-primary dark:text-gray-100">
+                          <Text variant="h6" weight="bold" className="text-primary mt-2.5 dark:text-gray-100">
                             {getValue(unit, 'title')}
                           </Text>
-                          <Text variant="caption" className="mt-2.5 text-text-grey dark:text-gray-400">
+                          <Text variant="caption" className="text-text-grey mt-2.5 dark:text-gray-400">
                             {getValue(unit, 'description')}
                           </Text>
                         </View>
@@ -162,10 +162,10 @@ const HomeScreen = () => {
                   ) : (
                     <TouchableOpacity className="flex-1" disabled>
                       <View className="flex-1">
-                        <Text variant="h6" weight="bold" className="mt-2.5 text-text-grey dark:text-gray-400">
+                        <Text variant="h6" weight="bold" className="text-text-grey mt-2.5 dark:text-gray-400">
                           {getValue(unit, 'title')}
                         </Text>
-                        <Text variant="caption" className="mt-2.5 text-text-grey dark:text-gray-400">
+                        <Text variant="caption" className="text-text-grey mt-2.5 dark:text-gray-400">
                           {getValue(unit, 'description')}
                         </Text>
                         <View className="mt-2">
@@ -183,7 +183,7 @@ const HomeScreen = () => {
             )
           })}
           <View className="mb-2.5 w-[48%]">
-            <Card className="h-[170px] !bg-accent p-5">
+            <Card className="!bg-accent h-[170px] p-5">
               <Link href="/learn" asChild>
                 <TouchableOpacity className="flex-1">
                   <View className="h-full flex-row items-center justify-center">
@@ -226,17 +226,17 @@ const HomeScreen = () => {
 
           {/* Kabiyè Alphabet Section */}
           <View className="mb-5">
-            <Text variant="h5" weight="semibold" className="mb-2.5 text-text-dark dark:text-gray-100">
+            <Text variant="h5" weight="semibold" className="text-text-dark mb-2.5 dark:text-gray-100">
               {t`Learn the Basics`}
             </Text>
             <Card className="mb-2.5 flex-row items-center p-5">
               <Link href="/alphabet" className="w-full flex-row items-center justify-between" asChild>
                 <TouchableOpacity className="w-full flex-row items-center">
                   <View className="flex-1">
-                    <Text variant="h6" weight="bold" className="mt-2.5 text-primary dark:text-gray-100">
+                    <Text variant="h6" weight="bold" className="text-primary mt-2.5 dark:text-gray-100">
                       {t`Kabiyè Alphabet`}
                     </Text>
-                    <Text variant="caption" className="mt-2.5 text-text-grey dark:text-gray-400">
+                    <Text variant="caption" className="text-text-grey mt-2.5 dark:text-gray-400">
                       {t`Learn the Kabiyè alphabet`}
                     </Text>
                   </View>

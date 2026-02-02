@@ -1,9 +1,13 @@
 import { useEffect, useState } from 'react'
 import { GestureHandlerRootView } from 'react-native-gesture-handler'
-import { SafeAreaProvider } from 'react-native-safe-area-context'
+import { SafeAreaListener, SafeAreaProvider } from 'react-native-safe-area-context'
+
+import { Uniwind } from 'uniwind'
 
 import '../global.css'
 import 'intl-pluralrules'
+
+import { useColorScheme } from 'react-native'
 
 import { loadAsync } from 'expo-font'
 import { SplashScreen, Stack } from 'expo-router'
@@ -37,7 +41,6 @@ import {
 import { defineMessage as msg } from '@lingui/core/macro'
 import { ThemeProvider } from '@react-navigation/native'
 import { QueryClientProvider } from '@tanstack/react-query'
-import { useColorScheme } from 'nativewind'
 import { Toaster } from 'sonner-native'
 
 import i18n, { I18nProvider } from '@/i18n'
@@ -132,79 +135,85 @@ export default function RootLayout() {
 }
 
 function RootLayoutNav() {
-  const { colorScheme } = useColorScheme()
+  const colorScheme = useColorScheme()
   return (
     <SafeAreaProvider>
-      <QueryClientProvider client={queryClient}>
-        <ThemeProvider value={colorScheme === 'dark' ? AppDarkTheme : AppDefaultTheme}>
-          <I18nProvider i18n={i18n}>
-            <StatusBar style={'auto'} />
-            <GestureHandlerRootView style={{ flex: 1 }}>
-              <Stack>
-                <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
+      <SafeAreaListener
+        onChange={({ insets }) => {
+          Uniwind.updateInsets(insets)
+        }}
+      >
+        <QueryClientProvider client={queryClient}>
+          <ThemeProvider value={colorScheme === 'dark' ? AppDarkTheme : AppDefaultTheme}>
+            <I18nProvider i18n={i18n}>
+              <StatusBar style={'auto'} />
+              <GestureHandlerRootView style={{ flex: 1 }}>
+                <Stack>
+                  <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
 
-                <Stack.Screen
-                  name="alphabet/[letter]"
-                  /*getId={() => String(Date.now())}*/ options={{
-                    title: '',
-                    headerTransparent: true,
-                    headerBackButtonDisplayMode: 'minimal',
-                  }}
-                />
+                  <Stack.Screen
+                    name="alphabet/[letter]"
+                    /*getId={() => String(Date.now())}*/ options={{
+                      title: '',
+                      headerTransparent: true,
+                      headerBackButtonDisplayMode: 'minimal',
+                    }}
+                  />
 
-                <Stack.Screen
-                  name="unit/[id]"
-                  /*getId={() => String(Date.now())}*/ options={{
-                    title: '',
-                    // headerShown: false,
-                    headerBackButtonDisplayMode: 'minimal',
-                    headerTransparent: true,
-                  }}
-                />
+                  <Stack.Screen
+                    name="unit/[id]"
+                    /*getId={() => String(Date.now())}*/ options={{
+                      title: '',
+                      // headerShown: false,
+                      headerBackButtonDisplayMode: 'minimal',
+                      headerTransparent: true,
+                    }}
+                  />
 
-                <Stack.Screen
-                  name="lesson/[id]"
-                  /*getId={() => String(Date.now())}*/ options={{
-                    title: '',
-                    // headerShown: false,
-                    headerBackButtonDisplayMode: 'minimal',
-                    headerBackTitle: '',
-                    headerTransparent: true,
-                  }}
-                />
+                  <Stack.Screen
+                    name="lesson/[id]"
+                    /*getId={() => String(Date.now())}*/ options={{
+                      title: '',
+                      // headerShown: false,
+                      headerBackButtonDisplayMode: 'minimal',
+                      headerBackTitle: '',
+                      headerTransparent: true,
+                    }}
+                  />
 
-                <Stack.Screen
-                  name="word/[id]"
-                  /*getId={() => String(Date.now())}*/ options={{
-                    title: '',
-                    headerBackButtonDisplayMode: 'minimal',
-                    headerBackTitle: '',
-                    headerTransparent: true,
-                  }}
-                />
-                <Stack.Screen name="modal" options={{ presentation: 'modal' }} />
-                <Stack.Screen
-                  name="terms-and-conditions"
-                  options={{
-                    title: i18n._(msg`Terms and Conditions`),
-                    headerBackButtonDisplayMode: 'minimal',
-                    headerTransparent: true,
-                  }}
-                />
-                <Stack.Screen
-                  name="privacy-policy"
-                  options={{
-                    title: i18n._(msg`Privacy Policy`),
-                    headerBackButtonDisplayMode: 'minimal',
-                    headerTransparent: true,
-                  }}
-                />
-              </Stack>
-              <Toaster />
-            </GestureHandlerRootView>
-          </I18nProvider>
-        </ThemeProvider>
-      </QueryClientProvider>
+                  <Stack.Screen
+                    name="word/[id]"
+                    /*getId={() => String(Date.now())}*/ options={{
+                      title: '',
+                      headerBackButtonDisplayMode: 'minimal',
+                      headerBackTitle: '',
+                      headerTransparent: true,
+                    }}
+                  />
+                  <Stack.Screen name="modal" options={{ presentation: 'modal' }} />
+                  <Stack.Screen
+                    name="terms-and-conditions"
+                    options={{
+                      title: i18n._(msg`Terms and Conditions`),
+                      headerBackButtonDisplayMode: 'minimal',
+                      headerTransparent: true,
+                    }}
+                  />
+                  <Stack.Screen
+                    name="privacy-policy"
+                    options={{
+                      title: i18n._(msg`Privacy Policy`),
+                      headerBackButtonDisplayMode: 'minimal',
+                      headerTransparent: true,
+                    }}
+                  />
+                </Stack>
+                <Toaster />
+              </GestureHandlerRootView>
+            </I18nProvider>
+          </ThemeProvider>
+        </QueryClientProvider>
+      </SafeAreaListener>
     </SafeAreaProvider>
   )
 }

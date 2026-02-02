@@ -9,12 +9,12 @@
 
 ## Project Overview
 
-This is an Expo 54 React Native project using Expo Router v6, NativeWind for styling, Lingui for internationalization, Phosphor React Native for icons, and Supabase for backend. The project follows modern React Native best practices with TypeScript, ESLint, and Prettier.
+This is an Expo 54 React Native project using Expo Router v6, Uniwind for styling, Lingui for internationalization, Phosphor React Native for icons, and Supabase for backend. The project follows modern React Native best practices with TypeScript, ESLint, and Prettier.
 
 ## Tech Stack & Dependencies
 
 - **Framework**: Expo 54 with Expo Router v6
-- **Styling**: NativeWind (Tailwind CSS for React Native)
+- **Styling**: Uniwind (Tailwind CSS v4 for React Native)
 - **Internationalization**: Lingui (migrate from i18next)
 - **Icons**: Phosphor React Native v3.0.0
 - **Backend**: Supabase
@@ -87,26 +87,26 @@ import { Link } from 'expo-router'
 - Implement proper loading states and error boundaries
 - Use `useFocusEffect` for screen-specific logic
 
-## NativeWind Styling Guidelines
+## Uniwind Styling Guidelines
 
 ### Setup & Configuration
 
-- Use NativeWind v4+ with Tailwind CSS v3+
-- Configure `tailwind.config.js` for React Native
+- Use Uniwind with Tailwind CSS v4
+- Configure theme in `global.css` using `@theme` directive
 - Use `className` prop for styling
 - Prefer utility classes over custom styles
 
 ### Styling Patterns
 
 ```typescript
-// Good: Use NativeWind classes
+// Good: Use Uniwind classes
 <View className="flex-1 bg-white p-4">
   <Text className="text-lg font-bold text-gray-900">
     Hello World
   </Text>
 </View>
 
-// Avoid: Inline styles when NativeWind classes exist
+// Avoid: Inline styles when Uniwind classes exist
 <View style={{ flex: 1, backgroundColor: 'white', padding: 16 }}>
 ```
 
@@ -447,7 +447,7 @@ interface Environment {
 
 ### Anti-patterns to Avoid
 
-- Don't use inline styles when NativeWind classes exist
+- Don't use inline styles when Uniwind classes exist
 - Don't use `any` types in TypeScript
 - Don't ignore accessibility requirements
 - Don't commit sensitive data
@@ -459,7 +459,7 @@ interface Environment {
 ### Resources
 
 - [Expo Router Documentation](https://expo.github.io/router/)
-- [NativeWind Documentation](https://www.nativewind.dev/)
+- [Uniwind Documentation](https://docs.uniwind.dev/)
 - [Lingui Documentation](https://lingui.dev/)
 - [Phosphor Icons](https://phosphoricons.com/)
 - [Supabase Documentation](https://supabase.com/docs)
