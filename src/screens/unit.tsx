@@ -42,10 +42,10 @@ const UnitScreen = () => {
     return (
       <View flex safeArea="top" className="bg-grey dark:bg-gray-900">
         <View className="flex-1 items-center justify-center px-4">
-          <Text variant="h6" className="text-center text-primary">
+          <Text variant="h6" className="text-primary text-center">
             {t`Unit not found`}
           </Text>
-          <Text variant="caption" className="mt-2 text-center text-text-grey dark:text-gray-400">
+          <Text variant="caption" className="text-text-grey mt-2 text-center dark:text-gray-400">
             {unitError?.message || t`This unit does not exist`}
           </Text>
         </View>
@@ -67,10 +67,10 @@ const UnitScreen = () => {
     return (
       <View flex safeArea="top" className="bg-grey dark:bg-gray-900">
         <View className="flex-1 items-center justify-center px-4">
-          <Text variant="h6" className="text-center text-primary">
+          <Text variant="h6" className="text-primary text-center">
             {statusMessage}
           </Text>
-          <Text variant="caption" className="mt-2 text-center text-text-grey dark:text-gray-400">
+          <Text variant="caption" className="text-text-grey mt-2 text-center dark:text-gray-400">
             {t`Please check back later`}
           </Text>
         </View>
@@ -110,10 +110,10 @@ const UnitScreen = () => {
           ) : lessonsError ? (
             <Card className="p-4">
               <View className="items-center">
-                <Text variant="h6" className="text-center text-primary">
+                <Text variant="h6" className="text-primary text-center">
                   {t`Lessons temporarily unavailable`}
                 </Text>
-                <Text variant="caption" className="mt-2 text-center text-text-grey dark:text-gray-400">
+                <Text variant="caption" className="text-text-grey mt-2 text-center dark:text-gray-400">
                   {t`Please check your connection and try again`}
                 </Text>
               </View>
@@ -127,10 +127,10 @@ const UnitScreen = () => {
           ) : (
             <Card className="p-4">
               <View className="items-center">
-                <Text variant="h6" className="text-center text-primary">
+                <Text variant="h6" className="text-primary text-center">
                   {t`No lessons available`}
                 </Text>
-                <Text variant="caption" className="mt-2 text-center text-text-grey dark:text-gray-400">
+                <Text variant="caption" className="text-text-grey mt-2 text-center dark:text-gray-400">
                   {t`Lessons will be added soon`}
                 </Text>
               </View>
@@ -166,7 +166,7 @@ const LessonItem = ({ lesson }: LessonItemProps) => {
       <View className="bg-grey flex-row items-center rounded-lg p-3 opacity-50">
         <LockIcon size={20} className="text-text-grey dark:text-gray-400" />
         <View className="ml-3 flex-1">
-          <Text variant="body" className="mb-1 text-text-grey dark:text-gray-400">
+          <Text variant="body" className="text-text-grey mb-1 dark:text-gray-400">
             {lessonTitle}
           </Text>
           <Text variant="caption" className="text-text-grey dark:text-gray-400">
@@ -189,13 +189,13 @@ const LessonItem = ({ lesson }: LessonItemProps) => {
           {lesson.is_completed ? (
             <CheckCircleIcon size={20} className="text-success" />
           ) : (
-            <View className="h-5 w-5 rounded-full border-2 border-primary" />
+            <View className="border-primary h-5 w-5 rounded-full border-2" />
           )}
           <View className="ml-3 flex-1">
             <Text
               variant="body"
               weight={lesson.is_completed ? 'medium' : 'regular'}
-              className="mb-1 text-text-dark dark:text-gray-100"
+              className="text-text-dark mb-1 dark:text-gray-100"
             >
               {lessonTitle}
             </Text>

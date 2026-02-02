@@ -26,9 +26,9 @@ const SearchResultsScreen: React.FC = () => {
 
   if (isLoading) {
     return (
-      <View flex className="items-center justify-center bg-bg-grey dark:bg-gray-900">
+      <View flex className="bg-bg-grey items-center justify-center dark:bg-gray-900">
         <ActivityIndicator size="large" className="text-primary" />
-        <Text variant="body" className="mt-4 text-text-grey dark:text-gray-400">
+        <Text variant="body" className="text-text-grey mt-4 dark:text-gray-400">
           {t`Searching...`}
         </Text>
       </View>
@@ -37,11 +37,11 @@ const SearchResultsScreen: React.FC = () => {
 
   if (error) {
     return (
-      <View flex className="items-center justify-center bg-bg-grey px-4 dark:bg-gray-900">
+      <View flex className="bg-bg-grey items-center justify-center px-4 dark:bg-gray-900">
         <Text variant="h6" className="text-center text-red-500">
           {t`Error loading results`}
         </Text>
-        <Text variant="body" className="mt-2 text-center text-text-grey dark:text-gray-400">
+        <Text variant="body" className="text-text-grey mt-2 text-center dark:text-gray-400">
           {t`Please try again later`}
         </Text>
       </View>
@@ -50,11 +50,11 @@ const SearchResultsScreen: React.FC = () => {
 
   if (!searchResults || searchResults.length === 0) {
     return (
-      <View flex className="items-center justify-center bg-bg-grey px-4 dark:bg-gray-900">
-        <Text variant="h6" className="text-center text-text-dark dark:text-gray-100">
+      <View flex className="bg-bg-grey items-center justify-center px-4 dark:bg-gray-900">
+        <Text variant="h6" className="text-text-dark text-center dark:text-gray-100">
           {t`No results found`}
         </Text>
-        <Text variant="body" className="mt-2 text-center text-text-grey dark:text-gray-400">
+        <Text variant="body" className="text-text-grey mt-2 text-center dark:text-gray-400">
           {t`Try searching with different keywords`}
         </Text>
       </View>
@@ -63,14 +63,14 @@ const SearchResultsScreen: React.FC = () => {
 
   return (
     <View flex className="bg-bg-grey dark:bg-gray-900">
-      <View className="mb-2.5 mt-4 px-2.5">
+      <View className="mt-4 mb-2.5 px-2.5">
         <Text variant="h5" weight="semibold">
           {t`Search Results`}
         </Text>
-        <Text variant="caption" className="mt-1 text-text-grey dark:text-gray-400">
+        <Text variant="caption" className="text-text-grey mt-1 dark:text-gray-400">
           {getSearchModeLabel()}
         </Text>
-        <Text variant="body" className="mt-1 text-text-dark dark:text-gray-200">
+        <Text variant="body" className="text-text-dark mt-1 dark:text-gray-200">
           {t`${searchResults.length} ${searchResults.length === 1 ? 'result' : 'results'} for "${query}"`}
         </Text>
       </View>
@@ -83,7 +83,7 @@ const SearchResultsScreen: React.FC = () => {
             <TouchableOpacity>
               <Card className="mb-4 p-4">
                 <View className="mb-1 flex-row items-center justify-between">
-                  <Text variant="h6" weight="bold" className="flex-1 text-primary">
+                  <Text variant="h6" weight="bold" className="text-primary flex-1">
                     {item.headword}
                   </Text>
                   <View className="rounded-full bg-gray-200 px-2 py-1 dark:bg-gray-700">
@@ -96,11 +96,11 @@ const SearchResultsScreen: React.FC = () => {
                     </Text>
                   </View>
                 </View>
-                <Text variant="body" className="mt-1 text-text-dark dark:text-gray-200">
+                <Text variant="body" className="text-text-dark mt-1 dark:text-gray-200">
                   {item.match_text}
                 </Text>
                 {item.entry_data.grammaticalInfo && (
-                  <Text variant="caption" className="mt-1 italic text-text-grey dark:text-gray-400">
+                  <Text variant="caption" className="text-text-grey mt-1 italic dark:text-gray-400">
                     {item.entry_data.grammaticalInfo}
                   </Text>
                 )}

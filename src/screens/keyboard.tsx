@@ -122,10 +122,10 @@ export default function KeyboardScreen() {
     <View flex className="bg-white dark:bg-gray-900">
       <View className="px-2.5">
         <ScreenTitle title={t`Keyboard`} />
-        <Text variant="body" className="mb-2 text-text-dark dark:text-gray-100">
+        <Text variant="body" className="text-text-dark mb-2 dark:text-gray-100">
           {t`Use this keyboard to write in Kabiyè.`}
         </Text>
-        <Text variant="body" className="mb-2 text-text-dark dark:text-gray-100">
+        <Text variant="body" className="text-text-dark mb-2 dark:text-gray-100">
           {t`The`} <ArrowFatLineUpIcon weight="regular" size={16} />{' '}
           {t`key allows you to capitalize. Long press to lock CAPS mode.`}
         </Text>
@@ -136,12 +136,12 @@ export default function KeyboardScreen() {
             value={content}
             editable={false}
             multiline
-            className="max-h-[120px] min-h-[120px] w-full rounded-lg border border-primary bg-white p-2.5 text-base text-gray-900 dark:border-primary dark:bg-gray-800 dark:text-gray-100"
+            className="border-primary dark:border-primary max-h-[120px] min-h-[120px] w-full rounded-lg border bg-white p-2.5 text-base text-gray-900 dark:bg-gray-800 dark:text-gray-100"
             placeholder="Type here..."
             placeholderTextColor="#9CA3AF"
           />
         </View>
-        <View className="mb-2.5 mt-5 flex-row flex-wrap justify-center gap-1.5">
+        <View className="mt-5 mb-2.5 flex-row flex-wrap justify-center gap-1.5">
           <Button
             variant="outline"
             size="sm"

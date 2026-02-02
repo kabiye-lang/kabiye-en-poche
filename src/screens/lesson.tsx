@@ -153,10 +153,10 @@ const LessonScreen = () => {
   if (lessonError || !lesson) {
     return (
       <View className="flex-1 items-center justify-center bg-white px-4 dark:bg-gray-900">
-        <Text variant="h6" className="text-center text-primary">
+        <Text variant="h6" className="text-primary text-center">
           {t`Failed to load lesson`}
         </Text>
-        <Text variant="caption" className="mt-2 text-center text-text-grey dark:text-gray-400">
+        <Text variant="caption" className="text-text-grey mt-2 text-center dark:text-gray-400">
           {lessonError?.message || t`Lesson not found`}
         </Text>
       </View>
@@ -167,7 +167,7 @@ const LessonScreen = () => {
   if (steps.length === 0) {
     return (
       <View className="flex-1 items-center justify-center bg-white px-4 dark:bg-gray-900">
-        <Text variant="h6" className="text-center text-primary">
+        <Text variant="h6" className="text-primary text-center">
           {t`Lesson content will be available soon.`}
         </Text>
       </View>

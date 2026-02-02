@@ -62,10 +62,10 @@ export default function AlphabetLetterScreen() {
     return (
       <View flex className="bg-white dark:bg-gray-900">
         <View className="flex-1 items-center justify-center px-4">
-          <Text variant="h6" className="text-center text-primary">
+          <Text variant="h6" className="text-primary text-center">
             {t`Letter not found`}
           </Text>
-          <Text variant="caption" className="mt-2 text-center text-text-grey dark:text-gray-400">
+          <Text variant="caption" className="text-text-grey mt-2 text-center dark:text-gray-400">
             {error?.message || t`This letter does not exist`}
           </Text>
         </View>
@@ -79,7 +79,7 @@ export default function AlphabetLetterScreen() {
   return (
     <View flex className="bg-white dark:bg-gray-900" style={{ paddingBottom: 70 + safeAreaInsets.top }}>
       <Animated.View
-        className="absolute left-0 top-0 z-10 w-full border-b border-gray-200 bg-white dark:border-gray-700 dark:bg-gray-900"
+        className="absolute top-0 left-0 z-10 w-full border-b border-gray-200 bg-white dark:border-gray-700 dark:bg-gray-900"
         style={[animatedHeaderStyle]}
       >
         <View style={{ height: safeAreaInsets.top }} />
@@ -99,7 +99,7 @@ export default function AlphabetLetterScreen() {
       </Animated.View>
       <Animated.ScrollView onScroll={scrollHandler} scrollEventThrottle={16}>
         <View center className="h-[200px]" style={{ paddingTop: safeAreaInsets.top }}>
-          <Text variant="h1" weight="bold" className="mb-2.5 text-text-dark dark:text-gray-100">
+          <Text variant="h1" weight="bold" className="text-text-dark mb-2.5 dark:text-gray-100">
             {letter.id} - {letter.id.toUpperCase()}
           </Text>
           <Card

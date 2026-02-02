@@ -71,7 +71,7 @@ const AudioStep = ({ audioType, audioUrl, conversation, transcript, onContinue }
                 <SpeakerSlashIcon size={48} color="white" weight="fill" />
               )}
             </TouchableOpacity>
-            <Text variant="h6" className="mt-4 text-center text-text-dark dark:text-gray-100">
+            <Text variant="h6" className="text-text-dark mt-4 text-center dark:text-gray-100">
               {!audioUrl
                 ? t`No audio available`
                 : isLoading
@@ -86,14 +86,14 @@ const AudioStep = ({ audioType, audioUrl, conversation, transcript, onContinue }
         {/* Conversation */}
         {audioType === 'conversation' && conversation && (
           <View className="py-4">
-            <Text variant="h5" weight="semibold" className="mb-4 text-primary">
+            <Text variant="h5" weight="semibold" className="text-primary mb-4">
               {t`Conversation`}
             </Text>
             {conversation.map((line, index) => (
               <Card key={index} className={`mb-3 ${index % 2 === 0 ? 'mr-12' : 'ml-12'} p-4`}>
                 <View className="flex-row items-center justify-between">
                   <View className="flex-1">
-                    <Text variant="caption" weight="bold" className="mb-1 text-primary">
+                    <Text variant="caption" weight="bold" className="text-primary mb-1">
                       {line.speaker}
                     </Text>
                     <Text variant="body" className="text-text-dark dark:text-gray-100">
@@ -121,7 +121,7 @@ const AudioStep = ({ audioType, audioUrl, conversation, transcript, onContinue }
         {/* Transcript */}
         {transcript && (
           <Card className="mb-4 p-4">
-            <Text variant="caption" weight="bold" className="mb-2 text-text-grey dark:text-gray-400">
+            <Text variant="caption" weight="bold" className="text-text-grey mb-2 dark:text-gray-400">
               {t`Transcript`}
             </Text>
             <Text variant="body" className="text-text-dark dark:text-gray-100">
@@ -133,7 +133,7 @@ const AudioStep = ({ audioType, audioUrl, conversation, transcript, onContinue }
         {/* Placeholder if no audio */}
         {!audioUrl && (!conversation || conversation.length === 0) && (
           <Card className="p-6">
-            <Text variant="body" className="text-center text-text-grey dark:text-gray-400">
+            <Text variant="body" className="text-text-grey text-center dark:text-gray-400">
               {t`Audio content will be available soon.`}
             </Text>
           </Card>

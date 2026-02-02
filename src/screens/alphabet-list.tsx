@@ -29,10 +29,10 @@ export default function AlphabetListScreen() {
     return (
       <View flex className="bg-white dark:bg-gray-900">
         <View className="flex-1 items-center justify-center px-4">
-          <Text variant="h6" className="text-center text-primary">
+          <Text variant="h6" className="text-primary text-center">
             {t`Error loading alphabet`}
           </Text>
-          <Text variant="caption" className="mt-2 text-center text-text-grey dark:text-gray-400">
+          <Text variant="caption" className="text-text-grey mt-2 text-center dark:text-gray-400">
             {error.message}
           </Text>
         </View>

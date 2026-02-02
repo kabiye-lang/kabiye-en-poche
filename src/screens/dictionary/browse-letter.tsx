@@ -23,9 +23,9 @@ const BrowseByLetterScreen: React.FC = () => {
 
   if (isLoading) {
     return (
-      <View flex className="items-center justify-center bg-bg-grey dark:bg-gray-900">
+      <View flex className="bg-bg-grey items-center justify-center dark:bg-gray-900">
         <ActivityIndicator size="large" className="text-primary" />
-        <Text variant="body" className="mt-4 text-text-grey dark:text-gray-400">
+        <Text variant="body" className="text-text-grey mt-4 dark:text-gray-400">
           {t`Loading entries...`}
         </Text>
       </View>
@@ -34,11 +34,11 @@ const BrowseByLetterScreen: React.FC = () => {
 
   if (error) {
     return (
-      <View flex className="items-center justify-center bg-bg-grey px-4 dark:bg-gray-900">
+      <View flex className="bg-bg-grey items-center justify-center px-4 dark:bg-gray-900">
         <Text variant="h6" className="text-center text-red-500">
           {t`Error loading entries`}
         </Text>
-        <Text variant="body" className="mt-2 text-center text-text-grey dark:text-gray-400">
+        <Text variant="body" className="text-text-grey mt-2 text-center dark:text-gray-400">
           {t`Please try again later`}
         </Text>
       </View>
@@ -47,11 +47,11 @@ const BrowseByLetterScreen: React.FC = () => {
 
   if (entries.length === 0) {
     return (
-      <View flex className="items-center justify-center bg-bg-grey px-4 dark:bg-gray-900">
-        <Text variant="h6" className="text-center text-text-dark dark:text-gray-100">
+      <View flex className="bg-bg-grey items-center justify-center px-4 dark:bg-gray-900">
+        <Text variant="h6" className="text-text-dark text-center dark:text-gray-100">
           {t`No entries found`}
         </Text>
-        <Text variant="body" className="mt-2 text-center text-text-grey dark:text-gray-400">
+        <Text variant="body" className="text-text-grey mt-2 text-center dark:text-gray-400">
           {t`No words start with this letter`}
         </Text>
       </View>
@@ -73,7 +73,7 @@ const BrowseByLetterScreen: React.FC = () => {
             <Text variant="h5" weight="semibold">
               {t`Letter "${letter}"`}
             </Text>
-            <Text variant="body" className="mt-1 text-text-grey dark:text-gray-400">
+            <Text variant="body" className="text-text-grey mt-1 dark:text-gray-400">
               {t`${entries.length}${hasNextPage ? '+' : ''} ${entries.length === 1 ? 'entry' : 'entries'}`}
             </Text>
           </View>
@@ -91,25 +91,25 @@ const BrowseByLetterScreen: React.FC = () => {
                   </Text>
 
                   {entry.pronunciations?.[0] && (
-                    <Text variant="caption" className="mt-1 text-text-grey dark:text-gray-400">
+                    <Text variant="caption" className="text-text-grey mt-1 dark:text-gray-400">
                       [{entry.pronunciations[0]}]
                     </Text>
                   )}
 
                   {entry.grammaticalInfo && (
-                    <Text variant="caption" className="mt-1 italic text-text-grey dark:text-gray-400">
+                    <Text variant="caption" className="text-text-grey mt-1 italic dark:text-gray-400">
                       {entry.grammaticalInfo}
                     </Text>
                   )}
 
                   {firstDefinition && (
-                    <Text variant="body" className="mt-2 text-text-dark dark:text-gray-200">
+                    <Text variant="body" className="text-text-dark mt-2 dark:text-gray-200">
                       {firstDefinition.translations[translation]}
                     </Text>
                   )}
 
                   {entry.subEntries && entry.subEntries.length > 0 && (
-                    <Text variant="caption" className="mt-2 text-text-grey dark:text-gray-400">
+                    <Text variant="caption" className="text-text-grey mt-2 dark:text-gray-400">
                       {t`+${entry.subEntries.length} ${entry.subEntries.length === 1 ? 'expression' : 'expressions'}`}
                     </Text>
                   )}

@@ -27,10 +27,10 @@ export default function TermsAndConditionsScreen() {
     return (
       <View className="flex-1 bg-white dark:bg-gray-900" safeArea="vertical">
         <View className="flex-1 items-center justify-center px-4">
-          <Text variant="h6" className="text-center text-primary">
+          <Text variant="h6" className="text-primary text-center">
             {t`Terms not found`}
           </Text>
-          <Text variant="caption" className="mt-2 text-center text-text-grey dark:text-gray-400">
+          <Text variant="caption" className="text-text-grey mt-2 text-center dark:text-gray-400">
             {error?.message || t`Terms and conditions are not available`}
           </Text>
         </View>

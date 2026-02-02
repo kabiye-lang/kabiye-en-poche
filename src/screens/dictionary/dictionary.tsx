@@ -98,13 +98,13 @@ const DictionaryScreen: React.FC = () => {
         </View>
 
         {/* Helper Text */}
-        <Text variant="caption" className="mb-2 text-text-grey dark:text-gray-400">
+        <Text variant="caption" className="text-text-grey mb-2 dark:text-gray-400">
           {getHelperText()}
         </Text>
 
         {/* Search Bar */}
         <View className="flex-row items-center rounded-lg border border-gray-300 bg-white px-3 py-2 dark:border-gray-600 dark:bg-gray-800">
-          <MagnifyingGlassIcon size={24} className="mr-2.5 text-text-grey dark:text-gray-400" />
+          <MagnifyingGlassIcon size={24} className="text-text-grey mr-2.5 dark:text-gray-400" />
           <TextInput
             value={searchQuery}
             onChangeText={setSearchQuery}
@@ -126,7 +126,7 @@ const DictionaryScreen: React.FC = () => {
                   <Text variant="body" weight="semibold" className="text-gray-900 dark:text-gray-100">
                     {result.headword}
                   </Text>
-                  <Text variant="caption" className="mt-0.5 text-text-grey dark:text-gray-400">
+                  <Text variant="caption" className="text-text-grey mt-0.5 dark:text-gray-400">
                     {result.match_text}
                   </Text>
                 </TouchableOpacity>
@@ -134,7 +134,7 @@ const DictionaryScreen: React.FC = () => {
             ))}
             {searchResults.length > 5 && (
               <TouchableOpacity onPress={handleSearch} className="px-4 py-2">
-                <Text variant="caption" className="text-center text-primary">
+                <Text variant="caption" className="text-primary text-center">
                   {t`See all ${searchResults.length} results`}
                 </Text>
               </TouchableOpacity>
@@ -147,7 +147,7 @@ const DictionaryScreen: React.FC = () => {
         {/* Word of the Day */}
         <View className="mt-2.5 px-2.5">
           <View className="mb-2.5 flex-row items-center">
-            <SparkleIcon size={20} weight="duotone" className="mr-1.5 text-primary" />
+            <SparkleIcon size={20} weight="duotone" className="text-primary mr-1.5" />
             <Text variant="h5" weight="semibold">
               {t`Word of the Day`}
             </Text>
@@ -163,12 +163,12 @@ const DictionaryScreen: React.FC = () => {
                       {entry.entry_data.headword}
                     </Text>
                     {entry.entry_data.pronunciations?.[0] && (
-                      <Text variant="caption" className="mt-1 text-text-grey dark:text-gray-400">
+                      <Text variant="caption" className="text-text-grey mt-1 dark:text-gray-400">
                         [{entry.entry_data.pronunciations[0]}]
                       </Text>
                     )}
                     {entry.entry_data.senses[0]?.definitions[0] && (
-                      <Text variant="body" className="mt-2 text-text-dark dark:text-gray-200">
+                      <Text variant="body" className="text-text-dark mt-2 dark:text-gray-200">
                         {currentLanguage === 'fr'
                           ? entry.entry_data.senses[0].definitions[0].translations.fr
                           : entry.entry_data.senses[0].definitions[0].translations.en}

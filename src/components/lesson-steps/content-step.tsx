@@ -64,9 +64,9 @@ const ContentStep = ({
       <ScrollView className="flex-1 px-6" showsVerticalScrollIndicator={false}>
         {/* Lesson Header */}
         {(lessonTitle || difficulty) && (
-          <View className="mb-6 mt-4">
+          <View className="mt-4 mb-6">
             {title && (
-              <Text variant="h3" weight="bold" className="mb-2 text-primary">
+              <Text variant="h3" weight="bold" className="text-primary mb-2">
                 {lessonTitle}
               </Text>
             )}
@@ -84,10 +84,10 @@ const ContentStep = ({
 
         {/* Main Content */}
         <Card className="mb-4 p-6">
-          <Text variant="h6" weight="bold" className="mb-4 text-text-dark dark:text-gray-100">
+          <Text variant="h6" weight="bold" className="text-text-dark mb-4 dark:text-gray-100">
             {title}
           </Text>
-          <Text variant="lg" className="leading-7 text-text-dark dark:text-gray-100">
+          <Text variant="lg" className="text-text-dark leading-7 dark:text-gray-100">
             {content}
           </Text>
         </Card>
@@ -95,10 +95,10 @@ const ContentStep = ({
         {/* Examples */}
         {examples && examples.length > 0 && (
           <View className="mb-6">
-            <Text variant="h5" weight="semibold" className="mb-3 text-primary">
+            <Text variant="h5" weight="semibold" className="text-primary mb-3">
               {t`Examples`}
             </Text>
-            <Text variant="caption" className="mb-2 text-text-grey dark:text-gray-400">
+            <Text variant="caption" className="text-text-grey mb-2 dark:text-gray-400">
               {t`Tap the speaker icon to hear pronunciation`}
             </Text>
             {examples.map((example, index) => {
@@ -115,16 +115,16 @@ const ContentStep = ({
                       }
                     : {})}
                 >
-                  <Card className="mb-3 flex-row items-center bg-bg-grey p-4 dark:bg-gray-700">
+                  <Card className="bg-bg-grey mb-3 flex-row items-center p-4 dark:bg-gray-700">
                     <View className="flex-1">
                       <Text variant="h6" weight="bold" className="text-primary">
                         {example.kbp}
                       </Text>
-                      <Text variant="body" className="mt-1 text-text-grey dark:text-gray-400">
+                      <Text variant="body" className="text-text-grey mt-1 dark:text-gray-400">
                         {example.en}
                       </Text>
                       {example.pronunciation && (
-                        <Text variant="caption" className="mt-1 italic text-text-grey dark:text-gray-500">
+                        <Text variant="caption" className="text-text-grey mt-1 italic dark:text-gray-500">
                           [{example.pronunciation}]
                         </Text>
                       )}

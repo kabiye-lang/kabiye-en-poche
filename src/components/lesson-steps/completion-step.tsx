@@ -45,7 +45,7 @@ const CompletionStep = ({ score = 0, totalQuestions = 0, onComplete }: Completio
       </View>
 
       {/* Title */}
-      <Text variant="h1" weight="bold" className="mb-2 text-center text-primary">
+      <Text variant="h1" weight="bold" className="text-primary mb-2 text-center">
         {t`Lesson Complete!`}
       </Text>
 
@@ -58,13 +58,13 @@ const CompletionStep = ({ score = 0, totalQuestions = 0, onComplete }: Completio
       {totalQuestions > 0 && (
         <Card className="mb-8 w-full p-6">
           <View className="items-center">
-            <Text variant="caption" className="mb-2 text-text-grey dark:text-gray-400">
+            <Text variant="caption" className="text-text-grey mb-2 dark:text-gray-400">
               {t`Your Score`}
             </Text>
             <Text variant="h1" weight="bold" className={getColor()}>
               {percentage}%
             </Text>
-            <Text variant="caption" className="mt-2 text-text-grey dark:text-gray-400">
+            <Text variant="caption" className="text-text-grey mt-2 dark:text-gray-400">
               {score} {t`out of`} {totalQuestions} {t`correct`}
             </Text>
           </View>
@@ -82,7 +82,7 @@ const CompletionStep = ({ score = 0, totalQuestions = 0, onComplete }: Completio
         <TouchableOpacity onPress={() => router.push('/learn')} className="w-full">
           <View className="flex-row items-center justify-center py-3">
             <HouseIcon size={20} className="text-primary" />
-            <Text variant="body" className="ml-2 text-primary">
+            <Text variant="body" className="text-primary ml-2">
               {t`Back to Learn`}
             </Text>
           </View>

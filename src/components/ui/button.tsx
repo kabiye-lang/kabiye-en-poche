@@ -17,7 +17,7 @@ const buttonVariants = tv({
       secondary: 'bg-secondary active:bg-secondary/90',
       accent: 'bg-accent active:bg-accent/90',
       outline:
-        'border-2 border-primary bg-transparent active:bg-primary/10 dark:border-primary dark:active:bg-primary/20',
+        'border-primary active:bg-primary/10 dark:border-primary dark:active:bg-primary/20 border-2 bg-transparent',
       ghost: 'bg-transparent active:bg-gray-100 dark:active:bg-gray-800',
       link: 'bg-transparent active:bg-transparent',
     },

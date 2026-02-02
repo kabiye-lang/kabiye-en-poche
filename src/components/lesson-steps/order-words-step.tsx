@@ -67,12 +67,12 @@ const OrderWordsStep = ({ activity, onAnswer }: OrderWordsStepProps) => {
       <ScrollView className="flex-1 px-6" showsVerticalScrollIndicator={false}>
         {/* Question */}
         <Card className="mb-6 p-6">
-          <Text variant="h5" weight="semibold" className="text-center text-text-dark dark:text-gray-100">
+          <Text variant="h5" weight="semibold" className="text-text-dark text-center dark:text-gray-100">
             {question}
           </Text>
         </Card>
 
-        <Text variant="body" className="mb-4 text-center text-text-grey dark:text-gray-400">
+        <Text variant="body" className="text-text-grey mb-4 text-center dark:text-gray-400">
           {instructions || t`Tap words in the correct order`}
         </Text>
 
@@ -80,7 +80,7 @@ const OrderWordsStep = ({ activity, onAnswer }: OrderWordsStepProps) => {
         <Card className="mb-4 min-h-[100px] p-4">
           <View className="flex-row flex-wrap gap-2">
             {orderedWords.length === 0 ? (
-              <Text variant="body" className="w-full text-center text-text-grey dark:text-gray-400">
+              <Text variant="body" className="text-text-grey w-full text-center dark:text-gray-400">
                 {t`Your answer will appear here`}
               </Text>
             ) : (
@@ -89,7 +89,7 @@ const OrderWordsStep = ({ activity, onAnswer }: OrderWordsStepProps) => {
                   key={`ordered-${index}`}
                   onPress={() => !showFeedback && handleRemoveWord(word, index)}
                   disabled={showFeedback}
-                  className="rounded-lg border-2 border-primary bg-primary/10 px-4 py-2"
+                  className="border-primary bg-primary/10 rounded-lg border-2 px-4 py-2"
                 >
                   <Text variant="body" weight="bold" className="text-primary">
                     {word}
@@ -103,7 +103,7 @@ const OrderWordsStep = ({ activity, onAnswer }: OrderWordsStepProps) => {
         {/* Available Words */}
         {availableWords.length > 0 && (
           <View className="mb-4">
-            <Text variant="caption" weight="bold" className="mb-2 text-text-grey dark:text-gray-400">
+            <Text variant="caption" weight="bold" className="text-text-grey mb-2 dark:text-gray-400">
               {t`Available words:`}
             </Text>
             <View className="flex-row flex-wrap gap-2">
@@ -127,7 +127,7 @@ const OrderWordsStep = ({ activity, onAnswer }: OrderWordsStepProps) => {
         {!showFeedback && orderedWords.length > 0 && (
           <TouchableOpacity onPress={handleReset} className="mb-4 flex-row items-center justify-center">
             <ArrowsClockwiseIcon size={20} className="text-primary" />
-            <Text variant="body" className="ml-2 text-primary">
+            <Text variant="body" className="text-primary ml-2">
               {t`Reset`}
             </Text>
           </TouchableOpacity>
@@ -148,7 +148,7 @@ const OrderWordsStep = ({ activity, onAnswer }: OrderWordsStepProps) => {
               {isCorrect ? t`Perfect! Correct order! 🎉` : t`Not quite right. Try again!`}
             </Text>
             {!isCorrect && (
-              <Text variant="body" className="mt-2 text-center text-text-dark dark:text-gray-100">
+              <Text variant="body" className="text-text-dark mt-2 text-center dark:text-gray-100">
                 {t`Correct order:`} {correctOrder.join(' ')}
               </Text>
             )}

@@ -14,8 +14,8 @@ const cardVariants = tv({
   base: 'rounded-xl',
   variants: {
     variant: {
-      default: 'bg-white shadow-card dark:bg-gray-800 dark:shadow-none',
-      elevated: 'bg-white shadow-card-lg dark:bg-gray-800 dark:shadow-none',
+      default: 'shadow-card bg-white dark:bg-gray-800 dark:shadow-none',
+      elevated: 'shadow-card-lg bg-white dark:bg-gray-800 dark:shadow-none',
       outlined: 'border border-gray-200 bg-white dark:border-gray-700 dark:bg-gray-800',
       filled: 'bg-gray-50 dark:bg-gray-700',
     },

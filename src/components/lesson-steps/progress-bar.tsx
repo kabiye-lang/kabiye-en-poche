@@ -39,14 +39,14 @@ const ProgressBar = ({ currentStep, totalSteps, onClose }: ProgressBarProps) => 
         <View className="flex-1">
           <View className="h-3 overflow-hidden rounded-full bg-gray-200 dark:bg-gray-700">
             <View
-              className="h-full rounded-full bg-primary transition-all duration-300"
+              className="bg-primary h-full rounded-full transition-all duration-300"
               style={{ width: `${progress}%` }}
             />
           </View>
         </View>
 
         {/* Step Counter */}
-        <Text variant="caption" className="ml-3 text-text-grey dark:text-gray-400">
+        <Text variant="caption" className="text-text-grey ml-3 dark:text-gray-400">
           {currentStep}/{totalSteps}
         </Text>
       </View>

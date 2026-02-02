@@ -42,10 +42,10 @@ const LearnScreen = () => {
     return (
       <View flex safeArea="top" className="bg-grey dark:bg-gray-900">
         <View className="flex-1 items-center justify-center px-4">
-          <Text variant="h6" className="text-center text-primary">
+          <Text variant="h6" className="text-primary text-center">
             {t`Failed to load learning units`}
           </Text>
-          <Text variant="caption" className="mt-2 text-center text-text-grey dark:text-gray-400">
+          <Text variant="caption" className="text-text-grey mt-2 text-center dark:text-gray-400">
             {unitsError.message}
           </Text>
         </View>
@@ -111,7 +111,7 @@ const UnitCard = ({ unit, isExpanded, onToggle }: UnitCardProps) => {
               {unitTitle}
             </Text>
             {unitDescription && (
-              <Text variant="caption" className="mb-2 text-text-grey dark:text-gray-400">
+              <Text variant="caption" className="text-text-grey mb-2 dark:text-gray-400">
                 {unitDescription}
               </Text>
             )}
@@ -122,7 +122,7 @@ const UnitCard = ({ unit, isExpanded, onToggle }: UnitCardProps) => {
                 </Text>
                 <View className="bg-grey ml-2 h-1.5 w-16 rounded-full dark:bg-gray-600">
                   <View
-                    className="h-1.5 rounded-full bg-primary transition-all duration-300"
+                    className="bg-primary h-1.5 rounded-full transition-all duration-300"
                     style={{ width: totalLessons > 0 ? `${(completedLessons / totalLessons) * 100}%` : '0%' }}
                   />
                 </View>
@@ -163,7 +163,7 @@ const UnitCard = ({ unit, isExpanded, onToggle }: UnitCardProps) => {
               ))}
             </View>
           ) : (
-            <Text variant="body" className="py-4 text-center text-text-grey dark:text-gray-400">
+            <Text variant="body" className="text-text-grey py-4 text-center dark:text-gray-400">
               {t`No lessons available yet`}
             </Text>
           )}
@@ -197,7 +197,7 @@ const LessonItem = ({ lesson }: LessonItemProps) => {
       <View className="bg-grey flex-row items-center rounded-lg p-3 opacity-50 dark:bg-gray-700">
         <LockIcon size={20} className="text-text-grey dark:text-gray-400" />
         <View className="ml-3 flex-1">
-          <Text variant="body" className="mb-1 text-text-grey dark:text-gray-400">
+          <Text variant="body" className="text-text-grey mb-1 dark:text-gray-400">
             {lessonTitle}
           </Text>
           <Text variant="caption" className="text-text-grey dark:text-gray-400">
@@ -220,13 +220,13 @@ const LessonItem = ({ lesson }: LessonItemProps) => {
           {lesson.is_completed ? (
             <CheckCircleIcon size={20} className="text-success" />
           ) : (
-            <View className="h-5 w-5 rounded-full border-2 border-primary" />
+            <View className="border-primary h-5 w-5 rounded-full border-2" />
           )}
           <View className="ml-3 flex-1">
             <Text
               variant="body"
               weight={lesson.is_completed ? 'medium' : 'regular'}
-              className="mb-1 text-text-dark dark:text-gray-100"
+              className="text-text-dark mb-1 dark:text-gray-100"
             >
               {lessonTitle}
             </Text>

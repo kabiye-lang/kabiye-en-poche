@@ -130,14 +130,14 @@ const ProfileScreen = () => {
         <Card className="mb-8 p-4">
           <View className="mb-4 flex-row items-center">
             <UserIcon size={24} className="text-primary dark:text-gray-100" />
-            <Text variant="h5" weight="semibold" className="ml-2 text-text-dark dark:text-gray-100">
+            <Text variant="h5" weight="semibold" className="text-text-dark ml-2 dark:text-gray-100">
               {t`Progress Overview`}
             </Text>
           </View>
 
           {progressLoading ? (
             <View className="py-4">
-              <Text variant="body" className="text-center text-text-grey dark:text-gray-400">
+              <Text variant="body" className="text-text-grey text-center dark:text-gray-400">
                 {t`Loading progress...`}
               </Text>
             </View>
@@ -172,14 +172,14 @@ const ProfileScreen = () => {
                 </View>
                 <View className="bg-grey h-2 w-full rounded-full dark:bg-gray-600">
                   <View
-                    className="h-2 rounded-full bg-primary transition-all duration-300"
+                    className="bg-primary h-2 rounded-full transition-all duration-300"
                     style={{ width: `${progressSummary.progressPercentage}%` }}
                   />
                 </View>
               </View>
             </View>
           ) : (
-            <Text variant="body" className="py-4 text-center text-text-grey dark:text-gray-400">
+            <Text variant="body" className="text-text-grey py-4 text-center dark:text-gray-400">
               {t`No progress data available`}
             </Text>
           )}
@@ -190,7 +190,7 @@ const ProfileScreen = () => {
           <View key={'listItem-' + listItem.title} className="mb-5">
             <View className="mb-4 flex-row items-center">
               <BookOpenTextIcon size={24} className="text-primary dark:text-gray-100" />
-              <Text variant="h5" weight="semibold" className="ml-2 text-text-dark dark:text-gray-100">
+              <Text variant="h5" weight="semibold" className="text-text-dark ml-2 dark:text-gray-100">
                 {listItem.title}
               </Text>
             </View>
@@ -210,11 +210,11 @@ const ProfileScreen = () => {
                   <Card className="mb-4 min-h-[60px] flex-row items-center p-4">
                     {item.icon ? <View className="mr-2.5">{item.icon}</View> : null}
                     <View className="flex-1 flex-col">
-                      <Text variant="h6" weight="medium" className="ml-2.5 text-text-dark dark:text-gray-100">
+                      <Text variant="h6" weight="medium" className="text-text-dark ml-2.5 dark:text-gray-100">
                         {item.title}
                       </Text>
                       {item.description && (
-                        <Text variant="small" className="ml-2.5 text-text-grey dark:text-gray-400" numberOfLines={3}>
+                        <Text variant="small" className="text-text-grey ml-2.5 dark:text-gray-400" numberOfLines={3}>
                           {item.description}
                         </Text>
                       )}
@@ -233,7 +233,7 @@ const ProfileScreen = () => {
         <Card className="mb-5 p-4">
           <View className="mb-4 flex-row items-center">
             <GearIcon size={24} className="text-primary dark:text-gray-100" />
-            <Text variant="h5" weight="semibold" className="ml-2 text-text-dark dark:text-gray-100">
+            <Text variant="h5" weight="semibold" className="text-text-dark ml-2 dark:text-gray-100">
               {t`Settings`}
             </Text>
           </View>
@@ -247,13 +247,13 @@ const ProfileScreen = () => {
               <View className="flex-1 flex-row items-center">
                 <GlobeIcon size={20} className="text-primary dark:text-gray-100" />
                 <View className="ml-3 flex-1">
-                  <Text variant="body" weight="medium" className="mb-1 text-text-dark dark:text-gray-100">
+                  <Text variant="body" weight="medium" className="text-text-dark mb-1 dark:text-gray-100">
                     {t`App Language`}
                   </Text>
                   <Text variant="caption" className="text-text-grey dark:text-gray-400">
                     {t`Current`}: {i18n.locale === 'en' ? 'English' : 'Français'}
                   </Text>
-                  <Text variant="caption" className="mt-1 text-text-grey dark:text-gray-400">
+                  <Text variant="caption" className="text-text-grey mt-1 dark:text-gray-400">
                     {t`Change language in device settings`}
                   </Text>
                 </View>
@@ -269,7 +269,7 @@ const ProfileScreen = () => {
               <View className="flex-1 flex-row items-center">
                 <TrashIcon size={20} className="text-accent dark:text-gray-100" />
                 <View className="ml-3">
-                  <Text variant="body" weight="medium" className="mb-1 text-text-dark dark:text-gray-100">
+                  <Text variant="body" weight="medium" className="text-text-dark mb-1 dark:text-gray-100">
                     {t`Reset Progress`}
                   </Text>
                   <Text variant="caption" className="text-text-grey dark:text-gray-400">
@@ -283,10 +283,10 @@ const ProfileScreen = () => {
 
         {/* App Info */}
         <View className="mb-5 p-4">
-          <Text variant="caption" className="text-center text-text-grey dark:text-gray-400">
+          <Text variant="caption" className="text-text-grey text-center dark:text-gray-400">
             Version {Application.nativeApplicationVersion} ({Application.nativeBuildVersion})
           </Text>
-          <Text variant="caption" className="mt-1 text-center text-text-grey dark:text-gray-400">
+          <Text variant="caption" className="text-text-grey mt-1 text-center dark:text-gray-400">
             {t`Learn Kabiyè in a fun and interactive way`}
           </Text>
         </View>

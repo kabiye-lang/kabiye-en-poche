@@ -66,7 +66,7 @@ const QuizStep = ({ activity, onAnswer }: QuizStepProps) => {
 
         {/* Instructions */}
         {instructions && (
-          <Text variant="body" className="mb-4 text-center text-text-grey dark:text-gray-400">
+          <Text variant="body" className="text-text-grey mb-4 text-center dark:text-gray-400">
             {instructions}
           </Text>
         )}

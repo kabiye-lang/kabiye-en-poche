@@ -99,14 +99,14 @@ const FillBlankStep = ({ activity, onAnswer }: FillBlankStepProps) => {
       <ScrollView className="flex-1 px-6" showsVerticalScrollIndicator={false}>
         {/* Question Header */}
         <Card className="mb-6 p-6">
-          <Text variant="h5" weight="semibold" className="text-center text-text-dark dark:text-gray-100">
+          <Text variant="h5" weight="semibold" className="text-text-dark text-center dark:text-gray-100">
             {question}
           </Text>
         </Card>
 
         {/* Instructions */}
         {instructions && (
-          <Text variant="body" className="mb-4 text-center text-text-grey dark:text-gray-400">
+          <Text variant="body" className="text-text-grey mb-4 text-center dark:text-gray-400">
             {instructions}
           </Text>
         )}

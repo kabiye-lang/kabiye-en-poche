@@ -120,12 +120,12 @@ const MatchPairsStep = ({ activity, onAnswer }: MatchPairsStepProps) => {
       <ScrollView className="flex-1 px-6" showsVerticalScrollIndicator={false}>
         {/* Question */}
         <Card className="mb-6 p-6">
-          <Text variant="h5" weight="semibold" className="text-center text-text-dark dark:text-gray-100">
+          <Text variant="h5" weight="semibold" className="text-text-dark text-center dark:text-gray-100">
             {question}
           </Text>
         </Card>
 
-        <Text variant="body" className="mb-4 text-center text-text-grey dark:text-gray-400">
+        <Text variant="body" className="text-text-grey mb-4 text-center dark:text-gray-400">
           {instructions || t`Tap pairs to match them`}
         </Text>
 
@@ -176,7 +176,7 @@ const MatchPairsStep = ({ activity, onAnswer }: MatchPairsStepProps) => {
         </View>
 
         {/* Progress indicator */}
-        <Text variant="caption" className="mb-4 text-center text-text-grey dark:text-gray-400">
+        <Text variant="caption" className="text-text-grey mb-4 text-center dark:text-gray-400">
           {matched.size / 2} / {pairs.length} {t`matched`}
         </Text>
 
