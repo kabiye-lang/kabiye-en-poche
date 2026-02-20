@@ -1,15 +1,7 @@
 {
   "mcpServers": {
-    "supabase-kabiyeenpoche": {
-      "command": "npx",
-      "args": [
-        "-y",
-        "@supabase/mcp-server-supabase@latest",
-        "--project-ref=isdeilllppdfngxmsols"
-      ],
-      "env": {
-        "SUPABASE_ACCESS_TOKEN": "sbp_de9f845ff378892b58a21195a82a9f4a75b46345"
-      }
+    "supabase": {
+      "url": "https://mcp.supabase.com/mcp?project_ref=isdeilllppdfngxmsols&features=docs%2Caccount%2Cdatabase%2Cdebugging%2Cdevelopment%2Cfunctions%2Cbranching%2Cstorage"
     }
   }
 }

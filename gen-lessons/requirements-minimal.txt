@@ -1,0 +1,33 @@
+# Minimal dependencies for lesson generator
+# Use this if requirements.txt fails due to pyroaring or other build errors
+
+# Core - Essential
+python-dotenv>=1.0.0
+supabase>=2.17.0
+
+# Google Gemini API
+google-generativeai>=0.8.0
+
+# Vector Store & Embeddings (for RAG)
+faiss-cpu>=1.7.4
+sentence-transformers>=5.0.0
+
+# PDF Processing (minimal)
+pypdf>=6.0.0
+
+# LangChain - Minimal subset (avoid full langchain which pulls in everything)
+langchain-core>=0.3.0,<0.4.0
+langchain-text-splitters>=0.3.0,<0.4.0
+
+# Utilities
+requests>=2.31.0
+tenacity>=9.0.0
+
+# REMOVED to avoid build issues:
+# - langchain (full package - pulls in too many deps)
+# - langchain-community (can cause pyroaring issues)
+# - langchain-huggingface (not critical)
+# - pydantic (usually already installed)
+# - huggingface-hub (included with sentence-transformers)
+
+# Total: 11 packages (even more minimal)

@@ -8,7 +8,7 @@ import { useLingui } from '@lingui/react/macro'
 import { MagnifyingGlassIcon, SparkleIcon } from '@/components/icons'
 import { Card, Text, View } from '@/components/ui'
 import { useDebounce } from '@/hooks/use-debounce'
-import { useAvailableLetters, useRandomEntries, useSearchDictionary } from '@/hooks/use-dictionary'
+import { useAvailableLetters, useSearchDictionary, useWordOfTheDay } from '@/hooks/use-dictionary'
 import { useLanguage } from '@/hooks/use-language'
 
 const DictionaryScreen: React.FC = () => {
@@ -18,8 +18,8 @@ const DictionaryScreen: React.FC = () => {
   const [searchMode, setSearchMode] = useState<'kabiye' | 'translation'>('kabiye')
   const debouncedQuery = useDebounce(searchQuery, 300)
 
-  // Fetch random entries for "Word of the Day"
-  const { data: randomEntries, isLoading: isLoadingRandom } = useRandomEntries(3)
+  // Fetch random base headwords with homographs for "Word of the Day"
+  const { data: wordOfTheDay, isLoading: isLoadingRandom } = useWordOfTheDay(3)
 
   // Fetch available letters for alphabet browsing
   const { data: letters, isLoading: isLoadingLetters } = useAvailableLetters()
@@ -155,29 +155,37 @@ const DictionaryScreen: React.FC = () => {
           {isLoadingRandom ? (
             <ActivityIndicator className="py-4" />
           ) : (
-            randomEntries?.map((entry) => (
-              <Link key={entry.id} href={`/word/${entry.headword}`} asChild>
-                <TouchableOpacity>
-                  <Card className="mb-3 p-4">
-                    <Text variant="lg" weight="bold" className="text-primary">
-                      {entry.entry_data.headword}
-                    </Text>
-                    {entry.entry_data.pronunciations?.[0] && (
-                      <Text variant="caption" className="text-text-grey mt-1 dark:text-gray-400">
-                        [{entry.entry_data.pronunciations[0]}]
+            wordOfTheDay?.map(({ baseHeadword, entries }) => {
+              const firstEntry = entries[0]
+              if (!firstEntry) return null
+              const displayHeadword =
+                entries.length > 1
+                  ? entries.map((e) => e.entry_data.headword).join(', ')
+                  : firstEntry.entry_data.headword
+              return (
+                <Link key={baseHeadword} href={`/word/${firstEntry.entry_data.headword}`} asChild>
+                  <TouchableOpacity>
+                    <Card className="mb-3 p-4">
+                      <Text variant="lg" weight="bold" className="text-primary">
+                        {displayHeadword}
                       </Text>
-                    )}
-                    {entry.entry_data.senses[0]?.definitions[0] && (
-                      <Text variant="body" className="text-text-dark mt-2 dark:text-gray-200">
-                        {currentLanguage === 'fr'
-                          ? entry.entry_data.senses[0].definitions[0].translations.fr
-                          : entry.entry_data.senses[0].definitions[0].translations.en}
-                      </Text>
-                    )}
-                  </Card>
-                </TouchableOpacity>
-              </Link>
-            ))
+                      {firstEntry.entry_data.pronunciations?.[0] && (
+                        <Text variant="caption" className="text-text-grey mt-1 dark:text-gray-400">
+                          [{firstEntry.entry_data.pronunciations[0]}]
+                        </Text>
+                      )}
+                      {firstEntry.entry_data.senses[0]?.definitions[0] && (
+                        <Text variant="body" className="text-text-dark mt-2 dark:text-gray-200">
+                          {currentLanguage === 'fr'
+                            ? firstEntry.entry_data.senses[0].definitions[0].translations.fr
+                            : firstEntry.entry_data.senses[0].definitions[0].translations.en}
+                        </Text>
+                      )}
+                    </Card>
+                  </TouchableOpacity>
+                </Link>
+              )
+            })
           )}
         </View>
 

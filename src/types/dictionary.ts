@@ -12,6 +12,10 @@ export interface DictionaryEntry extends Omit<DbDictionaryEntry, 'entry_data'> {
 export interface EntryData {
   letter: string
   headword: string
+  /** Base form without subscript (e.g. "yiluu" for yiluu₁) */
+  base_headword?: string
+  /** Subscript value 1–9, or null if not a homograph */
+  homograph_number?: number | null
   plural?: string
   mainEntry?: string // If present, this is a redirect entry - fetch this headword for full definition
   variantRefs: { variant: string; pronunciation?: string }[]
@@ -54,6 +58,14 @@ export interface EntryData {
 
 export interface SearchResult extends Omit<DbSearchResult, 'entry_data'> {
   entry_data: EntryData
+}
+
+/** Response from get_entry_by_term – includes resolution metadata */
+export interface EntryByTermResult extends DictionaryEntry {
+  matched_term: string
+  term_type: 'main_headword' | 'sub_entry_headword' | 'variant' | string
+  /** 0-based index in entry_data.subEntries when term is a sub-entry */
+  sub_entry_index: number | null
 }
 
 export interface DictionaryStatistics {

@@ -1,10 +1,41 @@
-export type Json = string | number | boolean | null | { [key: string]: Json | undefined } | Json[]
+export type Json =
+  | string
+  | number
+  | boolean
+  | null
+  | { [key: string]: Json | undefined }
+  | Json[]
 
 export type Database = {
   // Allows to automatically instantiate createClient with right options
   // instead of createClient<Database, { PostgrestVersion: 'XX' }>(URL, KEY)
   __InternalSupabase: {
-    PostgrestVersion: '13.0.5'
+    PostgrestVersion: "13.0.5"
+  }
+  graphql_public: {
+    Tables: {
+      [_ in never]: never
+    }
+    Views: {
+      [_ in never]: never
+    }
+    Functions: {
+      graphql: {
+        Args: {
+          extensions?: Json
+          operationName?: string
+          query?: string
+          variables?: Json
+        }
+        Returns: Json
+      }
+    }
+    Enums: {
+      [_ in never]: never
+    }
+    CompositeTypes: {
+      [_ in never]: never
+    }
   }
   public: {
     Tables: {
@@ -74,11 +105,11 @@ export type Database = {
         }
         Relationships: [
           {
-            foreignKeyName: 'categories_parent_category_fkey'
-            columns: ['parent_category']
+            foreignKeyName: "categories_parent_category_fkey"
+            columns: ["parent_category"]
             isOneToOne: false
-            referencedRelation: 'categories'
-            referencedColumns: ['id']
+            referencedRelation: "categories"
+            referencedColumns: ["id"]
           },
         ]
       }
@@ -193,11 +224,11 @@ export type Database = {
         }
         Relationships: [
           {
-            foreignKeyName: 'lesson_activities_lesson_id_fkey'
-            columns: ['lesson_id']
+            foreignKeyName: "lesson_activities_lesson_id_fkey"
+            columns: ["lesson_id"]
             isOneToOne: false
-            referencedRelation: 'lessons'
-            referencedColumns: ['id']
+            referencedRelation: "lessons"
+            referencedColumns: ["id"]
           },
         ]
       }
@@ -237,11 +268,11 @@ export type Database = {
         }
         Relationships: [
           {
-            foreignKeyName: 'lesson_contents_lesson_id_fkey'
-            columns: ['lesson_id']
+            foreignKeyName: "lesson_contents_lesson_id_fkey"
+            columns: ["lesson_id"]
             isOneToOne: false
-            referencedRelation: 'lessons'
-            referencedColumns: ['id']
+            referencedRelation: "lessons"
+            referencedColumns: ["id"]
           },
         ]
       }
@@ -260,18 +291,18 @@ export type Database = {
         }
         Relationships: [
           {
-            foreignKeyName: 'lesson_topics_lesson_id_fkey'
-            columns: ['lesson_id']
+            foreignKeyName: "lesson_topics_lesson_id_fkey"
+            columns: ["lesson_id"]
             isOneToOne: false
-            referencedRelation: 'lessons'
-            referencedColumns: ['id']
+            referencedRelation: "lessons"
+            referencedColumns: ["id"]
           },
           {
-            foreignKeyName: 'lesson_topics_topic_id_fkey'
-            columns: ['topic_id']
+            foreignKeyName: "lesson_topics_topic_id_fkey"
+            columns: ["topic_id"]
             isOneToOne: false
-            referencedRelation: 'topics'
-            referencedColumns: ['id']
+            referencedRelation: "topics"
+            referencedColumns: ["id"]
           },
         ]
       }
@@ -279,7 +310,7 @@ export type Database = {
         Row: {
           category_id: string | null
           created_at: string | null
-          difficulty: Database['public']['Enums']['difficulty_level']
+          difficulty: Database["public"]["Enums"]["difficulty_level"]
           id: string
           objectives_en: string[] | null
           objectives_fr: string[] | null
@@ -291,7 +322,7 @@ export type Database = {
         Insert: {
           category_id?: string | null
           created_at?: string | null
-          difficulty: Database['public']['Enums']['difficulty_level']
+          difficulty: Database["public"]["Enums"]["difficulty_level"]
           id?: string
           objectives_en?: string[] | null
           objectives_fr?: string[] | null
@@ -303,7 +334,7 @@ export type Database = {
         Update: {
           category_id?: string | null
           created_at?: string | null
-          difficulty?: Database['public']['Enums']['difficulty_level']
+          difficulty?: Database["public"]["Enums"]["difficulty_level"]
           id?: string
           objectives_en?: string[] | null
           objectives_fr?: string[] | null
@@ -314,18 +345,18 @@ export type Database = {
         }
         Relationships: [
           {
-            foreignKeyName: 'lessons_category_id_fkey'
-            columns: ['category_id']
+            foreignKeyName: "lessons_category_id_fkey"
+            columns: ["category_id"]
             isOneToOne: false
-            referencedRelation: 'categories'
-            referencedColumns: ['id']
+            referencedRelation: "categories"
+            referencedColumns: ["id"]
           },
           {
-            foreignKeyName: 'lessons_unit_id_fkey'
-            columns: ['unit_id']
+            foreignKeyName: "lessons_unit_id_fkey"
+            columns: ["unit_id"]
             isOneToOne: false
-            referencedRelation: 'units'
-            referencedColumns: ['id']
+            referencedRelation: "units"
+            referencedColumns: ["id"]
           },
         ]
       }
@@ -338,7 +369,7 @@ export type Database = {
           language: string
           reversal_term: string
           reversal_term_display: string
-          search_vector: unknown | null
+          search_vector: unknown
         }
         Insert: {
           context_path?: Json | null
@@ -348,7 +379,7 @@ export type Database = {
           language: string
           reversal_term: string
           reversal_term_display: string
-          search_vector?: unknown | null
+          search_vector?: unknown
         }
         Update: {
           context_path?: Json | null
@@ -358,15 +389,15 @@ export type Database = {
           language?: string
           reversal_term?: string
           reversal_term_display?: string
-          search_vector?: unknown | null
+          search_vector?: unknown
         }
         Relationships: [
           {
-            foreignKeyName: 'reversal_index_entry_id_fkey'
-            columns: ['entry_id']
+            foreignKeyName: "reversal_index_entry_id_fkey"
+            columns: ["entry_id"]
             isOneToOne: false
-            referencedRelation: 'dictionary_entries'
-            referencedColumns: ['id']
+            referencedRelation: "dictionary_entries"
+            referencedColumns: ["id"]
           },
         ]
       }
@@ -377,7 +408,7 @@ export type Database = {
           id: string
           is_primary: boolean | null
           parent_headword: string | null
-          search_vector: unknown | null
+          search_vector: unknown
           term_type: string
         }
         Insert: {
@@ -386,7 +417,7 @@ export type Database = {
           id?: string
           is_primary?: boolean | null
           parent_headword?: string | null
-          search_vector?: unknown | null
+          search_vector?: unknown
           term_type: string
         }
         Update: {
@@ -395,16 +426,16 @@ export type Database = {
           id?: string
           is_primary?: boolean | null
           parent_headword?: string | null
-          search_vector?: unknown | null
+          search_vector?: unknown
           term_type?: string
         }
         Relationships: [
           {
-            foreignKeyName: 'searchable_headwords_entry_id_fkey'
-            columns: ['entry_id']
+            foreignKeyName: "searchable_headwords_entry_id_fkey"
+            columns: ["entry_id"]
             isOneToOne: false
-            referencedRelation: 'dictionary_entries'
-            referencedColumns: ['id']
+            referencedRelation: "dictionary_entries"
+            referencedColumns: ["id"]
           },
         ]
       }
@@ -434,7 +465,7 @@ export type Database = {
           description_fr: string | null
           id: string
           position: number
-          status: Database['public']['Enums']['unit_status'] | null
+          status: Database["public"]["Enums"]["unit_status"] | null
           title_en: string
           title_fr: string
         }
@@ -445,7 +476,7 @@ export type Database = {
           description_fr?: string | null
           id?: string
           position: number
-          status?: Database['public']['Enums']['unit_status'] | null
+          status?: Database["public"]["Enums"]["unit_status"] | null
           title_en: string
           title_fr: string
         }
@@ -456,7 +487,7 @@ export type Database = {
           description_fr?: string | null
           id?: string
           position?: number
-          status?: Database['public']['Enums']['unit_status'] | null
+          status?: Database["public"]["Enums"]["unit_status"] | null
           title_en?: string
           title_fr?: string
         }
@@ -478,12 +509,15 @@ export type Database = {
       }
     }
     Functions: {
-      get_entries_by_letter: {
-        Args: {
-          letter_param: string
-          page_limit?: number
-          page_offset?: number
-        }
+      get_available_letters: {
+        Args: never
+        Returns: {
+          entry_count: number
+          letter: string
+        }[]
+      }
+      get_entries_by_base_headword: {
+        Args: { base_param: string }
         Returns: {
           entry_data: Json
           headword: string
@@ -491,13 +525,47 @@ export type Database = {
           letter: string
         }[]
       }
+      get_entries_by_letter: {
+        Args: {
+          letter_param: string
+          page_limit?: number
+          page_offset?: number
+        }
+        Returns: {
+          created_at: string
+          entry_data: Json
+          headword: string
+          id: string
+          updated_at: string
+        }[]
+      }
       get_entry_by_headword: {
         Args: { headword_param: string }
+        Returns: {
+          created_at: string
+          entry_data: Json
+          headword: string
+          id: string
+          letter: string
+          updated_at: string
+        }[]
+      }
+      get_entry_by_term: {
+        Args: { term_param: string }
         Returns: {
           entry_data: Json
           headword: string
           id: string
           letter: string
+          matched_term: string
+          sub_entry_index: number
+          term_type: string
+        }[]
+      }
+      get_random_base_headwords: {
+        Args: { base_count?: number }
+        Returns: {
+          base_headword: string
         }[]
       }
       get_random_entries: {
@@ -506,28 +574,7 @@ export type Database = {
           entry_data: Json
           headword: string
           id: string
-          letter: string
         }[]
-      }
-      gtrgm_compress: {
-        Args: { '': unknown }
-        Returns: unknown
-      }
-      gtrgm_decompress: {
-        Args: { '': unknown }
-        Returns: unknown
-      }
-      gtrgm_in: {
-        Args: { '': unknown }
-        Returns: unknown
-      }
-      gtrgm_options: {
-        Args: { '': unknown }
-        Returns: undefined
-      }
-      gtrgm_out: {
-        Args: { '': unknown }
-        Returns: unknown
       }
       search_dictionary: {
         Args: {
@@ -537,37 +584,18 @@ export type Database = {
         }
         Returns: {
           entry_data: Json
-          entry_id: string
           headword: string
-          match_text: string
+          id: string
           match_type: string
           rank: number
         }[]
       }
-      set_limit: {
-        Args: { '': number }
-        Returns: number
-      }
-      show_limit: {
-        Args: Record<PropertyKey, never>
-        Returns: number
-      }
-      show_trgm: {
-        Args: { '': string }
-        Returns: string[]
-      }
-      update_headword_search_vectors: {
-        Args: Record<PropertyKey, never>
-        Returns: undefined
-      }
-      update_reversal_search_vectors: {
-        Args: Record<PropertyKey, never>
-        Returns: undefined
-      }
+      update_headword_search_vectors: { Args: never; Returns: undefined }
+      update_reversal_search_vectors: { Args: never; Returns: undefined }
     }
     Enums: {
-      difficulty_level: 'beginner' | 'intermediate' | 'advanced'
-      unit_status: 'available' | 'coming_soon' | 'maintenance' | 'disabled'
+      difficulty_level: "beginner" | "intermediate" | "advanced"
+      unit_status: "available" | "coming_soon" | "maintenance" | "disabled"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -575,31 +603,33 @@ export type Database = {
   }
 }
 
-type DatabaseWithoutInternals = Omit<Database, '__InternalSupabase'>
+type DatabaseWithoutInternals = Omit<Database, "__InternalSupabase">
 
-type DefaultSchema = DatabaseWithoutInternals[Extract<keyof Database, 'public'>]
+type DefaultSchema = DatabaseWithoutInternals[Extract<keyof Database, "public">]
 
 export type Tables<
   DefaultSchemaTableNameOrOptions extends
-    | keyof (DefaultSchema['Tables'] & DefaultSchema['Views'])
+    | keyof (DefaultSchema["Tables"] & DefaultSchema["Views"])
     | { schema: keyof DatabaseWithoutInternals },
   TableName extends DefaultSchemaTableNameOrOptions extends {
     schema: keyof DatabaseWithoutInternals
   }
-    ? keyof (DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions['schema']]['Tables'] &
-        DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions['schema']]['Views'])
+    ? keyof (DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions["schema"]]["Tables"] &
+        DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions["schema"]]["Views"])
     : never = never,
 > = DefaultSchemaTableNameOrOptions extends {
   schema: keyof DatabaseWithoutInternals
 }
-  ? (DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions['schema']]['Tables'] &
-      DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions['schema']]['Views'])[TableName] extends {
+  ? (DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions["schema"]]["Tables"] &
+      DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions["schema"]]["Views"])[TableName] extends {
       Row: infer R
     }
     ? R
     : never
-  : DefaultSchemaTableNameOrOptions extends keyof (DefaultSchema['Tables'] & DefaultSchema['Views'])
-    ? (DefaultSchema['Tables'] & DefaultSchema['Views'])[DefaultSchemaTableNameOrOptions] extends {
+  : DefaultSchemaTableNameOrOptions extends keyof (DefaultSchema["Tables"] &
+        DefaultSchema["Views"])
+    ? (DefaultSchema["Tables"] &
+        DefaultSchema["Views"])[DefaultSchemaTableNameOrOptions] extends {
         Row: infer R
       }
       ? R
@@ -607,22 +637,24 @@ export type Tables<
     : never
 
 export type TablesInsert<
-  DefaultSchemaTableNameOrOptions extends keyof DefaultSchema['Tables'] | { schema: keyof DatabaseWithoutInternals },
+  DefaultSchemaTableNameOrOptions extends
+    | keyof DefaultSchema["Tables"]
+    | { schema: keyof DatabaseWithoutInternals },
   TableName extends DefaultSchemaTableNameOrOptions extends {
     schema: keyof DatabaseWithoutInternals
   }
-    ? keyof DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions['schema']]['Tables']
+    ? keyof DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions["schema"]]["Tables"]
     : never = never,
 > = DefaultSchemaTableNameOrOptions extends {
   schema: keyof DatabaseWithoutInternals
 }
-  ? DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions['schema']]['Tables'][TableName] extends {
+  ? DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions["schema"]]["Tables"][TableName] extends {
       Insert: infer I
     }
     ? I
     : never
-  : DefaultSchemaTableNameOrOptions extends keyof DefaultSchema['Tables']
-    ? DefaultSchema['Tables'][DefaultSchemaTableNameOrOptions] extends {
+  : DefaultSchemaTableNameOrOptions extends keyof DefaultSchema["Tables"]
+    ? DefaultSchema["Tables"][DefaultSchemaTableNameOrOptions] extends {
         Insert: infer I
       }
       ? I
@@ -630,22 +662,24 @@ export type TablesInsert<
     : never
 
 export type TablesUpdate<
-  DefaultSchemaTableNameOrOptions extends keyof DefaultSchema['Tables'] | { schema: keyof DatabaseWithoutInternals },
+  DefaultSchemaTableNameOrOptions extends
+    | keyof DefaultSchema["Tables"]
+    | { schema: keyof DatabaseWithoutInternals },
   TableName extends DefaultSchemaTableNameOrOptions extends {
     schema: keyof DatabaseWithoutInternals
   }
-    ? keyof DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions['schema']]['Tables']
+    ? keyof DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions["schema"]]["Tables"]
     : never = never,
 > = DefaultSchemaTableNameOrOptions extends {
   schema: keyof DatabaseWithoutInternals
 }
-  ? DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions['schema']]['Tables'][TableName] extends {
+  ? DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions["schema"]]["Tables"][TableName] extends {
       Update: infer U
     }
     ? U
     : never
-  : DefaultSchemaTableNameOrOptions extends keyof DefaultSchema['Tables']
-    ? DefaultSchema['Tables'][DefaultSchemaTableNameOrOptions] extends {
+  : DefaultSchemaTableNameOrOptions extends keyof DefaultSchema["Tables"]
+    ? DefaultSchema["Tables"][DefaultSchemaTableNameOrOptions] extends {
         Update: infer U
       }
       ? U
@@ -653,70 +687,47 @@ export type TablesUpdate<
     : never
 
 export type Enums<
-  DefaultSchemaEnumNameOrOptions extends keyof DefaultSchema['Enums'] | { schema: keyof DatabaseWithoutInternals },
+  DefaultSchemaEnumNameOrOptions extends
+    | keyof DefaultSchema["Enums"]
+    | { schema: keyof DatabaseWithoutInternals },
   EnumName extends DefaultSchemaEnumNameOrOptions extends {
     schema: keyof DatabaseWithoutInternals
   }
-    ? keyof DatabaseWithoutInternals[DefaultSchemaEnumNameOrOptions['schema']]['Enums']
+    ? keyof DatabaseWithoutInternals[DefaultSchemaEnumNameOrOptions["schema"]]["Enums"]
     : never = never,
 > = DefaultSchemaEnumNameOrOptions extends {
   schema: keyof DatabaseWithoutInternals
 }
-  ? DatabaseWithoutInternals[DefaultSchemaEnumNameOrOptions['schema']]['Enums'][EnumName]
-  : DefaultSchemaEnumNameOrOptions extends keyof DefaultSchema['Enums']
-    ? DefaultSchema['Enums'][DefaultSchemaEnumNameOrOptions]
+  ? DatabaseWithoutInternals[DefaultSchemaEnumNameOrOptions["schema"]]["Enums"][EnumName]
+  : DefaultSchemaEnumNameOrOptions extends keyof DefaultSchema["Enums"]
+    ? DefaultSchema["Enums"][DefaultSchemaEnumNameOrOptions]
     : never
 
 export type CompositeTypes<
   PublicCompositeTypeNameOrOptions extends
-    | keyof DefaultSchema['CompositeTypes']
+    | keyof DefaultSchema["CompositeTypes"]
     | { schema: keyof DatabaseWithoutInternals },
   CompositeTypeName extends PublicCompositeTypeNameOrOptions extends {
     schema: keyof DatabaseWithoutInternals
   }
-    ? keyof DatabaseWithoutInternals[PublicCompositeTypeNameOrOptions['schema']]['CompositeTypes']
+    ? keyof DatabaseWithoutInternals[PublicCompositeTypeNameOrOptions["schema"]]["CompositeTypes"]
     : never = never,
 > = PublicCompositeTypeNameOrOptions extends {
   schema: keyof DatabaseWithoutInternals
 }
-  ? DatabaseWithoutInternals[PublicCompositeTypeNameOrOptions['schema']]['CompositeTypes'][CompositeTypeName]
-  : PublicCompositeTypeNameOrOptions extends keyof DefaultSchema['CompositeTypes']
-    ? DefaultSchema['CompositeTypes'][PublicCompositeTypeNameOrOptions]
+  ? DatabaseWithoutInternals[PublicCompositeTypeNameOrOptions["schema"]]["CompositeTypes"][CompositeTypeName]
+  : PublicCompositeTypeNameOrOptions extends keyof DefaultSchema["CompositeTypes"]
+    ? DefaultSchema["CompositeTypes"][PublicCompositeTypeNameOrOptions]
     : never
 
 export const Constants = {
+  graphql_public: {
+    Enums: {},
+  },
   public: {
     Enums: {
-      difficulty_level: ['beginner', 'intermediate', 'advanced'],
-      unit_status: ['available', 'coming_soon', 'maintenance', 'disabled'],
+      difficulty_level: ["beginner", "intermediate", "advanced"],
+      unit_status: ["available", "coming_soon", "maintenance", "disabled"],
     },
   },
 } as const
-
-// Helper type exports for convenience
-export type AlphabetLetter = Database['public']['Tables']['alphabet_letters']['Row']
-export type CmsPage = Database['public']['Tables']['cms_pages']['Row']
-export type Lesson = Database['public']['Tables']['lessons']['Row']
-export type LessonActivity = Database['public']['Tables']['lesson_activities']['Row']
-export type Unit = Database['public']['Tables']['units']['Row']
-export type DifficultyLevel = Database['public']['Enums']['difficulty_level']
-
-// Extended types with relationships
-export interface LessonWithProgress extends Lesson {
-  is_completed: boolean
-  is_locked: boolean
-  progress_percentage: number
-  progress?: {
-    id: string
-    user_id: string
-    lesson_id: string
-    completed_at: string
-    score: number | null
-    created_at: string
-    updated_at: string
-  } | null
-}
-
-export interface UnitWithLessons extends Unit {
-  lessons: LessonWithProgress[]
-}

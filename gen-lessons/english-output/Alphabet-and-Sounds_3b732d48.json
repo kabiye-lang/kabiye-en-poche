@@ -1,0 +1,281 @@
+{
+  "lesson_info": {
+    "id": "3b732d48-bba6-458e-9c86-da8414f73b69",
+    "title_en": "Alphabet and Sounds",
+    "title_kbp": "",
+    "difficulty": "beginner",
+    "topics": "Alphabet, Phonetics, Tones, Consonant clusters"
+  },
+  "quality": {
+    "overall_score": 100,
+    "content_quality": 25,
+    "activity_variety": 25,
+    "difficulty_alignment": 25,
+    "vocabulary_quality": 25,
+    "context_sources": {
+      "dict_count": 0,
+      "pdf_chunks": 0,
+      "avg_relevance": 0.0
+    },
+    "recommendations": [
+      "Low dictionary usage (0 words), consider more relevant vocabulary"
+    ]
+  },
+  "metadata": {
+    "dict_count": 0,
+    "pdf_chunks": 0,
+    "avg_relevance": 0.0
+  },
+  "content": {
+    "lesson_contents": [
+      {
+        "title_en": "Letters and Sounds",
+        "title_fr": "Lettres et sons",
+        "content_en": "English uses 26 letters. We will start with simple words to learn how letters sound. Focus on the first letter of each word.",
+        "content_fr": "L'anglais utilise 26 lettres. Nous allons commencer par des mots simples pour apprendre le son des lettres. Concentrez-vous sur la première lettre de chaque mot.",
+        "examples": [
+          {
+            "en": "Hand",
+            "fr": "Main"
+          },
+          {
+            "en": "Head",
+            "fr": "Tête"
+          },
+          {
+            "en": "Man",
+            "fr": "Homme"
+          },
+          {
+            "en": "Sun",
+            "fr": "Soleil"
+          },
+          {
+            "en": "Big",
+            "fr": "Grand"
+          },
+          {
+            "en": "Small",
+            "fr": "Petit"
+          },
+          {
+            "en": "Red",
+            "fr": "Rouge"
+          },
+          {
+            "en": "Blue",
+            "fr": "Bleu"
+          }
+        ]
+      },
+      {
+        "title_en": "Special Characters and Clusters",
+        "title_fr": "Caractères spéciaux et groupes",
+        "content_en": "In Kabiye, we use special letters like ɖ, ŋ, and clusters like kp or gb. In English, we use combinations like 'th' or 'ch'. Let's look at basic words for family and things.",
+        "content_fr": "En kabiye, nous utilisons des lettres spéciales comme ɖ, ŋ et des groupes comme kp ou gb. En anglais, nous utilisons des combinaisons comme 'th' ou 'ch'. Regardons les mots de base pour la famille et les objets.",
+        "examples": [
+          {
+            "en": "Mother",
+            "fr": "Mère"
+          },
+          {
+            "en": "Father",
+            "fr": "Père"
+          },
+          {
+            "en": "Water",
+            "fr": "Eau"
+          },
+          {
+            "en": "House",
+            "fr": "Maison"
+          },
+          {
+            "en": "Food",
+            "fr": "Nourriture"
+          },
+          {
+            "en": "Bread",
+            "fr": "Pain"
+          },
+          {
+            "en": "One",
+            "fr": "Un"
+          },
+          {
+            "en": "Two",
+            "fr": "Deux"
+          }
+        ]
+      },
+      {
+        "title_en": "Pronunciation Practice",
+        "title_fr": "Pratique de prononciation",
+        "content_en": "Practice saying these common greetings. These are the first words you say to people every day.",
+        "content_fr": "Entraînez-vous à dire ces salutations courantes. Ce sont les premiers mots que vous dites aux gens chaque jour.",
+        "examples": [
+          {
+            "en": "Hello",
+            "fr": "Salut"
+          },
+          {
+            "en": "Good morning",
+            "fr": "Bonjour"
+          },
+          {
+            "en": "Good night",
+            "fr": "Bonne nuit"
+          },
+          {
+            "en": "Goodbye",
+            "fr": "Au revoir"
+          },
+          {
+            "en": "Yes",
+            "fr": "Oui"
+          },
+          {
+            "en": "No",
+            "fr": "Non"
+          },
+          {
+            "en": "Please",
+            "fr": "S'il vous plaît"
+          },
+          {
+            "en": "Thanks",
+            "fr": "Merci"
+          }
+        ]
+      }
+    ],
+    "lesson_activities": [
+      {
+        "activity_type": "listen_choose",
+        "position": 0,
+        "question_en": "Listen and select the correct word",
+        "question_fr": "Écoutez et sélectionnez le mot correct",
+        "instructions_en": "Tap the word you hear",
+        "instructions_fr": "Appuyez sur le mot que vous entendez",
+        "data": {
+          "target_en": "Mother",
+          "target_fr": "Mère",
+          "options_en": [
+            "Mother",
+            "Father",
+            "Man"
+          ],
+          "options_fr": [
+            "Mère",
+            "Père",
+            "Homme"
+          ],
+          "correct_en": "Mother",
+          "correct_fr": "Mère"
+        }
+      },
+      {
+        "activity_type": "match_pairs",
+        "position": 1,
+        "question_en": "Match words with their meanings",
+        "question_fr": "Associez les mots à leur signification",
+        "instructions_en": "Drag to match",
+        "instructions_fr": "Faites glisser",
+        "data": {
+          "pairs": [
+            {
+              "en": "Water",
+              "fr": "Eau"
+            },
+            {
+              "en": "House",
+              "fr": "Maison"
+            },
+            {
+              "en": "Food",
+              "fr": "Nourriture"
+            },
+            {
+              "en": "Bread",
+              "fr": "Pain"
+            }
+          ]
+        }
+      },
+      {
+        "activity_type": "fill_blank",
+        "position": 2,
+        "question_en": "Complete the greeting",
+        "question_fr": "Complétez la salutation",
+        "data": {
+          "sentence_en": "Good ___",
+          "sentence_fr": "Bon ___",
+          "answer_en": "morning",
+          "answer_fr": "jour",
+          "options_en": [
+            "morning",
+            "hand",
+            "red"
+          ],
+          "options_fr": [
+            "jour",
+            "main",
+            "rouge"
+          ]
+        }
+      },
+      {
+        "activity_type": "multiple_choice",
+        "position": 3,
+        "question_en": "Which word is a number?",
+        "question_fr": "Quel mot est un nombre ?",
+        "data": {
+          "options": [
+            {
+              "value": "a",
+              "label_en": "One",
+              "label_fr": "Un"
+            },
+            {
+              "value": "b",
+              "label_en": "Sun",
+              "label_fr": "Soleil"
+            },
+            {
+              "value": "c",
+              "label_en": "Blue",
+              "label_fr": "Bleu"
+            }
+          ],
+          "correct_answer": "a",
+          "explanation_en": "'One' is the number 1.",
+          "explanation_fr": "'One' est le chiffre 1."
+        }
+      },
+      {
+        "activity_type": "listen_choose",
+        "position": 4,
+        "question_en": "Select the word for 'Eau'",
+        "question_fr": "Sélectionnez le mot pour 'Eau'",
+        "instructions_en": "Choose the correct English word",
+        "instructions_fr": "Choisissez le mot anglais correct",
+        "data": {
+          "target_en": "Water",
+          "target_fr": "Eau",
+          "options_en": [
+            "Water",
+            "Bread",
+            "Head"
+          ],
+          "options_fr": [
+            "Eau",
+            "Pain",
+            "Tête"
+          ],
+          "correct_en": "Water",
+          "correct_fr": "Eau"
+        }
+      }
+    ]
+  }
+}

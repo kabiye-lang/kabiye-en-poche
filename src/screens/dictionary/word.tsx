@@ -8,15 +8,15 @@ import { useHeaderHeight } from '@react-navigation/elements'
 
 import { ArrowRightIcon } from '@/components/icons'
 import { Card, Text, View } from '@/components/ui'
-import { useEntry } from '@/hooks/use-dictionary'
+import { useEntryByTerm } from '@/hooks/use-dictionary'
 import { useLanguage } from '@/hooks/use-language'
 import { isRedirectEntry } from '@/utils/dictionary-helpers'
 
 const WordDetailsScreen: React.FC = () => {
-  const { id: headword } = useLocalSearchParams<{ id: string }>()
+  const { id: term } = useLocalSearchParams<{ id: string }>()
   const { t } = useLingui()
   const { currentLanguage } = useLanguage()
-  const { data: entry, isLoading, error } = useEntry(headword || '')
+  const { data: entry, isLoading, error } = useEntryByTerm(term || '')
   const headerHeight = useHeaderHeight()
   if (isLoading) {
     return (
@@ -176,7 +176,11 @@ const WordDetailsScreen: React.FC = () => {
                         </Text>
                         <View className="flex-row flex-wrap gap-2">
                           {ref.targets.map((target, targetIdx) => (
-                            <Link key={targetIdx} href={`/word/${target}`} asChild>
+                            <Link
+                              key={targetIdx}
+                              href={`/word/${encodeURIComponent(target)}`}
+                              asChild
+                            >
                               <TouchableOpacity>
                                 <View className="bg-primary/10 flex-row items-center rounded px-2 py-1">
                                   <Text variant="caption" className="text-primary">
@@ -243,7 +247,11 @@ const WordDetailsScreen: React.FC = () => {
                             <Text variant="caption" className="text-text-grey dark:text-gray-400">
                               {ref.type}:{' '}
                               {ref.targets.map((target, targetIdx) => (
-                                <Link key={targetIdx} href={`/word/${target}`} asChild>
+                                <Link
+                                  key={targetIdx}
+                                  href={`/word/${encodeURIComponent(target)}`}
+                                  asChild
+                                >
                                   <Text variant="caption" className="text-primary">
                                     {target}
                                     {targetIdx < ref.targets.length - 1 ? ', ' : ''}
@@ -274,8 +282,12 @@ const WordDetailsScreen: React.FC = () => {
                   {ref.type}:
                 </Text>
                 <View className="flex-row flex-wrap gap-2">
-                  {ref.targets.map((target, targetIdx) => (
-                    <Link key={targetIdx} href={`/word/${target}`} asChild>
+                    {ref.targets.map((target, targetIdx) => (
+                    <Link
+                      key={targetIdx}
+                      href={`/word/${encodeURIComponent(target)}`}
+                      asChild
+                    >
                       <TouchableOpacity>
                         <View className="bg-primary/10 flex-row items-center rounded px-2 py-1">
                           <Text variant="caption" className="text-primary">

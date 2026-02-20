@@ -6,6 +6,7 @@
 
 1. **No Summary Files**: Do NOT create summary, documentation, or changelog files (e.g., `SUMMARY.md`, `CHANGES.md`, `REFACTORING.md`) unless explicitly requested by the user.
 2. **Kebab-Case Files**: ALL files must be named using kebab-case (e.g., `user-profile.tsx`, `lesson-steps.ts`, `audio-player.tsx`). Never use PascalCase or camelCase for file names.
+3. **Never Fabricate Kabiyè**: When generating or editing Kabiyè language content (lessons, examples, vocabulary, translations, pronunciations), ONLY use Kabiyè words that appear in the provided dictionary or PDF sources. DO NOT invent, make up, or guess Kabiyè words, spellings, or pronunciations. If a word is not in the context, use a different word that IS in the context, or reduce the number of examples. This applies to the gen-lessons scripts and any Kabiyè content across the project.
 
 ## Project Overview
 

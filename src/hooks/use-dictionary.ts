@@ -1,6 +1,11 @@
-import type { DictionaryEntry, DictionaryStatistics, SearchResult } from '@/types/dictionary'
+import type {
+  DictionaryEntry,
+  DictionaryStatistics,
+  EntryByTermResult,
+  SearchResult,
+} from '@/types/dictionary'
 
-import { useInfiniteQuery, useQuery } from '@tanstack/react-query'
+import { useInfiniteQuery, useQueries, useQuery } from '@tanstack/react-query'
 
 import { supabase } from '@/lib/supabase'
 
@@ -28,7 +33,8 @@ export function useSearchDictionary(query: string, language: 'all' | 'fr' | 'en'
 }
 
 /**
- * Get a specific entry by headword
+ * Get a specific entry by headword (exact main headword only)
+ * Use for known main entries; prefer useEntryByTerm for lexRef/crossRef links.
  * @param headword - The headword to look up
  */
 export function useEntry(headword: string) {
@@ -43,6 +49,26 @@ export function useEntry(headword: string) {
     },
     enabled: !!headword,
     staleTime: Infinity, // Entries never change
+  })
+}
+
+/**
+ * Get entry by any term: main headword, sub-entry (e.g. "agɔma ɖɩɣa₂"), variant, cross-ref.
+ * Use for lexRef/crossRef links. Returns sub_entry_index when term is a sub-entry.
+ * @param term - The term to look up (headword, sub-entry headword, variant, etc.)
+ */
+export function useEntryByTerm(term: string) {
+  return useQuery({
+    queryKey: ['dictionary', 'entry-by-term', term],
+    queryFn: async () => {
+      const { data, error } = await supabase.rpc('get_entry_by_term', {
+        term_param: term,
+      })
+      if (error) throw error
+      return data?.[0] as unknown as EntryByTermResult | undefined
+    },
+    enabled: !!term,
+    staleTime: Infinity,
   })
 }
 
@@ -73,6 +99,7 @@ export function useEntriesByLetter(letter: string) {
 
 /**
  * Get random entries (for Word of the Day, etc.)
+ * Prefer useWordOfTheDay for homograph-aware "one word" display.
  * @param count - Number of random entries to fetch
  */
 export function useRandomEntries(count = 5) {
@@ -87,6 +114,73 @@ export function useRandomEntries(count = 5) {
     },
     staleTime: 1000 * 60 * 60, // 1 hour
   })
+}
+
+/**
+ * Get random unique base headwords (homograph-aware).
+ * Returns e.g. ["yiluu", "ɛgɔm"] instead of yiluu₁, yiluu₂, yiluu₃ separately.
+ */
+export function useRandomBaseHeadwords(count = 5) {
+  return useQuery({
+    queryKey: ['dictionary', 'random-bases', count],
+    queryFn: async () => {
+      const { data, error } = await supabase.rpc('get_random_base_headwords', {
+        base_count: count,
+      })
+      if (error) throw error
+      return (data as { base_headword: string }[])?.map((r) => r.base_headword) ?? []
+    },
+    staleTime: 1000 * 60 * 60, // 1 hour
+  })
+}
+
+/**
+ * Get all entries for a base headword (e.g. yiluu → [yiluu₁, yiluu₂, yiluu₃]).
+ */
+export function useEntriesByBaseHeadword(baseHeadword: string) {
+  return useQuery({
+    queryKey: ['dictionary', 'entries-by-base', baseHeadword],
+    queryFn: async () => {
+      const { data, error } = await supabase.rpc('get_entries_by_base_headword', {
+        base_param: baseHeadword,
+      })
+      if (error) throw error
+      return (data as unknown as DictionaryEntry[]) ?? []
+    },
+    enabled: !!baseHeadword,
+    staleTime: Infinity,
+  })
+}
+
+/**
+ * Word of the Day: random base headwords with all homographs.
+ * Each item = { baseHeadword, entries } – display homographs together.
+ */
+export function useWordOfTheDay(count = 3) {
+  const { data: baseHeadwords, isLoading: isLoadingBases } = useRandomBaseHeadwords(count)
+  const entryQueries = useQueries({
+    queries:
+      baseHeadwords?.map((base) => ({
+        queryKey: ['dictionary', 'entries-by-base', base] as const,
+        queryFn: async () => {
+          const { data, error } = await supabase.rpc('get_entries_by_base_headword', {
+            base_param: base,
+          })
+          if (error) throw error
+          return { baseHeadword: base, entries: (data as unknown as DictionaryEntry[]) ?? [] }
+        },
+        staleTime: Infinity,
+      })) ?? [],
+  })
+  const wordGroups = entryQueries
+    .filter((q) => q.data)
+    .map((q) => q.data as { baseHeadword: string; entries: DictionaryEntry[] })
+  const isLoading = isLoadingBases || entryQueries.some((q) => q.isLoading)
+  return {
+    data: wordGroups,
+    isLoading,
+    isError: entryQueries.some((q) => q.isError),
+  }
 }
 
 /**
