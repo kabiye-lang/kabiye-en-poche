@@ -1,3 +1,4 @@
+import type { OrderWordsActivityData } from '@/types/activity-data'
 import type { LessonActivity } from '@/types/supabase'
 
 import { useEffect, useState } from 'react'
@@ -17,8 +18,7 @@ interface OrderWordsStepProps {
 const OrderWordsStep = ({ activity, onAnswer }: OrderWordsStepProps) => {
   const { t } = useLingui()
   const { getValue } = useLanguage()
-  // Extract data from activity
-  const activityData = activity.data as any
+  const activityData = activity.data as OrderWordsActivityData | null | undefined
   const question = getValue(activity, 'question') || ''
   const instructions = getValue(activity, 'instructions') || ''
   const words = activityData?.words || []

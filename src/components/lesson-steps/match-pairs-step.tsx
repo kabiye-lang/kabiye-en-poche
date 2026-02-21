@@ -1,3 +1,4 @@
+import type { MatchPairsActivityData } from '@/types/activity-data'
 import type { LessonActivity } from '@/types/supabase'
 
 import { useEffect, useState } from 'react'
@@ -22,17 +23,16 @@ const MatchPairsStep = ({ activity, onAnswer }: MatchPairsStepProps) => {
   const { t } = useLingui()
   const { getValue, currentLanguage } = useLanguage()
 
-  // Extract data from activity
-  const activityData = activity.data as any
+  const activityData = activity.data as MatchPairsActivityData | null | undefined
   const question = getValue(activity, 'question') || ''
   const instructions = getValue(activity, 'instructions') || ''
 
-  // Transform pairs to use correct language for 'right' values
-  const rawPairs = activityData?.pairs || []
-  const pairs = rawPairs.map((pair: any) => ({
-    left: pair.left,
-    right: typeof pair.right === 'object' ? pair.right[currentLanguage] || pair.right.en || pair.right : pair.right,
-  }))
+  // Transform pairs to use correct language for 'right' values; always resolve to string
+  const rawPairs = activityData?.pairs ?? []
+  const pairs: { left: string; right: string }[] = rawPairs.map((pair) => {
+    const right = typeof pair.right === 'object' ? pair.right[currentLanguage] || pair.right.en || '' : pair.right
+    return { left: pair.left, right: right || '' }
+  })
 
   const [leftItems, setLeftItems] = useState<string[]>([])
   const [rightItems, setRightItems] = useState<string[]>([])
@@ -58,8 +58,8 @@ const MatchPairsStep = ({ activity, onAnswer }: MatchPairsStepProps) => {
     setShowFeedback(false)
 
     // Shuffle items
-    setLeftItems(shuffleArray(pairs.map((p: { left: string; right: string }) => p.left)))
-    setRightItems(shuffleArray(pairs.map((p: { left: string; right: string }) => p.right)))
+    setLeftItems(shuffleArray(pairs.map((p) => p.left)))
+    setRightItems(shuffleArray(pairs.map((p) => p.right)))
   }, [question, pairs])
 
   const handleSelect = (value: string, side: 'left' | 'right') => {
@@ -74,7 +74,7 @@ const MatchPairsStep = ({ activity, onAnswer }: MatchPairsStepProps) => {
     } else {
       // Second selection from opposite side - check if match
       const isMatch = pairs.some(
-        (pair: { left: string; right: string }) =>
+        (pair) =>
           (pair.left === selected.value && pair.right === value) ||
           (pair.left === value && pair.right === selected.value)
       )

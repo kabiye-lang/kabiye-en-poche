@@ -58,6 +58,10 @@ export interface EntryData {
 
 export interface SearchResult extends Omit<DbSearchResult, 'entry_data'> {
   entry_data: EntryData
+  /** Alias for id (DB returns id) */
+  entry_id: string
+  /** Matched text snippet; use headword as fallback when absent */
+  match_text?: string
 }
 
 /** Response from get_entry_by_term – includes resolution metadata */

@@ -127,7 +127,7 @@ const DictionaryScreen: React.FC = () => {
                     {result.headword}
                   </Text>
                   <Text variant="caption" className="text-text-grey mt-0.5 dark:text-gray-400">
-                    {result.match_text}
+                    {result.match_text ?? result.headword}
                   </Text>
                 </TouchableOpacity>
               </Link>

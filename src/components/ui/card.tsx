@@ -44,7 +44,7 @@ export function Card({ variant, padding, backgroundColor, onPress, children, cla
   const cardStyle = backgroundColor ? { backgroundColor } : undefined
 
   if (onPress) {
-    const { onBlur, onFocus, ...touchableProps } = props as any
+    const { onBlur, onFocus, ...touchableProps } = props
     return (
       <TouchableOpacity className={cardClassName} style={cardStyle} onPress={onPress} {...touchableProps}>
         {children}

@@ -1,3 +1,4 @@
+import type { QuizActivityData } from '@/types/activity-data'
 import type { LessonActivity } from '@/types/supabase'
 
 import { useEffect, useState } from 'react'
@@ -16,8 +17,7 @@ interface QuizStepProps {
 const QuizStep = ({ activity, onAnswer }: QuizStepProps) => {
   const { t } = useLingui()
   const { getValue, currentLanguage } = useLanguage()
-  // Extract data from activity
-  const activityData = activity.data as any
+  const activityData = activity.data as QuizActivityData | null | undefined
   const question = getValue(activity, 'question') || ''
   const instructions = getValue(activity, 'instructions') || ''
 

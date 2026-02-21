@@ -1,3 +1,4 @@
+import type { FillBlankActivityData } from '@/types/activity-data'
 import type { LessonActivity } from '@/types/supabase'
 
 import { useEffect, useState } from 'react'
@@ -17,8 +18,7 @@ const FillBlankStep = ({ activity, onAnswer }: FillBlankStepProps) => {
   const { t } = useLingui()
   const { getValue } = useLanguage()
 
-  // Extract data from activity
-  const activityData = activity.data as any
+  const activityData = activity.data as FillBlankActivityData | null | undefined
   const question = getValue(activity, 'question') || ''
   const instructions = getValue(activity, 'instructions') || ''
 

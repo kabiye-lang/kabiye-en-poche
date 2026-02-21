@@ -97,7 +97,7 @@ const SearchResultsScreen: React.FC = () => {
                   </View>
                 </View>
                 <Text variant="body" className="text-text-dark mt-1 dark:text-gray-200">
-                  {item.match_text}
+                  {item.match_text ?? item.headword}
                 </Text>
                 {item.entry_data.grammaticalInfo && (
                   <Text variant="caption" className="text-text-grey mt-1 italic dark:text-gray-400">

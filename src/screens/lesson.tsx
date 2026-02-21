@@ -1,4 +1,5 @@
-import type { LessonStep } from '@/types/lesson-steps'
+import type { AudioActivityData } from '@/types/activity-data'
+import type { ActivityStep, LessonStep } from '@/types/lesson-steps'
 
 import { useEffect, useState } from 'react'
 import { ActivityIndicator } from 'react-native'
@@ -23,12 +24,13 @@ import {
 import { Text, View } from '@/components/ui'
 import { useAppCompleteLesson, useAppLesson, useAppLessonActivities, useAppLessonContents } from '@/hooks/use-app-data'
 import { useLanguage } from '@/hooks/use-language'
+import { hasActivity } from '@/types/lesson-steps'
 
 const LessonScreen = () => {
   const { t } = useLingui()
   const { id } = useLocalSearchParams()
   const lessonId = id as string
-  const { getValue } = useLanguage()
+  const { getValue, getJsonValue } = useLanguage()
 
   const { data: lesson, isLoading: lessonLoading, error: lessonError } = useAppLesson(lessonId)
   const { data: contents, isLoading: contentsLoading } = useAppLessonContents(lessonId)
@@ -70,9 +72,9 @@ const LessonScreen = () => {
       activities.forEach((activity) => {
         builtSteps.push({
           id: `activity-${activity.id}`,
-          type: activity.activity_type as any,
+          type: activity.activity_type as ActivityStep['type'],
           order: stepOrder++,
-          activity, // Pass the whole activity to the component
+          activity,
         })
       })
     }
@@ -176,6 +178,23 @@ const LessonScreen = () => {
 
   const currentStep = steps[currentStepIndex]
 
+  // Audio step props (extracted for type narrowing)
+  const audioStepContent =
+    currentStep.type === 'audio' && hasActivity(currentStep)
+      ? (() => {
+          const data = currentStep.activity.data as AudioActivityData
+          return (
+            <AudioStep
+              audioType={data?.audioType ?? 'single'}
+              audioUrl={data?.audioUrl}
+              conversation={getJsonValue(data ?? null, 'conversation') ?? data?.conversation}
+              transcript={getValue(data ?? null, 'transcript') ?? data?.transcript ?? undefined}
+              onContinue={handleStepComplete}
+            />
+          )
+        })()
+      : null
+
   // Count all interactive activity steps
   const totalQuizQuestions = steps.filter(
     (s) =>
@@ -207,15 +226,7 @@ const LessonScreen = () => {
           />
         ) : null}
 
-        {currentStep.type === 'audio' ? (
-          <AudioStep
-            audioType={currentStep.audioType}
-            audioUrl={currentStep.audioUrl}
-            conversation={currentStep.conversation}
-            transcript={currentStep.transcript}
-            onContinue={handleStepComplete}
-          />
-        ) : null}
+        {audioStepContent}
 
         {currentStep.type === 'multiple_choice' || currentStep.type === 'true_false' ? (
           <QuizStep activity={currentStep.activity} onAnswer={handleQuizAnswer} />

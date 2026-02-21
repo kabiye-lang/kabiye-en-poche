@@ -1,3 +1,4 @@
+import type { ListenTypeActivityData } from '@/types/activity-data'
 import type { LessonActivity } from '@/types/supabase'
 
 import { useEffect, useState } from 'react'
@@ -20,8 +21,7 @@ const ListenTypeStep = ({ activity, onAnswer }: ListenTypeStepProps) => {
   const { getValue } = useLanguage()
   const { playAudio, stopAudio, isPlaying, isLoading } = useAudio()
 
-  // Extract data from activity
-  const activityData = activity.data as any
+  const activityData = activity.data as ListenTypeActivityData | null | undefined
   const question = getValue(activity, 'question') || ''
   const instructions = getValue(activity, 'instructions') || ''
   const audioUrl = activityData?.audio_url

@@ -1,6 +1,11 @@
 // Lesson step types for the progressive lesson flow
 import type { LessonActivity } from './supabase'
 
+/** Type guard: step has an activity (all activity-based steps including audio) */
+export function hasActivity(step: LessonStep): step is ActivityStep {
+  return 'activity' in step && step.activity != null
+}
+
 export type StepType =
   | 'content'
   | 'audio'
@@ -23,6 +28,7 @@ export interface BaseStep {
 
 export interface ActivityStep extends BaseStep {
   type:
+    | 'audio'
     | 'listen_choose'
     | 'listen_type'
     | 'match_pairs'

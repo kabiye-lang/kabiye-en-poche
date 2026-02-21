@@ -1,9 +1,4 @@
-import type {
-  DictionaryEntry,
-  DictionaryStatistics,
-  EntryByTermResult,
-  SearchResult,
-} from '@/types/dictionary'
+import type { DictionaryEntry, DictionaryStatistics, EntryByTermResult, SearchResult } from '@/types/dictionary'
 
 import { useInfiniteQuery, useQueries, useQuery } from '@tanstack/react-query'
 
@@ -25,7 +20,11 @@ export function useSearchDictionary(query: string, language: 'all' | 'fr' | 'en'
         result_limit: 20,
       })
       if (error) throw error
-      return data as unknown as SearchResult[]
+      return (data ?? []).map((r) => ({
+        ...r,
+        entry_id: r.id,
+        match_text: r.headword,
+      })) as unknown as SearchResult[]
     },
     enabled: enabled && query.length >= 2,
     staleTime: 1000 * 60 * 60 * 24, // 24 hours
