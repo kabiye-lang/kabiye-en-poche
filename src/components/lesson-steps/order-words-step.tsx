@@ -19,8 +19,8 @@ const OrderWordsStep = ({ activity, onAnswer }: OrderWordsStepProps) => {
   const { t } = useLingui()
   const { getValue } = useLanguage()
   const activityData = activity.data as OrderWordsActivityData | null | undefined
-  const question = getValue(activity, 'question') || ''
-  const instructions = getValue(activity, 'instructions') || ''
+  const question = getValue(activity, 'question') || undefined
+  const instructions = getValue(activity, 'instructions') || undefined
   const words = activityData?.words || []
   const correctOrder = activityData?.correct_order || []
   const [availableWords, setAvailableWords] = useState<string[]>([...words])
@@ -34,7 +34,7 @@ const OrderWordsStep = ({ activity, onAnswer }: OrderWordsStepProps) => {
     setOrderedWords([])
     setShowFeedback(false)
     setIsCorrect(false)
-  }, [question, words])
+  }, [words])
 
   const handleSelectWord = (word: string) => {
     setAvailableWords(availableWords.filter((w) => w !== word))
@@ -65,15 +65,15 @@ const OrderWordsStep = ({ activity, onAnswer }: OrderWordsStepProps) => {
   return (
     <View className="flex-1">
       <ScrollView className="flex-1 px-6" showsVerticalScrollIndicator={false}>
-        {/* Question */}
+        {/* Question (optional; generic fallback when absent) */}
         <Card className="mb-6 p-6">
           <Text variant="h5" weight="semibold" className="text-text-dark text-center dark:text-gray-100">
-            {question}
+            {question ?? t`Put the words in the correct order`}
           </Text>
         </Card>
 
         <Text variant="body" className="text-text-grey mb-4 text-center dark:text-gray-400">
-          {instructions || t`Tap words in the correct order`}
+          {instructions ?? t`Tap words in the correct order`}
         </Text>
 
         {/* Ordered Words Area */}
@@ -160,19 +160,16 @@ const OrderWordsStep = ({ activity, onAnswer }: OrderWordsStepProps) => {
 
       {/* Bottom Button */}
       <View className="border-t border-gray-200 bg-white px-6 py-4 dark:border-gray-700 dark:bg-gray-800">
-        {!showFeedback && orderedWords.length === words.length ? (
-          <Button variant="primary" onPress={handleCheck} className="w-full">
-            <Text variant="body" weight="bold" className="text-white">
-              {t`Check`}
-            </Text>
-          </Button>
-        ) : showFeedback ? (
-          <Button variant="primary" onPress={handleContinue} className="w-full">
-            <Text variant="body" weight="bold" className="text-white">
-              {t`Continue`}
-            </Text>
-          </Button>
-        ) : null}
+        <Button
+          variant="primary"
+          onPress={showFeedback ? handleContinue : handleCheck}
+          disabled={!showFeedback && !(orderedWords.length === words.length)}
+          className="w-full"
+        >
+          <Text variant="body" weight="bold" className="text-white">
+            {t`Continue`}
+          </Text>
+        </Button>
       </View>
     </View>
   )

@@ -19,8 +19,8 @@ const FillBlankStep = ({ activity, onAnswer }: FillBlankStepProps) => {
   const { getValue } = useLanguage()
 
   const activityData = activity.data as FillBlankActivityData | null | undefined
-  const question = getValue(activity, 'question') || ''
-  const instructions = getValue(activity, 'instructions') || ''
+  const question = getValue(activity, 'question') || undefined
+  const instructions = getValue(activity, 'instructions') || undefined
 
   // Data is now directly in activityData, not nested in questions array
   const sentence = getValue(activityData, 'sentence') || ''
@@ -34,7 +34,7 @@ const FillBlankStep = ({ activity, onAnswer }: FillBlankStepProps) => {
   useEffect(() => {
     setSelectedAnswer(null)
     setShowFeedback(false)
-  }, [question, correctAnswer])
+  }, [correctAnswer])
 
   const isCorrect = selectedAnswer === correctAnswer
 
@@ -97,19 +97,17 @@ const FillBlankStep = ({ activity, onAnswer }: FillBlankStepProps) => {
   return (
     <View className="flex-1">
       <ScrollView className="flex-1 px-6" showsVerticalScrollIndicator={false}>
-        {/* Question Header */}
+        {/* Question (optional; generic fallback when absent) */}
         <Card className="mb-6 p-6">
           <Text variant="h5" weight="semibold" className="text-text-dark text-center dark:text-gray-100">
-            {question}
+            {question ?? t`Fill in the blank`}
           </Text>
         </Card>
 
-        {/* Instructions */}
-        {instructions && (
-          <Text variant="body" className="text-text-grey mb-4 text-center dark:text-gray-400">
-            {instructions}
-          </Text>
-        )}
+        {/* Instructions (optional; generic fallback when absent) */}
+        <Text variant="body" className="text-text-grey mb-4 text-center dark:text-gray-400">
+          {instructions ?? t`Choose the correct word to complete the sentence`}
+        </Text>
 
         {/* Sentence with Blank */}
         <Card className="mb-6 p-6">{renderSentenceWithBlank()}</Card>
@@ -180,12 +178,7 @@ const FillBlankStep = ({ activity, onAnswer }: FillBlankStepProps) => {
 
       {/* Bottom Action Button */}
       <View className="border-t border-gray-200 bg-white px-6 py-4 dark:border-gray-700 dark:bg-gray-800">
-        <Button
-          variant="primary"
-          onPress={handleContinue}
-          disabled={!selectedAnswer || !showFeedback}
-          className="w-full"
-        >
+        <Button variant="primary" onPress={handleContinue} disabled={!showFeedback} className="w-full">
           <Text variant="body" weight="bold" className="text-white">
             {t`Continue`}
           </Text>

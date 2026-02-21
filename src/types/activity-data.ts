@@ -57,11 +57,20 @@ export interface ListenTypeActivityData {
   translation_fr?: string
 }
 
-/** Match pairs - right side can be localized */
-export interface MatchPairItem {
+/** Match pairs - legacy: left/right structure */
+export interface MatchPairItemLeftRight {
   left: string
   right: string | Record<string, string>
 }
+
+/** Match pairs - DB format: en/fr/kbp per pair (left=kbp, right=translation) */
+export interface MatchPairItemLang {
+  en?: string
+  fr?: string
+  kbp?: string
+}
+
+export type MatchPairItem = MatchPairItemLeftRight | MatchPairItemLang
 
 export interface MatchPairsActivityData {
   pairs?: MatchPairItem[]

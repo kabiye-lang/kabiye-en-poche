@@ -162,13 +162,11 @@ const QuizStep = ({ activity, onAnswer }: QuizStepProps) => {
 
       {/* Bottom Button */}
       <View className="border-t border-gray-200 bg-white px-6 py-4 dark:border-gray-700 dark:bg-gray-800">
-        {showFeedback && (
-          <Button variant="primary" onPress={handleContinue} className="w-full">
-            <Text variant="body" weight="bold" className="text-white">
-              {t`Continue`}
-            </Text>
-          </Button>
-        )}
+        <Button variant="primary" onPress={handleContinue} disabled={!showFeedback} className="w-full">
+          <Text variant="body" weight="bold" className="text-white">
+            {t`Continue`}
+          </Text>
+        </Button>
       </View>
     </View>
   )

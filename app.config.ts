@@ -1,6 +1,6 @@
 import { ConfigContext, ExpoConfig } from 'expo/config'
 
-import pkg from './package.json'
+import pkg from './package.json' with { type: 'json' }
 
 export default ({ config }: ConfigContext): ExpoConfig => ({
   ...config,

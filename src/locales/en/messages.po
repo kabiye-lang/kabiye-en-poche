@@ -104,6 +104,14 @@ msgstr "Find Kabiyè words in French..."
 msgid "Académie Kabiyè"
 msgstr "Académie Kabiyè"
 
+#: src/components/lesson-steps/fill-blank-step.tsx
+msgid "Choose the correct word to complete the sentence"
+msgstr "Choose the correct word to complete the sentence"
+
+#: src/components/lesson-steps/listen-type-step.tsx
+msgid "Listen to the audio and type the Kabiyè word"
+msgstr "Listen to the audio and type the Kabiyè word"
+
 #: src/screens/profile.tsx
 msgid "Failed to reset progress. Please try again."
 msgstr "Failed to reset progress. Please try again."
@@ -299,6 +307,10 @@ msgstr "This unit is coming soon!"
 msgid "App Language"
 msgstr "App Language"
 
+#: src/components/lesson-steps/order-words-step.tsx
+msgid "Put the words in the correct order"
+msgstr "Put the words in the correct order"
+
 #: src/screens/lesson-old.tsx
 #~ msgid "Got it!"
 #~ msgstr "Got it!"
@@ -366,6 +378,10 @@ msgstr "Examples"
 #: src/screens/dictionary/browse-letter.tsx
 msgid "Letter \"{letter}\""
 msgstr "Letter \"{letter}\""
+
+#: src/components/lesson-steps/fill-blank-step.tsx
+msgid "Fill in the blank"
+msgstr "Fill in the blank"
 
 #: src/screens/profile.tsx
 msgid "Current"
@@ -617,10 +633,18 @@ msgstr "The word you're looking for doesn't exist in our dictionary"
 msgid "Loading learning units..."
 msgstr "Loading learning units..."
 
+#: src/components/lesson-steps/listen-choose-step.tsx
+msgid "Listen to the audio and select the correct Kabiyè word"
+msgstr "Listen to the audio and select the correct Kabiyè word"
+
 #: src/screens/learn.tsx
 #: src/screens/unit.tsx
 msgid "Completed"
 msgstr "Completed"
+
+#: src/components/lesson-steps/listen-type-step.tsx
+msgid "Listen and type what you hear"
+msgstr "Listen and type what you hear"
 
 #: src/screens/lesson-old.tsx
 #~ msgid "Quiz"
@@ -749,6 +773,10 @@ msgstr "Settings"
 #: src/screens/unit.tsx
 msgid "Tap to start"
 msgstr "Tap to start"
+
+#: src/components/lesson-steps/listen-choose-step.tsx
+msgid "Listen and choose the correct word"
+msgstr "Listen and choose the correct word"
 
 #: src/screens/home.tsx
 #~ msgid "Learning Tips"
@@ -919,6 +947,10 @@ msgstr "Are you sure you want to reset all your progress? This action cannot be 
 #: src/screens/dictionary/dictionary.tsx
 msgid "Search for Kabiyè words and see their translations"
 msgstr "Search for Kabiyè words and see their translations"
+
+#: src/components/lesson-steps/match-pairs-step.tsx
+msgid "Match the pairs"
+msgstr "Match the pairs"
 
 #: src/screens/home.tsx
 #~ msgid "Reference Materials"

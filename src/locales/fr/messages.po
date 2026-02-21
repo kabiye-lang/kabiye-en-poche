@@ -88,6 +88,14 @@ msgstr "Trouver des mots Kabiyè en français..."
 msgid "Académie Kabiyè"
 msgstr "Académie Kabiyè"
 
+#: src/components/lesson-steps/fill-blank-step.tsx
+msgid "Choose the correct word to complete the sentence"
+msgstr "Choisissez le mot correct pour compléter la phrase"
+
+#: src/components/lesson-steps/listen-type-step.tsx
+msgid "Listen to the audio and type the Kabiyè word"
+msgstr "Écoutez l'audio et tapez le mot kabiyè"
+
 #: src/screens/profile.tsx
 msgid "Failed to reset progress. Please try again."
 msgstr "Échec de la réinitialisation de la progression. Veuillez réessayer."
@@ -279,6 +287,10 @@ msgstr "Cette unité arrive bientôt !"
 msgid "App Language"
 msgstr "Langue de l'application"
 
+#: src/components/lesson-steps/order-words-step.tsx
+msgid "Put the words in the correct order"
+msgstr "Mettez les mots dans le bon ordre"
+
 #: src/screens/dictionary/dictionary.tsx
 #~ msgid "Search for a word..."
 #~ msgstr "Rechercher un mot..."
@@ -342,6 +354,10 @@ msgstr "Exemples"
 #: src/screens/dictionary/browse-letter.tsx
 msgid "Letter \"{letter}\""
 msgstr "Lettre \"{letter}\""
+
+#: src/components/lesson-steps/fill-blank-step.tsx
+msgid "Fill in the blank"
+msgstr "Complétez le trou"
 
 #: src/screens/profile.tsx
 msgid "Current"
@@ -572,10 +588,18 @@ msgstr "Le mot que vous recherchez n'existe pas dans notre dictionnaire"
 msgid "Loading learning units..."
 msgstr "Chargement des unités d'apprentissage..."
 
+#: src/components/lesson-steps/listen-choose-step.tsx
+msgid "Listen to the audio and select the correct Kabiyè word"
+msgstr "Écoutez l'audio et sélectionnez le mot kabiyè correct"
+
 #: src/screens/learn.tsx
 #: src/screens/unit.tsx
 msgid "Completed"
 msgstr "Terminé"
+
+#: src/components/lesson-steps/listen-type-step.tsx
+msgid "Listen and type what you hear"
+msgstr "Écoutez et tapez ce que vous entendez"
 
 #: src/screens/lesson.tsx
 msgid "Great job! You've completed this lesson."
@@ -696,6 +720,10 @@ msgstr "Paramètres"
 #: src/screens/unit.tsx
 msgid "Tap to start"
 msgstr "Appuyez pour commencer"
+
+#: src/components/lesson-steps/listen-choose-step.tsx
+msgid "Listen and choose the correct word"
+msgstr "Écoutez et choisissez le mot correct"
 
 #: src/utils/difficulty.ts
 msgid "Beginner"
@@ -842,6 +870,10 @@ msgstr "Êtes-vous sûr de vouloir réinitialiser toute votre progression ? Cett
 #: src/screens/dictionary/dictionary.tsx
 msgid "Search for Kabiyè words and see their translations"
 msgstr "Rechercher des mots Kabiyè et voir leurs traductions"
+
+#: src/components/lesson-steps/match-pairs-step.tsx
+msgid "Match the pairs"
+msgstr "Associez les paires"
 
 #: src/screens/dictionary/word.tsx
 #~ msgid "Related Words"

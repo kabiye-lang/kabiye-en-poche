@@ -24,14 +24,21 @@ const MatchPairsStep = ({ activity, onAnswer }: MatchPairsStepProps) => {
   const { getValue, currentLanguage } = useLanguage()
 
   const activityData = activity.data as MatchPairsActivityData | null | undefined
-  const question = getValue(activity, 'question') || ''
-  const instructions = getValue(activity, 'instructions') || ''
+  const question = getValue(activity, 'question') || undefined
+  const instructions = getValue(activity, 'instructions') || undefined
 
-  // Transform pairs to use correct language for 'right' values; always resolve to string
+  // Transform pairs: support en/fr/kbp format (left=kbp, right=translation) or legacy left/right
   const rawPairs = activityData?.pairs ?? []
   const pairs: { left: string; right: string }[] = rawPairs.map((pair) => {
-    const right = typeof pair.right === 'object' ? pair.right[currentLanguage] || pair.right.en || '' : pair.right
-    return { left: pair.left, right: right || '' }
+    if ('kbp' in pair && ('en' in pair || 'fr' in pair)) {
+      const left = pair.kbp ?? ''
+      const right = pair[currentLanguage] ?? pair.en ?? pair.fr ?? ''
+      return { left, right }
+    }
+    const legacy = pair as { left: string; right: string | Record<string, string> }
+    const right =
+      typeof legacy.right === 'object' ? legacy.right[currentLanguage] || legacy.right.en || '' : legacy.right
+    return { left: legacy.left, right: right || '' }
   })
 
   const [leftItems, setLeftItems] = useState<string[]>([])
@@ -60,7 +67,7 @@ const MatchPairsStep = ({ activity, onAnswer }: MatchPairsStepProps) => {
     // Shuffle items
     setLeftItems(shuffleArray(pairs.map((p) => p.left)))
     setRightItems(shuffleArray(pairs.map((p) => p.right)))
-  }, [question, pairs])
+  }, [pairs])
 
   const handleSelect = (value: string, side: 'left' | 'right') => {
     if (matched.has(value)) return
@@ -118,15 +125,15 @@ const MatchPairsStep = ({ activity, onAnswer }: MatchPairsStepProps) => {
   return (
     <View className="flex-1">
       <ScrollView className="flex-1 px-6" showsVerticalScrollIndicator={false}>
-        {/* Question */}
+        {/* Question (optional; generic fallback when absent) */}
         <Card className="mb-6 p-6">
           <Text variant="h5" weight="semibold" className="text-text-dark text-center dark:text-gray-100">
-            {question}
+            {question ?? t`Match the pairs`}
           </Text>
         </Card>
 
         <Text variant="body" className="text-text-grey mb-4 text-center dark:text-gray-400">
-          {instructions || t`Tap pairs to match them`}
+          {instructions ?? t`Tap pairs to match them`}
         </Text>
 
         {/* Two columns for matching */}
@@ -194,13 +201,11 @@ const MatchPairsStep = ({ activity, onAnswer }: MatchPairsStepProps) => {
 
       {/* Bottom Button */}
       <View className="border-t border-gray-200 bg-white px-6 py-4 dark:border-gray-700 dark:bg-gray-800">
-        {showFeedback && (
-          <Button variant="primary" onPress={handleContinue} className="w-full">
-            <Text variant="body" weight="bold" className="text-white">
-              {t`Continue`}
-            </Text>
-          </Button>
-        )}
+        <Button variant="primary" onPress={handleContinue} disabled={!showFeedback} className="w-full">
+          <Text variant="body" weight="bold" className="text-white">
+            {t`Continue`}
+          </Text>
+        </Button>
       </View>
     </View>
   )

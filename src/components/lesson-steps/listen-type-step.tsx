@@ -22,8 +22,8 @@ const ListenTypeStep = ({ activity, onAnswer }: ListenTypeStepProps) => {
   const { playAudio, stopAudio, isPlaying, isLoading } = useAudio()
 
   const activityData = activity.data as ListenTypeActivityData | null | undefined
-  const question = getValue(activity, 'question') || ''
-  const instructions = getValue(activity, 'instructions') || ''
+  const question = getValue(activity, 'question') || undefined
+  const instructions = getValue(activity, 'instructions') || undefined
   const audioUrl = activityData?.audio_url
   const correctAnswer = activityData?.correct_answer || ''
   const hints = activityData?.hints || []
@@ -38,7 +38,7 @@ const ListenTypeStep = ({ activity, onAnswer }: ListenTypeStepProps) => {
     setUserAnswer('')
     setShowFeedback(false)
     setShowHints(false)
-  }, [question, correctAnswer])
+  }, [correctAnswer])
 
   // Auto-play audio when component mounts or changes
   useEffect(() => {
@@ -81,7 +81,7 @@ const ListenTypeStep = ({ activity, onAnswer }: ListenTypeStepProps) => {
         {/* Question with Audio */}
         <Card className="mb-6 p-6">
           <Text variant="h5" weight="semibold" className="text-text-dark mb-4 text-center dark:text-gray-100">
-            {question}
+            {question ?? t`Listen and type what you hear`}
           </Text>
 
           {/* Audio Player */}
@@ -120,12 +120,10 @@ const ListenTypeStep = ({ activity, onAnswer }: ListenTypeStepProps) => {
           </View>
         </Card>
 
-        {/* Instructions */}
-        {instructions && (
-          <Text variant="body" className="text-text-grey mb-4 text-center dark:text-gray-400">
-            {instructions}
-          </Text>
-        )}
+        {/* Instructions (optional; generic fallback when absent) */}
+        <Text variant="body" className="text-text-grey mb-4 text-center dark:text-gray-400">
+          {instructions ?? t`Listen to the audio and type the Kabiyè word`}
+        </Text>
 
         {/* Hints Button */}
         {hints.length > 0 && (
@@ -200,19 +198,16 @@ const ListenTypeStep = ({ activity, onAnswer }: ListenTypeStepProps) => {
 
       {/* Bottom Action Button */}
       <View className="border-t border-gray-200 bg-white px-6 py-4 dark:border-gray-700 dark:bg-gray-800">
-        {!showFeedback ? (
-          <Button variant="primary" onPress={handleCheck} disabled={!userAnswer.trim()} className="w-full">
-            <Text variant="body" weight="bold" className="text-white">
-              {t`Check Answer`}
-            </Text>
-          </Button>
-        ) : (
-          <Button variant="primary" onPress={handleContinue} className="w-full">
-            <Text variant="body" weight="bold" className="text-white">
-              {t`Continue`}
-            </Text>
-          </Button>
-        )}
+        <Button
+          variant="primary"
+          onPress={showFeedback ? handleContinue : handleCheck}
+          disabled={!showFeedback && !userAnswer.trim()}
+          className="w-full"
+        >
+          <Text variant="body" weight="bold" className="text-white">
+            {t`Continue`}
+          </Text>
+        </Button>
       </View>
     </View>
   )

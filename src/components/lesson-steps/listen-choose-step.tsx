@@ -22,8 +22,8 @@ const ListenChooseStep = ({ activity, onAnswer }: ListenChooseStepProps) => {
   const { playAudio, stopAudio, isPlaying, isLoading } = useAudio()
 
   const activityData = activity.data as ListenChooseActivityData | null | undefined
-  const question = getValue(activity, 'question') || ''
-  const instructions = getValue(activity, 'instructions') || ''
+  const question = getValue(activity, 'question') || undefined
+  const instructions = getValue(activity, 'instructions') || undefined
   const audioUrl = activityData?.audio_url // Audio URL comes from data only
 
   // Options are not localized - they are plain strings (Kabiyè words)
@@ -40,7 +40,7 @@ const ListenChooseStep = ({ activity, onAnswer }: ListenChooseStepProps) => {
   useEffect(() => {
     setSelectedIndex(null)
     setShowFeedback(false)
-  }, [question, correctAnswer])
+  }, [correctAnswer])
 
   // Auto-play audio when component mounts or changes
   useEffect(() => {
@@ -85,7 +85,7 @@ const ListenChooseStep = ({ activity, onAnswer }: ListenChooseStepProps) => {
         {/* Question with Audio */}
         <Card className="mb-6 p-6">
           <Text variant="h5" weight="semibold" className="text-text-dark mb-4 text-center dark:text-gray-100">
-            {question}
+            {question ?? t`Listen and choose the correct word`}
           </Text>
 
           {/* Audio Player */}
@@ -124,12 +124,10 @@ const ListenChooseStep = ({ activity, onAnswer }: ListenChooseStepProps) => {
           </View>
         </Card>
 
-        {/* Instructions */}
-        {instructions && (
-          <Text variant="body" className="text-text-grey mb-4 text-center dark:text-gray-400">
-            {instructions}
-          </Text>
-        )}
+        {/* Instructions (optional; generic fallback when absent) */}
+        <Text variant="body" className="text-text-grey mb-4 text-center dark:text-gray-400">
+          {instructions ?? t`Listen to the audio and select the correct Kabiyè word`}
+        </Text>
 
         {/* Options */}
         <View className="mb-4 gap-3">
@@ -218,13 +216,11 @@ const ListenChooseStep = ({ activity, onAnswer }: ListenChooseStepProps) => {
 
       {/* Bottom Button */}
       <View className="border-t border-gray-200 bg-white px-6 py-4 dark:border-gray-700 dark:bg-gray-800">
-        {showFeedback && (
-          <Button variant="primary" onPress={handleContinue} className="w-full">
-            <Text variant="body" weight="bold" className="text-white">
-              {t`Continue`}
-            </Text>
-          </Button>
-        )}
+        <Button variant="primary" onPress={handleContinue} disabled={!showFeedback} className="w-full">
+          <Text variant="body" weight="bold" className="text-white">
+            {t`Continue`}
+          </Text>
+        </Button>
       </View>
     </View>
   )
