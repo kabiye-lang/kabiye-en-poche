@@ -114,12 +114,12 @@ const MatchPairsStep = ({ activity, onAnswer }: MatchPairsStepProps) => {
     const isSelected = selected?.value === value && selected?.side === side
 
     if (isMatched) {
-      return 'border-green-500 bg-green-50 dark:bg-green-900/20'
+      return 'border-green-500 bg-success-bg'
     }
     if (isSelected) {
       return 'border-primary bg-primary/10'
     }
-    return 'border-gray-200 bg-white dark:border-gray-700 dark:bg-gray-800'
+    return 'border-border bg-card'
   }
 
   return (
@@ -127,12 +127,12 @@ const MatchPairsStep = ({ activity, onAnswer }: MatchPairsStepProps) => {
       <ScrollView className="flex-1 px-6" showsVerticalScrollIndicator={false}>
         {/* Question (optional; generic fallback when absent) */}
         <Card className="mb-6 p-6">
-          <Text variant="h5" weight="semibold" className="text-text-dark text-center dark:text-gray-100">
+          <Text variant="h5" weight="semibold" className="text-foreground text-center">
             {question ?? t`Match the pairs`}
           </Text>
         </Card>
 
-        <Text variant="body" className="text-text-grey mb-4 text-center dark:text-gray-400">
+        <Text variant="body" className="text-foreground-secondary mb-4 text-center">
           {instructions ?? t`Tap pairs to match them`}
         </Text>
 
@@ -150,9 +150,7 @@ const MatchPairsStep = ({ activity, onAnswer }: MatchPairsStepProps) => {
                 <Text
                   variant="body"
                   weight="bold"
-                  className={`text-center ${
-                    matched.has(item) ? 'text-green-700 dark:text-green-300' : 'text-text-dark dark:text-gray-100'
-                  }`}
+                  className={`text-center ${matched.has(item) ? 'text-success-text' : 'text-foreground'}`}
                 >
                   {item}
                 </Text>
@@ -171,9 +169,7 @@ const MatchPairsStep = ({ activity, onAnswer }: MatchPairsStepProps) => {
               >
                 <Text
                   variant="body"
-                  className={`text-center ${
-                    matched.has(item) ? 'text-green-700 dark:text-green-300' : 'text-text-dark dark:text-gray-100'
-                  }`}
+                  className={`text-center ${matched.has(item) ? 'text-success-text' : 'text-foreground'}`}
                 >
                   {item}
                 </Text>
@@ -183,15 +179,15 @@ const MatchPairsStep = ({ activity, onAnswer }: MatchPairsStepProps) => {
         </View>
 
         {/* Progress indicator */}
-        <Text variant="caption" className="text-text-grey mb-4 text-center dark:text-gray-400">
+        <Text variant="caption" className="text-foreground-secondary mb-4 text-center">
           {matched.size / 2} / {pairs.length} {t`matched`}
         </Text>
 
         {/* Feedback */}
         {showFeedback && (
-          <Card className="mb-4 bg-green-50 p-4 dark:bg-green-900/20">
-            <Text variant="h6" weight="bold" className="text-center text-green-700 dark:text-green-300">
-              {t`Perfect! All pairs matched! 🎉`}
+          <Card className="bg-success-bg mb-4 p-4">
+            <Text variant="h6" weight="bold" className="text-success-text text-center">
+              {t`Perfect! All pairs matched!`}
             </Text>
           </Card>
         )}
@@ -200,7 +196,7 @@ const MatchPairsStep = ({ activity, onAnswer }: MatchPairsStepProps) => {
       </ScrollView>
 
       {/* Bottom Button */}
-      <View className="border-t border-gray-200 bg-white px-6 py-4 dark:border-gray-700 dark:bg-gray-800">
+      <View className="border-border bg-card border-t px-6 py-4">
         <Button variant="primary" onPress={handleContinue} disabled={!showFeedback} className="w-full">
           <Text variant="body" weight="bold" className="text-white">
             {t`Continue`}

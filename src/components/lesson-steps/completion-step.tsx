@@ -23,7 +23,7 @@ const CompletionStep = ({ score = 0, totalQuestions = 0, onComplete }: Completio
 
   const getMessage = () => {
     if (isPerfect) return t`Perfect! You're a star! 🌟`
-    if (isGood) return t`Great job! 🎉`
+    if (isGood) return t`Great job!`
     if (isPass) return t`Well done! Keep practicing! 💪`
     return t`Keep trying! Practice makes perfect! 📚`
   }
@@ -39,7 +39,7 @@ const CompletionStep = ({ score = 0, totalQuestions = 0, onComplete }: Completio
     <View className="flex-1 items-center justify-center px-6">
       {/* Success Icon */}
       <View className="mb-6 items-center">
-        <View className="h-32 w-32 items-center justify-center rounded-full bg-green-100 dark:bg-green-900/30">
+        <View className="bg-success-bg h-32 w-32 items-center justify-center rounded-full">
           <CheckCircleIcon size={80} weight="fill" className="text-green-500" />
         </View>
       </View>
@@ -58,13 +58,13 @@ const CompletionStep = ({ score = 0, totalQuestions = 0, onComplete }: Completio
       {totalQuestions > 0 && (
         <Card className="mb-8 w-full p-6">
           <View className="items-center">
-            <Text variant="caption" className="text-text-grey mb-2 dark:text-gray-400">
+            <Text variant="caption" className="text-foreground-secondary mb-2">
               {t`Your Score`}
             </Text>
             <Text variant="h1" weight="bold" className={getColor()}>
               {percentage}%
             </Text>
-            <Text variant="caption" className="text-text-grey mt-2 dark:text-gray-400">
+            <Text variant="caption" className="text-foreground-secondary mt-2">
               {score} {t`out of`} {totalQuestions} {t`correct`}
             </Text>
           </View>

@@ -107,11 +107,11 @@ export default function KeyboardScreen() {
         key={letter.id}
         variant="ghost"
         size="sm"
-        className="rounded-md bg-white !px-0 !py-0 dark:bg-gray-800"
+        className="bg-card rounded-md !px-0 !py-0"
         style={{ width: buttonWidth, minWidth: buttonWidth, height: 35 }}
         onPress={() => changeText(letter)}
       >
-        <Text variant="lg" weight="regular" className="font-fig-light text-base text-gray-900 dark:text-gray-100">
+        <Text variant="lg" weight="regular" className="font-fig-light text-foreground text-base">
           {capsLock > 0 ? letter.caps : letter.id}
         </Text>
       </Button>
@@ -119,13 +119,13 @@ export default function KeyboardScreen() {
   }
 
   return (
-    <View flex className="bg-white dark:bg-gray-900">
+    <View flex className="bg-background">
       <View className="px-2.5">
         <ScreenTitle title={t`Keyboard`} />
-        <Text variant="body" className="text-text-dark mb-2 dark:text-gray-100">
+        <Text variant="body" className="text-foreground mb-2">
           {t`Use this keyboard to write in Kabiyè.`}
         </Text>
-        <Text variant="body" className="text-text-dark mb-2 dark:text-gray-100">
+        <Text variant="body" className="text-foreground mb-2">
           {t`The`} <ArrowFatLineUpIcon weight="regular" size={16} />{' '}
           {t`key allows you to capitalize. Long press to lock CAPS mode.`}
         </Text>
@@ -136,7 +136,7 @@ export default function KeyboardScreen() {
             value={content}
             editable={false}
             multiline
-            className="border-primary dark:border-primary max-h-[120px] min-h-[120px] w-full rounded-lg border bg-white p-2.5 text-base text-gray-900 dark:bg-gray-800 dark:text-gray-100"
+            className="border-primary bg-card text-foreground max-h-[120px] min-h-[120px] w-full rounded-lg border p-2.5 text-base"
             placeholder="Type here..."
             placeholderTextColor="#9CA3AF"
           />
@@ -169,7 +169,7 @@ export default function KeyboardScreen() {
         {/* <KeyboardAccessoryView
           renderContent={() => (
             <> */}
-        <View className="bg-gray-200 p-1.5 pb-5 dark:bg-gray-700">
+        <View className="bg-progress-track p-1.5 pb-5">
           <View className="mt-2.5 flex-row flex-wrap justify-center gap-1.5">
             {OTHER_CHARACTERS.concat(ALPHABET_LIST).map((letter) => renderButton(letter))}
           </View>
@@ -177,60 +177,57 @@ export default function KeyboardScreen() {
             <Button
               variant="ghost"
               size="sm"
-              className="rounded-md bg-white dark:bg-gray-800"
+              className="bg-card rounded-md"
               style={{ width: 50, minWidth: 50, height: 35 }}
               onPress={() => setCapsLock((capsLockOld) => (capsLockOld > 0 ? 0 : 1))}
               onLongPress={() => setCapsLock((capsLockOld) => (capsLockOld > 0 ? 0 : 2))}
             >
               {capsLock === 2 ? (
-                <ArrowFatLinesUpIcon weight="fill" className="text-gray-900 dark:text-gray-100" />
+                <ArrowFatLinesUpIcon weight="fill" className="text-foreground" />
               ) : (
-                <ArrowFatLineUpIcon
-                  weight={capsLock === 1 ? 'fill' : 'light'}
-                  className="text-gray-900 dark:text-gray-100"
-                />
+                <ArrowFatLineUpIcon weight={capsLock === 1 ? 'fill' : 'light'} className="text-foreground" />
               )}
             </Button>
             <Button
               variant="ghost"
               size="sm"
-              className="rounded-md bg-white dark:bg-gray-800"
+              className="bg-card rounded-md"
               style={{ width: 50, minWidth: 50, height: 35 }}
               onPress={() => changeText({ id: '.' })}
             >
-              <DotIcon className="text-gray-900 dark:text-gray-100" />
+              <DotIcon className="text-foreground" />
             </Button>
             <Button
               variant="ghost"
               size="sm"
-              className="rounded-md bg-white dark:bg-gray-800"
+              className="bg-card rounded-md"
               style={{ width: 90, minWidth: 90, height: 35 }}
               onPress={() => changeText({ id: ' ' })}
             >
-              <Text variant="body" weight="light" className="text-gray-900 dark:text-gray-100">
+              <Text variant="body" weight="light" className="text-foreground">
                 {t`Space`}
               </Text>
             </Button>
             <Button
               variant="ghost"
               size="sm"
-              className="rounded-md bg-white dark:bg-gray-800"
+              className="bg-card rounded-md"
               style={{ width: 50, minWidth: 50, height: 35 }}
               onPress={() => setContent((content) => content.substring(0, content.length - 1))}
             >
-              <BackspaceIcon weight="light" className="text-gray-900 dark:text-gray-100" />
+              <BackspaceIcon weight="light" className="text-foreground" />
             </Button>
             <Button
               variant="ghost"
               size="sm"
-              className="rounded-md bg-white dark:bg-gray-800"
+              className="bg-card rounded-md"
               style={{ width: 50, minWidth: 50, height: 35 }}
               onPress={() => {
                 changeText({ id: '\n' })
                 setCapsLock(1)
               }}
             >
-              <KeyReturnIcon weight="light" className="text-gray-900 dark:text-gray-100" />
+              <KeyReturnIcon weight="light" className="text-foreground" />
             </Button>
           </View>
         </View>

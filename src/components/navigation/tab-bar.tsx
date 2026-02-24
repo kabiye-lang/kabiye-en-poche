@@ -39,7 +39,7 @@ export default function CustomTabBar({ state, descriptors, navigation }: BottomT
   }))
   return (
     <View
-      className="flex-row border-t border-gray-200 dark:border-gray-700"
+      className="border-border flex-row border-t"
       style={{
         paddingBottom: safeAreaInsets.bottom + (Platform.OS === 'ios' ? 0 : 10),
         paddingTop: 8,

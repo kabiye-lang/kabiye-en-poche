@@ -84,10 +84,10 @@ const ContentStep = ({
 
         {/* Main Content */}
         <Card className="mb-4 p-6">
-          <Text variant="h6" weight="bold" className="text-text-dark mb-4 dark:text-gray-100">
+          <Text variant="h6" weight="bold" className="text-foreground mb-4">
             {title}
           </Text>
-          <Text variant="lg" className="text-text-dark leading-7 dark:text-gray-100">
+          <Text variant="lg" className="text-foreground leading-7">
             {content}
           </Text>
         </Card>
@@ -98,7 +98,7 @@ const ContentStep = ({
             <Text variant="h5" weight="semibold" className="text-primary mb-3">
               {t`Examples`}
             </Text>
-            <Text variant="caption" className="text-text-grey mb-2 dark:text-gray-400">
+            <Text variant="caption" className="text-foreground mb-2">
               {t`Tap the speaker icon to hear pronunciation`}
             </Text>
             {examples.map((example, index) => {
@@ -115,16 +115,16 @@ const ContentStep = ({
                       }
                     : {})}
                 >
-                  <Card className="bg-bg-grey mb-3 flex-row items-center p-4 dark:bg-gray-700">
+                  <Card className="bg-background-tertiary mb-3 flex-row items-center p-4">
                     <View className="flex-1">
                       <Text variant="h6" weight="bold" className="text-primary">
                         {example.kbp}
                       </Text>
-                      <Text variant="body" className="text-text-grey mt-1 dark:text-gray-400">
+                      <Text variant="body" className="text-foreground mt-1">
                         {example.en}
                       </Text>
                       {example.pronunciation && (
-                        <Text variant="caption" className="text-text-grey mt-1 italic dark:text-gray-500">
+                        <Text variant="caption" className="text-foreground-secondary mt-1 italic">
                           [{example.pronunciation}]
                         </Text>
                       )}
@@ -146,7 +146,7 @@ const ContentStep = ({
       </ScrollView>
 
       {/* Bottom Continue Button */}
-      <View className="border-t border-gray-200 bg-white px-6 py-4 dark:border-gray-700 dark:bg-gray-800">
+      <View className="border-border bg-card border-t px-6 py-4">
         <Button variant="primary" onPress={onContinue} className="w-full">
           <Text variant="body" weight="bold" className="text-white">
             {t`Continue`}

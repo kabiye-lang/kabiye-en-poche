@@ -142,8 +142,8 @@ msgid "Lesson Complete!"
 msgstr "Lesson Complete!"
 
 #: src/components/lesson-steps/order-words-step.tsx
-msgid "Check"
-msgstr "Check"
+#~ msgid "Check"
+#~ msgstr "Check"
 
 #: src/screens/terms-and-conditions.tsx
 msgid "Terms not found"
@@ -160,8 +160,8 @@ msgstr "Loading progress..."
 
 #: src/components/lesson-steps/listen-choose-step.tsx
 #: src/components/lesson-steps/quiz-step.tsx
-msgid "Correct! 🎉"
-msgstr "Correct! 🎉"
+msgid "Correct!"
+msgstr "Correct!"
 
 #: src/screens/unit.tsx
 msgid "This unit is temporarily unavailable"
@@ -205,9 +205,17 @@ msgstr "Your answer will appear here"
 msgid "Perfect! You're a star! 🌟"
 msgstr "Perfect! You're a star! 🌟"
 
+#: src/components/lesson-steps/match-pairs-step.tsx
+msgid "Perfect! All pairs matched!"
+msgstr "Perfect! All pairs matched!"
+
 #: src/screens/profile.tsx
 msgid "Online Kabiyè dictionary"
 msgstr "Online Kabiyè dictionary"
+
+#: src/components/lesson-steps/quiz-step.tsx
+msgid "True"
+msgstr "True"
 
 #: src/screens/profile.tsx
 msgid "Kabiyè Workbook"
@@ -400,8 +408,8 @@ msgid "Home"
 msgstr "Home"
 
 #: src/components/lesson-steps/completion-step.tsx
-msgid "Great job! 🎉"
-msgstr "Great job! 🎉"
+msgid "Great job!"
+msgstr "Great job!"
 
 #: src/screens/dictionary/dictionary.tsx
 msgid "Français"
@@ -576,6 +584,10 @@ msgstr "Intermediate"
 msgid "See Also"
 msgstr "See Also"
 
+#: src/components/lesson-steps/quiz-step.tsx
+msgid "False"
+msgstr "False"
+
 #: src/components/lesson-steps/order-words-step.tsx
 #: src/screens/profile.tsx
 msgid "Reset"
@@ -667,8 +679,8 @@ msgid "Learn"
 msgstr "Learn"
 
 #: src/components/lesson-steps/listen-type-step.tsx
-msgid "Check Answer"
-msgstr "Check Answer"
+#~ msgid "Check Answer"
+#~ msgstr "Check Answer"
 
 #: src/screens/alphabet-letter.tsx
 #: src/screens/alphabet-list.tsx
@@ -693,8 +705,8 @@ msgid "Error"
 msgstr "Error"
 
 #: src/components/lesson-steps/match-pairs-step.tsx
-msgid "Perfect! All pairs matched! 🎉"
-msgstr "Perfect! All pairs matched! 🎉"
+#~ msgid "Perfect! All pairs matched!"
+#~ msgstr "Perfect! All pairs matched!"
 
 #: src/screens/dictionary/word.tsx
 msgid "View main entry:"
@@ -796,8 +808,8 @@ msgid "key allows you to capitalize. Long press to lock CAPS mode."
 msgstr "key allows you to capitalize. Long press to lock CAPS mode."
 
 #: src/components/lesson-steps/order-words-step.tsx
-msgid "Perfect! Correct order! 🎉"
-msgstr "Perfect! Correct order! 🎉"
+msgid "Perfect! Correct order!"
+msgstr "Perfect! Correct order!"
 
 #: src/screens/dictionary/word.tsx
 msgid "Examples:"
@@ -814,8 +826,8 @@ msgid "Coming Soon"
 msgstr "Coming Soon"
 
 #: src/screens/home.tsx
-msgid "All lessons completed! 🎉"
-msgstr "All lessons completed! 🎉"
+msgid "All lessons completed!"
+msgstr "All lessons completed!"
 
 #: src/screens/lesson-old.tsx
 #~ msgid "Learning Objectives"

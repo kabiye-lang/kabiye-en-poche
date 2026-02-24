@@ -14,7 +14,7 @@ export default function PrivacyPolicyScreen() {
 
   if (isLoading) {
     return (
-      <View className="flex-1 bg-white dark:bg-gray-900" safeArea="vertical">
+      <View className="bg-background flex-1" safeArea="vertical">
         <View className="flex-1 items-center justify-center">
           <Text className="mt-4">{t`Loading privacy policy...`}</Text>
         </View>
@@ -24,12 +24,12 @@ export default function PrivacyPolicyScreen() {
 
   if (error || !privacyPage) {
     return (
-      <View className="flex-1 bg-white dark:bg-gray-900" safeArea="vertical">
+      <View className="bg-background flex-1" safeArea="vertical">
         <View className="flex-1 items-center justify-center px-4">
           <Text variant="h6" className="text-primary text-center">
             {t`Privacy Policy not found`}
           </Text>
-          <Text variant="caption" className="text-text-grey mt-2 text-center dark:text-gray-400">
+          <Text variant="caption" className="text-foreground-secondary mt-2 text-center">
             {error?.message || t`Privacy policy is not available`}
           </Text>
         </View>
@@ -38,7 +38,7 @@ export default function PrivacyPolicyScreen() {
   }
 
   return (
-    <View className="flex-1 bg-white p-2 dark:bg-gray-900" safeArea="vertical">
+    <View className="bg-background flex-1 p-2" safeArea="vertical">
       <ScrollView className="flex-1 pt-12" showsVerticalScrollIndicator={false}>
         <Markdown style={MARKDOWN_STYLE}>{privacyPage.content_fr}</Markdown>
       </ScrollView>

@@ -16,7 +16,7 @@ export default function AlphabetListScreen() {
 
   if (isLoading) {
     return (
-      <View flex className="bg-white dark:bg-gray-900">
+      <View flex className="bg-background">
         <View className="flex-1 items-center justify-center">
           <ActivityIndicator size="large" className="text-primary" />
           <Text className="mt-4">{t`Loading alphabet...`}</Text>
@@ -27,12 +27,12 @@ export default function AlphabetListScreen() {
 
   if (error) {
     return (
-      <View flex className="bg-white dark:bg-gray-900">
+      <View flex className="bg-background">
         <View className="flex-1 items-center justify-center px-4">
           <Text variant="h6" className="text-primary text-center">
             {t`Error loading alphabet`}
           </Text>
-          <Text variant="caption" className="text-text-grey mt-2 text-center dark:text-gray-400">
+          <Text variant="caption" className="text-foreground mt-2 text-center">
             {error.message}
           </Text>
         </View>
@@ -40,7 +40,7 @@ export default function AlphabetListScreen() {
     )
   }
   return (
-    <View flex className="bg-white dark:bg-gray-900">
+    <View flex className="bg-background">
       <FlatList
         numColumns={3}
         data={alphabetLetters || []}

@@ -55,13 +55,13 @@ export function getDifficultyColor(difficulty: DifficultyLevel): string {
 export function getDifficultyBgClass(difficulty: DifficultyLevel): string {
   switch (difficulty) {
     case 'beginner':
-      return 'bg-green-100 dark:bg-green-900/30'
+      return 'bg-difficulty-beginner-bg'
     case 'intermediate':
-      return 'bg-yellow-100 dark:bg-yellow-900/30'
+      return 'bg-difficulty-intermediate-bg'
     case 'advanced':
-      return 'bg-red-100 dark:bg-red-900/30'
+      return 'bg-difficulty-advanced-bg'
     default:
-      return 'bg-gray-100 dark:bg-gray-900/30'
+      return 'bg-difficulty-default-bg'
   }
 }
 
@@ -73,12 +73,12 @@ export function getDifficultyBgClass(difficulty: DifficultyLevel): string {
 export function getDifficultyTextClass(difficulty: DifficultyLevel): string {
   switch (difficulty) {
     case 'beginner':
-      return 'text-green-600 dark:text-green-400'
+      return 'text-difficulty-beginner-text'
     case 'intermediate':
-      return 'text-yellow-600 dark:text-yellow-400'
+      return 'text-difficulty-intermediate-text'
     case 'advanced':
-      return 'text-red-600 dark:text-red-400'
+      return 'text-difficulty-advanced-text'
     default:
-      return 'text-gray-600 dark:text-gray-400'
+      return 'text-difficulty-default-text'
   }
 }

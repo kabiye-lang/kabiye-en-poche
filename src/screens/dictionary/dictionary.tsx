@@ -59,22 +59,20 @@ const DictionaryScreen: React.FC = () => {
   const showSearchResults = debouncedQuery.length >= 2 && searchResults
 
   return (
-    <View flex className="bg-bg-grey dark:bg-gray-900">
+    <View flex className="bg-background">
       <View className="px-2.5 py-2.5">
         {/* Mode Tabs */}
         <View className="mb-3 flex-row gap-2">
           <TouchableOpacity
             onPress={() => setSearchMode('kabiye')}
             className={`flex-1 items-center rounded-lg px-4 py-2.5 ${
-              searchMode === 'kabiye'
-                ? 'bg-primary'
-                : 'border border-gray-300 bg-white dark:border-gray-600 dark:bg-gray-800'
+              searchMode === 'kabiye' ? 'bg-primary' : 'border-border bg-card border'
             }`}
           >
             <Text
               variant="body"
               weight="semibold"
-              className={searchMode === 'kabiye' ? 'text-white' : 'text-text-dark dark:text-gray-100'}
+              className={searchMode === 'kabiye' ? 'text-primary-foreground' : 'text-foreground'}
             >
               {t`Kabiyè`}
             </Text>
@@ -82,15 +80,13 @@ const DictionaryScreen: React.FC = () => {
           <TouchableOpacity
             onPress={() => setSearchMode('translation')}
             className={`flex-1 items-center rounded-lg px-4 py-2.5 ${
-              searchMode === 'translation'
-                ? 'bg-primary'
-                : 'border border-gray-300 bg-white dark:border-gray-600 dark:bg-gray-800'
+              searchMode === 'translation' ? 'bg-primary' : 'border-border bg-card border'
             }`}
           >
             <Text
               variant="body"
               weight="semibold"
-              className={searchMode === 'translation' ? 'text-white' : 'text-text-dark dark:text-gray-100'}
+              className={searchMode === 'translation' ? 'text-primary-foreground' : 'text-foreground'}
             >
               {currentLanguage === 'fr' ? t`Français` : t`English`}
             </Text>
@@ -98,19 +94,19 @@ const DictionaryScreen: React.FC = () => {
         </View>
 
         {/* Helper Text */}
-        <Text variant="caption" className="text-text-grey mb-2 dark:text-gray-400">
+        <Text variant="caption" className="text-foreground-secondary mb-2">
           {getHelperText()}
         </Text>
 
         {/* Search Bar */}
-        <View className="flex-row items-center rounded-lg border border-gray-300 bg-white px-3 py-2 dark:border-gray-600 dark:bg-gray-800">
-          <MagnifyingGlassIcon size={24} className="text-text-grey mr-2.5 dark:text-gray-400" />
+        <View className="border-border bg-card flex-row items-center rounded-lg border px-3 py-2">
+          <MagnifyingGlassIcon size={24} className="text-foreground-secondary mr-2.5" />
           <TextInput
             value={searchQuery}
             onChangeText={setSearchQuery}
             onSubmitEditing={handleSearch}
             placeholder={getPlaceholder()}
-            className="flex-1 text-base text-gray-900 dark:text-gray-100"
+            className="text-foreground flex-1 text-base"
             placeholderTextColor="#9CA3AF"
             returnKeyType="search"
           />
@@ -119,14 +115,14 @@ const DictionaryScreen: React.FC = () => {
 
         {/* Quick search results dropdown */}
         {showSearchResults && searchResults.length > 0 && (
-          <View className="mt-2 rounded-lg border border-gray-200 bg-white dark:border-gray-700 dark:bg-gray-800">
+          <View className="border-border bg-card mt-2 rounded-lg border">
             {searchResults.slice(0, 5).map((result) => (
               <Link key={result.entry_id} href={`/word/${result.headword}`} asChild onPress={() => setSearchQuery('')}>
-                <TouchableOpacity className="border-b border-gray-100 px-4 py-3 dark:border-gray-700">
-                  <Text variant="body" weight="semibold" className="text-gray-900 dark:text-gray-100">
+                <TouchableOpacity className="border-border border-b px-4 py-3">
+                  <Text variant="body" weight="semibold" className="text-foreground">
                     {result.headword}
                   </Text>
-                  <Text variant="caption" className="text-text-grey mt-0.5 dark:text-gray-400">
+                  <Text variant="caption" className="text-foreground-secondary mt-0.5">
                     {result.match_text ?? result.headword}
                   </Text>
                 </TouchableOpacity>
@@ -148,7 +144,7 @@ const DictionaryScreen: React.FC = () => {
         <View className="mt-2.5 px-2.5">
           <View className="mb-2.5 flex-row items-center">
             <SparkleIcon size={20} weight="duotone" className="text-primary mr-1.5" />
-            <Text variant="h5" weight="semibold">
+            <Text variant="h5" weight="semibold" className="text-foreground">
               {t`Word of the Day`}
             </Text>
           </View>
@@ -170,12 +166,12 @@ const DictionaryScreen: React.FC = () => {
                         {displayHeadword}
                       </Text>
                       {firstEntry.entry_data.pronunciations?.[0] && (
-                        <Text variant="caption" className="text-text-grey mt-1 dark:text-gray-400">
+                        <Text variant="caption" className="text-foreground-secondary mt-1">
                           [{firstEntry.entry_data.pronunciations[0]}]
                         </Text>
                       )}
                       {firstEntry.entry_data.senses[0]?.definitions[0] && (
-                        <Text variant="body" className="text-text-dark mt-2 dark:text-gray-200">
+                        <Text variant="body" className="text-foreground mt-2">
                           {currentLanguage === 'fr'
                             ? firstEntry.entry_data.senses[0].definitions[0].translations.fr
                             : firstEntry.entry_data.senses[0].definitions[0].translations.en}
@@ -191,7 +187,7 @@ const DictionaryScreen: React.FC = () => {
 
         {/* Browse by Letter */}
         <View className="mt-5 px-2.5">
-          <Text variant="h5" weight="semibold" className="mb-2.5">
+          <Text variant="h5" weight="semibold" className="text-foreground mb-2.5">
             {t`Browse by Letter`}
           </Text>
           {isLoadingLetters ? (
@@ -201,7 +197,7 @@ const DictionaryScreen: React.FC = () => {
               {letters?.map((letter) => (
                 <Link key={letter} href={`/dictionary/letter/${letter}`} asChild>
                   <TouchableOpacity>
-                    <View className="items-center justify-center rounded-lg bg-white px-4 py-3 dark:bg-gray-800">
+                    <View className="bg-card items-center justify-center rounded-lg px-4 py-3">
                       <Text variant="lg" weight="bold" className="text-primary">
                         {letter}
                       </Text>

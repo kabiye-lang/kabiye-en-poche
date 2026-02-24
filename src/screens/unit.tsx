@@ -29,7 +29,7 @@ const UnitScreen = () => {
 
   if (unitLoading) {
     return (
-      <View flex safeArea="top" className="bg-grey dark:bg-gray-900">
+      <View flex safeArea="top" className="bg-background">
         <View className="flex-1 items-center justify-center">
           <ActivityIndicator size="large" className="text-primary" />
           <Text className="mt-4">{t`Loading unit...`}</Text>
@@ -40,12 +40,12 @@ const UnitScreen = () => {
 
   if (unitError || !unit) {
     return (
-      <View flex safeArea="top" className="bg-grey dark:bg-gray-900">
+      <View flex safeArea="top" className="bg-background">
         <View className="flex-1 items-center justify-center px-4">
           <Text variant="h6" className="text-primary text-center">
             {t`Unit not found`}
           </Text>
-          <Text variant="caption" className="text-text-grey mt-2 text-center dark:text-gray-400">
+          <Text variant="caption" className="text-foreground-secondary mt-2 text-center">
             {unitError?.message || t`This unit does not exist`}
           </Text>
         </View>
@@ -65,12 +65,12 @@ const UnitScreen = () => {
             : t`This unit is not available`
 
     return (
-      <View flex safeArea="top" className="bg-grey dark:bg-gray-900">
+      <View flex safeArea="top" className="bg-background">
         <View className="flex-1 items-center justify-center px-4">
           <Text variant="h6" className="text-primary text-center">
             {statusMessage}
           </Text>
-          <Text variant="caption" className="text-text-grey mt-2 text-center dark:text-gray-400">
+          <Text variant="caption" className="text-foreground-secondary mt-2 text-center">
             {t`Please check back later`}
           </Text>
         </View>
@@ -79,7 +79,7 @@ const UnitScreen = () => {
   }
 
   return (
-    <View flex className="bg-white dark:bg-gray-900">
+    <View flex className="bg-background">
       <ScrollView className="px-4 py-5" style={{ paddingTop: 40 + safeAreaInsets.top }}>
         {/* Unit Header */}
         <Gradient colors={[brandColors.primary, brandColors.secondary]} className="my-5">
@@ -113,7 +113,7 @@ const UnitScreen = () => {
                 <Text variant="h6" className="text-primary text-center">
                   {t`Lessons temporarily unavailable`}
                 </Text>
-                <Text variant="caption" className="text-text-grey mt-2 text-center dark:text-gray-400">
+                <Text variant="caption" className="text-foreground-secondary mt-2 text-center">
                   {t`Please check your connection and try again`}
                 </Text>
               </View>
@@ -130,7 +130,7 @@ const UnitScreen = () => {
                 <Text variant="h6" className="text-primary text-center">
                   {t`No lessons available`}
                 </Text>
-                <Text variant="caption" className="text-text-grey mt-2 text-center dark:text-gray-400">
+                <Text variant="caption" className="text-foreground-secondary mt-2 text-center">
                   {t`Lessons will be added soon`}
                 </Text>
               </View>
@@ -163,13 +163,13 @@ const LessonItem = ({ lesson }: LessonItemProps) => {
 
   if (lesson.is_locked) {
     return (
-      <View className="bg-grey flex-row items-center rounded-lg p-3 opacity-50">
-        <LockIcon size={20} className="text-text-grey dark:text-gray-400" />
+      <View className="bg-background-tertiary flex-row items-center rounded-lg p-3 opacity-50">
+        <LockIcon size={20} className="text-foreground-secondary" />
         <View className="ml-3 flex-1">
-          <Text variant="body" className="text-text-grey mb-1 dark:text-gray-400">
+          <Text variant="body" className="text-foreground-secondary mb-1">
             {lessonTitle}
           </Text>
-          <Text variant="caption" className="text-text-grey dark:text-gray-400">
+          <Text variant="caption" className="text-foreground-secondary">
             {t`Complete previous lesson to unlock`}
           </Text>
         </View>
@@ -192,14 +192,10 @@ const LessonItem = ({ lesson }: LessonItemProps) => {
             <View className="border-primary h-5 w-5 rounded-full border-2" />
           )}
           <View className="ml-3 flex-1">
-            <Text
-              variant="body"
-              weight={lesson.is_completed ? 'medium' : 'regular'}
-              className="text-text-dark mb-1 dark:text-gray-100"
-            >
+            <Text variant="body" weight={lesson.is_completed ? 'medium' : 'regular'} className="text-foreground mb-1">
               {lessonTitle}
             </Text>
-            <Text variant="caption" className="text-text-grey dark:text-gray-400">
+            <Text variant="caption" className="text-foreground-secondary">
               {lesson.is_completed ? t`Completed` : t`Tap to start`}
             </Text>
           </View>

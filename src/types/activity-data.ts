@@ -21,10 +21,15 @@ export interface AudioActivityData {
   transcript_fr?: string
 }
 
-/** Quiz (multiple_choice / true_false) */
+/** Quiz (multiple_choice / true_false) - options/answer can be in UI language (en/fr) or Kabiyè (kbp) */
 export interface QuizActivityData {
+  /** Options keyed by language: en, fr, or kbp. For true_false, omit – built-in True/False used. */
   options?: Record<string, string[]>
+  /** Correct answer. For multiple_choice: string or keyed. For true_false: use answer instead. */
   correct_answer?: string | Record<string, string>
+  /** For true_false only: the correct answer (true or false) */
+  answer?: boolean
+  /** Optional explanation (always in UI language en/fr) */
   explanation?: Record<string, string>
 }
 

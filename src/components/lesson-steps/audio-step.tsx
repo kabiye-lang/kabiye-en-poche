@@ -71,7 +71,7 @@ const AudioStep = ({ audioType, audioUrl, conversation, transcript, onContinue }
                 <SpeakerSlashIcon size={48} color="white" weight="fill" />
               )}
             </TouchableOpacity>
-            <Text variant="h6" className="text-text-dark mt-4 text-center dark:text-gray-100">
+            <Text variant="h6" className="text-foreground mt-4 text-center">
               {!audioUrl
                 ? t`No audio available`
                 : isLoading
@@ -96,7 +96,7 @@ const AudioStep = ({ audioType, audioUrl, conversation, transcript, onContinue }
                     <Text variant="caption" weight="bold" className="text-primary mb-1">
                       {line.speaker}
                     </Text>
-                    <Text variant="body" className="text-text-dark dark:text-gray-100">
+                    <Text variant="body" className="text-foreground">
                       {line.text}
                     </Text>
                   </View>
@@ -121,10 +121,10 @@ const AudioStep = ({ audioType, audioUrl, conversation, transcript, onContinue }
         {/* Transcript */}
         {transcript && (
           <Card className="mb-4 p-4">
-            <Text variant="caption" weight="bold" className="text-text-grey mb-2 dark:text-gray-400">
+            <Text variant="caption" weight="bold" className="text-foreground mb-2">
               {t`Transcript`}
             </Text>
-            <Text variant="body" className="text-text-dark dark:text-gray-100">
+            <Text variant="body" className="text-foreground">
               {transcript}
             </Text>
           </Card>
@@ -133,7 +133,7 @@ const AudioStep = ({ audioType, audioUrl, conversation, transcript, onContinue }
         {/* Placeholder if no audio */}
         {!audioUrl && (!conversation || conversation.length === 0) && (
           <Card className="p-6">
-            <Text variant="body" className="text-text-grey text-center dark:text-gray-400">
+            <Text variant="body" className="text-foreground-secondary text-center">
               {t`Audio content will be available soon.`}
             </Text>
           </Card>
@@ -143,7 +143,7 @@ const AudioStep = ({ audioType, audioUrl, conversation, transcript, onContinue }
       </ScrollView>
 
       {/* Bottom Continue Button */}
-      <View className="border-t border-gray-200 bg-white px-6 py-4 dark:border-gray-700 dark:bg-gray-800">
+      <View className="border-border bg-card border-t px-6 py-4">
         <Button variant="primary" onPress={handleContinue} className="w-full">
           <Text variant="body" weight="bold" className="text-white">
             {t`Continue`}

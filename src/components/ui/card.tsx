@@ -14,10 +14,10 @@ const cardVariants = tv({
   base: 'rounded-xl',
   variants: {
     variant: {
-      default: 'shadow-card bg-white dark:bg-gray-800 dark:shadow-none',
-      elevated: 'shadow-card-lg bg-white dark:bg-gray-800 dark:shadow-none',
-      outlined: 'border border-gray-200 bg-white dark:border-gray-700 dark:bg-gray-800',
-      filled: 'bg-gray-50 dark:bg-gray-700',
+      default: 'shadow-card bg-card',
+      elevated: 'shadow-card-lg bg-card',
+      outlined: 'border-border bg-card border',
+      filled: 'bg-background-tertiary',
     },
     padding: {
       none: '',
@@ -76,7 +76,7 @@ export function CardHeader({ title, subtitle, action, className }: CardHeaderPro
           </Text>
         )}
         {subtitle && (
-          <Text variant="body" className="text-text-grey dark:text-gray-400">
+          <Text variant="body" className="text-foreground-secondary">
             {subtitle}
           </Text>
         )}

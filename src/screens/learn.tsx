@@ -29,10 +29,10 @@ const LearnScreen = () => {
 
   if (unitsLoading) {
     return (
-      <View flex safeArea="top" className="bg-grey dark:bg-gray-900">
+      <View flex safeArea="top" className="bg-background">
         <View className="flex-1 items-center justify-center">
           <ActivityIndicator size="large" className="text-primary" />
-          <Text className="mt-4">{t`Loading learning units...`}</Text>
+          <Text className="text-foreground mt-4">{t`Loading learning units...`}</Text>
         </View>
       </View>
     )
@@ -40,12 +40,12 @@ const LearnScreen = () => {
 
   if (unitsError) {
     return (
-      <View flex safeArea="top" className="bg-grey dark:bg-gray-900">
+      <View flex safeArea="top" className="bg-background">
         <View className="flex-1 items-center justify-center px-4">
           <Text variant="h6" className="text-primary text-center">
             {t`Failed to load learning units`}
           </Text>
-          <Text variant="caption" className="text-text-grey mt-2 text-center dark:text-gray-400">
+          <Text variant="caption" className="text-foreground-secondary mt-2 text-center">
             {unitsError.message}
           </Text>
         </View>
@@ -54,7 +54,7 @@ const LearnScreen = () => {
   }
 
   return (
-    <View flex className="bg-grey dark:bg-gray-900">
+    <View flex className="bg-background">
       <ScrollView className="px-4 pb-5">
         <ScreenTitle title={t`Learn Kabiyè`} />
         {units?.map((unit) => (
@@ -106,21 +106,21 @@ const UnitCard = ({ unit, isExpanded, onToggle }: UnitCardProps) => {
             <Text
               variant="h6"
               weight="bold"
-              className={`mb-1 ${isAvailable ? 'text-primary dark:text-gray-100' : 'text-text-grey dark:text-gray-400'}`}
+              className={`mb-1 ${isAvailable ? 'text-primary' : 'text-foreground-secondary'}`}
             >
               {unitTitle}
             </Text>
             {unitDescription && (
-              <Text variant="caption" className="text-text-grey mb-2 dark:text-gray-400">
+              <Text variant="caption" className="text-foreground-secondary mb-2">
                 {unitDescription}
               </Text>
             )}
             {isAvailable ? (
               <View className="flex-row items-center">
-                <Text variant="caption" className="text-text-grey dark:text-gray-400">
+                <Text variant="caption" className="text-foreground-secondary">
                   {completedLessons}/{totalLessons} {t`lessons completed`}
                 </Text>
-                <View className="bg-grey ml-2 h-1.5 w-16 rounded-full dark:bg-gray-600">
+                <View className="bg-background-tertiary ml-2 h-1.5 w-16 rounded-full">
                   <View
                     className="bg-primary h-1.5 rounded-full transition-all duration-300"
                     style={{ width: totalLessons > 0 ? `${(completedLessons / totalLessons) * 100}%` : '0%' }}
@@ -129,7 +129,7 @@ const UnitCard = ({ unit, isExpanded, onToggle }: UnitCardProps) => {
               </View>
             ) : (
               <View className="mt-1">
-                <Text variant="caption" className="text-text-grey dark:text-gray-400">
+                <Text variant="caption" className="text-foreground-secondary">
                   {isComingSoon && t`Coming Soon`}
                   {isMaintenance && t`Under Maintenance`}
                   {isDisabled && t`Temporarily Unavailable`}
@@ -139,14 +139,14 @@ const UnitCard = ({ unit, isExpanded, onToggle }: UnitCardProps) => {
           </View>
           <CaretRightIcon
             size={20}
-            className={isAvailable ? 'text-primary dark:text-gray-100' : 'text-text-grey dark:text-gray-400'}
+            className={isAvailable ? 'text-primary' : 'text-foreground-secondary'}
             style={{ transform: [{ rotate: isExpanded ? '90deg' : '0deg' }] }}
           />
         </View>
       </TouchableOpacity>
 
       {isExpanded && (
-        <View className="border-grey mt-4 border-t pt-4 dark:border-gray-600">
+        <View className="border-border mt-4 border-t pt-4">
           {lessonsLoading ? (
             <View className="space-y-2">
               {[1, 2, 3].map((i) => (
@@ -163,7 +163,7 @@ const UnitCard = ({ unit, isExpanded, onToggle }: UnitCardProps) => {
               ))}
             </View>
           ) : (
-            <Text variant="body" className="text-text-grey py-4 text-center dark:text-gray-400">
+            <Text variant="body" className="text-foreground-secondary py-4 text-center">
               {t`No lessons available yet`}
             </Text>
           )}
@@ -194,13 +194,13 @@ const LessonItem = ({ lesson }: LessonItemProps) => {
 
   if (lesson.is_locked) {
     return (
-      <View className="bg-grey flex-row items-center rounded-lg p-3 opacity-50 dark:bg-gray-700">
-        <LockIcon size={20} className="text-text-grey dark:text-gray-400" />
+      <View className="bg-background-tertiary flex-row items-center rounded-lg p-3 opacity-50">
+        <LockIcon size={20} className="text-foreground-secondary" />
         <View className="ml-3 flex-1">
-          <Text variant="body" className="text-text-grey mb-1 dark:text-gray-400">
+          <Text variant="body" className="text-foreground-secondary mb-1">
             {lessonTitle}
           </Text>
-          <Text variant="caption" className="text-text-grey dark:text-gray-400">
+          <Text variant="caption" className="text-foreground-secondary">
             {t`Complete previous lesson to unlock`}
           </Text>
         </View>
@@ -216,21 +216,17 @@ const LessonItem = ({ lesson }: LessonItemProps) => {
   return (
     <Link href={`/lesson/${lesson.id}`} asChild>
       <TouchableOpacity>
-        <View className="flex-row items-center rounded-lg bg-white p-3 dark:bg-gray-800">
+        <View className="bg-card flex-row items-center rounded-lg p-3">
           {lesson.is_completed ? (
             <CheckCircleIcon size={20} className="text-success" />
           ) : (
             <View className="border-primary h-5 w-5 rounded-full border-2" />
           )}
           <View className="ml-3 flex-1">
-            <Text
-              variant="body"
-              weight={lesson.is_completed ? 'medium' : 'regular'}
-              className="text-text-dark mb-1 dark:text-gray-100"
-            >
+            <Text variant="body" weight={lesson.is_completed ? 'medium' : 'regular'} className="text-foreground mb-1">
               {lessonTitle}
             </Text>
-            <Text variant="caption" className="text-text-grey dark:text-gray-400">
+            <Text variant="caption" className="text-foreground-secondary">
               {lesson.is_completed ? t`Completed` : t`Tap to start`}
             </Text>
           </View>

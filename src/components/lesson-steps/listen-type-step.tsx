@@ -80,7 +80,7 @@ const ListenTypeStep = ({ activity, onAnswer }: ListenTypeStepProps) => {
       <ScrollView className="flex-1 px-6" showsVerticalScrollIndicator={false}>
         {/* Question with Audio */}
         <Card className="mb-6 p-6">
-          <Text variant="h5" weight="semibold" className="text-text-dark mb-4 text-center dark:text-gray-100">
+          <Text variant="h5" weight="semibold" className="text-foreground mb-4 text-center">
             {question ?? t`Listen and type what you hear`}
           </Text>
 
@@ -101,7 +101,7 @@ const ListenTypeStep = ({ activity, onAnswer }: ListenTypeStepProps) => {
                 <SpeakerSlashIcon size={40} color="white" weight="fill" />
               )}
             </TouchableOpacity>
-            <Text variant="caption" className="text-text-grey mt-2 text-center dark:text-gray-400">
+            <Text variant="caption" className="text-foreground-secondary mt-2 text-center">
               {!audioUrl
                 ? t`No audio available`
                 : isLoading
@@ -113,7 +113,7 @@ const ListenTypeStep = ({ activity, onAnswer }: ListenTypeStepProps) => {
 
             {/* Translation hint */}
             {translation && (
-              <Text variant="body" className="text-text-grey mt-3 text-center italic dark:text-gray-400">
+              <Text variant="body" className="text-foreground-secondary mt-3 text-center italic">
                 ({translation})
               </Text>
             )}
@@ -121,7 +121,7 @@ const ListenTypeStep = ({ activity, onAnswer }: ListenTypeStepProps) => {
         </Card>
 
         {/* Instructions (optional; generic fallback when absent) */}
-        <Text variant="body" className="text-text-grey mb-4 text-center dark:text-gray-400">
+        <Text variant="body" className="text-foreground-secondary mb-4 text-center">
           {instructions ?? t`Listen to the audio and type the Kabiyè word`}
         </Text>
 
@@ -132,7 +132,7 @@ const ListenTypeStep = ({ activity, onAnswer }: ListenTypeStepProps) => {
             className="mb-4 flex-row items-center justify-center gap-2"
           >
             <LightbulbIcon size={20} color="#f59e0b" weight="fill" />
-            <Text variant="body" className="text-amber-600 dark:text-amber-400">
+            <Text variant="body" className="text-hint">
               {showHints ? t`Hide hints` : t`Show hints`}
             </Text>
           </TouchableOpacity>
@@ -140,9 +140,9 @@ const ListenTypeStep = ({ activity, onAnswer }: ListenTypeStepProps) => {
 
         {/* Hints Display */}
         {showHints && hints.length > 0 && (
-          <Card className="mb-4 bg-amber-50 p-4 dark:bg-amber-900/20">
+          <Card className="bg-hint-bg mb-4 p-4">
             {hints.map((hint: string, index: number) => (
-              <Text key={index} variant="body" className="mb-1 text-amber-900 dark:text-amber-200">
+              <Text key={index} variant="body" className="text-foreground mb-1">
                 💡 {hint}
               </Text>
             ))}
@@ -160,10 +160,10 @@ const ListenTypeStep = ({ activity, onAnswer }: ListenTypeStepProps) => {
             className={`min-h-[80px] rounded-lg border-2 p-4 text-lg ${
               showFeedback
                 ? isCorrect
-                  ? 'border-green-500 bg-green-50 dark:bg-green-900/20'
-                  : 'border-red-500 bg-red-50 dark:bg-red-900/20'
-                : 'border-gray-300 bg-white dark:border-gray-600 dark:bg-gray-800'
-            } text-text-dark dark:text-gray-100`}
+                  ? 'bg-success-bg border-green-500'
+                  : 'bg-error-bg border-red-500'
+                : 'border-border bg-card'
+            } text-foreground`}
             multiline
             autoCapitalize="none"
             autoCorrect={false}
@@ -172,19 +172,17 @@ const ListenTypeStep = ({ activity, onAnswer }: ListenTypeStepProps) => {
 
         {/* Feedback */}
         {showFeedback && (
-          <Card
-            className={`mb-4 p-4 ${isCorrect ? 'bg-green-50 dark:bg-green-900/20' : 'bg-red-50 dark:bg-red-900/20'}`}
-          >
+          <Card className={`mb-4 p-4 ${isCorrect ? 'bg-success-bg' : 'bg-error-bg'}`}>
             <Text
               variant="h6"
               weight="semibold"
-              className={`mb-2 ${isCorrect ? 'text-green-700 dark:text-green-300' : 'text-red-700 dark:text-red-300'}`}
+              className={`mb-2 ${isCorrect ? 'text-success-text' : 'text-error-text'}`}
             >
               {isCorrect ? t`Correct! ✓` : t`Not quite right ✗`}
             </Text>
             {!isCorrect && (
               <View>
-                <Text variant="body" className="text-gray-700 dark:text-gray-300">
+                <Text variant="body" className="text-foreground">
                   {t`Correct answer:`} <Text weight="bold">{correctAnswer}</Text>
                 </Text>
               </View>
@@ -197,7 +195,7 @@ const ListenTypeStep = ({ activity, onAnswer }: ListenTypeStepProps) => {
       </ScrollView>
 
       {/* Bottom Action Button */}
-      <View className="border-t border-gray-200 bg-white px-6 py-4 dark:border-gray-700 dark:bg-gray-800">
+      <View className="border-border bg-card border-t px-6 py-4">
         <Button
           variant="primary"
           onPress={showFeedback ? handleContinue : handleCheck}

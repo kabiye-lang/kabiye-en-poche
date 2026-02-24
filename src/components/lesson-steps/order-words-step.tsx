@@ -67,12 +67,12 @@ const OrderWordsStep = ({ activity, onAnswer }: OrderWordsStepProps) => {
       <ScrollView className="flex-1 px-6" showsVerticalScrollIndicator={false}>
         {/* Question (optional; generic fallback when absent) */}
         <Card className="mb-6 p-6">
-          <Text variant="h5" weight="semibold" className="text-text-dark text-center dark:text-gray-100">
+          <Text variant="h5" weight="semibold" className="text-foreground text-center">
             {question ?? t`Put the words in the correct order`}
           </Text>
         </Card>
 
-        <Text variant="body" className="text-text-grey mb-4 text-center dark:text-gray-400">
+        <Text variant="body" className="text-foreground mb-4 text-center">
           {instructions ?? t`Tap words in the correct order`}
         </Text>
 
@@ -80,7 +80,7 @@ const OrderWordsStep = ({ activity, onAnswer }: OrderWordsStepProps) => {
         <Card className="mb-4 min-h-[100px] p-4">
           <View className="flex-row flex-wrap gap-2">
             {orderedWords.length === 0 ? (
-              <Text variant="body" className="text-text-grey w-full text-center dark:text-gray-400">
+              <Text variant="body" className="text-foreground w-full text-center">
                 {t`Your answer will appear here`}
               </Text>
             ) : (
@@ -103,7 +103,7 @@ const OrderWordsStep = ({ activity, onAnswer }: OrderWordsStepProps) => {
         {/* Available Words */}
         {availableWords.length > 0 && (
           <View className="mb-4">
-            <Text variant="caption" weight="bold" className="text-text-grey mb-2 dark:text-gray-400">
+            <Text variant="caption" weight="bold" className="text-foreground mb-2">
               {t`Available words:`}
             </Text>
             <View className="flex-row flex-wrap gap-2">
@@ -112,9 +112,9 @@ const OrderWordsStep = ({ activity, onAnswer }: OrderWordsStepProps) => {
                   key={`available-${index}`}
                   onPress={() => handleSelectWord(word)}
                   disabled={showFeedback}
-                  className="rounded-lg border-2 border-gray-200 bg-white px-4 py-2 dark:border-gray-700 dark:bg-gray-800"
+                  className="border-border bg-card rounded-lg border-2 px-4 py-2"
                 >
-                  <Text variant="body" weight="bold" className="text-text-dark dark:text-gray-100">
+                  <Text variant="body" weight="bold" className="text-foreground">
                     {word}
                   </Text>
                 </TouchableOpacity>
@@ -135,20 +135,16 @@ const OrderWordsStep = ({ activity, onAnswer }: OrderWordsStepProps) => {
 
         {/* Feedback */}
         {showFeedback && (
-          <Card
-            className={`mb-4 p-4 ${isCorrect ? 'bg-green-50 dark:bg-green-900/20' : 'bg-red-50 dark:bg-red-900/20'}`}
-          >
+          <Card className={`mb-4 p-4 ${isCorrect ? 'bg-success-bg' : 'bg-error-bg'}`}>
             <Text
               variant="h6"
               weight="bold"
-              className={`text-center ${
-                isCorrect ? 'text-green-700 dark:text-green-300' : 'text-red-700 dark:text-red-300'
-              }`}
+              className={`text-center ${isCorrect ? 'text-success-text' : 'text-error-text'}`}
             >
-              {isCorrect ? t`Perfect! Correct order! 🎉` : t`Not quite right. Try again!`}
+              {isCorrect ? t`Perfect! Correct order!` : t`Not quite right. Try again!`}
             </Text>
             {!isCorrect && (
-              <Text variant="body" className="text-text-dark mt-2 text-center dark:text-gray-100">
+              <Text variant="body" className="text-foreground mt-2 text-center">
                 {t`Correct order:`} {correctOrder.join(' ')}
               </Text>
             )}
@@ -159,7 +155,7 @@ const OrderWordsStep = ({ activity, onAnswer }: OrderWordsStepProps) => {
       </ScrollView>
 
       {/* Bottom Button */}
-      <View className="border-t border-gray-200 bg-white px-6 py-4 dark:border-gray-700 dark:bg-gray-800">
+      <View className="border-border bg-card border-t px-6 py-4">
         <Button
           variant="primary"
           onPress={showFeedback ? handleContinue : handleCheck}

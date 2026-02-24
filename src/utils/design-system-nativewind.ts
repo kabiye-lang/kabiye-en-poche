@@ -20,7 +20,6 @@ export const brandColors = {
   textDark: '#212121',
   accent: '#FF5722',
   textLight: '#FFFFFF',
-  textGrey: '#757575',
 }
 
 export const brandThemeColors = {

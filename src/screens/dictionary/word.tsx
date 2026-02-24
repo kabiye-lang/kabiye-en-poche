@@ -20,9 +20,9 @@ const WordDetailsScreen: React.FC = () => {
   const headerHeight = useHeaderHeight()
   if (isLoading) {
     return (
-      <View flex className="bg-bg-grey items-center justify-center dark:bg-gray-900">
+      <View flex className="bg-background items-center justify-center">
         <ActivityIndicator size="large" className="text-primary" />
-        <Text variant="body" className="text-text-grey mt-4 dark:text-gray-400">
+        <Text variant="body" className="text-foreground-secondary mt-4">
           {t`Loading...`}
         </Text>
       </View>
@@ -31,11 +31,11 @@ const WordDetailsScreen: React.FC = () => {
 
   if (error || !entry) {
     return (
-      <View flex className="bg-bg-grey items-center justify-center px-4 dark:bg-gray-900">
+      <View flex className="bg-background items-center justify-center px-4">
         <Text variant="h6" className="text-center text-red-500">
           {t`Word not found`}
         </Text>
-        <Text variant="body" className="text-text-grey mt-2 text-center dark:text-gray-400">
+        <Text variant="body" className="text-foreground-secondary mt-2 text-center">
           {t`The word you're looking for doesn't exist in our dictionary`}
         </Text>
       </View>
@@ -48,13 +48,13 @@ const WordDetailsScreen: React.FC = () => {
   // Handle redirect entries
   if (isRedirectEntry(entry)) {
     return (
-      <View flex className="bg-bg-grey dark:bg-gray-900" safeArea="vertical">
+      <View flex className="bg-background" safeArea="vertical">
         <ScrollView contentContainerStyle={{ paddingTop: headerHeight / 2, paddingHorizontal: 20 }}>
           <Card className="p-5">
-            <Text variant="h4" weight="bold" className="text-text-dark mb-3 dark:text-gray-100">
+            <Text variant="h4" weight="bold" className="text-foreground mb-3">
               {entry_data.headword}
             </Text>
-            <Text variant="body" className="text-text-grey mb-4 dark:text-gray-400">
+            <Text variant="body" className="text-foreground-secondary mb-4">
               {t`This is a variant form. See the main entry for the full definition.`}
             </Text>
             <Link href={`/word/${entry_data.mainEntry}`} asChild>
@@ -74,7 +74,7 @@ const WordDetailsScreen: React.FC = () => {
   }
 
   return (
-    <View flex className="bg-bg-grey dark:bg-gray-900" safeArea="vertical">
+    <View flex className="bg-background" safeArea="vertical">
       <ScrollView contentContainerStyle={{ paddingTop: headerHeight / 2, paddingHorizontal: 20 }}>
         {/* Headword */}
         <Text variant="h3" weight="bold" className="text-primary mb-2">
@@ -83,14 +83,14 @@ const WordDetailsScreen: React.FC = () => {
 
         {/* Pronunciations */}
         {entry_data.pronunciations && entry_data.pronunciations.length > 0 && (
-          <Text variant="lg" className="text-text-grey mb-2 dark:text-gray-400">
+          <Text variant="lg" className="text-foreground-secondary mb-2">
             [{entry_data.pronunciations.join(', ')}]
           </Text>
         )}
 
         {/* Grammatical Info */}
         {entry_data.grammaticalInfo && (
-          <Text variant="body" className="text-text-grey mb-4 italic dark:text-gray-400">
+          <Text variant="body" className="text-foreground-secondary mb-4 italic">
             {entry_data.grammaticalInfo}
           </Text>
         )}
@@ -98,7 +98,7 @@ const WordDetailsScreen: React.FC = () => {
         {/* Plural */}
         {entry_data.plural && (
           <View className="mb-4">
-            <Text variant="body" className="text-text-dark dark:text-gray-200">
+            <Text variant="body" className="text-foreground">
               <Text weight="semibold">{t`Plural:`}</Text> {entry_data.plural}
             </Text>
           </View>
@@ -107,11 +107,11 @@ const WordDetailsScreen: React.FC = () => {
         {/* Variant Forms */}
         {entry_data.variantRefs && entry_data.variantRefs.length > 0 && (
           <View className="mb-4">
-            <Text variant="h6" weight="bold" className="text-text-dark mb-2 dark:text-gray-100">
+            <Text variant="h6" weight="bold" className="text-foreground mb-2">
               {t`Variant Forms`}
             </Text>
             {entry_data.variantRefs.map((variant, idx) => (
-              <Text key={idx} variant="body" className="text-text-dark mb-1 dark:text-gray-200">
+              <Text key={idx} variant="body" className="text-foreground mb-1">
                 • {variant.variant}
                 {variant.pronunciation && ` [${variant.pronunciation}]`}
               </Text>
@@ -122,18 +122,18 @@ const WordDetailsScreen: React.FC = () => {
         {/* Senses (Definitions) */}
         {entry_data.senses && entry_data.senses.length > 0 && (
           <View className="mb-4">
-            <Text variant="h6" weight="bold" className="text-text-dark mb-2 dark:text-gray-100">
+            <Text variant="h6" weight="bold" className="text-foreground mb-2">
               {t`Definitions`}
             </Text>
             {entry_data.senses.map((sense, senseIdx) => (
               <View key={senseIdx} className="mb-4">
                 {sense.definitions.map((def, defIdx) => (
                   <View key={defIdx} className="mb-3">
-                    <Text variant="body" className="text-text-dark mb-1 dark:text-gray-200">
+                    <Text variant="body" className="text-foreground mb-1">
                       {sense.senseNumber || senseIdx + 1}.{defIdx + 1} {def.translations[translation]}
                     </Text>
                     {def.grammar && (
-                      <Text variant="caption" className="text-text-grey mb-1 italic dark:text-gray-400">
+                      <Text variant="caption" className="text-foreground-secondary mb-1 italic">
                         {def.grammar}
                       </Text>
                     )}
@@ -143,18 +143,18 @@ const WordDetailsScreen: React.FC = () => {
                 {/* Examples */}
                 {sense.examples && sense.examples.length > 0 && (
                   <View className="mt-2 ml-4">
-                    <Text variant="body" weight="semibold" className="text-text-grey mb-1 dark:text-gray-400">
+                    <Text variant="body" weight="semibold" className="text-foreground-secondary mb-1">
                       {t`Examples:`}
                     </Text>
                     {sense.examples.map((example, exIdx) => (
                       <View key={exIdx} className="mb-2">
                         {example.source && (
-                          <Text variant="body" className="text-text-dark italic dark:text-gray-200">
+                          <Text variant="body" className="text-foreground italic">
                             {`"${example.source}"`}
                           </Text>
                         )}
                         {example.translation && (
-                          <Text variant="caption" className="text-text-grey mt-0.5 dark:text-gray-400">
+                          <Text variant="caption" className="text-foreground-secondary mt-0.5">
                             {example.translation}
                           </Text>
                         )}
@@ -166,21 +166,17 @@ const WordDetailsScreen: React.FC = () => {
                 {/* Lexical References (Sense Level) */}
                 {sense.lexRefs && sense.lexRefs.length > 0 && (
                   <View className="mt-2 ml-4">
-                    <Text variant="body" weight="semibold" className="text-text-grey mb-1 dark:text-gray-400">
+                    <Text variant="body" weight="semibold" className="text-foreground-secondary mb-1">
                       {t`Related Words:`}
                     </Text>
                     {sense.lexRefs.map((ref, refIdx) => (
                       <View key={refIdx} className="mb-2">
-                        <Text variant="caption" className="text-text-grey mb-1 dark:text-gray-400">
+                        <Text variant="caption" className="text-foreground-secondary mb-1">
                           {ref.type}:
                         </Text>
                         <View className="flex-row flex-wrap gap-2">
                           {ref.targets.map((target, targetIdx) => (
-                            <Link
-                              key={targetIdx}
-                              href={`/word/${encodeURIComponent(target)}`}
-                              asChild
-                            >
+                            <Link key={targetIdx} href={`/word/${encodeURIComponent(target)}`} asChild>
                               <TouchableOpacity>
                                 <View className="bg-primary/10 flex-row items-center rounded px-2 py-1">
                                   <Text variant="caption" className="text-primary">
@@ -204,7 +200,7 @@ const WordDetailsScreen: React.FC = () => {
         {/* Sub-entries */}
         {entry_data.subEntries && entry_data.subEntries.length > 0 && (
           <View className="mb-4">
-            <Text variant="h6" weight="bold" className="text-text-dark mb-2 dark:text-gray-100">
+            <Text variant="h6" weight="bold" className="text-foreground mb-2">
               {t`Related Expressions`}
             </Text>
             {entry_data.subEntries.map((subEntry, subIdx) => (
@@ -213,14 +209,14 @@ const WordDetailsScreen: React.FC = () => {
                   {subEntry.headword}
                 </Text>
                 {subEntry.type && (
-                  <Text variant="caption" className="text-text-grey mb-2 italic dark:text-gray-400">
+                  <Text variant="caption" className="text-foreground-secondary mb-2 italic">
                     ({subEntry.type})
                   </Text>
                 )}
                 {subEntry.senses.map((sense, senseIdx) => (
                   <View key={senseIdx} className="mb-2">
                     {sense.definitions.map((def, defIdx) => (
-                      <Text key={defIdx} variant="body" className="text-text-dark mb-1 dark:text-gray-200">
+                      <Text key={defIdx} variant="body" className="text-foreground mb-1">
                         {sense.senseNumber ? `${sense.senseNumber}. ` : ''}
                         {def.translations[translation]}
                       </Text>
@@ -231,7 +227,7 @@ const WordDetailsScreen: React.FC = () => {
                         {sense.examples.map((example, exIdx) => (
                           <View key={exIdx} className="mb-1">
                             {example.source && (
-                              <Text variant="caption" className="text-text-dark italic dark:text-gray-200">
+                              <Text variant="caption" className="text-foreground italic">
                                 {`"${example.source}"`}
                               </Text>
                             )}
@@ -244,14 +240,10 @@ const WordDetailsScreen: React.FC = () => {
                       <View className="mt-1 ml-3">
                         {sense.lexRefs.map((ref, refIdx) => (
                           <View key={refIdx} className="mb-1">
-                            <Text variant="caption" className="text-text-grey dark:text-gray-400">
+                            <Text variant="caption" className="text-foreground-secondary">
                               {ref.type}:{' '}
                               {ref.targets.map((target, targetIdx) => (
-                                <Link
-                                  key={targetIdx}
-                                  href={`/word/${encodeURIComponent(target)}`}
-                                  asChild
-                                >
+                                <Link key={targetIdx} href={`/word/${encodeURIComponent(target)}`} asChild>
                                   <Text variant="caption" className="text-primary">
                                     {target}
                                     {targetIdx < ref.targets.length - 1 ? ', ' : ''}
@@ -273,21 +265,17 @@ const WordDetailsScreen: React.FC = () => {
         {/* Cross References */}
         {entry_data.crossRefs && entry_data.crossRefs.length > 0 && (
           <View className="mb-4">
-            <Text variant="h6" weight="bold" className="text-text-dark mb-2 dark:text-gray-100">
+            <Text variant="h6" weight="bold" className="text-foreground mb-2">
               {t`See Also`}
             </Text>
             {entry_data.crossRefs.map((ref, refIdx) => (
               <View key={refIdx} className="mb-2">
-                <Text variant="caption" className="text-text-grey mb-1 dark:text-gray-400">
+                <Text variant="caption" className="text-foreground-secondary mb-1">
                   {ref.type}:
                 </Text>
                 <View className="flex-row flex-wrap gap-2">
-                    {ref.targets.map((target, targetIdx) => (
-                    <Link
-                      key={targetIdx}
-                      href={`/word/${encodeURIComponent(target)}`}
-                      asChild
-                    >
+                  {ref.targets.map((target, targetIdx) => (
+                    <Link key={targetIdx} href={`/word/${encodeURIComponent(target)}`} asChild>
                       <TouchableOpacity>
                         <View className="bg-primary/10 flex-row items-center rounded px-2 py-1">
                           <Text variant="caption" className="text-primary">

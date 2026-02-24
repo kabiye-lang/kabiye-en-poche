@@ -25,19 +25,16 @@ const ProgressBar = ({ currentStep, totalSteps, onClose }: ProgressBarProps) => 
   }
 
   return (
-    <View
-      className="border-b border-gray-200 bg-white px-4 pb-3 dark:border-gray-700 dark:bg-gray-800"
-      style={{ paddingTop: insets.top + 12 }}
-    >
+    <View className="border-border bg-card border-b px-4 pb-3" style={{ paddingTop: insets.top + 12 }}>
       <View className="flex-row items-center">
         {/* Close Button */}
         <TouchableOpacity onPress={handleClose} className="mr-3 rounded-full p-1">
-          <XIcon size={24} className="text-text-dark dark:text-gray-100" />
+          <XIcon size={24} className="text-foreground" />
         </TouchableOpacity>
 
         {/* Progress Bar */}
         <View className="flex-1">
-          <View className="h-3 overflow-hidden rounded-full bg-gray-200 dark:bg-gray-700">
+          <View className="bg-progress-track h-3 overflow-hidden rounded-full">
             <View
               className="bg-primary h-full rounded-full transition-all duration-300"
               style={{ width: `${progress}%` }}
@@ -46,7 +43,7 @@ const ProgressBar = ({ currentStep, totalSteps, onClose }: ProgressBarProps) => 
         </View>
 
         {/* Step Counter */}
-        <Text variant="caption" className="text-text-grey ml-3 dark:text-gray-400">
+        <Text variant="caption" className="text-foreground-secondary ml-3">
           {currentStep}/{totalSteps}
         </Text>
       </View>

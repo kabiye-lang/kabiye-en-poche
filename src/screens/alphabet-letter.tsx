@@ -49,7 +49,7 @@ export default function AlphabetLetterScreen() {
 
   if (isLoading) {
     return (
-      <View flex className="bg-white dark:bg-gray-900">
+      <View flex className="bg-background">
         <View className="flex-1 items-center justify-center">
           <ActivityIndicator size="large" className="text-primary" />
           <Text className="mt-4">{t`Loading letter...`}</Text>
@@ -60,12 +60,12 @@ export default function AlphabetLetterScreen() {
 
   if (error || !letter) {
     return (
-      <View flex className="bg-white dark:bg-gray-900">
+      <View flex className="bg-background">
         <View className="flex-1 items-center justify-center px-4">
           <Text variant="h6" className="text-primary text-center">
             {t`Letter not found`}
           </Text>
-          <Text variant="caption" className="text-text-grey mt-2 text-center dark:text-gray-400">
+          <Text variant="caption" className="text-foreground mt-2 text-center">
             {error?.message || t`This letter does not exist`}
           </Text>
         </View>
@@ -77,21 +77,21 @@ export default function AlphabetLetterScreen() {
   const letterType = letter.type
 
   return (
-    <View flex className="bg-white dark:bg-gray-900" style={{ paddingBottom: 70 + safeAreaInsets.top }}>
+    <View flex className="bg-background" style={{ paddingBottom: 70 + safeAreaInsets.top }}>
       <Animated.View
-        className="absolute top-0 left-0 z-10 w-full border-b border-gray-200 bg-white dark:border-gray-700 dark:bg-gray-900"
+        className="border-border bg-background absolute top-0 left-0 z-10 w-full border-b"
         style={[animatedHeaderStyle]}
       >
         <View style={{ height: safeAreaInsets.top }} />
         <View className="h-[70px] flex-row items-center justify-between px-2.5">
           <View>
             <Button variant="ghost" size="sm" className="h-8 w-8 rounded-full" onPress={() => router.back()}>
-              <CaretLeftIcon size={20} weight="bold" className="text-text-dark dark:text-gray-100" />
+              <CaretLeftIcon size={20} weight="bold" className="text-foreground" />
             </Button>
           </View>
 
           <Animated.View className="flex-1 pl-2.5" style={[animatedHeaderTitleStyle]}>
-            <Text variant="lg" weight="medium" numberOfLines={1} className="text-text-dark dark:text-gray-100">
+            <Text variant="lg" weight="medium" numberOfLines={1} className="text-foreground">
               {letter.id} - {letter.id.toUpperCase()}
             </Text>
           </Animated.View>
@@ -99,7 +99,7 @@ export default function AlphabetLetterScreen() {
       </Animated.View>
       <Animated.ScrollView onScroll={scrollHandler} scrollEventThrottle={16}>
         <View center className="h-[200px]" style={{ paddingTop: safeAreaInsets.top }}>
-          <Text variant="h1" weight="bold" className="text-text-dark mb-2.5 dark:text-gray-100">
+          <Text variant="h1" weight="bold" className="text-foreground mb-2.5">
             {letter.id} - {letter.id.toUpperCase()}
           </Text>
           <Card

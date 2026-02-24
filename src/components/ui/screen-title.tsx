@@ -19,11 +19,11 @@ export function ScreenTitle({ title, subtitle, fixed = false, className = '' }: 
       className={`pt-10 pb-5 ${fixed ? 'absolute top-0 right-0 left-0 z-10' : ''} ${className}`}
       style={{ paddingTop: 40 + safeAreaInsets.top }}
     >
-      <Text variant="h1" weight="bold" className="text-text-dark mb-2 dark:text-gray-100">
+      <Text variant="h1" weight="bold" className="text-foreground mb-2">
         {title}
       </Text>
       {subtitle && (
-        <Text variant="body" className="text-text-grey dark:text-gray-200">
+        <Text variant="body" className="text-foreground-secondary">
           {subtitle}
         </Text>
       )}

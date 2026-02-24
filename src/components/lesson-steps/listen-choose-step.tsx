@@ -84,7 +84,7 @@ const ListenChooseStep = ({ activity, onAnswer }: ListenChooseStepProps) => {
       <ScrollView className="flex-1 px-6" showsVerticalScrollIndicator={false}>
         {/* Question with Audio */}
         <Card className="mb-6 p-6">
-          <Text variant="h5" weight="semibold" className="text-text-dark mb-4 text-center dark:text-gray-100">
+          <Text variant="h5" weight="semibold" className="text-foreground mb-4 text-center">
             {question ?? t`Listen and choose the correct word`}
           </Text>
 
@@ -105,7 +105,7 @@ const ListenChooseStep = ({ activity, onAnswer }: ListenChooseStepProps) => {
                 <SpeakerSlashIcon size={40} color="white" weight="fill" />
               )}
             </TouchableOpacity>
-            <Text variant="caption" className="text-text-grey mt-2 text-center dark:text-gray-400">
+            <Text variant="caption" className="text-foreground-secondary mt-2 text-center">
               {!audioUrl
                 ? t`No audio available`
                 : isLoading
@@ -117,7 +117,7 @@ const ListenChooseStep = ({ activity, onAnswer }: ListenChooseStepProps) => {
 
             {/* Translation hint */}
             {translation && (
-              <Text variant="body" className="text-text-grey mt-3 text-center italic dark:text-gray-400">
+              <Text variant="body" className="text-foreground-secondary mt-3 text-center italic">
                 ({translation})
               </Text>
             )}
@@ -125,7 +125,7 @@ const ListenChooseStep = ({ activity, onAnswer }: ListenChooseStepProps) => {
         </Card>
 
         {/* Instructions (optional; generic fallback when absent) */}
-        <Text variant="body" className="text-text-grey mb-4 text-center dark:text-gray-400">
+        <Text variant="body" className="text-foreground-secondary mb-4 text-center">
           {instructions ?? t`Listen to the audio and select the correct Kabiyè word`}
         </Text>
 
@@ -144,12 +144,12 @@ const ListenChooseStep = ({ activity, onAnswer }: ListenChooseStepProps) => {
                 disabled={showFeedback}
                 className={`rounded-xl border-2 p-4 ${
                   showCorrect
-                    ? 'border-green-500 bg-green-50 dark:bg-green-900/20'
+                    ? 'bg-success-bg border-green-500'
                     : showIncorrect
-                      ? 'border-red-500 bg-red-50 dark:bg-red-900/20'
+                      ? 'bg-error-bg border-red-500'
                       : isSelected
                         ? 'border-primary bg-primary/10'
-                        : 'border-gray-200 bg-white dark:border-gray-700 dark:bg-gray-800'
+                        : 'border-border bg-card'
                 }`}
               >
                 <View className="flex-row items-center">
@@ -162,7 +162,7 @@ const ListenChooseStep = ({ activity, onAnswer }: ListenChooseStepProps) => {
                           ? 'border-red-500 bg-red-500'
                           : isSelected
                             ? 'border-primary bg-primary'
-                            : 'border-gray-300 dark:border-gray-600'
+                            : 'border-border'
                     }`}
                   >
                     {(isSelected || showCorrect) && <View className="h-3 w-3 rounded-full bg-white" />}
@@ -173,11 +173,7 @@ const ListenChooseStep = ({ activity, onAnswer }: ListenChooseStepProps) => {
                     variant="h6"
                     weight="bold"
                     className={`flex-1 ${
-                      showCorrect
-                        ? 'text-green-700 dark:text-green-300'
-                        : showIncorrect
-                          ? 'text-red-700 dark:text-red-300'
-                          : 'text-text-dark dark:text-gray-100'
+                      showCorrect ? 'text-success-text' : showIncorrect ? 'text-error-text' : 'text-foreground'
                     }`}
                   >
                     {option}
@@ -190,23 +186,13 @@ const ListenChooseStep = ({ activity, onAnswer }: ListenChooseStepProps) => {
 
         {/* Feedback */}
         {showFeedback && (
-          <Card
-            className={`mb-4 p-4 ${
-              options[selectedIndex!] === correctAnswer
-                ? 'bg-green-50 dark:bg-green-900/20'
-                : 'bg-red-50 dark:bg-red-900/20'
-            }`}
-          >
+          <Card className={`mb-4 p-4 ${options[selectedIndex!] === correctAnswer ? 'bg-success-bg' : 'bg-error-bg'}`}>
             <Text
               variant="h6"
               weight="bold"
-              className={`${
-                options[selectedIndex!] === correctAnswer
-                  ? 'text-green-700 dark:text-green-300'
-                  : 'text-red-700 dark:text-red-300'
-              }`}
+              className={`${options[selectedIndex!] === correctAnswer ? 'text-success-text' : 'text-error-text'}`}
             >
-              {options[selectedIndex!] === correctAnswer ? t`Correct! 🎉` : t`Not quite right`}
+              {options[selectedIndex!] === correctAnswer ? t`Correct!` : t`Not quite right`}
             </Text>
           </Card>
         )}
@@ -215,7 +201,7 @@ const ListenChooseStep = ({ activity, onAnswer }: ListenChooseStepProps) => {
       </ScrollView>
 
       {/* Bottom Button */}
-      <View className="border-t border-gray-200 bg-white px-6 py-4 dark:border-gray-700 dark:bg-gray-800">
+      <View className="border-border bg-card border-t px-6 py-4">
         <Button variant="primary" onPress={handleContinue} disabled={!showFeedback} className="w-full">
           <Text variant="body" weight="bold" className="text-white">
             {t`Continue`}

@@ -119,13 +119,18 @@ import { Link } from 'expo-router'
 
 ### Dark Mode Support
 
+Theme-specific variables are defined in `src/global.css` using `@layer theme` with `@variant light` and `@variant dark`. Use semantic classes instead of `dark:` prefixes:
+
 ```typescript
-// Use dark: prefix for dark mode styles
-<View className="bg-white dark:bg-gray-900">
-  <Text className="text-gray-900 dark:text-white">
+// Use theme variables (defined in global.css)
+<View className="bg-background">
+  <Text className="text-foreground">
     Content
   </Text>
 </View>
+
+// Semantic classes: bg-background, bg-card, text-foreground, text-foreground-secondary,
+// text-primary, border-border, bg-success-bg, text-success-text, etc.
 ```
 
 ## Lingui Internationalization

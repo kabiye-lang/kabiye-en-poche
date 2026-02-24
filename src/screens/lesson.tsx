@@ -90,9 +90,7 @@ const LessonScreen = () => {
   }, [lesson, contents, activities, getValue])
 
   const handleStepComplete = () => {
-    if (currentStepIndex < steps.length - 1) {
-      setCurrentStepIndex(currentStepIndex + 1)
-    }
+    setCurrentStepIndex((prev) => (prev < steps.length - 1 ? prev + 1 : prev))
   }
 
   const handleQuizAnswer = (isCorrect: boolean, answer: string) => {
@@ -144,7 +142,7 @@ const LessonScreen = () => {
   // Loading state
   if (lessonLoading || contentsLoading || activitiesLoading) {
     return (
-      <View className="flex-1 items-center justify-center bg-white dark:bg-gray-900">
+      <View className="bg-background flex-1 items-center justify-center">
         <ActivityIndicator size="large" className="text-primary" />
         <Text className="mt-4">{t`Loading lesson...`}</Text>
       </View>
@@ -154,11 +152,11 @@ const LessonScreen = () => {
   // Error state
   if (lessonError || !lesson) {
     return (
-      <View className="flex-1 items-center justify-center bg-white px-4 dark:bg-gray-900">
+      <View className="bg-background flex-1 items-center justify-center px-4">
         <Text variant="h6" className="text-primary text-center">
           {t`Failed to load lesson`}
         </Text>
-        <Text variant="caption" className="text-text-grey mt-2 text-center dark:text-gray-400">
+        <Text variant="caption" className="text-foreground-secondary mt-2 text-center">
           {lessonError?.message || t`Lesson not found`}
         </Text>
       </View>
@@ -168,7 +166,7 @@ const LessonScreen = () => {
   // No steps available
   if (steps.length === 0) {
     return (
-      <View className="flex-1 items-center justify-center bg-white px-4 dark:bg-gray-900">
+      <View className="bg-background flex-1 items-center justify-center px-4">
         <Text variant="h6" className="text-primary text-center">
           {t`Lesson content will be available soon.`}
         </Text>
@@ -207,9 +205,11 @@ const LessonScreen = () => {
       s.type === 'true_false'
   ).length
 
+  console.log(currentStep)
+
   // Render current step
   return (
-    <View className="flex-1 bg-white dark:bg-gray-900">
+    <View className="bg-background flex-1">
       {/* Progress Bar */}
       <ProgressBar currentStep={currentStepIndex + 1} totalSteps={steps.length} />
 

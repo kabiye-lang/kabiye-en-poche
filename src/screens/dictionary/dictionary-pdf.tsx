@@ -30,7 +30,7 @@ export default function DictionaryPdfScreen() {
       {isLoading && (
         <View style={styles.loadingContainer}>
           <ActivityIndicator size="large" className="text-primary" />
-          <Text variant="body" className="text-text-grey mt-4 text-center dark:text-gray-400">
+          <Text variant="body" className="text-foreground-secondary mt-4 text-center">
             {t`Loading dictionary...`}
           </Text>
         </View>
@@ -41,7 +41,7 @@ export default function DictionaryPdfScreen() {
           <Text variant="h6" className="text-primary text-center">
             {t`Failed to load dictionary`}
           </Text>
-          <Text variant="caption" className="text-text-grey mt-2 text-center dark:text-gray-400">
+          <Text variant="caption" className="text-foreground-secondary mt-2 text-center">
             {t`Please check your internet connection and try again`}
           </Text>
         </View>

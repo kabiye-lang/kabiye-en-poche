@@ -1,5 +1,3 @@
-/*eslint-env node */
-
 const fs = require('fs')
 const Airtable = require('airtable')
 const base = new Airtable({ apiKey: process.env.AIRTABLE_API_KEY }).base('appK7j84d1AB9WDjw')
