@@ -142,11 +142,6 @@ msgstr "Résultats de recherche"
 msgid "Loading progress..."
 msgstr "Chargement de la progression..."
 
-#: src/components/lesson-steps/listen-choose-step.tsx
-#: src/components/lesson-steps/quiz-step.tsx
-msgid "Correct!"
-msgstr "Correct !"
-
 #: src/screens/unit.tsx
 msgid "This unit is temporarily unavailable"
 msgstr "Cette unité est temporairement indisponible"
@@ -191,7 +186,7 @@ msgstr "Parfait ! Tu es une star ! 🌟"
 
 #: src/components/lesson-steps/match-pairs-step.tsx
 msgid "Perfect! All pairs matched!"
-msgstr "Parfait ! Toutes les paires sont associées !"
+msgstr "Parfait ! Toutes les paires associées !"
 
 #: src/screens/profile.tsx
 msgid "Online Kabiyè dictionary"
@@ -375,6 +370,10 @@ msgstr "Actuel"
 msgid "Join our community to contribute to the development of the application"
 msgstr "Rejoignez notre communauté pour contribuer au développement de l'application"
 
+#: src/screens/home.tsx
+msgid "All lessons completed!"
+msgstr "Toutes les leçons terminées !"
+
 #: src/components/lesson-steps/listen-type-step.tsx
 msgid "Show hints"
 msgstr "Afficher les indices"
@@ -382,10 +381,6 @@ msgstr "Afficher les indices"
 #: src/app/(tabs)/_layout.tsx
 msgid "Home"
 msgstr "Accueil"
-
-#: src/components/lesson-steps/completion-step.tsx
-msgid "Great job!"
-msgstr "Excellent travail !"
 
 #: src/screens/dictionary/dictionary.tsx
 msgid "Français"
@@ -434,6 +429,10 @@ msgstr "Échec du chargement de la leçon"
 #: src/screens/dictionary/word.tsx
 msgid "Related Expressions"
 msgstr "Expressions connexes"
+
+#: src/components/lesson-steps/order-words-step.tsx
+msgid "Perfect! Correct order!"
+msgstr "Parfait ! Ordre correct !"
 
 #: src/screens/home.tsx
 msgid "Units temporarily unavailable"
@@ -526,6 +525,11 @@ msgstr "Chargement des leçons..."
 #: src/screens/alphabet-list.tsx
 msgid "Loading alphabet..."
 msgstr "Chargement de l'alphabet..."
+
+#: src/components/lesson-steps/listen-choose-step.tsx
+#: src/components/lesson-steps/quiz-step.tsx
+msgid "Correct!"
+msgstr "Correct !"
 
 #: src/screens/dictionary/search.tsx
 msgid "French"
@@ -651,10 +655,6 @@ msgstr "Bien joué ! Continue à t'entraîner ! 💪"
 msgid "Error"
 msgstr "Erreur"
 
-#: src/components/lesson-steps/match-pairs-step.tsx
-#~ msgid "Perfect! All pairs matched!"
-#~ msgstr "Parfait ! Toutes les paires associées !"
-
 #: src/screens/dictionary/word.tsx
 msgid "View main entry:"
 msgstr "Voir l'entrée principale :"
@@ -750,10 +750,6 @@ msgstr "Profil"
 msgid "key allows you to capitalize. Long press to lock CAPS mode."
 msgstr "touche vous permet de mettre en majuscules. Appui long pour verrouiller le mode MAJ."
 
-#: src/components/lesson-steps/order-words-step.tsx
-msgid "Perfect! Correct order!"
-msgstr "Parfait ! Ordre correct !"
-
 #: src/screens/dictionary/word.tsx
 msgid "Examples:"
 msgstr "Exemples :"
@@ -763,14 +759,14 @@ msgstr "Exemples :"
 msgid "Dictionary"
 msgstr "Dictionnaire"
 
+#: src/components/lesson-steps/completion-step.tsx
+msgid "Great job!"
+msgstr "Excellent travail !"
+
 #: src/screens/home.tsx
 #: src/screens/learn.tsx
 msgid "Coming Soon"
 msgstr "Bientôt disponible"
-
-#: src/screens/home.tsx
-msgid "All lessons completed!"
-msgstr "Toutes les leçons terminées !"
 
 #: src/screens/profile.tsx
 msgid "Overall Progress"

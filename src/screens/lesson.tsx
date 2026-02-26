@@ -149,6 +149,30 @@ const LessonScreen = () => {
     )
   }
 
+  // Block access when lesson is not available
+  const isLessonAvailable = lesson?.status === 'available' || lesson?.status === null
+  if (lesson && !isLessonAvailable) {
+    const statusMessage =
+      lesson.status === 'coming_soon'
+        ? t`This lesson is coming soon!`
+        : lesson.status === 'maintenance'
+          ? t`This lesson is under maintenance`
+          : lesson.status === 'disabled'
+            ? t`This lesson is temporarily unavailable`
+            : t`This lesson is not available`
+
+    return (
+      <View className="bg-background flex-1 items-center justify-center px-4">
+        <Text variant="h6" className="text-primary text-center">
+          {statusMessage}
+        </Text>
+        <Text variant="caption" className="text-foreground-secondary mt-2 text-center">
+          {t`Please check back later`}
+        </Text>
+      </View>
+    )
+  }
+
   // Error state
   if (lessonError || !lesson) {
     return (
@@ -204,8 +228,6 @@ const LessonScreen = () => {
       s.type === 'multiple_choice' ||
       s.type === 'true_false'
   ).length
-
-  console.log(currentStep)
 
   // Render current step
   return (

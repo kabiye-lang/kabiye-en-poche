@@ -10,7 +10,7 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context'
 
 import { router, useLocalSearchParams } from 'expo-router'
 
-import Markdown from '@jonasmerlin/react-native-markdown-display'
+import { AppMarkdown } from '@/components/markdown'
 import { useLingui } from '@lingui/react/macro'
 
 import { CaretLeftIcon } from '@/components/icons'
@@ -114,7 +114,7 @@ export default function AlphabetLetterScreen() {
           </Card>
         </View>
         <View className="px-4 py-2.5">
-          <Markdown style={MARKDOWN_STYLE}>{letter.description_fr ?? ''}</Markdown>
+          <AppMarkdown style={MARKDOWN_STYLE}>{letter.description_fr ?? ''}</AppMarkdown>
         </View>
         <View className="h-[70px]" />
       </Animated.ScrollView>

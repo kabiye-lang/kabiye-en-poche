@@ -85,12 +85,16 @@ export function useUnitWithLessons(unitId: string) {
   })
 }
 
-// Get all lessons (optionally filtered by unit)
+// Get all lessons (optionally filtered by unit) - only available lessons
 export function useLessons(unitId?: string) {
   return useQuery({
     queryKey: unitKeys.lessons(unitId),
     queryFn: async (): Promise<Lesson[]> => {
-      let query = supabase.from('lessons').select('*').order('position', { ascending: true })
+      let query = supabase
+        .from('lessons')
+        .select('*')
+        .or('status.eq.available,status.is.null')
+        .order('position', { ascending: true })
 
       if (unitId) {
         query = query.eq('unit_id', unitId)
@@ -207,6 +211,7 @@ export function useNextLesson() {
             .from('lessons')
             .select('*')
             .eq('unit_id', firstUnit.id)
+            .or('status.eq.available,status.is.null')
             .order('position', { ascending: true })
             .limit(1)
             .single()
@@ -231,6 +236,7 @@ export function useNextLesson() {
           .select('*')
           .eq('unit_id', lastLesson.unit_id)
           .gt('position', lastLesson.position)
+          .or('status.eq.available,status.is.null')
           .order('position', { ascending: true })
           .limit(1)
           .single()
@@ -254,6 +260,7 @@ export function useNextLesson() {
             .from('lessons')
             .select('*')
             .eq('unit_id', nextUnit.id)
+            .or('status.eq.available,status.is.null')
             .order('position', { ascending: true })
             .limit(1)
             .single()
@@ -280,6 +287,7 @@ export function useProgressSummary() {
         .from('lessons')
         .select('id, unit_id')
         .in('unit_id', units?.map((u) => u.id) || [])
+        .or('status.eq.available,status.is.null')
 
       const totalUnits = units?.length || 0
       const totalLessons = lessons?.length || 0

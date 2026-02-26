@@ -2,9 +2,9 @@ import { ActivityIndicator, FlatList } from 'react-native'
 
 import { router } from 'expo-router'
 
-import Markdown from '@jonasmerlin/react-native-markdown-display'
 import { useLingui } from '@lingui/react/macro'
 
+import { AppMarkdown } from '@/components/markdown'
 import { Card, ScreenTitle, Text, View } from '@/components/ui'
 import { useAppAlphabetLetters, useAppCmsPage } from '@/hooks/use-app-data'
 import { LETTER_TYPE_COLORS, MARKDOWN_STYLE } from '@/utils/design-system-nativewind'
@@ -39,6 +39,7 @@ export default function AlphabetListScreen() {
       </View>
     )
   }
+
   return (
     <View flex className="bg-background">
       <FlatList
@@ -52,13 +53,13 @@ export default function AlphabetListScreen() {
             <ScreenTitle title={alphabetIntro?.title_en || t`I learn the Kabiyè Alphabet`} />
             {alphabetIntro && (
               <View>
-                <Markdown style={MARKDOWN_STYLE}>{alphabetIntro.content_en}</Markdown>
+                <AppMarkdown style={MARKDOWN_STYLE}>{alphabetIntro.content_en}</AppMarkdown>
               </View>
             )}
           </>
         )}
         renderItem={({ item }) => (
-          <View className="relative w-full items-center">
+          <View className="w-full items-center">
             <Card
               className="h-[100px] w-full flex-1 items-center justify-center"
               onPress={() =>

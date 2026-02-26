@@ -53,6 +53,42 @@ export type Database = {
         }
         Relationships: []
       }
+      audios: {
+        Row: {
+          id: string
+          storage_path: string
+          name: string
+          description: string | null
+          tags: string[]
+          duration_seconds: number | null
+          mime_type: string | null
+          created_at: string | null
+          updated_at: string | null
+        }
+        Insert: {
+          id?: string
+          storage_path: string
+          name: string
+          description?: string | null
+          tags: string[]
+          duration_seconds?: number | null
+          mime_type?: string | null
+          created_at?: string | null
+          updated_at?: string | null
+        }
+        Update: {
+          id?: string
+          storage_path?: string
+          name?: string
+          description?: string | null
+          tags?: string[]
+          duration_seconds?: number | null
+          mime_type?: string | null
+          created_at?: string | null
+          updated_at?: string | null
+        }
+        Relationships: []
+      }
       categories: {
         Row: {
           created_at: string | null
@@ -284,6 +320,7 @@ export type Database = {
           objectives_en: string[] | null
           objectives_fr: string[] | null
           position: number
+          status: Database['public']['Enums']['unit_status'] | null
           title_en: string
           title_fr: string
           unit_id: string
@@ -296,6 +333,7 @@ export type Database = {
           objectives_en?: string[] | null
           objectives_fr?: string[] | null
           position: number
+          status?: Database['public']['Enums']['unit_status'] | null
           title_en: string
           title_fr: string
           unit_id: string
@@ -308,6 +346,7 @@ export type Database = {
           objectives_en?: string[] | null
           objectives_fr?: string[] | null
           position?: number
+          status?: Database['public']['Enums']['unit_status'] | null
           title_en?: string
           title_fr?: string
           unit_id?: string

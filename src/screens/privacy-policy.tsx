@@ -1,6 +1,6 @@
 import { ScrollView } from 'react-native'
 
-import Markdown from '@jonasmerlin/react-native-markdown-display'
+import { AppMarkdown } from '@/components/markdown'
 import { useLingui } from '@lingui/react/macro'
 
 import { useAppCmsPage } from '@/hooks/use-app-data'
@@ -40,7 +40,7 @@ export default function PrivacyPolicyScreen() {
   return (
     <View className="bg-background flex-1 p-2" safeArea="vertical">
       <ScrollView className="flex-1 pt-12" showsVerticalScrollIndicator={false}>
-        <Markdown style={MARKDOWN_STYLE}>{privacyPage.content_fr}</Markdown>
+        <AppMarkdown style={MARKDOWN_STYLE}>{privacyPage.content_fr}</AppMarkdown>
       </ScrollView>
     </View>
   )

@@ -179,6 +179,7 @@ interface LessonItemProps {
     title_en: string
     title_fr: string
     difficulty: 'beginner' | 'intermediate' | 'advanced'
+    status: 'available' | 'coming_soon' | 'maintenance' | 'disabled' | null
     is_completed: boolean
     is_locked: boolean
   }
@@ -191,6 +192,32 @@ const LessonItem = ({ lesson }: LessonItemProps) => {
   const lessonTitle = getValue(lesson, 'title')
   const difficultyLabel = getDifficultyLabel(lesson.difficulty)
   const difficultyColor = getDifficultyColor(lesson.difficulty)
+  const isAvailable = lesson.status === 'available' || lesson.status === null
+  const isComingSoon = lesson.status === 'coming_soon'
+  const isMaintenance = lesson.status === 'maintenance'
+  const isDisabled = lesson.status === 'disabled'
+
+  if (!isAvailable) {
+    return (
+      <View className="bg-background-tertiary flex-row items-center rounded-lg p-3 opacity-50">
+        <View className="ml-3 flex-1">
+          <Text variant="body" className="text-foreground-secondary mb-1">
+            {lessonTitle}
+          </Text>
+          <Text variant="caption" className="text-foreground-secondary">
+            {isComingSoon && t`Coming Soon`}
+            {isMaintenance && t`Under Maintenance`}
+            {isDisabled && t`Temporarily Unavailable`}
+          </Text>
+        </View>
+        <View className="rounded px-2 py-1" style={{ backgroundColor: difficultyColor + '20' }}>
+          <Text variant="caption" style={{ color: difficultyColor }}>
+            {difficultyLabel}
+          </Text>
+        </View>
+      </View>
+    )
+  }
 
   if (lesson.is_locked) {
     return (

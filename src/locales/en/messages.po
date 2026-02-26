@@ -158,11 +158,6 @@ msgstr "Search Results"
 msgid "Loading progress..."
 msgstr "Loading progress..."
 
-#: src/components/lesson-steps/listen-choose-step.tsx
-#: src/components/lesson-steps/quiz-step.tsx
-msgid "Correct!"
-msgstr "Correct!"
-
 #: src/screens/unit.tsx
 msgid "This unit is temporarily unavailable"
 msgstr "This unit is temporarily unavailable"
@@ -399,6 +394,10 @@ msgstr "Current"
 msgid "Join our community to contribute to the development of the application"
 msgstr "Join our community to contribute to the development of the application"
 
+#: src/screens/home.tsx
+msgid "All lessons completed!"
+msgstr "All lessons completed!"
+
 #: src/components/lesson-steps/listen-type-step.tsx
 msgid "Show hints"
 msgstr "Show hints"
@@ -406,10 +405,6 @@ msgstr "Show hints"
 #: src/app/(tabs)/_layout.tsx
 msgid "Home"
 msgstr "Home"
-
-#: src/components/lesson-steps/completion-step.tsx
-msgid "Great job!"
-msgstr "Great job!"
 
 #: src/screens/dictionary/dictionary.tsx
 msgid "Français"
@@ -458,6 +453,10 @@ msgstr "Failed to load lesson"
 #: src/screens/dictionary/word.tsx
 msgid "Related Expressions"
 msgstr "Related Expressions"
+
+#: src/components/lesson-steps/order-words-step.tsx
+msgid "Perfect! Correct order!"
+msgstr "Perfect! Correct order!"
 
 #: src/screens/home.tsx
 msgid "Units temporarily unavailable"
@@ -563,6 +562,11 @@ msgstr "Loading alphabet..."
 #: src/screens/lesson-old.tsx
 #~ msgid "Lesson"
 #~ msgstr "Lesson"
+
+#: src/components/lesson-steps/listen-choose-step.tsx
+#: src/components/lesson-steps/quiz-step.tsx
+msgid "Correct!"
+msgstr "Correct!"
 
 #: src/screens/dictionary/search.tsx
 msgid "French"
@@ -704,10 +708,6 @@ msgstr "Well done! Keep practicing! 💪"
 msgid "Error"
 msgstr "Error"
 
-#: src/components/lesson-steps/match-pairs-step.tsx
-#~ msgid "Perfect! All pairs matched!"
-#~ msgstr "Perfect! All pairs matched!"
-
 #: src/screens/dictionary/word.tsx
 msgid "View main entry:"
 msgstr "View main entry:"
@@ -807,10 +807,6 @@ msgstr "Profile"
 msgid "key allows you to capitalize. Long press to lock CAPS mode."
 msgstr "key allows you to capitalize. Long press to lock CAPS mode."
 
-#: src/components/lesson-steps/order-words-step.tsx
-msgid "Perfect! Correct order!"
-msgstr "Perfect! Correct order!"
-
 #: src/screens/dictionary/word.tsx
 msgid "Examples:"
 msgstr "Examples:"
@@ -820,14 +816,14 @@ msgstr "Examples:"
 msgid "Dictionary"
 msgstr "Dictionary"
 
+#: src/components/lesson-steps/completion-step.tsx
+msgid "Great job!"
+msgstr "Great job!"
+
 #: src/screens/home.tsx
 #: src/screens/learn.tsx
 msgid "Coming Soon"
 msgstr "Coming Soon"
-
-#: src/screens/home.tsx
-msgid "All lessons completed!"
-msgstr "All lessons completed!"
 
 #: src/screens/lesson-old.tsx
 #~ msgid "Learning Objectives"

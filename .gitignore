@@ -58,3 +58,6 @@ gen-lessons/lesson_prompts/
 gen-lessons/audio_files/
 gen-lessons/*.log
 gen-lessons/__pycache__/
+
+# Supabase
+supabase/.temp/

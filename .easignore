@@ -65,3 +65,5 @@ gen-lessons/
 .vscode/
 commitlint.config.js
 .lintstagedrc.js
+admin/
+supabase/
