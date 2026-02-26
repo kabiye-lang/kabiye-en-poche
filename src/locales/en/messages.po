@@ -86,6 +86,10 @@ msgstr "Welcome to Kabiyè en Poche"
 #~ msgid "Tips & Resources"
 #~ msgstr "Tips & Resources"
 
+#: src/screens/lesson.tsx
+msgid "This lesson is temporarily unavailable"
+msgstr "This lesson is temporarily unavailable"
+
 #: src/screens/dictionary/dictionary.tsx
 msgid "Find Kabiyè words in English..."
 msgstr "Find Kabiyè words in English..."
@@ -116,6 +120,7 @@ msgstr "Listen to the audio and type the Kabiyè word"
 msgid "Failed to reset progress. Please try again."
 msgstr "Failed to reset progress. Please try again."
 
+#: src/screens/lesson.tsx
 #: src/screens/unit.tsx
 msgid "Please check back later"
 msgstr "Please check back later"
@@ -168,6 +173,8 @@ msgstr "Privacy policy is not available"
 
 #: src/screens/home.tsx
 #: src/screens/learn.tsx
+#: src/screens/learn.tsx
+#: src/screens/unit.tsx
 msgid "Under Maintenance"
 msgstr "Under Maintenance"
 
@@ -215,6 +222,10 @@ msgstr "True"
 #: src/screens/profile.tsx
 msgid "Kabiyè Workbook"
 msgstr "Kabiyè Workbook"
+
+#: src/screens/lesson.tsx
+msgid "This lesson is coming soon!"
+msgstr "This lesson is coming soon!"
 
 #: src/components/lesson-steps/completion-step.tsx
 msgid "Back to Learn"
@@ -472,6 +483,10 @@ msgstr "No lessons available"
 #~ msgstr "Your Progress"
 
 #: src/screens/lesson.tsx
+msgid "This lesson is not available"
+msgstr "This lesson is not available"
+
+#: src/screens/lesson.tsx
 msgid "Lesson content will be available soon."
 msgstr "Lesson content will be available soon."
 
@@ -533,6 +548,10 @@ msgstr "Tap to listen"
 #: src/screens/lesson.tsx
 msgid "Lesson not found"
 msgstr "Lesson not found"
+
+#: src/screens/lesson.tsx
+msgid "This lesson is under maintenance"
+msgstr "This lesson is under maintenance"
 
 #: src/app/_layout.tsx
 msgid "Terms and Conditions"
@@ -766,6 +785,8 @@ msgstr "Continue Learning"
 
 #: src/screens/home.tsx
 #: src/screens/learn.tsx
+#: src/screens/learn.tsx
+#: src/screens/unit.tsx
 msgid "Temporarily Unavailable"
 msgstr "Temporarily Unavailable"
 
@@ -822,6 +843,8 @@ msgstr "Great job!"
 
 #: src/screens/home.tsx
 #: src/screens/learn.tsx
+#: src/screens/learn.tsx
+#: src/screens/unit.tsx
 msgid "Coming Soon"
 msgstr "Coming Soon"
 

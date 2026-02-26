@@ -70,6 +70,10 @@ msgstr "Aucune donnée de progression disponible"
 msgid "Welcome to Kabiyè en Poche"
 msgstr "Bienvenue dans Kabiyè en Poche"
 
+#: src/screens/lesson.tsx
+msgid "This lesson is temporarily unavailable"
+msgstr "Cette leçon est temporairement indisponible"
+
 #: src/screens/dictionary/dictionary.tsx
 msgid "Find Kabiyè words in English..."
 msgstr "Trouver des mots Kabiyè en anglais..."
@@ -100,6 +104,7 @@ msgstr "Écoutez l'audio et tapez le mot kabiyè"
 msgid "Failed to reset progress. Please try again."
 msgstr "Échec de la réinitialisation de la progression. Veuillez réessayer."
 
+#: src/screens/lesson.tsx
 #: src/screens/unit.tsx
 msgid "Please check back later"
 msgstr "Veuillez revenir plus tard"
@@ -152,6 +157,8 @@ msgstr "La politique de confidentialité n'est pas disponible"
 
 #: src/screens/home.tsx
 #: src/screens/learn.tsx
+#: src/screens/learn.tsx
+#: src/screens/unit.tsx
 msgid "Under Maintenance"
 msgstr "En maintenance"
 
@@ -199,6 +206,10 @@ msgstr "Vrai"
 #: src/screens/profile.tsx
 msgid "Kabiyè Workbook"
 msgstr "Cahier d'exercices Kabiyè"
+
+#: src/screens/lesson.tsx
+msgid "This lesson is coming soon!"
+msgstr "Cette leçon arrive bientôt !"
 
 #: src/components/lesson-steps/completion-step.tsx
 msgid "Back to Learn"
@@ -443,6 +454,10 @@ msgid "No lessons available"
 msgstr "Aucune leçon disponible"
 
 #: src/screens/lesson.tsx
+msgid "This lesson is not available"
+msgstr "Cette leçon n'est pas disponible"
+
+#: src/screens/lesson.tsx
 msgid "Lesson content will be available soon."
 msgstr "Le contenu de la leçon sera bientôt disponible."
 
@@ -500,6 +515,10 @@ msgstr "Appuyez pour écouter"
 #: src/screens/lesson.tsx
 msgid "Lesson not found"
 msgstr "Leçon introuvable"
+
+#: src/screens/lesson.tsx
+msgid "This lesson is under maintenance"
+msgstr "Cette leçon est en maintenance"
 
 #: src/app/_layout.tsx
 msgid "Terms and Conditions"
@@ -713,6 +732,8 @@ msgstr "Continuer l'apprentissage"
 
 #: src/screens/home.tsx
 #: src/screens/learn.tsx
+#: src/screens/learn.tsx
+#: src/screens/unit.tsx
 msgid "Temporarily Unavailable"
 msgstr "Temporairement indisponible"
 
@@ -765,6 +786,8 @@ msgstr "Excellent travail !"
 
 #: src/screens/home.tsx
 #: src/screens/learn.tsx
+#: src/screens/learn.tsx
+#: src/screens/unit.tsx
 msgid "Coming Soon"
 msgstr "Bientôt disponible"
 
