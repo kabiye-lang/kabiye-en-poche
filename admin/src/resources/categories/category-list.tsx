@@ -1,12 +1,4 @@
-import {
-  CreateButton,
-  Datagrid,
-  ExportButton,
-  List,
-  ReferenceField,
-  TextField,
-  TopToolbar,
-} from 'react-admin'
+import { CreateButton, Datagrid, ExportButton, List, ReferenceField, TextField, TopToolbar } from 'react-admin'
 
 const CategoryListActions = () => (
   <TopToolbar>

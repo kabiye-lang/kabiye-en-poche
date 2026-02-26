@@ -1,9 +1,9 @@
 import { useRef, useState } from 'react'
 import { Create, useNotify, useRedirect } from 'react-admin'
 
+import { Input } from '@/components/ui/input'
 import { trimSilence } from '@/lib/audio-trim'
 import { uploadAudio } from '@/lib/audio-upload'
-import { Input } from '@/components/ui/input'
 
 type InputMode = 'upload' | 'record'
 
@@ -71,7 +71,12 @@ export const AudioCreate = () => {
       notify('Please upload a file or record audio', { type: 'warning' })
       return
     }
-    const tagsArr = tags ? tags.split(',').map((t) => t.trim()).filter(Boolean) : []
+    const tagsArr = tags
+      ? tags
+          .split(',')
+          .map((t) => t.trim())
+          .filter(Boolean)
+      : []
     if (tagsArr.length === 0) {
       notify('At least one tag is required to find audios later', { type: 'warning' })
       return
@@ -99,19 +104,25 @@ export const AudioCreate = () => {
 
   return (
     <Create>
-      <form onSubmit={handleSubmit} className="space-y-4 p-6 max-w-md">
+      <form onSubmit={handleSubmit} className="max-w-md space-y-4 p-6">
         <div>
           <div className="mb-2 flex gap-4">
             <button
               type="button"
-              onClick={() => { setMode('record'); setFile(null) }}
+              onClick={() => {
+                setMode('record')
+                setFile(null)
+              }}
               className={`text-sm font-medium ${mode === 'record' ? 'text-primary' : 'text-muted-foreground'}`}
             >
               Record
             </button>
             <button
               type="button"
-              onClick={() => { setMode('upload'); clearRecorded() }}
+              onClick={() => {
+                setMode('upload')
+                clearRecorded()
+              }}
               className={`text-sm font-medium ${mode === 'upload' ? 'text-primary' : 'text-muted-foreground'}`}
             >
               Upload file
@@ -128,11 +139,7 @@ export const AudioCreate = () => {
           {mode === 'record' && (
             <div className="space-y-2">
               <label className="flex items-center gap-2">
-                <input
-                  type="checkbox"
-                  checked={trimEnabled}
-                  onChange={(e) => setTrimEnabled(e.target.checked)}
-                />
+                <input type="checkbox" checked={trimEnabled} onChange={(e) => setTrimEnabled(e.target.checked)} />
                 <span className="text-sm">Trim silence at start/end</span>
               </label>
               {!recordedBlob ? (
@@ -148,7 +155,7 @@ export const AudioCreate = () => {
                   <button
                     type="button"
                     onClick={startRecording}
-                    className="rounded bg-primary px-4 py-2 text-white hover:bg-primary/90"
+                    className="bg-primary hover:bg-primary/90 rounded px-4 py-2 text-white"
                   >
                     Start recording
                   </button>
@@ -170,12 +177,7 @@ export const AudioCreate = () => {
         </div>
         <div>
           <label className="text-sm font-medium">Name *</label>
-          <Input
-            value={name}
-            onChange={(e) => setName(e.target.value)}
-            placeholder="Audio name"
-            className="mt-1"
-          />
+          <Input value={name} onChange={(e) => setName(e.target.value)} placeholder="Audio name" className="mt-1" />
         </div>
         <div>
           <label className="text-sm font-medium">Description</label>
@@ -200,15 +202,11 @@ export const AudioCreate = () => {
           <button
             type="submit"
             disabled={uploading || !hasAudio || !tags.trim()}
-            className="rounded bg-primary px-4 py-2 text-white disabled:opacity-50"
+            className="bg-primary rounded px-4 py-2 text-white disabled:opacity-50"
           >
             {uploading ? 'Uploading...' : 'Create'}
           </button>
-          <button
-            type="button"
-            onClick={() => redirect('list', 'audios')}
-            className="rounded border px-4 py-2"
-          >
+          <button type="button" onClick={() => redirect('list', 'audios')} className="rounded border px-4 py-2">
             Cancel
           </button>
         </div>

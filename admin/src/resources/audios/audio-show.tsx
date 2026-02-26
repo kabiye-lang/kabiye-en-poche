@@ -1,4 +1,4 @@
-import { Show, SimpleShowLayout, TextField, DateField, useRecordContext } from 'react-admin'
+import { DateField, Show, SimpleShowLayout, TextField, useRecordContext } from 'react-admin'
 
 import { getAudioPublicUrl } from '@/lib/audio-upload'
 
@@ -10,7 +10,12 @@ const AudioPlayerField = () => {
   return (
     <div className="mt-2">
       <audio controls src={url} className="max-w-full" />
-      <a href={url} target="_blank" rel="noopener noreferrer" className="text-primary mt-1 block text-sm hover:underline">
+      <a
+        href={url}
+        target="_blank"
+        rel="noopener noreferrer"
+        className="text-primary mt-1 block text-sm hover:underline"
+      >
         {url}
       </a>
     </div>

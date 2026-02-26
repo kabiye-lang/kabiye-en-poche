@@ -23,18 +23,27 @@ function audioBufferToWav(buffer: AudioBuffer): Blob {
     for (let i = 0; i < str.length; i++) view.setUint8(offset++, str.charCodeAt(i))
   }
   write('RIFF')
-  view.setUint32(offset, bufferSize - 8, true); offset += 4
+  view.setUint32(offset, bufferSize - 8, true)
+  offset += 4
   write('WAVE')
   write('fmt ')
-  view.setUint32(offset, 16, true); offset += 4
-  view.setUint16(offset, format, true); offset += 2
-  view.setUint16(offset, numChannels, true); offset += 2
-  view.setUint32(offset, sampleRate, true); offset += 4
-  view.setUint32(offset, sampleRate * blockAlign, true); offset += 4
-  view.setUint16(offset, blockAlign, true); offset += 2
-  view.setUint16(offset, bitDepth, true); offset += 2
+  view.setUint32(offset, 16, true)
+  offset += 4
+  view.setUint16(offset, format, true)
+  offset += 2
+  view.setUint16(offset, numChannels, true)
+  offset += 2
+  view.setUint32(offset, sampleRate, true)
+  offset += 4
+  view.setUint32(offset, sampleRate * blockAlign, true)
+  offset += 4
+  view.setUint16(offset, blockAlign, true)
+  offset += 2
+  view.setUint16(offset, bitDepth, true)
+  offset += 2
   write('data')
-  view.setUint32(offset, dataLen, true); offset += 4
+  view.setUint32(offset, dataLen, true)
+  offset += 4
 
   for (let i = 0; i < buffer.length; i++) {
     let s = 0

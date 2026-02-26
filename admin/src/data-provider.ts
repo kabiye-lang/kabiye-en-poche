@@ -1,5 +1,6 @@
-import { supabaseDataProvider } from 'ra-supabase'
 import type { DataProvider } from 'react-admin'
+
+import { supabaseDataProvider } from 'ra-supabase'
 
 import { deleteAudioFromStorage } from '@/lib/audio-upload'
 
@@ -26,10 +27,7 @@ export const dataProvider: DataProvider = {
   },
   deleteMany: async (resource, params) => {
     if (resource === 'audios' && params.ids?.length) {
-      const { data: rows } = await supabase
-        .from('audios')
-        .select('storage_path')
-        .in('id', params.ids)
+      const { data: rows } = await supabase.from('audios').select('storage_path').in('id', params.ids)
       const paths = (rows ?? []).map((r) => r.storage_path).filter(Boolean)
       for (const path of paths) {
         try {

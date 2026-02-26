@@ -1,6 +1,8 @@
+import type { InputProps } from 'ra-core'
+
 import { useCallback, useEffect, useState } from 'react'
 import { useFormContext } from 'react-hook-form'
-import type { InputProps } from 'ra-core'
+
 import { useInput } from 'ra-core'
 
 import { AudioUrlField } from '@/components/audio-url-field'
@@ -20,10 +22,7 @@ type ActivityType =
 type ActivityData = Record<string, unknown>
 
 /** Validates activity data based on type. Returns error message or undefined. */
-export function validateActivityData(
-  value: unknown,
-  values?: { activity_type?: string }
-): string | undefined {
+export function validateActivityData(value: unknown, values?: { activity_type?: string }): string | undefined {
   const data = (value ?? {}) as ActivityData
   const type = values?.activity_type
 
@@ -35,29 +34,23 @@ export function validateActivityData(
       break
     case 'listen_choose':
       if (!data.audio_url) return 'Audio URL is required'
-      if (!Array.isArray(data.options) || data.options.length === 0)
-        return 'At least one option is required'
-      if (!data.correct_answer)
-        return 'Correct answer is required (must match an option exactly)'
+      if (!Array.isArray(data.options) || data.options.length === 0) return 'At least one option is required'
+      if (!data.correct_answer) return 'Correct answer is required (must match an option exactly)'
       break
     case 'listen_type':
       if (!data.audio_url) return 'Audio URL is required'
       if (!data.correct_answer) return 'Correct answer is required'
       break
     case 'match_pairs':
-      if (!Array.isArray(data.pairs) || data.pairs.length === 0)
-        return 'At least one pair is required'
+      if (!Array.isArray(data.pairs) || data.pairs.length === 0) return 'At least one pair is required'
       break
     case 'order_words':
-      if (!Array.isArray(data.words) || data.words.length === 0)
-        return 'Words array is required'
-      if (!Array.isArray(data.correct_order) || data.correct_order.length === 0)
-        return 'Correct order is required'
+      if (!Array.isArray(data.words) || data.words.length === 0) return 'Words array is required'
+      if (!Array.isArray(data.correct_order) || data.correct_order.length === 0) return 'Correct order is required'
       break
     case 'fill_blank':
       if (!data.answer) return 'Answer is required'
-      if (!Array.isArray(data.options) || data.options.length === 0)
-        return 'At least one option is required'
+      if (!Array.isArray(data.options) || data.options.length === 0) return 'At least one option is required'
       if (!data.sentence_en && !data.sentence_fr && !(data.sentence as Record<string, string>)?.en)
         return 'Sentence (EN or FR) is required. Use ___ for the blank.'
       break
@@ -65,16 +58,13 @@ export function validateActivityData(
       // At least one set of options and matching correct_answer
       const opts = data.options as Record<string, string[]>
       const correct = data.correct_answer as Record<string, string>
-      if (!opts || (typeof opts !== 'object'))
-        return 'Options are required (kbp, en, or fr)'
+      if (!opts || typeof opts !== 'object') return 'Options are required (kbp, en, or fr)'
       const hasOpts = (opts.kbp?.length ?? 0) > 0 || (opts.en?.length ?? 0) > 0 || (opts.fr?.length ?? 0) > 0
       if (!hasOpts) return 'At least one set of options is required'
-      if (!correct || (typeof correct !== 'object'))
-        return 'Correct answer is required'
+      if (!correct || typeof correct !== 'object') return 'Correct answer is required'
       break
     case 'true_false':
-      if (data.answer !== true && data.answer !== false)
-        return 'Correct answer (true or false) is required'
+      if (data.answer !== true && data.answer !== false) return 'Correct answer (true or false) is required'
       break
   }
   return undefined
@@ -104,11 +94,7 @@ function StringArrayField({
     <div className="space-y-2">
       <div className="flex items-center justify-between">
         <label className="text-sm font-medium">{label}</label>
-        <button
-          type="button"
-          onClick={add}
-          className="text-primary text-sm hover:underline"
-        >
+        <button type="button" onClick={add} className="text-primary text-sm hover:underline">
           + Add
         </button>
       </div>
@@ -163,24 +149,14 @@ function MatchPairField({
         onChange={(e) => onChange({ ...value, kbp: e.target.value })}
         className="min-w-24 flex-1"
       />
-      <button
-        type="button"
-        onClick={onRemove}
-        className="rounded border px-2 text-sm text-red-600 hover:bg-red-50"
-      >
+      <button type="button" onClick={onRemove} className="rounded border px-2 text-sm text-red-600 hover:bg-red-50">
         Remove
       </button>
     </div>
   )
 }
 
-function AudioFields({
-  data,
-  onChange,
-}: {
-  data: ActivityData
-  onChange: (d: ActivityData) => void
-}) {
+function AudioFields({ data, onChange }: { data: ActivityData; onChange: (d: ActivityData) => void }) {
   const upd = (k: string, v: unknown) => onChange({ ...data, [k]: v })
   return (
     <div className="space-y-4">
@@ -226,13 +202,7 @@ function AudioFields({
   )
 }
 
-function ListenChooseFields({
-  data,
-  onChange,
-}: {
-  data: ActivityData
-  onChange: (d: ActivityData) => void
-}) {
+function ListenChooseFields({ data, onChange }: { data: ActivityData; onChange: (d: ActivityData) => void }) {
   const upd = (k: string, v: unknown) => onChange({ ...data, [k]: v })
   const options = (data.options ?? []) as string[]
   return (
@@ -276,13 +246,7 @@ function ListenChooseFields({
   )
 }
 
-function ListenTypeFields({
-  data,
-  onChange,
-}: {
-  data: ActivityData
-  onChange: (d: ActivityData) => void
-}) {
+function ListenTypeFields({ data, onChange }: { data: ActivityData; onChange: (d: ActivityData) => void }) {
   const upd = (k: string, v: unknown) => onChange({ ...data, [k]: v })
   const hints = (data.hints ?? []) as string[]
   return (
@@ -326,16 +290,9 @@ function ListenTypeFields({
   )
 }
 
-function MatchPairsFields({
-  data,
-  onChange,
-}: {
-  data: ActivityData
-  onChange: (d: ActivityData) => void
-}) {
+function MatchPairsFields({ data, onChange }: { data: ActivityData; onChange: (d: ActivityData) => void }) {
   const pairs = (data.pairs ?? []) as Array<{ en?: string; fr?: string; kbp?: string }>
-  const upd = (next: Array<{ en?: string; fr?: string; kbp?: string }>) =>
-    onChange({ ...data, pairs: next })
+  const upd = (next: Array<{ en?: string; fr?: string; kbp?: string }>) => onChange({ ...data, pairs: next })
   const handleChange = (idx: number, v: { en?: string; fr?: string; kbp?: string }) => {
     const next = [...pairs]
     next[idx] = v
@@ -348,44 +305,24 @@ function MatchPairsFields({
     <div className="space-y-4">
       <div className="flex items-center justify-between">
         <label className="text-sm font-medium">Pairs (en, fr, kbp) *</label>
-        <button
-          type="button"
-          onClick={add}
-          className="text-primary text-sm hover:underline"
-        >
+        <button type="button" onClick={add} className="text-primary text-sm hover:underline">
           + Add pair
         </button>
       </div>
       {pairs.map((p, idx) => (
-        <MatchPairField
-          key={idx}
-          value={p}
-          onChange={(v) => handleChange(idx, v)}
-          onRemove={() => remove(idx)}
-        />
+        <MatchPairField key={idx} value={p} onChange={(v) => handleChange(idx, v)} onRemove={() => remove(idx)} />
       ))}
     </div>
   )
 }
 
-function OrderWordsFields({
-  data,
-  onChange,
-}: {
-  data: ActivityData
-  onChange: (d: ActivityData) => void
-}) {
+function OrderWordsFields({ data, onChange }: { data: ActivityData; onChange: (d: ActivityData) => void }) {
   const upd = (k: string, v: unknown) => onChange({ ...data, [k]: v })
   const words = (data.words ?? []) as string[]
   const correct_order = (data.correct_order ?? []) as string[]
   return (
     <div className="space-y-4">
-      <StringArrayField
-        value={words}
-        onChange={(v) => upd('words', v)}
-        label="Words (shuffled) *"
-        placeholder="Word"
-      />
+      <StringArrayField value={words} onChange={(v) => upd('words', v)} label="Words (shuffled) *" placeholder="Word" />
       <StringArrayField
         value={correct_order}
         onChange={(v) => upd('correct_order', v)}
@@ -396,13 +333,7 @@ function OrderWordsFields({
   )
 }
 
-function FillBlankFields({
-  data,
-  onChange,
-}: {
-  data: ActivityData
-  onChange: (d: ActivityData) => void
-}) {
+function FillBlankFields({ data, onChange }: { data: ActivityData; onChange: (d: ActivityData) => void }) {
   const upd = (k: string, v: unknown) => onChange({ ...data, [k]: v })
   const options = (data.options ?? []) as string[]
   return (
@@ -441,23 +372,14 @@ function FillBlankFields({
   )
 }
 
-function MultipleChoiceFields({
-  data,
-  onChange,
-}: {
-  data: ActivityData
-  onChange: (d: ActivityData) => void
-}) {
+function MultipleChoiceFields({ data, onChange }: { data: ActivityData; onChange: (d: ActivityData) => void }) {
   const opts = (data.options ?? {}) as Record<string, string[]>
   const correct = (data.correct_answer ?? {}) as Record<string, string>
   const expl = (data.explanation ?? {}) as Record<string, string>
 
-  const updOpts = (lang: string, v: string[]) =>
-    onChange({ ...data, options: { ...opts, [lang]: v } })
-  const updCorrect = (lang: string, v: string) =>
-    onChange({ ...data, correct_answer: { ...correct, [lang]: v } })
-  const updExpl = (lang: string, v: string) =>
-    onChange({ ...data, explanation: { ...expl, [lang]: v } })
+  const updOpts = (lang: string, v: string[]) => onChange({ ...data, options: { ...opts, [lang]: v } })
+  const updCorrect = (lang: string, v: string) => onChange({ ...data, correct_answer: { ...correct, [lang]: v } })
+  const updExpl = (lang: string, v: string) => onChange({ ...data, explanation: { ...expl, [lang]: v } })
 
   return (
     <div className="space-y-4">
@@ -533,13 +455,7 @@ function MultipleChoiceFields({
   )
 }
 
-function TrueFalseFields({
-  data,
-  onChange,
-}: {
-  data: ActivityData
-  onChange: (d: ActivityData) => void
-}) {
+function TrueFalseFields({ data, onChange }: { data: ActivityData; onChange: (d: ActivityData) => void }) {
   const upd = (k: string, v: unknown) => onChange({ ...data, [k]: v })
   const expl = (data.explanation ?? {}) as Record<string, string>
   return (
@@ -584,9 +500,7 @@ export function ActivityDataFormInput(props: InputProps) {
   const activityType = watch('activity_type') as ActivityType | undefined
 
   const [local, setLocal] = useState<ActivityData>(() =>
-    typeof field.value === 'object' && field.value !== null
-      ? (field.value as ActivityData)
-      : {}
+    typeof field.value === 'object' && field.value !== null ? (field.value as ActivityData) : {}
   )
 
   useEffect(() => {
@@ -607,7 +521,7 @@ export function ActivityDataFormInput(props: InputProps) {
 
   if (!activityType) {
     return (
-      <div className="rounded-md border border-dashed p-4 text-muted-foreground">
+      <div className="text-muted-foreground rounded-md border border-dashed p-4">
         <p className="text-sm">Select an activity type above to edit the data.</p>
       </div>
     )
@@ -640,24 +554,14 @@ export function ActivityDataFormInput(props: InputProps) {
       content = <TrueFalseFields data={local} onChange={handleChange} />
       break
     default:
-      content = (
-        <p className="text-muted-foreground text-sm">
-          Unknown activity type: {String(activityType)}
-        </p>
-      )
+      content = <p className="text-muted-foreground text-sm">Unknown activity type: {String(activityType)}</p>
   }
 
   return (
     <div className="space-y-2">
-      {props.label && (
-        <label className="text-sm font-medium leading-none">{props.label}</label>
-      )}
-      <div className="border-input rounded-md border bg-muted/30 p-4">
-        {content}
-      </div>
-      {props.helperText && (
-        <p className="text-muted-foreground text-sm">{props.helperText}</p>
-      )}
+      {props.label && <label className="text-sm leading-none font-medium">{props.label}</label>}
+      <div className="border-input bg-muted/30 rounded-md border p-4">{content}</div>
+      {props.helperText && <p className="text-muted-foreground text-sm">{props.helperText}</p>}
       <FormError fieldState={fieldState} />
     </div>
   )

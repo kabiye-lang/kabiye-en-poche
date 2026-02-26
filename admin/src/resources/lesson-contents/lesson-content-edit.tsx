@@ -1,23 +1,23 @@
 import {
+  ArrayInput,
   Button,
   Edit,
+  NumberInput,
   ReferenceInput,
+  required,
+  SaveButton,
   SelectInput,
   SimpleForm,
-  SaveButton,
+  SimpleFormIterator,
+  TextInput,
   Toolbar,
   TopToolbar,
-  ArrayInput,
-  SimpleFormIterator,
-  NumberInput,
-  required,
-  TextInput,
   useRecordContext,
   useRedirect,
 } from 'react-admin'
 
-import { MarkdownInput } from '@/components/inputs/markdown-input'
 import { AudioUrlInput } from '@/components/inputs/audio-url-input'
+import { MarkdownInput } from '@/components/inputs/markdown-input'
 
 const LessonContentEditActions = () => {
   const record = useRecordContext()
@@ -26,11 +26,7 @@ const LessonContentEditActions = () => {
     <TopToolbar>
       <Button
         label="Cancel"
-        onClick={() =>
-          redirect(
-            record?.lesson_id ? `/lessons/${record.lesson_id}/1` : '/lesson_contents'
-          )
-        }
+        onClick={() => redirect(record?.lesson_id ? `/lessons/${record.lesson_id}/1` : '/lesson_contents')}
       />
     </TopToolbar>
   )
@@ -46,9 +42,7 @@ export const LessonContentEdit = () => (
   <Edit
     mutationMode="pessimistic"
     actions={<LessonContentEditActions />}
-    redirect={(_, __, data) =>
-      data?.lesson_id ? `/lessons/${data.lesson_id}/1` : 'list'
-    }
+    redirect={(_, __, data) => (data?.lesson_id ? `/lessons/${data.lesson_id}/1` : 'list')}
   >
     <SimpleForm toolbar={<LessonContentEditToolbar />}>
       <ReferenceInput source="lesson_id" reference="lessons">

@@ -1,4 +1,5 @@
 import type { CoreLayoutProps } from 'react-admin'
+
 import { Error } from 'react-admin'
 import { ErrorBoundary } from 'react-error-boundary'
 

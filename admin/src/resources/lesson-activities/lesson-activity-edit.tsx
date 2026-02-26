@@ -1,23 +1,20 @@
 import {
   Button,
   Edit,
+  NumberInput,
   ReferenceInput,
+  required,
+  SaveButton,
   SelectInput,
   SimpleForm,
-  SaveButton,
+  TextInput,
   Toolbar,
   TopToolbar,
-  NumberInput,
-  TextInput,
-  required,
   useRecordContext,
   useRedirect,
 } from 'react-admin'
 
-import {
-  ActivityDataFormInput,
-  validateActivityData,
-} from '@/components/inputs/activity-data-form'
+import { ActivityDataFormInput, validateActivityData } from '@/components/inputs/activity-data-form'
 
 const LessonActivityEditActions = () => {
   const record = useRecordContext()
@@ -26,11 +23,7 @@ const LessonActivityEditActions = () => {
     <TopToolbar>
       <Button
         label="Cancel"
-        onClick={() =>
-          redirect(
-            record?.lesson_id ? `/lessons/${record.lesson_id}/2` : '/lesson_activities'
-          )
-        }
+        onClick={() => redirect(record?.lesson_id ? `/lessons/${record.lesson_id}/2` : '/lesson_activities')}
       />
     </TopToolbar>
   )
@@ -53,26 +46,19 @@ const activityTypeChoices = [
   { id: 'true_false', name: 'True/False' },
 ]
 
-const DATA_HELPER =
-  'Fill the fields below according to the activity type. Data is stored as JSON.'
+const DATA_HELPER = 'Fill the fields below according to the activity type. Data is stored as JSON.'
 
 export const LessonActivityEdit = () => (
   <Edit
     mutationMode="pessimistic"
     actions={<LessonActivityEditActions />}
-    redirect={(_, __, data) =>
-      data?.lesson_id ? `/lessons/${data.lesson_id}/2` : 'list'
-    }
+    redirect={(_, __, data) => (data?.lesson_id ? `/lessons/${data.lesson_id}/2` : 'list')}
   >
     <SimpleForm toolbar={<LessonActivityEditToolbar />}>
       <ReferenceInput source="lesson_id" reference="lessons">
         <SelectInput optionText="title_en" validate={[required()]} />
       </ReferenceInput>
-      <SelectInput
-        source="activity_type"
-        choices={activityTypeChoices}
-        validate={[required()]}
-      />
+      <SelectInput source="activity_type" choices={activityTypeChoices} validate={[required()]} />
       <NumberInput source="position" />
 
       <TextInput source="instructions_en" label="Instructions (EN)" multiline />

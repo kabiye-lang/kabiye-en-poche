@@ -1,12 +1,4 @@
-import {
-  Create,
-  ReferenceInput,
-  SelectInput,
-  SimpleForm,
-  required,
-  TextInput,
-  NumberInput,
-} from 'react-admin'
+import { Create, NumberInput, ReferenceInput, required, SelectInput, SimpleForm, TextInput } from 'react-admin'
 
 const difficultyChoices = [
   { id: 'beginner', name: 'Beginner' },

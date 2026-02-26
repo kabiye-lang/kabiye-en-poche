@@ -1,11 +1,4 @@
-import {
-  Show,
-  SimpleShowLayout,
-  TextField,
-  NumberField,
-  ReferenceField,
-  ArrayField,
-} from 'react-admin'
+import { ArrayField, NumberField, ReferenceField, Show, SimpleShowLayout, TextField } from 'react-admin'
 
 export const LessonShow = () => (
   <Show>

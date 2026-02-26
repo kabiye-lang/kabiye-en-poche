@@ -1,12 +1,4 @@
-import {
-  CreateButton,
-  Datagrid,
-  ExportButton,
-  List,
-  NumberField,
-  TextField,
-  TopToolbar,
-} from 'react-admin'
+import { CreateButton, Datagrid, ExportButton, List, NumberField, TextField, TopToolbar } from 'react-admin'
 
 const AlphabetLetterListActions = () => (
   <TopToolbar>

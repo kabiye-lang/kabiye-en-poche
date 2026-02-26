@@ -1,8 +1,8 @@
 import { ActivityIndicator, ScrollView } from 'react-native'
 
-import { AppMarkdown } from '@/components/markdown'
 import { useLingui } from '@lingui/react/macro'
 
+import { AppMarkdown } from '@/components/markdown'
 import { useAppCmsPage } from '@/hooks/use-app-data'
 import { MARKDOWN_STYLE } from '@/utils/design-system-nativewind'
 

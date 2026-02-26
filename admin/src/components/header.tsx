@@ -17,17 +17,13 @@ const navItems = [
 const Header = () => {
   const location = useLocation()
 
-  const currentPath = navItems.find((item) => matchPath(`/${item.link}/*`, location.pathname))
-    ?.link ?? '/'
+  const currentPath = navItems.find((item) => matchPath(`/${item.link}/*`, location.pathname))?.link ?? '/'
 
   return (
     <div className="bg-opacity-90 fixed top-0 right-0 left-0 z-50 bg-white py-2 shadow-md">
-      <div className="container mx-auto flex justify-between items-center">
+      <div className="container mx-auto flex items-center justify-between">
         <nav className="flex items-center gap-6">
-          <Link
-            to="/"
-            className="font-semibold text-foreground hover:text-foreground/80 transition-colors"
-          >
+          <Link to="/" className="text-foreground hover:text-foreground/80 font-semibold transition-colors">
             Kabiyè Admin
           </Link>
           <div className="flex gap-1">
@@ -36,7 +32,7 @@ const Header = () => {
                 key={item.link}
                 to={`/${item.link}`}
                 className={cn(
-                  'px-3 py-2 rounded-md text-sm font-medium transition-colors',
+                  'rounded-md px-3 py-2 text-sm font-medium transition-colors',
                   currentPath === item.link
                     ? 'bg-accent text-accent-foreground'
                     : 'text-muted-foreground hover:text-foreground hover:bg-accent/50'

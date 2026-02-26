@@ -40,11 +40,7 @@ const lessonFilters = [
 ]
 
 export const LessonList = () => (
-  <List
-    actions={<LessonListActions />}
-    filters={lessonFilters}
-    sort={{ field: 'position', order: 'ASC' }}
-  >
+  <List actions={<LessonListActions />} filters={lessonFilters} sort={{ field: 'position', order: 'ASC' }}>
     <Datagrid rowClick="edit" bulkActionButtons={false}>
       <TextField source="title_en" label="Title (EN)" />
       <TextField source="title_fr" label="Title (FR)" />

@@ -1,4 +1,4 @@
-import { Edit, SimpleForm, required, TextInput, NumberInput, BooleanInput } from 'react-admin'
+import { BooleanInput, Edit, NumberInput, required, SimpleForm, TextInput } from 'react-admin'
 
 import { MarkdownInput } from '@/components/inputs/markdown-input'
 

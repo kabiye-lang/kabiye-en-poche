@@ -1,19 +1,16 @@
 import {
   Create,
+  NumberInput,
   ReferenceInput,
+  required,
   SelectInput,
   SimpleForm,
-  NumberInput,
   TextInput,
-  required,
   useNotify,
   useRedirect,
 } from 'react-admin'
 
-import {
-  ActivityDataFormInput,
-  validateActivityData,
-} from '@/components/inputs/activity-data-form'
+import { ActivityDataFormInput, validateActivityData } from '@/components/inputs/activity-data-form'
 
 const activityTypeChoices = [
   { id: 'audio', name: 'Audio (single or conversation)' },
@@ -26,49 +23,44 @@ const activityTypeChoices = [
   { id: 'true_false', name: 'True/False' },
 ]
 
-const DATA_HELPER =
-  'Fill the fields below according to the activity type. Data is stored as JSON.'
+const DATA_HELPER = 'Fill the fields below according to the activity type. Data is stored as JSON.'
 
 export const LessonActivityCreate = () => {
   const notify = useNotify()
   const redirect = useRedirect()
 
   return (
-  <Create
-    mutationOptions={{
-      onSuccess: (data) => {
-        notify('ra.notification.created')
-        if (data?.lesson_id) {
-          redirect(`/lessons/${data.lesson_id}`)
-        } else {
-          redirect('list', 'lesson_activities')
-        }
-      },
-    }}
-  >
-    <SimpleForm>
-      <ReferenceInput source="lesson_id" reference="lessons">
-        <SelectInput optionText="title_en" validate={[required()]} />
-      </ReferenceInput>
-      <SelectInput
-        source="activity_type"
-        choices={activityTypeChoices}
-        validate={[required()]}
-      />
-      <NumberInput source="position" defaultValue={0} />
+    <Create
+      mutationOptions={{
+        onSuccess: (data) => {
+          notify('ra.notification.created')
+          if (data?.lesson_id) {
+            redirect(`/lessons/${data.lesson_id}`)
+          } else {
+            redirect('list', 'lesson_activities')
+          }
+        },
+      }}
+    >
+      <SimpleForm>
+        <ReferenceInput source="lesson_id" reference="lessons">
+          <SelectInput optionText="title_en" validate={[required()]} />
+        </ReferenceInput>
+        <SelectInput source="activity_type" choices={activityTypeChoices} validate={[required()]} />
+        <NumberInput source="position" defaultValue={0} />
 
-      <TextInput source="instructions_en" label="Instructions (EN)" multiline />
-      <TextInput source="instructions_fr" label="Instructions (FR)" multiline />
-      <TextInput source="question_en" label="Question (EN)" multiline />
-      <TextInput source="question_fr" label="Question (FR)" multiline />
+        <TextInput source="instructions_en" label="Instructions (EN)" multiline />
+        <TextInput source="instructions_fr" label="Instructions (FR)" multiline />
+        <TextInput source="question_en" label="Question (EN)" multiline />
+        <TextInput source="question_fr" label="Question (FR)" multiline />
 
-      <ActivityDataFormInput
-        source="data"
-        label="Activity Data"
-        helperText={DATA_HELPER}
-        validate={validateActivityData}
-      />
-    </SimpleForm>
-  </Create>
+        <ActivityDataFormInput
+          source="data"
+          label="Activity Data"
+          helperText={DATA_HELPER}
+          validate={validateActivityData}
+        />
+      </SimpleForm>
+    </Create>
   )
 }

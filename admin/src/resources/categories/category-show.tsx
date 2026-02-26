@@ -1,4 +1,4 @@
-import { Show, SimpleShowLayout, ReferenceField, TextField, DateField } from 'react-admin'
+import { DateField, ReferenceField, Show, SimpleShowLayout, TextField } from 'react-admin'
 
 export const CategoryShow = () => (
   <Show>

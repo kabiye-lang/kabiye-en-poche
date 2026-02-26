@@ -1,4 +1,4 @@
-import { Admin, mergeTranslations, Resource, bwLightTheme } from 'react-admin'
+import { Admin, bwLightTheme, mergeTranslations, Resource } from 'react-admin'
 import { BrowserRouter } from 'react-router-dom'
 
 import { deepmerge } from '@mui/utils'
@@ -10,10 +10,9 @@ import { raSupabaseEnglishMessages } from 'ra-supabase'
 import { LoginPage } from '@/auth/login-page'
 
 import { authProvider } from './auth-provider'
+import { Dashboard } from './dashboard/dashboard'
 import { dataProvider } from './data-provider'
 import Layout from './layout'
-import { Dashboard } from './dashboard/dashboard'
-
 import alphabetLetters from './resources/alphabet-letters'
 import audios from './resources/audios'
 import categories from './resources/categories'
@@ -25,10 +24,7 @@ import topics from './resources/topics'
 import units from './resources/units'
 
 const queryClient = new QueryClient()
-const i18nProvider = polyglotI18nProvider(
-  () => mergeTranslations(englishMessages, raSupabaseEnglishMessages),
-  'en'
-)
+const i18nProvider = polyglotI18nProvider(() => mergeTranslations(englishMessages, raSupabaseEnglishMessages), 'en')
 
 const myLightTheme = deepmerge(bwLightTheme, {
   palette: {

@@ -23,9 +23,7 @@ export function LoginPage({ className, ...props }: React.ComponentPropsWithoutRe
           <Card>
             <CardHeader>
               <CardTitle className="text-2xl">Login</CardTitle>
-              <CardDescription>
-                Enter your email below to login to the Kabiyè en Poche admin panel
-              </CardDescription>
+              <CardDescription>Enter your email below to login to the Kabiyè en Poche admin panel</CardDescription>
             </CardHeader>
             <CardContent>
               <Form className="flex flex-col gap-4" onSubmit={handleSubmit}>

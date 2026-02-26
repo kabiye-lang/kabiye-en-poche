@@ -26,11 +26,7 @@ const statusChoices = [
 const unitFilters = [<SelectInput key="status" source="status" choices={statusChoices} label="Status" alwaysOn />]
 
 export const UnitList = () => (
-  <List
-    actions={<UnitListActions />}
-    filters={unitFilters}
-    sort={{ field: 'position', order: 'ASC' }}
-  >
+  <List actions={<UnitListActions />} filters={unitFilters} sort={{ field: 'position', order: 'ASC' }}>
     <Datagrid rowClick="edit" bulkActionButtons={false}>
       <TextField source="title_en" label="Title (EN)" />
       <TextField source="title_fr" label="Title (FR)" />

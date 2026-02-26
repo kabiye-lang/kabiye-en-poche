@@ -12,7 +12,9 @@ export async function uploadAudio(
   file: Blob,
   metadata: { name: string; description?: string; tags: string[] }
 ): Promise<UploadAudioResult> {
-  const { data: { session } } = await supabase.auth.getSession()
+  const {
+    data: { session },
+  } = await supabase.auth.getSession()
   if (!session?.access_token) {
     throw new Error('Not authenticated')
   }
@@ -52,11 +54,8 @@ export async function deleteAudioFromStorage(storagePath: string): Promise<void>
 const AUDIO_EXTENSIONS = ['webm', 'wav', 'mp3', 'm4a', 'ogg', 'oga'] as const
 
 function getExtension(blob: Blob, fileName: string): string {
-  const extFromName = fileName.includes('.')
-    ? fileName.split('.').pop()?.toLowerCase()
-    : null
-  if (extFromName && AUDIO_EXTENSIONS.includes(extFromName as (typeof AUDIO_EXTENSIONS)[number]))
-    return extFromName
+  const extFromName = fileName.includes('.') ? fileName.split('.').pop()?.toLowerCase() : null
+  if (extFromName && AUDIO_EXTENSIONS.includes(extFromName as (typeof AUDIO_EXTENSIONS)[number])) return extFromName
   const mime = (blob.type || '').toLowerCase()
   if (mime.includes('webm')) return 'webm'
   if (mime.includes('wav') || mime.includes('wave')) return 'wav'

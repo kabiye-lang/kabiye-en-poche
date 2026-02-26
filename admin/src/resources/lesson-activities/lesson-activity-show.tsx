@@ -1,11 +1,4 @@
-import {
-  Show,
-  SimpleShowLayout,
-  TextField,
-  NumberField,
-  ReferenceField,
-  FunctionField,
-} from 'react-admin'
+import { FunctionField, NumberField, ReferenceField, Show, SimpleShowLayout, TextField } from 'react-admin'
 
 export const LessonActivityShow = () => (
   <Show>
@@ -20,11 +13,7 @@ export const LessonActivityShow = () => (
       <FunctionField
         source="data"
         label="Data"
-        render={(record) =>
-          record.data
-            ? JSON.stringify(record.data, null, 2)
-            : '(none)'
-        }
+        render={(record) => (record.data ? JSON.stringify(record.data, null, 2) : '(none)')}
       />
     </SimpleShowLayout>
   </Show>

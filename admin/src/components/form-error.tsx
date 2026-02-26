@@ -3,11 +3,7 @@ import type { ControllerFieldState } from 'react-hook-form'
 import { ValidationError } from 'ra-core'
 
 export const FormError = (props: { fieldState: ControllerFieldState }) => {
-  if (
-    !props.fieldState.invalid ||
-    !props.fieldState.isTouched ||
-    !props.fieldState.error?.message
-  ) {
+  if (!props.fieldState.invalid || !props.fieldState.isTouched || !props.fieldState.error?.message) {
     return null
   }
 

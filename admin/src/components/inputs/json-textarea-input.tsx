@@ -1,11 +1,12 @@
-import { useCallback, useEffect, useState } from 'react'
 import type { Extension } from '@codemirror/state'
 import type { InputProps } from 'ra-core'
-import { useInput } from 'ra-core'
 
-import CodeMirror from '@uiw/react-codemirror'
+import { useCallback, useEffect, useState } from 'react'
+
 import { json, jsonParseLinter } from '@codemirror/lang-json'
 import { linter, lintGutter } from '@codemirror/lint'
+import CodeMirror from '@uiw/react-codemirror'
+import { useInput } from 'ra-core'
 
 import { FormError } from '@/components/form-error'
 
@@ -20,9 +21,7 @@ export function JsonTextareaInput(props: InputProps & { rows?: number }) {
   const minHeight = `${rows * lineHeight}px`
 
   const [raw, setRaw] = useState(() =>
-    typeof field.value === 'object' && field.value !== null
-      ? JSON.stringify(field.value, null, 2)
-      : ''
+    typeof field.value === 'object' && field.value !== null ? JSON.stringify(field.value, null, 2) : ''
   )
 
   useEffect(() => {
@@ -69,27 +68,21 @@ export function JsonTextareaInput(props: InputProps & { rows?: number }) {
     }
   }, [raw, field])
 
-  const extensions: Extension[] = [
-    json(),
-    lintGutter(),
-    linter(jsonParseLinter()),
-  ]
+  const extensions: Extension[] = [json(), lintGutter(), linter(jsonParseLinter())]
 
   return (
     <div className="space-y-2">
       <div className="flex items-center justify-between">
-        {props.label && (
-          <label className="text-sm font-medium leading-none">{props.label}</label>
-        )}
+        {props.label && <label className="text-sm leading-none font-medium">{props.label}</label>}
         <button
           type="button"
           onClick={handleFormat}
-          className="rounded border border-input bg-muted px-2 py-1 text-xs font-medium transition-colors hover:bg-muted/80"
+          className="border-input bg-muted hover:bg-muted/80 rounded border px-2 py-1 text-xs font-medium transition-colors"
         >
           Format
         </button>
       </div>
-      <div className="overflow-hidden rounded-md border border-input">
+      <div className="border-input overflow-hidden rounded-md border">
         <CodeMirror
           value={raw}
           onChange={handleChange}
@@ -114,9 +107,7 @@ export function JsonTextareaInput(props: InputProps & { rows?: number }) {
           indentWithTab
         />
       </div>
-      {props.helperText && (
-        <p className="text-muted-foreground text-sm">{props.helperText}</p>
-      )}
+      {props.helperText && <p className="text-muted-foreground text-sm">{props.helperText}</p>}
       <FormError fieldState={fieldState} />
     </div>
   )

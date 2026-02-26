@@ -10,10 +10,10 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context'
 
 import { router, useLocalSearchParams } from 'expo-router'
 
-import { AppMarkdown } from '@/components/markdown'
 import { useLingui } from '@lingui/react/macro'
 
 import { CaretLeftIcon } from '@/components/icons'
+import { AppMarkdown } from '@/components/markdown'
 import { Button, Card, Text, View } from '@/components/ui'
 import { useAppAlphabetLetter } from '@/hooks/use-app-data'
 import { brandColors, LETTER_TYPE_COLORS, MARKDOWN_STYLE } from '@/utils/design-system-nativewind'

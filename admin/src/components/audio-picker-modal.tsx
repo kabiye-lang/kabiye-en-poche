@@ -1,10 +1,9 @@
 import { useCallback, useEffect, useRef, useState } from 'react'
 
-import { supabase } from '@/supabase'
-import { getAudioPublicUrl } from '@/lib/audio-upload'
-import { trimSilence } from '@/lib/audio-trim'
-import { uploadAudio } from '@/lib/audio-upload'
 import { Input } from '@/components/ui/input'
+import { trimSilence } from '@/lib/audio-trim'
+import { getAudioPublicUrl, uploadAudio } from '@/lib/audio-upload'
+import { supabase } from '@/supabase'
 
 interface AudioRecord {
   id: string
@@ -17,7 +16,7 @@ interface AudioRecord {
 interface AudioPickerModalProps {
   open: boolean
   onClose: () => void
-  onSelect: (url: string) => void
+  onSelect: (_url: string) => void
 }
 
 export function AudioPickerModal({ open, onClose, onSelect }: AudioPickerModalProps) {
@@ -37,7 +36,11 @@ export function AudioPickerModal({ open, onClose, onSelect }: AudioPickerModalPr
 
   const fetchAudios = useCallback(async () => {
     setLoading(true)
-    let query = supabase.from('audios').select('id, storage_path, name, description, tags').order('created_at', { ascending: false }).limit(50)
+    let query = supabase
+      .from('audios')
+      .select('id, storage_path, name, description, tags')
+      .order('created_at', { ascending: false })
+      .limit(50)
     if (search.trim()) {
       const term = search.trim()
       query = query.or(`name.ilike.%${term}%,tags.cs.{"${term.replace(/"/g, '')}"}`)
@@ -87,7 +90,12 @@ export function AudioPickerModal({ open, onClose, onSelect }: AudioPickerModalPr
 
   const handleUpload = async () => {
     if (!recordedBlob) return
-    const tagsArr = recordTags ? recordTags.split(',').map((t) => t.trim()).filter(Boolean) : []
+    const tagsArr = recordTags
+      ? recordTags
+          .split(',')
+          .map((t) => t.trim())
+          .filter(Boolean)
+      : []
     if (tagsArr.length === 0) {
       alert('At least one tag is required to find audios later')
       return
@@ -144,11 +152,7 @@ export function AudioPickerModal({ open, onClose, onSelect }: AudioPickerModalPr
           >
             Record
           </button>
-          <button
-            type="button"
-            onClick={onClose}
-            className="text-foreground-secondary hover:text-foreground ml-auto"
-          >
+          <button type="button" onClick={onClose} className="text-foreground-secondary hover:text-foreground ml-auto">
             ×
           </button>
         </div>
@@ -162,11 +166,7 @@ export function AudioPickerModal({ open, onClose, onSelect }: AudioPickerModalPr
                 onChange={(e) => setSearch(e.target.value)}
                 onKeyDown={(e) => e.key === 'Enter' && fetchAudios()}
               />
-              <button
-                type="button"
-                onClick={fetchAudios}
-                className="text-primary text-sm hover:underline"
-              >
+              <button type="button" onClick={fetchAudios} className="text-primary text-sm hover:underline">
                 Search
               </button>
               {loading ? (
@@ -176,15 +176,10 @@ export function AudioPickerModal({ open, onClose, onSelect }: AudioPickerModalPr
               ) : (
                 <div className="space-y-2">
                   {audios.map((a) => (
-                    <div
-                      key={a.id}
-                      className="border-input flex items-center justify-between rounded border p-2"
-                    >
+                    <div key={a.id} className="border-input flex items-center justify-between rounded border p-2">
                       <div>
                         <p className="font-medium">{a.name}</p>
-                        {a.tags?.length ? (
-                          <p className="text-muted-foreground text-xs">{a.tags.join(', ')}</p>
-                        ) : null}
+                        {a.tags?.length ? <p className="text-muted-foreground text-xs">{a.tags.join(', ')}</p> : null}
                       </div>
                       <div className="flex gap-2">
                         <audio controls src={getAudioPublicUrl(a.storage_path)} className="h-8 max-w-[120px]" />
@@ -206,11 +201,7 @@ export function AudioPickerModal({ open, onClose, onSelect }: AudioPickerModalPr
           {tab === 'record' && (
             <div className="space-y-4">
               <label className="flex items-center gap-2">
-                <input
-                  type="checkbox"
-                  checked={trimEnabled}
-                  onChange={(e) => setTrimEnabled(e.target.checked)}
-                />
+                <input type="checkbox" checked={trimEnabled} onChange={(e) => setTrimEnabled(e.target.checked)} />
                 <span className="text-sm">Trim silence at start/end</span>
               </label>
               {!recordedBlob ? (
@@ -227,7 +218,7 @@ export function AudioPickerModal({ open, onClose, onSelect }: AudioPickerModalPr
                     <button
                       type="button"
                       onClick={startRecording}
-                      className="rounded bg-primary px-4 py-2 text-white hover:bg-primary/90"
+                      className="bg-primary hover:bg-primary/90 rounded px-4 py-2 text-white"
                     >
                       Start recording
                     </button>
@@ -269,15 +260,11 @@ export function AudioPickerModal({ open, onClose, onSelect }: AudioPickerModalPr
                       type="button"
                       onClick={handleUpload}
                       disabled={uploading || !recordTags.trim()}
-                      className="rounded bg-primary px-4 py-2 text-white disabled:opacity-50"
+                      className="bg-primary rounded px-4 py-2 text-white disabled:opacity-50"
                     >
                       {uploading ? 'Uploading...' : 'Upload & select'}
                     </button>
-                    <button
-                      type="button"
-                      onClick={() => setRecordedBlob(null)}
-                      className="rounded border px-4 py-2"
-                    >
+                    <button type="button" onClick={() => setRecordedBlob(null)} className="rounded border px-4 py-2">
                       Record again
                     </button>
                   </div>

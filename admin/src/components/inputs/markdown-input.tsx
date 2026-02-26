@@ -1,7 +1,7 @@
 import type { InputProps } from 'ra-core'
-import { useInput } from 'ra-core'
 
 import MDEditor from '@uiw/react-md-editor'
+import { useInput } from 'ra-core'
 import remarkBreaks from 'remark-breaks'
 
 import '@uiw/react-md-editor/markdown-editor.css'
@@ -13,9 +13,7 @@ export function MarkdownInput(props: InputProps) {
 
   return (
     <div className="space-y-2" data-color-mode="light">
-      {props.label && (
-        <label className="text-sm font-medium leading-none">{props.label}</label>
-      )}
+      {props.label && <label className="text-sm leading-none font-medium">{props.label}</label>}
       <MDEditor
         value={field.value ?? ''}
         onChange={(value) => field.onChange(value ?? '')}
@@ -24,9 +22,7 @@ export function MarkdownInput(props: InputProps) {
         visibleDragbar={false}
         previewOptions={{ remarkPlugins: [remarkBreaks] }}
       />
-      {props.helperText && (
-        <p className="text-muted-foreground text-sm">{props.helperText}</p>
-      )}
+      {props.helperText && <p className="text-muted-foreground text-sm">{props.helperText}</p>}
       <FormError fieldState={fieldState} />
     </div>
   )

@@ -1,4 +1,4 @@
-import { Show, SimpleShowLayout, TextField, NumberField, BooleanField, DateField } from 'react-admin'
+import { BooleanField, DateField, NumberField, Show, SimpleShowLayout, TextField } from 'react-admin'
 
 export const CmsPageShow = () => (
   <Show>

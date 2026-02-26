@@ -5,7 +5,7 @@ import { Input } from '@/components/ui/input'
 
 interface AudioUrlFieldProps {
   value: string
-  onChange: (url: string) => void
+  onChange: (_url: string) => void
   label?: string
   placeholder?: string
 }
@@ -16,9 +16,7 @@ export function AudioUrlField({ value, onChange, label, placeholder }: AudioUrlF
 
   return (
     <div>
-      {label && (
-        <label className="text-sm font-medium">{label}</label>
-      )}
+      {label && <label className="text-sm font-medium">{label}</label>}
       <div className="mt-1 flex gap-2">
         <Input
           type="url"
@@ -30,16 +28,12 @@ export function AudioUrlField({ value, onChange, label, placeholder }: AudioUrlF
         <button
           type="button"
           onClick={() => setPickerOpen(true)}
-          className="rounded border border-input bg-muted px-3 py-2 text-sm hover:bg-muted/80"
+          className="border-input bg-muted hover:bg-muted/80 rounded border px-3 py-2 text-sm"
         >
           Pick
         </button>
       </div>
-      <AudioPickerModal
-        open={pickerOpen}
-        onClose={() => setPickerOpen(false)}
-        onSelect={onChange}
-      />
+      <AudioPickerModal open={pickerOpen} onClose={() => setPickerOpen(false)} onSelect={onChange} />
     </div>
   )
 }

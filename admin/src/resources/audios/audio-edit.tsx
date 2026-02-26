@@ -1,10 +1,18 @@
 import { useEffect, useRef, useState } from 'react'
-import { Edit, useNotify, useRedirect, useUpdate, useRecordContext } from 'react-admin'
-import { DeleteButton, ShowButton, TopToolbar } from 'react-admin'
+import {
+  DeleteButton,
+  Edit,
+  ShowButton,
+  TopToolbar,
+  useNotify,
+  useRecordContext,
+  useRedirect,
+  useUpdate,
+} from 'react-admin'
 
-import { deleteAudioFromStorage, getAudioPublicUrl, uploadAudioToStorage } from '@/lib/audio-upload'
-import { trimSilence } from '@/lib/audio-trim'
 import { Input } from '@/components/ui/input'
+import { trimSilence } from '@/lib/audio-trim'
+import { deleteAudioFromStorage, getAudioPublicUrl, uploadAudioToStorage } from '@/lib/audio-upload'
 
 type ReplaceMode = 'keep' | 'upload' | 'record'
 
@@ -82,7 +90,12 @@ function AudioEditForm() {
     e.preventDefault()
     if (!record) return
 
-    const tagsArr = tags ? tags.split(',').map((t) => t.trim()).filter(Boolean) : []
+    const tagsArr = tags
+      ? tags
+          .split(',')
+          .map((t) => t.trim())
+          .filter(Boolean)
+      : []
     if (tagsArr.length === 0) {
       notify('At least one tag is required to find audios later', { type: 'warning' })
       return
@@ -148,9 +161,9 @@ function AudioEditForm() {
     replaceMode === 'keep' || (replaceMode === 'upload' && file) || (replaceMode === 'record' && recordedBlob)
 
   return (
-    <form onSubmit={handleSubmit} className="space-y-4 p-6 max-w-md">
+    <form onSubmit={handleSubmit} className="max-w-md space-y-4 p-6">
       <div>
-        <p className="text-sm font-medium text-muted-foreground">Current audio</p>
+        <p className="text-muted-foreground text-sm font-medium">Current audio</p>
         <audio controls src={getAudioPublicUrl(record.storage_path)} className="mt-1 w-full" />
       </div>
 
@@ -204,11 +217,19 @@ function AudioEditForm() {
             </label>
             {!recordedBlob ? (
               recording ? (
-                <button type="button" onClick={stopRecording} className="rounded bg-red-500 px-4 py-2 text-white hover:bg-red-600">
+                <button
+                  type="button"
+                  onClick={stopRecording}
+                  className="rounded bg-red-500 px-4 py-2 text-white hover:bg-red-600"
+                >
                   Stop
                 </button>
               ) : (
-                <button type="button" onClick={startRecording} className="rounded bg-primary px-4 py-2 text-white hover:bg-primary/90">
+                <button
+                  type="button"
+                  onClick={startRecording}
+                  className="bg-primary hover:bg-primary/90 rounded px-4 py-2 text-white"
+                >
                   Start recording
                 </button>
               )
@@ -240,10 +261,19 @@ function AudioEditForm() {
       </div>
       <div>
         <label className="text-sm font-medium">Tags *</label>
-        <Input value={tags} onChange={(e) => setTags(e.target.value)} placeholder="Comma-separated tags (required)" className="mt-1" />
+        <Input
+          value={tags}
+          onChange={(e) => setTags(e.target.value)}
+          placeholder="Comma-separated tags (required)"
+          className="mt-1"
+        />
       </div>
       <div className="flex gap-2">
-        <button type="submit" disabled={saving || !canSave || !tags.trim()} className="rounded bg-primary px-4 py-2 text-white disabled:opacity-50">
+        <button
+          type="submit"
+          disabled={saving || !canSave || !tags.trim()}
+          className="bg-primary rounded px-4 py-2 text-white disabled:opacity-50"
+        >
           {saving ? 'Saving...' : 'Save'}
         </button>
         <button type="button" onClick={() => redirect('list', 'audios')} className="rounded border px-4 py-2">

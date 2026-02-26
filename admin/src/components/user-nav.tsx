@@ -8,9 +8,7 @@ export default function UserNav() {
 
   return (
     <div className="flex items-center gap-4">
-      {identity?.fullName && (
-        <span className="text-muted-foreground text-sm">{identity.fullName}</span>
-      )}
+      {identity?.fullName && <span className="text-muted-foreground text-sm">{identity.fullName}</span>}
       <Button variant="outline" size="sm" onClick={() => logout()}>
         Log out
       </Button>

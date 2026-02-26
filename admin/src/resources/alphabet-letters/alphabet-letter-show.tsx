@@ -1,4 +1,4 @@
-import { Show, SimpleShowLayout, TextField, NumberField, DateField } from 'react-admin'
+import { DateField, NumberField, Show, SimpleShowLayout, TextField } from 'react-admin'
 
 export const AlphabetLetterShow = () => (
   <Show>

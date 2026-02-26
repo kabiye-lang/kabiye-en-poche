@@ -1,4 +1,4 @@
-import { Create, SimpleForm, required, TextInput, NumberInput, SelectInput } from 'react-admin'
+import { Create, NumberInput, required, SelectInput, SimpleForm, TextInput } from 'react-admin'
 
 const unitStatusChoices = [
   { id: 'available', name: 'Available' },

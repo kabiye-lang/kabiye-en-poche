@@ -1,18 +1,18 @@
 import {
+  CreateButton,
+  Datagrid,
   Edit,
+  EditButton,
+  FormTab,
+  NumberField,
+  NumberInput,
   ReferenceInput,
+  ReferenceManyField,
+  required,
   SelectInput,
   TabbedForm,
-  FormTab,
-  required,
-  TextInput,
-  NumberInput,
-  ReferenceManyField,
-  Datagrid,
   TextField,
-  NumberField,
-  EditButton,
-  CreateButton,
+  TextInput,
   useRecordContext,
 } from 'react-admin'
 
@@ -32,23 +32,13 @@ const statusChoices = [
 const CreateRelatedContentButton = () => {
   const lesson = useRecordContext()
   if (!lesson?.id) return null
-  return (
-    <CreateButton
-      resource="lesson_contents"
-      state={{ record: { lesson_id: lesson.id } }}
-    />
-  )
+  return <CreateButton resource="lesson_contents" state={{ record: { lesson_id: lesson.id } }} />
 }
 
 const CreateRelatedActivityButton = () => {
   const lesson = useRecordContext()
   if (!lesson?.id) return null
-  return (
-    <CreateButton
-      resource="lesson_activities"
-      state={{ record: { lesson_id: lesson.id } }}
-    />
-  )
+  return <CreateButton resource="lesson_activities" state={{ record: { lesson_id: lesson.id } }} />
 }
 
 export const LessonEdit = () => (
@@ -66,11 +56,7 @@ export const LessonEdit = () => (
       </FormTab>
 
       <FormTab label="Contents">
-        <ReferenceManyField
-          reference="lesson_contents"
-          target="lesson_id"
-          label={false}
-        >
+        <ReferenceManyField reference="lesson_contents" target="lesson_id" label={false}>
           <Datagrid rowClick="edit" bulkActionButtons={false}>
             <TextField source="title_en" label="Title (EN)" />
             <NumberField source="position" />
@@ -81,11 +67,7 @@ export const LessonEdit = () => (
       </FormTab>
 
       <FormTab label="Activities">
-        <ReferenceManyField
-          reference="lesson_activities"
-          target="lesson_id"
-          label={false}
-        >
+        <ReferenceManyField reference="lesson_activities" target="lesson_id" label={false}>
           <Datagrid rowClick="edit" bulkActionButtons={false}>
             <TextField source="activity_type" label="Type" />
             <TextField source="question_en" label="Question (EN)" />

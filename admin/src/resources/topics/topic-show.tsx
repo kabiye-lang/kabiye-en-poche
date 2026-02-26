@@ -1,4 +1,4 @@
-import { Show, SimpleShowLayout, TextField, DateField } from 'react-admin'
+import { DateField, Show, SimpleShowLayout, TextField } from 'react-admin'
 
 export const TopicShow = () => (
   <Show>
