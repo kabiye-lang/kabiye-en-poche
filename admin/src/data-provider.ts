@@ -27,7 +27,8 @@ export const dataProvider: DataProvider = {
   },
   deleteMany: async (resource, params) => {
     if (resource === 'audios' && params.ids?.length) {
-      const { data: rows } = await supabase.from('audios').select('storage_path').in('id', params.ids)
+      const ids = params.ids.map(String)
+      const { data: rows } = await supabase.from('audios').select('storage_path').in('id', ids)
       const paths = (rows ?? []).map((r) => r.storage_path).filter(Boolean)
       for (const path of paths) {
         try {

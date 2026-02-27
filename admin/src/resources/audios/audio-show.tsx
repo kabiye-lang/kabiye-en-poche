@@ -23,7 +23,7 @@ const AudioPlayerField = () => {
 }
 
 export const AudioShow = () => (
-  <Show mutationMode="pessimistic">
+  <Show>
     <SimpleShowLayout>
       <TextField source="name" />
       <TextField source="description" />
