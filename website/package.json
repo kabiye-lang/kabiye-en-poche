@@ -13,19 +13,19 @@
   "dependencies": {
     "@fontsource-variable/geist": "^5.2.8",
     "@phosphor-icons/react": "^2.1.10",
-    "framer-motion": "^12.34.3",
+    "framer-motion": "^12.38.0",
     "react": "^19.2.4",
     "react-dom": "^19.2.4"
   },
   "devDependencies": {
-    "@cloudflare/vite-plugin": "^1.25.6",
+    "@cloudflare/vite-plugin": "^1.29.1",
     "@eslint/js": "^10.0.1",
-    "@tailwindcss/postcss": "^4.2.1",
+    "@tailwindcss/postcss": "^4.2.2",
     "@types/node": "^25",
     "@types/react": "^19.2.14",
     "@types/react-dom": "^19.2.3",
-    "@vitejs/plugin-basic-ssl": "^2.1.4",
-    "@vitejs/plugin-react": "^5.1.4",
+    "@vitejs/plugin-basic-ssl": "^2.2.0",
+    "@vitejs/plugin-react": "^6.0.1",
     "babel-plugin-react-compiler": "^1.0.0",
     "eslint": "^10",
     "eslint-config-prettier": "^10.1.8",
@@ -33,9 +33,9 @@
     "postcss": "^8",
     "tailwindcss": "^4.1.18",
     "typescript": "^5",
-    "typescript-eslint": "^8.56.1",
-    "vite": "^7.3.1",
-    "wrangler": "^4.69.0"
+    "typescript-eslint": "^8.57.1",
+    "vite": "^8.0.1",
+    "wrangler": "^4.75.0"
   },
   "overrides": {
     "@types/react": "^19.2.14",
