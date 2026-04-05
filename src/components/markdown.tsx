@@ -1,3 +1,5 @@
+import type { ComponentProps } from 'react'
+
 import Markdown, { MarkdownIt } from '@jonasmerlin/react-native-markdown-display'
 
 // Single newlines (\n) render as line breaks in the output
@@ -5,7 +7,7 @@ const markdownIt = MarkdownIt({ typographer: true, breaks: true })
 
 interface AppMarkdownProps {
   children: string
-  style?: Parameters<typeof Markdown>[0]['style']
+  style?: ComponentProps<typeof Markdown>['style']
 }
 
 export function AppMarkdown({ children, style }: AppMarkdownProps) {

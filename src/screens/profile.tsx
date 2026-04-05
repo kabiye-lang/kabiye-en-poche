@@ -1,7 +1,7 @@
 import { Alert, Linking, Platform, ScrollView, TouchableOpacity } from 'react-native'
 
 import * as Application from 'expo-application'
-import { useRouter } from 'expo-router'
+import { Href, useRouter } from 'expo-router'
 
 import { useLingui } from '@lingui/react/macro'
 import { toast } from 'sonner-native'
@@ -203,7 +203,7 @@ const ProfileScreen = () => {
                     if (item.external) {
                       handleResourcePress(item.href, true)
                     } else {
-                      router.push(item.href)
+                      router.push(item.href as Href)
                     }
                   }}
                 >

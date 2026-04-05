@@ -45,8 +45,8 @@ export default function AlphabetListScreen() {
       <FlatList
         numColumns={3}
         data={alphabetLetters || []}
-        contentContainerStyle={{ paddingHorizontal: 15, gap: 5, paddingBottom: 20 }}
-        columnWrapperStyle={{ maxWidth: '33.33%', gap: 5 }}
+        contentContainerStyle={{ paddingHorizontal: 15, gap: 5, paddingBottom: 20, flex: 1 }}
+        columnWrapperStyle={{ width: '100%', gap: 5, height: 100 }}
         keyExtractor={(item) => item.id}
         ListHeaderComponent={() => (
           <>
@@ -59,32 +59,30 @@ export default function AlphabetListScreen() {
           </>
         )}
         renderItem={({ item }) => (
-          <View className="w-full items-center">
-            <Card
-              className="h-[100px] w-full flex-1 items-center justify-center"
-              onPress={() =>
-                router.push({
-                  pathname: '/alphabet/[letter]',
-                  params: { letter: item.id },
-                })
-              }
-            >
-              <View center>
-                <Card
-                  className="mb-2 rounded-full px-2 py-1"
-                  backgroundColor={LETTER_TYPE_COLORS[item.type as keyof typeof LETTER_TYPE_COLORS]}
-                >
-                  <Text variant="small" weight="medium" className="text-white">
-                    {item.type === 'vowel' ? t`Vowel` : item.type === 'consonant' ? t`Consonant` : t`Grapheme`}
-                  </Text>
-                </Card>
-
-                <Text variant="h2" weight="medium" className="text-center">
-                  {item.id}
+          <Card
+            className="w-full flex-1 items-center justify-center"
+            onPress={() =>
+              router.push({
+                pathname: '/alphabet/[letter]',
+                params: { letter: item.id },
+              })
+            }
+          >
+            <View center>
+              <Card
+                className="mb-2 rounded-full px-2 py-1"
+                backgroundColor={LETTER_TYPE_COLORS[item.type as keyof typeof LETTER_TYPE_COLORS]}
+              >
+                <Text variant="small" weight="medium" className="text-white">
+                  {item.type === 'vowel' ? t`Vowel` : item.type === 'consonant' ? t`Consonant` : t`Grapheme`}
                 </Text>
-              </View>
-            </Card>
-          </View>
+              </Card>
+
+              <Text variant="h2" weight="medium" className="text-center">
+                {item.id}
+              </Text>
+            </View>
+          </Card>
         )}
       />
     </View>

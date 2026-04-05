@@ -15,6 +15,7 @@ export default ({ config }: ConfigContext): ExpoConfig => ({
   ios: {
     icon: './src/assets/images/ios-icon.icon',
     bundleIdentifier: 'com.kabiyeenpoche.app',
+    googleServicesFile: process.env.GOOGLE_SERVICES_PLIST ?? './GoogleService-Info.plist',
     supportsTablet: true,
     infoPlist: {
       ITSAppUsesNonExemptEncryption: false,
@@ -24,6 +25,7 @@ export default ({ config }: ConfigContext): ExpoConfig => ({
     },
   },
   android: {
+    googleServicesFile: process.env.GOOGLE_SERVICES_JSON ?? './google-services.json',
     adaptiveIcon: {
       foregroundImage: './src/assets/images/adaptive-icon.png',
       backgroundColor: '#ffffff',
@@ -54,8 +56,39 @@ export default ({ config }: ConfigContext): ExpoConfig => ({
       {
         buildReactNativeFromSource: true,
         useHermesV1: true,
+        ios: {
+          useFrameworks: 'static',
+          /**
+           * RNFirebase iOS build fix using static linking (maintainer-recommended).
+           *
+           * We previously used `buildReactNativeFromSource: true` as a workaround to fix
+           * RNFirebase + Firebase iOS SDK build issues, but it disabled Expo’s precompiled RN for
+           * iOS builds and significantly increased build times.
+           * - N.B. For links & context on why `buildReactNativeFromSource: true` was added,
+           * refer to comments in the "previous commit".
+           *
+           * This `forceStaticLinking` configuration follows the Expo maintainer’s suggested solution:
+           * https://github.com/expo/expo/issues/39607#issuecomment-3337284928
+           * https://github.com/invertase/react-native-firebase/issues/8657#issuecomment-3667922545
+           * - Now precompiled builds are enabled and build times are reduced and RNFB builds work on iOS.
+           *
+           * ⚠️ IMPORTANT: If installing/removing react-native-firebase npm packages, ensure you also update this list.
+           * - Look for `s.name` property in node_modules/@react-native-firebase/<module>/<module>.podspec to get the Pod name.
+           */
+          forceStaticLinking: [
+            'RNFBAnalytics',
+            'RNFBApp',
+            'RNFBCrashlytics',
+            // 'RNFBInAppMessaging',
+            // 'RNFBInstallations',
+            // 'RNFBPerf',
+          ],
+        },
       },
     ],
+    '@react-native-firebase/app',
+    '@react-native-firebase/auth',
+    '@react-native-firebase/crashlytics',
     'expo-router',
     [
       'expo-localization',
