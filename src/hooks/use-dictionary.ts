@@ -20,11 +20,22 @@ export function useSearchDictionary(query: string, language: 'all' | 'fr' | 'en'
         result_limit: 20,
       })
       if (error) throw error
-      return (data ?? []).map((r) => ({
-        ...r,
-        entry_id: r.id,
-        match_text: r.headword,
-      })) as unknown as SearchResult[]
+      return (data ?? []).map((r) => {
+        // Extract a meaningful match_text from entry_data for translation searches
+        let matchText = r.headword
+        if (language !== 'all' && r.entry_data) {
+          const entryData = typeof r.entry_data === 'string' ? JSON.parse(r.entry_data) : r.entry_data
+          const firstDef = entryData?.senses?.[0]?.definitions?.[0]
+          if (firstDef) {
+            matchText = firstDef.translations?.[language] || firstDef.definition || r.headword
+          }
+        }
+        return {
+          ...r,
+          entry_id: r.id,
+          match_text: matchText,
+        }
+      }) as unknown as SearchResult[]
     },
     enabled: enabled && query.length >= 2,
     staleTime: 1000 * 60 * 60 * 24, // 24 hours

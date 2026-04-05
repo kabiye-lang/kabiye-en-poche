@@ -137,11 +137,13 @@ const UnitCard = ({ unit, isExpanded, onToggle }: UnitCardProps) => {
               </View>
             )}
           </View>
-          <CaretRightIcon
-            size={20}
-            className={isAvailable ? 'text-primary' : 'text-foreground-secondary'}
-            style={{ transform: [{ rotate: isExpanded ? '90deg' : '0deg' }] }}
-          />
+          {isAvailable && (
+            <CaretRightIcon
+              size={20}
+              className="text-primary"
+              style={{ transform: [{ rotate: isExpanded ? '90deg' : '0deg' }] }}
+            />
+          )}
         </View>
       </TouchableOpacity>
 
