@@ -1,8 +1,9 @@
 import { useEffect } from 'react'
-import { ActivityIndicator, ScrollView, TouchableOpacity } from 'react-native'
+import { ScrollView, TouchableOpacity } from 'react-native'
 
 import { useLingui } from '@lingui/react/macro'
 
+import { AudioPlayButton } from '@/components/audio-play-button'
 import { SpeakerHighIcon, SpeakerSlashIcon } from '@/components/icons'
 import { Button, Card, Text, View } from '@/components/ui'
 import { useAudio } from '@/hooks/use-audio'
@@ -56,21 +57,13 @@ const AudioStep = ({ audioType, audioUrl, conversation, transcript, onContinue }
         {/* Single Audio */}
         {audioType === 'single' && (
           <View className="items-center py-8">
-            <TouchableOpacity
+            <AudioPlayButton
+              isPlaying={isPlaying}
+              isLoading={isLoading}
+              disabled={!audioUrl}
+              size="lg"
               onPress={() => handleToggleAudio(audioUrl)}
-              disabled={!audioUrl || isLoading}
-              className={`h-24 w-24 items-center justify-center rounded-full shadow-lg ${
-                !audioUrl ? 'bg-gray-300' : isPlaying ? 'bg-green-500' : 'bg-primary'
-              }`}
-            >
-              {isLoading ? (
-                <ActivityIndicator size="large" color="white" />
-              ) : isPlaying ? (
-                <SpeakerHighIcon size={48} color="white" weight="fill" />
-              ) : (
-                <SpeakerSlashIcon size={48} color="white" weight="fill" />
-              )}
-            </TouchableOpacity>
+            />
             <Text variant="h6" className="text-foreground mt-4 text-center">
               {!audioUrl
                 ? t`No audio available`

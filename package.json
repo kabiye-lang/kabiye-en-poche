@@ -24,7 +24,9 @@
     "testflight": "npx testflight",
     "i18n:extract": "lingui extract",
     "//not used, we use po files with metro bundler: i18n:compile": "lingui compile",
-    "//not used, we use po files with metro bundler: i18n:extract-compile": "lingui extract && lingui compile"
+    "//not used, we use po files with metro bundler: i18n:extract-compile": "lingui extract && lingui compile",
+    "test": "jest",
+    "test:watch": "jest --watch"
   },
   "dependencies": {
     "@babel/plugin-transform-export-namespace-from": "^7.27.1",
@@ -61,6 +63,7 @@
     "expo-updates": "~55.0.18",
     "expo-web-browser": "~55.0.12",
     "intl-pluralrules": "^2.0.1",
+    "jest-expo": "~55.0.13",
     "phosphor-react-native": "^3.0.4",
     "react": "19.2.0",
     "react-dom": "19.2.0",
@@ -90,6 +93,9 @@
     "@lingui/babel-plugin-transform-react": "^2.9.2",
     "@lingui/metro-transformer": "^5.9.4",
     "@react-native/eslint-config": "^0.84.1",
+    "@testing-library/jest-native": "^5.4.3",
+    "@testing-library/react-native": "^13.3.3",
+    "@types/jest": "^30.0.0",
     "@types/react": "~19.2.14",
     "@typescript-eslint/eslint-plugin": "^8.58.0",
     "@typescript-eslint/parser": "^8.58.0",
@@ -102,6 +108,7 @@
     "eslint-plugin-react-compiler": "^19.1.0-rc.2",
     "expo-atlas": "^0.4.3",
     "husky": "^9.1.7",
+    "jest": "^30.3.0",
     "lint-staged": "^16.4.0",
     "prettier": "^3.8.1",
     "prettier-plugin-tailwindcss": "^0.7.2",
@@ -112,6 +119,18 @@
   },
   "overrides": {
     "hermes-compiler": "250829098.0.4"
+  },
+  "jest": {
+    "preset": "jest-expo",
+    "setupFiles": [
+      "./jest.setup.js"
+    ],
+    "transformIgnorePatterns": [
+      "node_modules/(?!((jest-)?react-native|@react-native(-community)?)|expo(nent)?|@expo(nent)?/.*|@expo-google-fonts/.*|react-navigation|@react-navigation/.*|@sentry/react-native|native-base|react-native-svg|phosphor-react-native|sonner-native|uniwind|tailwind-variants|tailwind-merge)"
+    ],
+    "moduleNameMapper": {
+      "^@/(.*)$": "<rootDir>/src/$1"
+    }
   },
   "private": true
 }

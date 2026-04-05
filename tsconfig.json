@@ -4,6 +4,9 @@
     "jsx": "react-jsx",
     "strict": true,
     "allowSyntheticDefaultImports": true,
+    "types": [
+      "jest"
+    ],
     "paths": {
       "@/*": [
         "./src/*"
@@ -13,7 +16,6 @@
   "include": [
     "**/*.ts",
     "**/*.tsx",
-    ".expo/types/**/*.ts",
     "./types/**/*.ts",
     "nativewind-env.d.ts"
   ],

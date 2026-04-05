@@ -1,11 +1,20 @@
-import { useState } from 'react'
-import { Dimensions, TextInput } from 'react-native'
+import { useEffect, useState } from 'react'
+import { Dimensions, TextInput, TouchableOpacity } from 'react-native'
 
+import AsyncStorage from '@react-native-async-storage/async-storage'
 import * as Clipboard from 'expo-clipboard'
 
 import { useLingui } from '@lingui/react/macro'
 
-import { ArrowFatLinesUpIcon, ArrowFatLineUpIcon, BackspaceIcon, DotIcon, KeyReturnIcon } from '@/components/icons'
+import {
+  ArrowFatLinesUpIcon,
+  ArrowFatLineUpIcon,
+  BackspaceIcon,
+  CaretDownIcon,
+  CaretUpIcon,
+  DotIcon,
+  KeyReturnIcon,
+} from '@/components/icons'
 import { Button, ScreenTitle, Text, View } from '@/components/ui'
 
 // Static alphabet list for keyboard (no database calls needed)
@@ -95,6 +104,16 @@ export default function KeyboardScreen() {
   const { t } = useLingui()
   const [capsLock, setCapsLock] = useState<0 | 1 | 2>(0)
   const [content, setContent] = useState('')
+  const [showHint, setShowHint] = useState(true)
+
+  useEffect(() => {
+    AsyncStorage.getItem('keyboard_hint_count').then((val) => {
+      const count = parseInt(val || '0', 10)
+      if (count >= 3) setShowHint(false)
+      else AsyncStorage.setItem('keyboard_hint_count', String(count + 1))
+    })
+  }, [])
+
   const changeText = (letter: Partial<(typeof ALPHABET_LIST)[0]>) => {
     setContent((oldContent) => oldContent + (capsLock ? letter.caps || letter.id : letter.id))
     setCapsLock((capsLockOld) => (capsLockOld === 2 ? capsLockOld : 0))
@@ -122,26 +141,41 @@ export default function KeyboardScreen() {
     <View flex className="bg-background">
       <View className="px-2.5">
         <ScreenTitle title={t`Keyboard`} />
-        <Text variant="body" className="text-foreground mb-2">
-          {t`Use this keyboard to write in Kabiyè.`}
-        </Text>
-        <Text variant="body" className="text-foreground mb-2">
-          {t`The`} <ArrowFatLineUpIcon weight="regular" size={16} />{' '}
-          {t`key allows you to capitalize. Long press to lock CAPS mode.`}
-        </Text>
+        {/* Collapsible hint */}
+        <TouchableOpacity onPress={() => setShowHint(!showHint)} className="mb-2 flex-row items-center">
+          <Text variant="caption" weight="medium" className="text-foreground-secondary">
+            {t`How to use`}
+          </Text>
+          {showHint ? (
+            <CaretUpIcon size={14} className="text-foreground-secondary ml-1" />
+          ) : (
+            <CaretDownIcon size={14} className="text-foreground-secondary ml-1" />
+          )}
+        </TouchableOpacity>
+        {showHint && (
+          <View className="mb-2">
+            <Text variant="caption" className="text-foreground-secondary">
+              {t`Use this keyboard to write in Kabiyè.`}{' '}
+              {t`The`} <ArrowFatLineUpIcon weight="regular" size={12} />{' '}
+              {t`key allows you to capitalize. Long press to lock CAPS mode.`}
+            </Text>
+          </View>
+        )}
       </View>
       <View flex className="justify-end">
+        {/* TextInput directly above keyboard */}
         <View className="px-2.5">
           <TextInput
             value={content}
             editable={false}
             multiline
-            className="border-primary bg-card text-foreground max-h-[120px] min-h-[120px] w-full rounded-lg border p-2.5 text-base"
-            placeholder="Type here..."
-            placeholderTextColor="#9CA3AF"
+            className="border-border bg-card text-foreground max-h-[120px] min-h-[80px] w-full rounded-xl border p-2.5 text-base"
+            placeholder={t`Type here...`}
+            placeholderTextColor="#6B5E4F"
           />
         </View>
-        <View className="mt-5 mb-2.5 flex-row flex-wrap justify-center gap-1.5">
+        {/* Inline toolbar */}
+        <View className="mt-2 mb-2 flex-row justify-center gap-2 px-2.5">
           <Button
             variant="outline"
             size="sm"

@@ -2,10 +2,11 @@ import type { ListenChooseActivityData } from '@/types/activity-data'
 import type { LessonActivity } from '@/types/supabase'
 
 import { useEffect, useState } from 'react'
-import { ActivityIndicator, ScrollView, TouchableOpacity } from 'react-native'
+import { ScrollView, TouchableOpacity } from 'react-native'
 
 import { useLingui } from '@lingui/react/macro'
 
+import { AudioPlayButton } from '@/components/audio-play-button'
 import { SpeakerHighIcon, SpeakerSlashIcon } from '@/components/icons'
 import { Button, Card, Text, View } from '@/components/ui'
 import { useAudio } from '@/hooks/use-audio'
@@ -90,21 +91,13 @@ const ListenChooseStep = ({ activity, onAnswer }: ListenChooseStepProps) => {
 
           {/* Audio Player */}
           <View className="items-center py-4">
-            <TouchableOpacity
+            <AudioPlayButton
+              isPlaying={isPlaying}
+              isLoading={isLoading}
+              disabled={!audioUrl}
+              size="md"
               onPress={handleToggleAudio}
-              disabled={!audioUrl || isLoading}
-              className={`h-20 w-20 items-center justify-center rounded-full shadow-lg ${
-                !audioUrl ? 'bg-gray-300' : isPlaying ? 'bg-green-500' : 'bg-primary'
-              }`}
-            >
-              {isLoading ? (
-                <ActivityIndicator size="large" color="white" />
-              ) : isPlaying ? (
-                <SpeakerHighIcon size={40} color="white" weight="fill" />
-              ) : (
-                <SpeakerSlashIcon size={40} color="white" weight="fill" />
-              )}
-            </TouchableOpacity>
+            />
             <Text variant="caption" className="text-foreground-secondary mt-2 text-center">
               {!audioUrl
                 ? t`No audio available`

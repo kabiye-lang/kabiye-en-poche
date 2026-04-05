@@ -50,12 +50,15 @@ const SearchResultsScreen: React.FC = () => {
 
   if (!searchResults || searchResults.length === 0) {
     return (
-      <View flex className="bg-background items-center justify-center px-4">
-        <Text variant="h6" className="text-foreground text-center">
-          {t`No results found`}
+      <View flex className="bg-background items-center justify-center px-6">
+        <Text className="mb-3 text-4xl">🔍</Text>
+        <Text variant="h6" weight="semibold" className="text-foreground text-center">
+          {t`No results for "${query}"`}
         </Text>
-        <Text variant="body" className="text-foreground-secondary mt-2 text-center">
-          {t`Try searching with different keywords`}
+        <Text variant="body" className="text-foreground-secondary mt-2 text-center leading-5">
+          {searchMode === 'kabiye'
+            ? t`Check the spelling or try a different Kabiyè word. Remember, Kabiyè uses special characters like ɖ, ɛ, ɣ, ɩ, ŋ, ɔ, ʋ.`
+            : t`Try a different translation or switch to Kabiyè search mode.`}
         </Text>
       </View>
     )

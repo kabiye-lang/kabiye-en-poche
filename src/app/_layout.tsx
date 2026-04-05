@@ -10,7 +10,7 @@ import 'intl-pluralrules'
 import { useColorScheme } from 'react-native'
 
 import { loadAsync } from 'expo-font'
-import { SplashScreen, Stack } from 'expo-router'
+import { router, SplashScreen, Stack } from 'expo-router'
 import { StatusBar } from 'expo-status-bar'
 
 import {
@@ -39,6 +39,7 @@ import {
   IBMPlexSansHebrew_700Bold,
 } from '@expo-google-fonts/ibm-plex-sans-hebrew'
 import { defineMessage as msg } from '@lingui/core/macro'
+import AsyncStorage from '@react-native-async-storage/async-storage'
 import { ThemeProvider } from '@react-navigation/native'
 import { QueryClientProvider } from '@tanstack/react-query'
 import { Toaster } from 'sonner-native'
@@ -62,11 +63,12 @@ SplashScreen.preventAutoHideAsync()
 export default function RootLayout() {
   const [ready, setReady] = useState(false)
   const [error, setError] = useState(false)
+  const [hasSeenOnboarding, setHasSeenOnboarding] = useState<boolean | null>(null)
 
   const onLaunch = async () => {
     let fontsError = false
     try {
-      await Promise.all([
+      const [, onboardingResult] = await Promise.all([
         loadAsync({
           IBMPlexSansHebrew_100Thin,
           IBMPlexSansHebrew_200ExtraLight,
@@ -90,7 +92,9 @@ export default function RootLayout() {
           Figtree_800ExtraBold_Italic,
           Figtree_900Black_Italic,
         }),
+        AsyncStorage.getItem('@kabiye_onboarding_complete'),
       ])
+      setHasSeenOnboarding(onboardingResult === 'true')
     } catch (error) {
       // Log error for debugging (remove in production)
       console.error('Error in app layout:', error)
@@ -118,8 +122,11 @@ export default function RootLayout() {
   useEffect(() => {
     if (ready) {
       SplashScreen.hideAsync()
+      if (hasSeenOnboarding === false) {
+        router.replace('/(onboarding)')
+      }
     }
-  }, [ready])
+  }, [ready, hasSeenOnboarding])
 
   const NotReady = () => {
     // [Tip]
@@ -149,6 +156,7 @@ function RootLayoutNav() {
               <StatusBar style={'auto'} />
               <GestureHandlerRootView style={{ flex: 1 }}>
                 <Stack>
+                  <Stack.Screen name="(onboarding)" options={{ headerShown: false }} />
                   <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
 
                   <Stack.Screen

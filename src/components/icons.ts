@@ -5,8 +5,10 @@ import { ArrowsClockwiseIcon as PhosphorArrowsClockwiseIcon } from 'phosphor-rea
 import { ArticleIcon as PhosphorArticleIcon } from 'phosphor-react-native/src/icons/Article'
 import { BackspaceIcon as PhosphorBackspaceIcon } from 'phosphor-react-native/src/icons/Backspace'
 import { BookOpenTextIcon as PhosphorBookOpenTextIcon } from 'phosphor-react-native/src/icons/BookOpenText'
+import { CaretDownIcon as PhosphorCaretDownIcon } from 'phosphor-react-native/src/icons/CaretDown'
 import { CaretLeftIcon as PhosphorCaretLeftIcon } from 'phosphor-react-native/src/icons/CaretLeft'
 import { CaretRightIcon as PhosphorCaretRightIcon } from 'phosphor-react-native/src/icons/CaretRight'
+import { CaretUpIcon as PhosphorCaretUpIcon } from 'phosphor-react-native/src/icons/CaretUp'
 import { CheckCircleIcon as PhosphorCheckCircleIcon } from 'phosphor-react-native/src/icons/CheckCircle'
 import { DotIcon as PhosphorDotIcon } from 'phosphor-react-native/src/icons/Dot'
 import { FilePdfIcon as PhosphorFilePdfIcon } from 'phosphor-react-native/src/icons/FilePdf'
@@ -39,8 +41,10 @@ export const ArrowRightIcon = withUniwind(PhosphorArrowRightIcon)
 export const ArrowsClockwiseIcon = withUniwind(PhosphorArrowsClockwiseIcon)
 export const BackspaceIcon = withUniwind(PhosphorBackspaceIcon)
 export const BookOpenTextIcon = withUniwind(PhosphorBookOpenTextIcon)
+export const CaretDownIcon = withUniwind(PhosphorCaretDownIcon)
 export const CaretLeftIcon = withUniwind(PhosphorCaretLeftIcon)
 export const CaretRightIcon = withUniwind(PhosphorCaretRightIcon)
+export const CaretUpIcon = withUniwind(PhosphorCaretUpIcon)
 export const CheckCircleIcon = withUniwind(PhosphorCheckCircleIcon)
 export const DotIcon = withUniwind(PhosphorDotIcon)
 export const FilePdfIcon = withUniwind(PhosphorFilePdfIcon)

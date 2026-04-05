@@ -11,24 +11,24 @@ import { Appearance } from './types'
 // | Uniwind Design System |
 // =============
 
-// Brand colors - used in navigation themes
+// Brand colors - used in navigation themes only (not in components — use CSS vars)
 export const brandColors = {
-  primary: '#6200EE',
-  primaryDark: '#7577CD',
-  secondary: '#03DAC6',
-  bgGrey: '#F5F5F5',
-  textDark: '#212121',
-  accent: '#FF5722',
+  primary: '#1B6B3C',
+  primaryDark: '#4CAF74',
+  secondary: '#C8922A',
+  bgGrey: '#FBF7F0',
+  textDark: '#2C2417',
+  accent: '#BF3626',
   textLight: '#FFFFFF',
 }
 
 export const brandThemeColors = {
-  _black: 'rgba(20, 20, 20, 1)',
-  _black2: 'rgba(50, 50, 50, 1)',
-  _white: 'rgba(250, 250, 250, 1)',
-  _white2: 'rgba(230, 230, 230, 1)',
-  _tintColorLight: '#2f95dc',
-  _tintColorDark: '#fff',
+  _black: '#2C2417',
+  _black2: '#1A1714',
+  _white: '#FBF7F0',
+  _white2: '#F3EDE3',
+  _tintColorLight: '#1B6B3C',
+  _tintColorDark: '#4CAF74',
 }
 
 // Fonts used in MARKDOWN_STYLE
@@ -88,15 +88,15 @@ export const AppDarkTheme: Theme = {
 
 export const tabScreenDefaultOptions = (): BottomTabNavigationOptions => ({
   tabBarActiveTintColor: brandColors.primary,
-  tabBarInactiveTintColor: '#9CA3AF',
+  tabBarInactiveTintColor: '#6B5E4F',
   tabBarStyle: { backgroundColor: themes.light.bgColor, borderTopWidth: 0, elevation: 0 },
 })
 
 export const LETTER_TYPE_COLORS = {
-  grapheme: '#7577CD',
-  vowel: '#29ADB2',
+  grapheme: '#1B6B3C',
+  vowel: '#C8922A',
   consonant: '#0766AD',
-  indication: '#968C83',
+  indication: '#6B5E4F',
 }
 
 export const MARKDOWN_STYLE = {

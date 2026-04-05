@@ -7,7 +7,7 @@ import { useLingui } from '@lingui/react/macro'
 import { toast } from 'sonner-native'
 
 import { BookOpenTextIcon, CaretRightIcon, GearIcon, GlobeIcon, TrashIcon, UserIcon } from '@/components/icons'
-import { Card, ScreenTitle, Text, View } from '@/components/ui'
+import { ScreenTitle, Text, View } from '@/components/ui'
 import { useAppProgressSummary, useAppResetProgress } from '@/hooks/use-app-data'
 
 const ProfileScreen = () => {
@@ -127,7 +127,7 @@ const ProfileScreen = () => {
       <ScrollView className="px-4 pb-5">
         <ScreenTitle title={t`Profile`} />
         {/* Progress Overview */}
-        <Card className="mb-8 p-4">
+        <View className="bg-card mb-8 rounded-2xl p-4">
           <View className="mb-4 flex-row items-center">
             <UserIcon size={24} className="text-primary" />
             <Text variant="h5" weight="semibold" className="text-foreground ml-2">
@@ -137,9 +137,7 @@ const ProfileScreen = () => {
 
           {progressLoading ? (
             <View className="py-4">
-              <Text variant="body" className="text-foreground-secondary text-center">
-                {t`Loading progress...`}
-              </Text>
+              <View className="bg-background-tertiary h-6 w-full rounded-full" />
             </View>
           ) : progressSummary ? (
             <View className="space-y-3">
@@ -162,41 +160,42 @@ const ProfileScreen = () => {
               </View>
 
               <View className="mt-3">
-                <View className="mb-1 flex-row items-center justify-between">
-                  <Text variant="caption" className="text-foreground-secondary">
-                    {t`Overall Progress`}
-                  </Text>
-                  <Text variant="caption" className="text-primary">
-                    {Math.round(progressSummary.progressPercentage)}%
-                  </Text>
-                </View>
-                <View className="bg-background-tertiary h-2 w-full rounded-full">
+                <View className="bg-progress-track h-6 w-full overflow-hidden rounded-full">
                   <View
-                    className="bg-primary h-2 rounded-full transition-all duration-300"
-                    style={{ width: `${progressSummary.progressPercentage}%` }}
-                  />
+                    className="bg-primary h-6 items-center justify-center rounded-full"
+                    style={{ width: `${Math.max(progressSummary.progressPercentage, 15)}%` }}
+                  >
+                    <Text variant="caption" weight="bold" className="text-white">
+                      {Math.round(progressSummary.progressPercentage)}%
+                    </Text>
+                  </View>
                 </View>
               </View>
             </View>
           ) : (
-            <Text variant="body" className="text-foreground-secondary py-4 text-center">
-              {t`No progress data available`}
-            </Text>
+            <View className="py-4">
+              <Text variant="body" className="text-foreground-secondary text-center">
+                {t`Your learning journey starts here.`}
+              </Text>
+              <Text variant="caption" className="text-primary mt-1 text-center">
+                0% — {t`Start a lesson to begin tracking`}
+              </Text>
+            </View>
           )}
-        </Card>
+        </View>
 
-        {/* Resources Section */}
+        {/* Resources Section — simple list rows */}
         {listItems.map((listItem) => (
           <View key={'listItem-' + listItem.title} className="mb-5">
-            <View className="mb-4 flex-row items-center">
-              <BookOpenTextIcon size={24} className="text-primary" />
-              <Text variant="h5" weight="semibold" className="text-foreground ml-2">
+            <View className="mb-2 flex-row items-center">
+              <BookOpenTextIcon size={20} className="text-primary" />
+              <Text variant="h6" weight="semibold" className="text-foreground ml-2">
                 {listItem.title}
               </Text>
             </View>
 
-            <View className="space-y-3">
-              {listItem.items.map((item) => (
+            <View className="bg-card overflow-hidden rounded-xl">
+              {listItem.items.map((item, index) => (
                 <TouchableOpacity
                   key={'listItemSub-' + item.href}
                   onPress={() => {
@@ -206,80 +205,76 @@ const ProfileScreen = () => {
                       router.push(item.href as Href)
                     }
                   }}
+                  className={`flex-row items-center px-4 py-3 ${
+                    index < listItem.items.length - 1 ? 'border-border border-b' : ''
+                  }`}
                 >
-                  <Card className="mb-4 min-h-[60px] flex-row items-center p-4">
-                    {item.icon ? <View className="mr-2.5">{item.icon}</View> : null}
-                    <View className="flex-1 flex-col">
-                      <Text variant="h6" weight="medium" className="text-foreground ml-2.5">
-                        {item.title}
+                  {item.icon ? <View className="mr-2.5">{item.icon}</View> : null}
+                  <View className="flex-1 flex-col">
+                    <Text variant="body" weight="medium" className="text-foreground">
+                      {item.title}
+                    </Text>
+                    {item.description && (
+                      <Text variant="caption" className="text-foreground-secondary mt-0.5" numberOfLines={2}>
+                        {item.description}
                       </Text>
-                      {item.description && (
-                        <Text variant="small" className="text-foreground-secondary ml-2.5" numberOfLines={3}>
-                          {item.description}
-                        </Text>
-                      )}
-                    </View>
-                    <View>
-                      <CaretRightIcon weight="thin" size={22} className="text-foreground" />
-                    </View>
-                  </Card>
+                    )}
+                  </View>
+                  <CaretRightIcon weight="regular" size={18} className="text-foreground-secondary" />
                 </TouchableOpacity>
               ))}
             </View>
           </View>
         ))}
 
-        {/* Settings Section */}
-        <Card className="mb-5 p-4">
-          <View className="mb-4 flex-row items-center">
-            <GearIcon size={24} className="text-primary" />
-            <Text variant="h5" weight="semibold" className="text-foreground ml-2">
+        {/* Settings Section — grouped list */}
+        <View className="mb-5">
+          <View className="mb-2 flex-row items-center">
+            <GearIcon size={20} className="text-primary" />
+            <Text variant="h6" weight="semibold" className="text-foreground ml-2">
               {t`Settings`}
             </Text>
           </View>
 
-          <View className="space-y-4">
+          <View className="bg-card overflow-hidden rounded-xl">
             {/* Language Setting */}
             <TouchableOpacity
-              className="bg-background-tertiary flex-row items-center justify-between rounded-lg p-3"
+              className="border-border flex-row items-center justify-between border-b px-4 py-3"
               onPress={openLanguageSettings}
             >
               <View className="flex-1 flex-row items-center">
                 <GlobeIcon size={20} className="text-primary" />
                 <View className="ml-3 flex-1">
-                  <Text variant="body" weight="medium" className="text-foreground mb-1">
+                  <Text variant="body" weight="medium" className="text-foreground">
                     {t`App Language`}
                   </Text>
-                  <Text variant="caption" className="text-foreground-secondary">
-                    {t`Current`}: {i18n.locale === 'en' ? 'English' : 'Français'}
-                  </Text>
-                  <Text variant="caption" className="text-foreground-secondary mt-1">
-                    {t`Change language in device settings`}
+                  <Text variant="caption" className="text-foreground-secondary mt-0.5">
+                    {i18n.locale === 'en' ? 'English' : 'Français'}
                   </Text>
                 </View>
               </View>
-              <CaretRightIcon weight="thin" size={22} className="text-foreground" />
+              <CaretRightIcon weight="regular" size={18} className="text-foreground-secondary" />
             </TouchableOpacity>
 
             {/* Reset Progress */}
             <TouchableOpacity
-              className="bg-error-bg mt-8 flex-row items-center justify-between rounded-lg p-3"
+              className="flex-row items-center justify-between px-4 py-3"
               onPress={handleResetProgress}
             >
               <View className="flex-1 flex-row items-center">
                 <TrashIcon size={20} className="text-accent" />
                 <View className="ml-3">
-                  <Text variant="body" weight="medium" className="text-foreground mb-1">
+                  <Text variant="body" weight="medium" className="text-foreground">
                     {t`Reset Progress`}
                   </Text>
-                  <Text variant="caption" className="text-foreground-secondary">
+                  <Text variant="caption" className="text-foreground-secondary mt-0.5">
                     {t`Clear all your learning progress`}
                   </Text>
                 </View>
               </View>
             </TouchableOpacity>
           </View>
-        </Card>
+        </View>
 
         {/* App Info */}
         <View className="mb-5 p-4">

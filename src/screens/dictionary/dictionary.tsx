@@ -6,7 +6,8 @@ import { Link, router } from 'expo-router'
 import { useLingui } from '@lingui/react/macro'
 
 import { MagnifyingGlassIcon, SparkleIcon } from '@/components/icons'
-import { Card, Text, View } from '@/components/ui'
+import { Text, View } from '@/components/ui'
+import { WordOfTheDay } from '@/components/word-of-the-day'
 import { useDebounce } from '@/hooks/use-debounce'
 import { useAvailableLetters, useSearchDictionary, useWordOfTheDay } from '@/hooks/use-dictionary'
 import { useLanguage } from '@/hooks/use-language'
@@ -143,50 +144,16 @@ const DictionaryScreen: React.FC = () => {
         {/* Word of the Day */}
         <View className="mt-2.5 px-2.5">
           <View className="mb-2.5 flex-row items-center">
-            <SparkleIcon size={20} weight="duotone" className="text-primary mr-1.5" />
+            <SparkleIcon size={20} weight="duotone" className="text-secondary mr-1.5" />
             <Text variant="h5" weight="semibold" className="text-foreground">
               {t`Word of the Day`}
             </Text>
           </View>
-          {isLoadingRandom ? (
-            <ActivityIndicator className="py-4" />
-          ) : (
-            wordOfTheDay?.map(({ baseHeadword, entries }) => {
-              const firstEntry = entries[0]
-              if (!firstEntry) return null
-              const displayHeadword =
-                entries.length > 1
-                  ? entries.map((e) => e.entry_data.headword).join(', ')
-                  : firstEntry.entry_data.headword
-              return (
-                <Link key={baseHeadword} href={`/word/${firstEntry.entry_data.headword}`} asChild>
-                  <TouchableOpacity>
-                    <Card className="mb-3 p-4">
-                      <Text variant="lg" weight="bold" className="text-primary">
-                        {displayHeadword}
-                      </Text>
-                      {firstEntry.entry_data.pronunciations?.[0] && (
-                        <Text variant="caption" className="text-foreground-secondary mt-1">
-                          [{firstEntry.entry_data.pronunciations[0]}]
-                        </Text>
-                      )}
-                      {firstEntry.entry_data.senses[0]?.definitions[0] && (
-                        <Text variant="body" className="text-foreground mt-2">
-                          {currentLanguage === 'fr'
-                            ? firstEntry.entry_data.senses[0].definitions[0].translations.fr
-                            : firstEntry.entry_data.senses[0].definitions[0].translations.en}
-                        </Text>
-                      )}
-                    </Card>
-                  </TouchableOpacity>
-                </Link>
-              )
-            })
-          )}
+          <WordOfTheDay words={wordOfTheDay ?? []} language={currentLanguage} isLoading={isLoadingRandom} />
         </View>
 
         {/* Browse by Letter */}
-        <View className="mt-5 px-2.5">
+        <View className="mt-5 px-2.5 pb-6">
           <Text variant="h5" weight="semibold" className="text-foreground mb-2.5">
             {t`Browse by Letter`}
           </Text>
@@ -197,7 +164,7 @@ const DictionaryScreen: React.FC = () => {
               {letters?.map((letter) => (
                 <Link key={letter} href={`/dictionary/letter/${letter}`} asChild>
                   <TouchableOpacity>
-                    <View className="bg-card items-center justify-center rounded-lg px-4 py-3">
+                    <View className="border-border items-center justify-center rounded-xl border bg-transparent px-4 py-3">
                       <Text variant="lg" weight="bold" className="text-primary">
                         {letter}
                       </Text>
