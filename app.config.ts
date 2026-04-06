@@ -102,6 +102,7 @@ export default ({ config }: ConfigContext): ExpoConfig => ({
     'expo-web-browser',
     'expo-audio',
     'expo-secure-store',
+    './fmtfix.js',
   ],
   experiments: {
     tsconfigPaths: true,
