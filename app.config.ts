@@ -28,7 +28,7 @@ export default ({ config }: ConfigContext): ExpoConfig => ({
     googleServicesFile: process.env.GOOGLE_SERVICES_JSON ?? './google-services.json',
     adaptiveIcon: {
       foregroundImage: './src/assets/images/adaptive-icon.png',
-      backgroundColor: '#ffffff',
+      backgroundColor: '#F5F3F7',
     },
     package: 'com.kabiyeenpoche.app',
     permissions: ['android.permission.INTERNET'],
@@ -42,11 +42,11 @@ export default ({ config }: ConfigContext): ExpoConfig => ({
     [
       'expo-splash-screen',
       {
-        backgroundColor: '#ffffff',
+        backgroundColor: '#F5F3F7',
         image: './src/assets/images/splash-icon.png',
         dark: {
           image: './src/assets/images/splash-icon-dark.png',
-          backgroundColor: '#000000',
+          backgroundColor: '#1A1A2E',
         },
         imageWidth: 200,
       },

@@ -1,11 +1,11 @@
-import { ActivityIndicator, ScrollView, TouchableOpacity } from 'react-native'
+import { ScrollView, TouchableOpacity } from 'react-native'
 
 import { Link } from 'expo-router'
 
 import { useLingui } from '@lingui/react/macro'
 
-import { CaretRightIcon, PlayIcon, SparkleIcon } from '@/components/icons'
-import { Gradient, Text, View } from '@/components/ui'
+import { ArticleIcon, BookOpenTextIcon, CaretRightIcon, PlayIcon, SparkleIcon } from '@/components/icons'
+import { Text, View } from '@/components/ui'
 import { WordOfTheDay } from '@/components/word-of-the-day'
 import { useAppNextLesson } from '@/hooks/use-app-data'
 import { useWordOfTheDay } from '@/hooks/use-dictionary'
@@ -15,7 +15,7 @@ const HomeScreen = () => {
   const { t } = useLingui()
   const { getValue, currentLanguage } = useLanguage()
   const { data: nextLesson, isLoading: nextLessonLoading } = useAppNextLesson()
-  const { data: wordOfTheDay, isLoading: isLoadingWotD } = useWordOfTheDay(1)
+  const { data: wordOfTheDay, isLoading: isLoadingWotD, isError: isWotDError } = useWordOfTheDay(1)
 
   const hasNextLesson = !nextLessonLoading && !!nextLesson
 
@@ -25,58 +25,71 @@ const HomeScreen = () => {
         <View flex>
           {/* Hero Section */}
           {hasNextLesson ? (
-            /* Returning user — compact continue learning hero */
-            <View className="mb-5 overflow-hidden rounded-2xl">
-              <Gradient colors={['#1B6B3C', '#2A8B55']}>
-                <Link href={`/lesson/${nextLesson.id}`} asChild>
-                  <TouchableOpacity className="p-5">
-                    <Text variant="caption" weight="medium" className="mb-1 text-white/80">
-                      {t`Continue Learning`}
-                    </Text>
-                    <Text variant="h4" weight="bold" className="mb-2 text-white">
-                      {getValue(nextLesson, 'title')}
-                    </Text>
-                    <View className="flex-row items-center">
-                      <PlayIcon size={18} className="mr-2 text-white" />
-                      <Text variant="body" weight="medium" className="text-white/90">
-                        {t`Resume lesson`}
-                      </Text>
-                    </View>
-                  </TouchableOpacity>
-                </Link>
-              </Gradient>
+            /* Returning user — flat primary card, no gradient clipping issues */
+            <View className="bg-primary mb-5 rounded-2xl p-5">
+              <Text variant="caption" weight="medium" className="text-primary-foreground/70 mb-1">
+                {t`Continue Learning`}
+              </Text>
+              <Text variant="h4" weight="bold" className="text-primary-foreground mb-3">
+                {getValue(nextLesson, 'title')}
+              </Text>
+              <Link href={`/lesson/${nextLesson.id}`} asChild>
+                <TouchableOpacity
+                  className="bg-primary-foreground/20 flex-row items-center self-start rounded-full px-5 py-3"
+                  style={{ minHeight: 44 }}
+                  accessibilityRole="button"
+                >
+                  <PlayIcon size={18} className="text-primary-foreground mr-2" />
+                  <Text variant="body" weight="semibold" className="text-primary-foreground">
+                    {t`Resume lesson`}
+                  </Text>
+                </TouchableOpacity>
+              </Link>
             </View>
           ) : nextLessonLoading ? (
-            /* Loading state */
-            <View className="mb-5 overflow-hidden rounded-2xl">
-              <Gradient colors={['#1B6B3C', '#C8922A']}>
-                <View className="items-center justify-center p-8">
-                  <ActivityIndicator size="small" color="#ffffff" />
-                </View>
-              </Gradient>
+            /* Loading state — semantic skeleton surface, no gradient */
+            <View className="bg-card mb-5 rounded-2xl p-5">
+              <View className="bg-foreground/10 mb-2 h-4 w-24 rounded" />
+              <View className="bg-foreground/10 h-6 w-3/4 rounded" />
             </View>
           ) : (
-            /* New user — large cultural hero */
-            <View className="mb-5 overflow-hidden rounded-2xl">
-              <Gradient colors={['#1B6B3C', '#C8922A']}>
-                <View className="p-6">
-                  <Text variant="h2" weight="bold" className="mb-2 text-white">
-                    {t`Ɛsɔɔlaa!`}
+            /* New user — compact purposeful CTA, visible even if data is slow */
+            <View className="bg-primary mb-5 rounded-2xl p-5">
+              <Text variant="h5" weight="bold" className="text-primary-foreground mb-1">
+                {t`Ɛsɔɔlaa!`}
+              </Text>
+              <Text variant="body" className="text-primary-foreground/85 mb-4">
+                {t`Start your Kabiyè journey`}
+              </Text>
+              <Link href="/learn" asChild>
+                <TouchableOpacity
+                  className="bg-primary-foreground/20 self-start rounded-full px-5 py-3"
+                  style={{ minHeight: 44 }}
+                  accessibilityRole="button"
+                >
+                  <Text variant="body" weight="semibold" className="text-primary-foreground">
+                    {t`Start Learning`}
                   </Text>
-                  <Text variant="h6" weight="medium" className="text-white/90">
-                    {t`Welcome — Discover the beauty of the Kabiyè language`}
-                  </Text>
-                  <Link href="/learn" asChild>
-                    <TouchableOpacity className="mt-4 self-start rounded-full bg-white/20 px-5 py-2.5">
-                      <Text variant="body" weight="semibold" className="text-white">
-                        {t`Start Learning`}
-                      </Text>
-                    </TouchableOpacity>
-                  </Link>
-                </View>
-              </Gradient>
+                </TouchableOpacity>
+              </Link>
             </View>
           )}
+
+          {/* Word of the Day — promoted to hero position */}
+          <View className="mb-5">
+            <View className="mb-2.5 flex-row items-center">
+              <SparkleIcon size={20} weight="duotone" className="text-secondary mr-1.5" />
+              <Text variant="h5" weight="semibold" className="text-foreground">
+                {t`Word of the Day`}
+              </Text>
+            </View>
+            <WordOfTheDay
+              words={wordOfTheDay ?? []}
+              language={currentLanguage}
+              isLoading={isLoadingWotD}
+              isError={isWotDError}
+            />
+          </View>
 
           {/* Alphabet Section */}
           <Link href="/alphabet" asChild>
@@ -93,28 +106,19 @@ const HomeScreen = () => {
             </TouchableOpacity>
           </Link>
 
-          {/* Word of the Day */}
-          <View className="mb-5">
-            <View className="mb-2.5 flex-row items-center">
-              <SparkleIcon size={20} weight="duotone" className="text-secondary mr-1.5" />
-              <Text variant="h5" weight="semibold" className="text-foreground">
-                {t`Word of the Day`}
-              </Text>
-            </View>
-            <WordOfTheDay words={wordOfTheDay ?? []} language={currentLanguage} isLoading={isLoadingWotD} />
-          </View>
-
           {/* Quick Links */}
           <View className="mb-5 flex-row gap-3">
             <Link href="/learn" asChild>
-              <TouchableOpacity className="bg-card flex-1 items-center rounded-2xl p-4">
+              <TouchableOpacity className="bg-primary/10 flex-1 items-center rounded-2xl py-6">
+                <BookOpenTextIcon size={24} weight="duotone" className="text-primary mb-2" />
                 <Text variant="body" weight="semibold" className="text-primary">
                   {t`Lessons`}
                 </Text>
               </TouchableOpacity>
             </Link>
             <Link href="/dictionary" asChild>
-              <TouchableOpacity className="bg-card flex-1 items-center rounded-2xl p-4">
+              <TouchableOpacity className="bg-primary/10 flex-1 items-center rounded-2xl py-6">
+                <ArticleIcon size={24} weight="duotone" className="text-primary mb-2" />
                 <Text variant="body" weight="semibold" className="text-primary">
                   {t`Dictionary`}
                 </Text>

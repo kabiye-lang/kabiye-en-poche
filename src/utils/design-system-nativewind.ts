@@ -13,22 +13,22 @@ import { Appearance } from './types'
 
 // Brand colors - used in navigation themes only (not in components — use CSS vars)
 export const brandColors = {
-  primary: '#1B6B3C',
-  primaryDark: '#4CAF74',
+  primary: '#6200EE',
+  primaryDark: '#BB86FC',
   secondary: '#C8922A',
-  bgGrey: '#FBF7F0',
-  textDark: '#2C2417',
+  bgGrey: '#F5F3F7',
+  textDark: '#1E1B2E',
   accent: '#BF3626',
   textLight: '#FFFFFF',
 }
 
 export const brandThemeColors = {
-  _black: '#2C2417',
-  _black2: '#1A1714',
-  _white: '#FBF7F0',
-  _white2: '#F3EDE3',
-  _tintColorLight: '#1B6B3C',
-  _tintColorDark: '#4CAF74',
+  _black: '#1E1B2E',
+  _black2: '#1A1A2E',
+  _white: '#F5F3F7',
+  _white2: '#EDE9F0',
+  _tintColorLight: '#6200EE',
+  _tintColorDark: '#BB86FC',
 }
 
 // Fonts used in MARKDOWN_STYLE
@@ -88,12 +88,12 @@ export const AppDarkTheme: Theme = {
 
 export const tabScreenDefaultOptions = (): BottomTabNavigationOptions => ({
   tabBarActiveTintColor: brandColors.primary,
-  tabBarInactiveTintColor: '#6B5E4F',
+  tabBarInactiveTintColor: '#6E6B7B',
   tabBarStyle: { backgroundColor: themes.light.bgColor, borderTopWidth: 0, elevation: 0 },
 })
 
 export const LETTER_TYPE_COLORS = {
-  grapheme: '#1B6B3C',
+  grapheme: '#6200EE',
   vowel: '#C8922A',
   consonant: '#0766AD',
   indication: '#6B5E4F',

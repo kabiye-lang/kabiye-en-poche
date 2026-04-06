@@ -4,11 +4,9 @@
 @theme {
   /* Brand colors from design system (non-theme-specific) */
   --color-secondary: #C8922A;
-  --color-secondary-text: #8B6914;
 
   /* New semantic tokens */
-  --color-primary-light: #E6F0EA;
-  --color-gold-light: #FDF5E6;
+  --color-primary-light: #EDE4F7;
 
   /* Font families - IBM Plex Sans Hebrew */
   --font-ibm-thin: 'IBMPlexSansHebrew_100Thin';
@@ -41,20 +39,20 @@
   :root {
     @variant light {
       /* Backgrounds */
-      --color-background: #FBF7F0;
+      --color-background: #F5F3F7;
       --color-background-secondary: #ffffff;
-      --color-background-tertiary: #F3EDE3;
+      --color-background-tertiary: #EDE9F0;
       --color-card: #ffffff;
 
       /* Text */
-      --color-foreground: #2C2417;
-      --color-foreground-secondary: #6B5E4F;
-      --color-primary: #1B6B3C;
+      --color-foreground: #1E1B2E;
+      --color-foreground-secondary: #6E6B7B;
+      --color-primary: #6200EE;
       --color-primary-foreground: #ffffff;
 
       /* Borders */
-      --color-border: #E0D8CC;
-      --color-border-subtle: #E0D8CC;
+      --color-border: #E0DCE6;
+      --color-border-subtle: #E0DCE6;
 
       /* Feedback (success/error) */
       --color-success-bg: #dcfce7;
@@ -63,18 +61,24 @@
       --color-error-text: #b91c1c;
 
       /* Input fields */
-      --color-input-bg: #F3EDE3;
-      --color-input-border: #6B5E4F;
+      --color-input-bg: #EDE9F0;
+      --color-input-border: #6E6B7B;
 
       /* Hints (amber) */
       --color-hint: #d97706;
       --color-hint-bg: #fffbeb;
 
       /* Progress track */
-      --color-progress-track: #E0D8CC;
+      --color-progress-track: #E0DCE6;
 
       /* Accent (e.g. delete/danger) */
       --color-accent: #BF3626;
+
+      /* Gold light (theme-aware) */
+      --color-gold-light: #FDF5E6;
+
+      /* Secondary text (dark gold for light mode) */
+      --color-secondary-text: #8B6914;
 
       /* Difficulty badges */
       --color-difficulty-beginner-bg: #dcfce7;
@@ -83,26 +87,26 @@
       --color-difficulty-intermediate-text: #ca8a04;
       --color-difficulty-advanced-bg: #fee2e2;
       --color-difficulty-advanced-text: #dc2626;
-      --color-difficulty-default-bg: #F3EDE3;
-      --color-difficulty-default-text: #6B5E4F;
+      --color-difficulty-default-bg: #EDE9F0;
+      --color-difficulty-default-text: #6E6B7B;
     }
 
     @variant dark {
       /* Backgrounds */
-      --color-background: #1A1714;
-      --color-background-secondary: #2A2520;
-      --color-background-tertiary: #3A342E;
-      --color-card: #2A2520;
+      --color-background: #1A1A2E;
+      --color-background-secondary: #252538;
+      --color-background-tertiary: #2F2F45;
+      --color-card: #252538;
 
       /* Text */
-      --color-foreground: #F3EDE3;
-      --color-foreground-secondary: #A89B8C;
-      --color-primary: #4CAF74;
-      --color-primary-foreground: #F3EDE3;
+      --color-foreground: #E8E4F0;
+      --color-foreground-secondary: #9B97A8;
+      --color-primary: #BB86FC;
+      --color-primary-foreground: #1E1E2E;
 
       /* Borders */
-      --color-border: #4A4239;
-      --color-border-subtle: #3A342E;
+      --color-border: #3D3B50;
+      --color-border-subtle: #2F2F45;
 
       /* Feedback */
       --color-success-bg: rgba(22, 101, 52, 0.2);
@@ -111,18 +115,24 @@
       --color-error-text: #fca5a5;
 
       /* Input fields */
-      --color-input-bg: #3A342E;
-      --color-input-border: #4A4239;
+      --color-input-bg: #2F2F45;
+      --color-input-border: #3D3B50;
 
       /* Hints */
       --color-hint: #fbbf24;
       --color-hint-bg: rgba(146, 64, 14, 0.2);
 
       /* Progress track */
-      --color-progress-track: #3A342E;
+      --color-progress-track: #2F2F45;
 
       /* Accent */
       --color-accent: #E05A4A;
+
+      /* Gold light (theme-aware dark variant) */
+      --color-gold-light: rgba(200, 146, 42, 0.12);
+
+      /* Secondary text (lighter gold for dark mode) */
+      --color-secondary-text: #D4A843;
 
       /* Difficulty badges */
       --color-difficulty-beginner-bg: rgba(22, 101, 52, 0.2);
@@ -131,8 +141,8 @@
       --color-difficulty-intermediate-text: #fde047;
       --color-difficulty-advanced-bg: rgba(127, 29, 29, 0.2);
       --color-difficulty-advanced-text: #fca5a5;
-      --color-difficulty-default-bg: rgba(58, 52, 46, 0.2);
-      --color-difficulty-default-text: #A89B8C;
+      --color-difficulty-default-bg: rgba(47, 47, 69, 0.2);
+      --color-difficulty-default-text: #9B97A8;
     }
   }
 }

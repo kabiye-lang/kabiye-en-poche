@@ -15,6 +15,7 @@ import { FilePdfIcon as PhosphorFilePdfIcon } from 'phosphor-react-native/src/ic
 import { GearIcon as PhosphorGearIcon } from 'phosphor-react-native/src/icons/Gear'
 import { GlobeIcon as PhosphorGlobeIcon } from 'phosphor-react-native/src/icons/Globe'
 import { HouseIcon as PhosphorHouseIcon } from 'phosphor-react-native/src/icons/House'
+import { InfoIcon as PhosphorInfoIcon } from 'phosphor-react-native/src/icons/Info'
 import { KeyboardIcon as PhosphorKeyboardIcon } from 'phosphor-react-native/src/icons/Keyboard'
 import { KeyReturnIcon as PhosphorKeyReturnIcon } from 'phosphor-react-native/src/icons/KeyReturn'
 import { LightbulbIcon as PhosphorLightbulbIcon } from 'phosphor-react-native/src/icons/Lightbulb'
@@ -51,6 +52,7 @@ export const FilePdfIcon = withUniwind(PhosphorFilePdfIcon)
 export const GearIcon = withUniwind(PhosphorGearIcon)
 export const GlobeIcon = withUniwind(PhosphorGlobeIcon)
 export const HouseIcon = withUniwind(PhosphorHouseIcon)
+export const InfoIcon = withUniwind(PhosphorInfoIcon)
 export const KeyboardIcon = withUniwind(PhosphorKeyboardIcon)
 export const KeyReturnIcon = withUniwind(PhosphorKeyReturnIcon)
 export const LightbulbIcon = withUniwind(PhosphorLightbulbIcon)

@@ -2,6 +2,13 @@ import { render, screen } from '@testing-library/react-native'
 
 import { WordOfTheDay } from '../src/components/word-of-the-day'
 
+// Mock @lingui/react (used after macro transformation of useLingui)
+jest.mock('@lingui/react', () => ({
+  useLingui: () => ({
+    _: (d: any) => (typeof d === 'object' ? (d.message ?? d.id ?? '') : String(d)),
+  }),
+}))
+
 // Mock expo-router Link
 jest.mock('expo-router', () => {
   const { View } = require('react-native')
@@ -83,9 +90,15 @@ describe('WordOfTheDay', () => {
     expect(screen.queryByText('taa')).toBeNull()
   })
 
-  it('renders nothing when words array is empty', () => {
-    const { toJSON } = render(<WordOfTheDay words={[]} language="en" isLoading={false} />)
-    expect(toJSON()).toBeNull()
+  it('renders fallback when words array is empty', () => {
+    render(<WordOfTheDay words={[]} language="en" isLoading={false} />)
+    // Fallback view renders instead of null so home section stays visible
+    expect(screen.getByText('No word available today')).toBeTruthy()
+  })
+
+  it('renders fallback when error prop is true', () => {
+    render(<WordOfTheDay words={[]} language="en" isLoading={false} isError={true} />)
+    expect(screen.getByText('No word available today')).toBeTruthy()
   })
 
   it('renders word card with headword and translation', () => {

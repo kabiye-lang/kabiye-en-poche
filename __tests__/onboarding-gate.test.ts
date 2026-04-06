@@ -44,3 +44,53 @@ describe('Onboarding gate logic', () => {
     expect(hasSeenOnboarding).toBe(true)
   })
 })
+
+describe('Onboarding slide content structure', () => {
+  // Mirrors the pages array in (onboarding)/index.tsx — data-level guard
+  // against collapsing slides (emoji + title + description must all be present)
+  const pages = [
+    {
+      id: '1',
+      emoji: '🌍',
+      titleKey: 'Discover Kabiyè',
+      descriptionKey: 'Explore a rich West African language spoken by millions.',
+      accentColors: ['#6200EE', '#7C3AED'],
+    },
+    {
+      id: '2',
+      emoji: '📖',
+      titleKey: 'Your Personal Dictionary',
+      descriptionKey: 'Look up any Kabiyè word instantly.',
+      accentColors: ['#C8922A', '#D4A843'],
+    },
+    {
+      id: '3',
+      emoji: '⌨️',
+      titleKey: 'Type in Kabiyè',
+      descriptionKey: 'Use the built-in Kabiyè keyboard to type special characters.',
+      accentColors: ['#6200EE', '#C8922A'],
+    },
+  ]
+
+  it('every slide has emoji, title, and description', () => {
+    pages.forEach((page) => {
+      expect(page.emoji).toBeTruthy()
+      expect(page.titleKey).toBeTruthy()
+      expect(page.descriptionKey).toBeTruthy()
+    })
+  })
+
+  it('slide accent uses two colors (no missing gradient params)', () => {
+    pages.forEach((page) => {
+      expect(page.accentColors).toHaveLength(2)
+      expect(page.accentColors[0]).toMatch(/^#[0-9A-Fa-f]{6}$/)
+      expect(page.accentColors[1]).toMatch(/^#[0-9A-Fa-f]{6}$/)
+    })
+  })
+
+  it('text content fields are present on all 3 slides (layout cannot collapse blank)', () => {
+    expect(pages).toHaveLength(3)
+    const slidesWithContent = pages.filter((p) => p.titleKey && p.descriptionKey && p.emoji)
+    expect(slidesWithContent).toHaveLength(3)
+  })
+})

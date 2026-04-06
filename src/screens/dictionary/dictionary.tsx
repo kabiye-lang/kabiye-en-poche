@@ -108,7 +108,7 @@ const DictionaryScreen: React.FC = () => {
             onSubmitEditing={handleSearch}
             placeholder={getPlaceholder()}
             className="text-foreground flex-1 text-base"
-            placeholderTextColor="#9CA3AF"
+            placeholderTextColor="#6E6B7B"
             returnKeyType="search"
           />
           {(isSearching || isFetching) && <ActivityIndicator size="small" className="ml-2" />}
@@ -160,7 +160,7 @@ const DictionaryScreen: React.FC = () => {
           {isLoadingLetters ? (
             <ActivityIndicator className="py-4" />
           ) : (
-            <View className="flex-row flex-wrap gap-2">
+            <View className="flex-row flex-wrap justify-center gap-2">
               {letters?.map((letter) => (
                 <Link key={letter} href={`/dictionary/letter/${letter}`} asChild>
                   <TouchableOpacity>

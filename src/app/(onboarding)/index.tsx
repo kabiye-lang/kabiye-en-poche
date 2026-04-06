@@ -1,12 +1,13 @@
 import { useRef, useState } from 'react'
 import { Dimensions, FlatList, TouchableOpacity } from 'react-native'
+import { EaseView } from 'react-native-ease'
 
 import { router } from 'expo-router'
 
 import { useLingui } from '@lingui/react/macro'
 import AsyncStorage from '@react-native-async-storage/async-storage'
 
-import { Gradient, Text, View } from '@/components/ui'
+import { Text, View } from '@/components/ui'
 
 const { width: SCREEN_WIDTH } = Dimensions.get('window')
 
@@ -17,7 +18,7 @@ interface OnboardingPage {
   emoji: string
   titleKey: string
   descriptionKey: string
-  gradientColors: [string, string]
+  accentColors: [string, string]
 }
 
 const OnboardingScreen = () => {
@@ -28,24 +29,25 @@ const OnboardingScreen = () => {
   const pages: OnboardingPage[] = [
     {
       id: '1',
+      // icon: <GlobeHemisphereEastIcon />,
       emoji: '🌍',
       titleKey: t`Discover Kabiyè`,
       descriptionKey: t`Explore a rich West African language spoken by millions. Learn words, phrases, and the beautiful Kabiyè alphabet.`,
-      gradientColors: ['#1B6B3C', '#2A8B55'],
+      accentColors: ['#6200EE', '#7C3AED'],
     },
     {
       id: '2',
       emoji: '📖',
       titleKey: t`Your Personal Dictionary`,
       descriptionKey: t`Look up any Kabiyè word instantly. Browse by letter, search in French or English, and discover the Word of the Day.`,
-      gradientColors: ['#C8922A', '#D4A843'],
+      accentColors: ['#C8922A', '#D4A843'],
     },
     {
       id: '3',
       emoji: '⌨️',
       titleKey: t`Type in Kabiyè`,
       descriptionKey: t`Use the built-in Kabiyè keyboard to type special characters. Copy text and share it anywhere.`,
-      gradientColors: ['#1B6B3C', '#C8922A'],
+      accentColors: ['#6200EE', '#C8922A'],
     },
   ]
 
@@ -62,24 +64,87 @@ const OnboardingScreen = () => {
     }
   }
 
-  const renderPage = ({ item }: { item: OnboardingPage }) => (
-    <View style={{ width: SCREEN_WIDTH }} className="flex-1 justify-center px-8">
-      <Gradient colors={item.gradientColors}>
-        <View className="mx-4 my-8 items-center rounded-3xl p-8">
-          <Text className="mb-4 text-6xl">{item.emoji}</Text>
-          <Text variant="h3" weight="bold" className="mb-3 text-center text-white">
-            {item.titleKey}
-          </Text>
-          <Text variant="body" className="text-center leading-6 text-white/85">
-            {item.descriptionKey}
-          </Text>
+  const renderPage = ({ item, index }: { item: OnboardingPage; index: number }) => {
+    const isActive = currentIndex === index
+
+    return (
+      <View style={{ width: SCREEN_WIDTH }} className="flex-1">
+        {/* Emoji — entrance pop-in + continuous float */}
+        <View className="mt-16 flex-1 items-center justify-center">
+          <EaseView
+            animate={isActive ? { scale: 1, opacity: 1 } : { scale: 0.7, opacity: 0 }}
+            initialAnimate={{ scale: 0.7, opacity: 0 }}
+            transition={isActive ? { type: 'spring', damping: 10, stiffness: 110 } : { type: 'none' }}
+            useHardwareLayer
+          >
+            {/* Float loop — runs always, invisible when parent is hidden */}
+            <EaseView
+              animate={{ translateY: -10 }}
+              initialAnimate={{ translateY: 0 }}
+              transition={{ type: 'timing', duration: 2200, easing: 'easeInOut', loop: 'reverse' }}
+            >
+              <View className="bg-primary/10 rounded-[28px] p-10">
+                <Text variant="h1" weight="bold" className="text-foreground text-center">
+                  {item.emoji}
+                </Text>
+              </View>
+            </EaseView>
+          </EaseView>
         </View>
-      </Gradient>
-    </View>
-  )
+
+        {/* Title + description — staggered slide-up entrance */}
+        <View className="items-center px-8 pb-16">
+          <EaseView
+            animate={isActive ? { translateY: 0, opacity: 1 } : { translateY: 24, opacity: 0 }}
+            initialAnimate={{ translateY: 24, opacity: 0 }}
+            transition={
+              isActive
+                ? {
+                    opacity: { type: 'timing', duration: 300, delay: 180, easing: 'easeOut' },
+                    transform: { type: 'spring', damping: 14, stiffness: 140, delay: 180 },
+                  }
+                : { type: 'none' }
+            }
+          >
+            <Text variant="h3" weight="bold" className="text-foreground mb-3 text-center">
+              {item.titleKey}
+            </Text>
+          </EaseView>
+          <EaseView
+            animate={isActive ? { translateY: 0, opacity: 1 } : { translateY: 24, opacity: 0 }}
+            initialAnimate={{ translateY: 24, opacity: 0 }}
+            transition={
+              isActive
+                ? {
+                    opacity: { type: 'timing', duration: 300, delay: 300, easing: 'easeOut' },
+                    transform: { type: 'spring', damping: 14, stiffness: 140, delay: 300 },
+                  }
+                : { type: 'none' }
+            }
+          >
+            <Text variant="body" className="text-foreground-secondary text-center leading-6">
+              {item.descriptionKey}
+            </Text>
+          </EaseView>
+        </View>
+      </View>
+    )
+  }
 
   return (
     <View flex safeArea="all" className="bg-background">
+      {/* Skip */}
+      {currentIndex < pages.length - 1 && (
+        <TouchableOpacity
+          onPress={completeOnboarding}
+          className="absolute top-12 right-8 mt-3 py-3"
+          style={{ minHeight: 44 }}
+        >
+          <Text variant="body" className="text-foreground-secondary">
+            {t`Skip`}
+          </Text>
+        </TouchableOpacity>
+      )}
       <FlatList
         ref={flatListRef}
         data={pages}
@@ -88,6 +153,8 @@ const OnboardingScreen = () => {
         horizontal
         pagingEnabled
         showsHorizontalScrollIndicator={false}
+        scrollEventThrottle={16}
+        extraData={currentIndex}
         onMomentumScrollEnd={(e) => {
           const index = Math.round(e.nativeEvent.contentOffset.x / SCREEN_WIDTH)
           setCurrentIndex(index)
@@ -110,15 +177,6 @@ const OnboardingScreen = () => {
             {currentIndex === pages.length - 1 ? t`Get Started` : t`Next`}
           </Text>
         </TouchableOpacity>
-
-        {/* Skip */}
-        {currentIndex < pages.length - 1 && (
-          <TouchableOpacity onPress={completeOnboarding} className="mt-3 py-2">
-            <Text variant="body" className="text-foreground-secondary">
-              {t`Skip`}
-            </Text>
-          </TouchableOpacity>
-        )}
       </View>
     </View>
   )

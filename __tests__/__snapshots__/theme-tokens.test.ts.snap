@@ -3,11 +3,11 @@
 exports[`Theme tokens brandColors snapshot should match 1`] = `
 {
   "accent": "#BF3626",
-  "bgGrey": "#FBF7F0",
-  "primary": "#1B6B3C",
-  "primaryDark": "#4CAF74",
+  "bgGrey": "#F5F3F7",
+  "primary": "#6200EE",
+  "primaryDark": "#BB86FC",
   "secondary": "#C8922A",
-  "textDark": "#2C2417",
+  "textDark": "#1E1B2E",
   "textLight": "#FFFFFF",
 }
 `;

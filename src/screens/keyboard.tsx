@@ -1,10 +1,10 @@
 import { useEffect, useState } from 'react'
 import { Dimensions, TextInput, TouchableOpacity } from 'react-native'
 
-import AsyncStorage from '@react-native-async-storage/async-storage'
 import * as Clipboard from 'expo-clipboard'
 
 import { useLingui } from '@lingui/react/macro'
+import AsyncStorage from '@react-native-async-storage/async-storage'
 
 import {
   ArrowFatLinesUpIcon,
@@ -118,7 +118,7 @@ export default function KeyboardScreen() {
     setContent((oldContent) => oldContent + (capsLock ? letter.caps || letter.id : letter.id))
     setCapsLock((capsLockOld) => (capsLockOld === 2 ? capsLockOld : 0))
   }
-  const buttonWidth = (Dimensions.get('screen').width - 10) / 11 - 5
+  const buttonWidth = (Dimensions.get('screen').width - 10) / 11 - 4
 
   const renderButton = (letter: { id: string; caps: string }) => {
     return (
@@ -155,14 +155,20 @@ export default function KeyboardScreen() {
         {showHint && (
           <View className="mb-2">
             <Text variant="caption" className="text-foreground-secondary">
-              {t`Use this keyboard to write in Kabiyè.`}{' '}
-              {t`The`} <ArrowFatLineUpIcon weight="regular" size={12} />{' '}
+              {t`Use this keyboard to write in Kabiyè.`} {t`The`} <ArrowFatLineUpIcon weight="regular" size={12} />{' '}
               {t`key allows you to capitalize. Long press to lock CAPS mode.`}
             </Text>
           </View>
         )}
       </View>
       <View flex className="justify-end">
+        {/* Example prompt */}
+        <View className="mb-3 px-4">
+          <Text variant="caption" className="text-foreground-secondary text-center italic">
+            {t`Try typing:`} Ɛsɔɔlaa! Ŋsɛɛ wiɖe?
+          </Text>
+        </View>
+
         {/* TextInput directly above keyboard */}
         <View className="px-2.5">
           <TextInput
@@ -171,7 +177,7 @@ export default function KeyboardScreen() {
             multiline
             className="border-border bg-card text-foreground max-h-[120px] min-h-[80px] w-full rounded-xl border p-2.5 text-base"
             placeholder={t`Type here...`}
-            placeholderTextColor="#6B5E4F"
+            placeholderTextColor="#6E6B7B"
           />
         </View>
         {/* Inline toolbar */}
@@ -204,7 +210,7 @@ export default function KeyboardScreen() {
           renderContent={() => (
             <> */}
         <View className="bg-progress-track p-1.5 pb-5">
-          <View className="mt-2.5 flex-row flex-wrap justify-center gap-1.5">
+          <View className="mt-2.5 flex-row flex-wrap justify-center gap-1">
             {OTHER_CHARACTERS.concat(ALPHABET_LIST).map((letter) => renderButton(letter))}
           </View>
           <View className="mt-2.5 flex-row flex-wrap justify-center gap-1.5">

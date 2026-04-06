@@ -5,6 +5,8 @@ import Animated, { FadeInUp } from 'react-native-reanimated'
 
 import { Link } from 'expo-router'
 
+import { useLingui } from '@lingui/react/macro'
+
 import { Text, View } from '@/components/ui'
 
 type WordGroup = {
@@ -16,6 +18,7 @@ type Props = {
   words: WordGroup[]
   language: string
   isLoading?: boolean
+  isError?: boolean
 }
 
 const WordOfTheDaySkeleton = () => (
@@ -24,6 +27,17 @@ const WordOfTheDaySkeleton = () => (
     <View className="bg-secondary/10 h-4 w-48 rounded" />
   </View>
 )
+
+const WordOfTheDayFallback = () => {
+  const { t } = useLingui()
+  return (
+    <View className="bg-card items-center justify-center rounded-2xl p-4" style={{ minHeight: 64 }}>
+      <Text variant="body" className="text-foreground-secondary text-center">
+        {t`No word available today`}
+      </Text>
+    </View>
+  )
+}
 
 const WordOfTheDayCard = ({ word, language, index }: { word: WordGroup; language: string; index: number }) => {
   const { entries } = word
@@ -60,9 +74,9 @@ const WordOfTheDayCard = ({ word, language, index }: { word: WordGroup; language
   )
 }
 
-export const WordOfTheDay = ({ words, language, isLoading }: Props) => {
+export const WordOfTheDay = ({ words, language, isLoading, isError }: Props) => {
   if (isLoading) return <WordOfTheDaySkeleton />
-  if (!words || words.length === 0) return null
+  if (isError || !words || words.length === 0) return <WordOfTheDayFallback />
 
   return (
     <>

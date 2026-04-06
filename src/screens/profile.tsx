@@ -205,7 +205,7 @@ const ProfileScreen = () => {
                       router.push(item.href as Href)
                     }
                   }}
-                  className={`flex-row items-center px-4 py-3 ${
+                  className={`min-h-20 flex-row items-center px-4 py-3 ${
                     index < listItem.items.length - 1 ? 'border-border border-b' : ''
                   }`}
                 >
@@ -257,10 +257,7 @@ const ProfileScreen = () => {
             </TouchableOpacity>
 
             {/* Reset Progress */}
-            <TouchableOpacity
-              className="flex-row items-center justify-between px-4 py-3"
-              onPress={handleResetProgress}
-            >
+            <TouchableOpacity className="flex-row items-center justify-between px-4 py-3" onPress={handleResetProgress}>
               <View className="flex-1 flex-row items-center">
                 <TrashIcon size={20} className="text-accent" />
                 <View className="ml-3">

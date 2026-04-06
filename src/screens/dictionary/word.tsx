@@ -1,12 +1,12 @@
 import React from 'react'
-import { ActivityIndicator, ScrollView, TouchableOpacity } from 'react-native'
+import { ActivityIndicator, Alert, ScrollView, TouchableOpacity } from 'react-native'
 
 import { Link, useLocalSearchParams } from 'expo-router'
 
 import { useLingui } from '@lingui/react/macro'
 import { useHeaderHeight } from '@react-navigation/elements'
 
-import { ArrowRightIcon } from '@/components/icons'
+import { ArrowRightIcon, InfoIcon } from '@/components/icons'
 import { Card, Text, View } from '@/components/ui'
 import { CrossReferences, SenseDefinitions, SubEntries } from '@/components/word/word-sections'
 import { useEntryByTerm } from '@/hooks/use-dictionary'
@@ -76,7 +76,7 @@ const WordDetailsScreen: React.FC = () => {
 
   return (
     <View flex className="bg-background" safeArea="vertical">
-      <ScrollView contentContainerStyle={{ paddingTop: headerHeight / 2, paddingHorizontal: 20 }}>
+      <ScrollView contentContainerStyle={{ paddingTop: headerHeight / 2, paddingHorizontal: 20, paddingBottom: 40 }}>
         {/* Headword */}
         <Text variant="h3" weight="bold" className="text-primary mb-2">
           {entry_data.headword}
@@ -91,9 +91,34 @@ const WordDetailsScreen: React.FC = () => {
 
         {/* Grammatical Info */}
         {entry_data.grammaticalInfo && (
-          <Text variant="body" className="text-foreground-secondary mb-4 italic">
-            {entry_data.grammaticalInfo}
-          </Text>
+          <View className="mb-4 flex-row items-center">
+            <Text variant="body" className="text-foreground-secondary italic">
+              {entry_data.grammaticalInfo}
+            </Text>
+            <TouchableOpacity
+              className="ml-1.5"
+              hitSlop={8}
+              onPress={() => {
+                Alert.alert(
+                  t`Abbreviations`,
+                  [
+                    'n.m. = nom masculin',
+                    'n.f. = nom féminin',
+                    'n.kl = noun class',
+                    'v. = verbe',
+                    'adj. = adjectif',
+                    'adv. = adverbe',
+                    'prép. = préposition',
+                    'conj. = conjonction',
+                    'pron. = pronom',
+                    'interj. = interjection',
+                  ].join('\n')
+                )
+              }}
+            >
+              <InfoIcon size={16} weight="regular" className="text-foreground-secondary" />
+            </TouchableOpacity>
+          </View>
         )}
 
         {/* Plural */}

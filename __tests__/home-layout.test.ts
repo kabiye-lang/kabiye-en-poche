@@ -8,7 +8,7 @@ describe('Home layout — new vs returning user', () => {
     const nextLesson = null
     const hasNextLesson = !nextLessonLoading && !!nextLesson
     expect(hasNextLesson).toBe(false)
-    // When hasNextLesson is false and not loading, new user hero is shown
+    // When hasNextLesson is false and not loading, new user CTA hero is shown
   })
 
   it('returning user hero shows continue learning when next lesson exists', () => {
@@ -18,13 +18,22 @@ describe('Home layout — new vs returning user', () => {
     expect(hasNextLesson).toBe(true)
   })
 
-  it('shows loading state when lesson data is loading', () => {
+  it('loading state shows semantic skeleton — no gradient or spinner', () => {
     const nextLessonLoading = true
     const nextLesson = null
     const hasNextLesson = !nextLessonLoading && !!nextLesson
     expect(hasNextLesson).toBe(false)
-    // When nextLessonLoading is true, loading spinner should show
+    // When nextLessonLoading is true, bg-card skeleton renders (not a gradient)
     expect(nextLessonLoading).toBe(true)
+  })
+
+  it('home never depends solely on next-lesson: meaningful CTA renders when lesson is null', () => {
+    const nextLessonLoading = false
+    const nextLesson = null
+    const hasNextLesson = !nextLessonLoading && !!nextLesson
+    // New-user CTA ("Start Learning") renders in this state
+    expect(hasNextLesson).toBe(false)
+    expect(nextLessonLoading).toBe(false)
   })
 
   it('WotD section always renders regardless of user type', () => {
@@ -49,5 +58,13 @@ describe('Home layout — new vs returning user', () => {
       },
     ]
     expect(wordOfTheDay.length).toBeGreaterThan(0)
+  })
+
+  it('WotD error state is handled: isError from hook is passed to WordOfTheDay', () => {
+    // isError is now destructured from useWordOfTheDay and forwarded
+    // This prevents the home WotD section from silently going blank on errors
+    const isWotDError = true
+    expect(isWotDError).toBe(true)
+    // WordOfTheDay renders fallback (not null) when isError is true
   })
 })

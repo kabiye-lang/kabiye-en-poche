@@ -155,7 +155,7 @@ const ListenTypeStep = ({ activity, onAnswer }: ListenTypeStepProps) => {
             value={userAnswer}
             onChangeText={setUserAnswer}
             placeholder={t`Type what you hear...`}
-            placeholderTextColor="#9ca3af"
+            placeholderTextColor="#6E6B7B"
             editable={!showFeedback}
             className={`min-h-[80px] rounded-lg border-2 p-4 text-lg ${
               showFeedback
