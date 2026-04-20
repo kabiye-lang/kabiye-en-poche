@@ -8,8 +8,8 @@ export const LessonShow = () => (
       <ReferenceField source="unit_id" reference="units" link="show" />
       <TextField source="difficulty" />
       <NumberField source="position" />
-      <ArrayField source="objectives_en" label="Objectives (EN)" />
-      <ArrayField source="objectives_fr" label="Objectives (FR)" />
+      <ArrayField source="objectives_en" />
+      <ArrayField source="objectives_fr" />
     </SimpleShowLayout>
   </Show>
 )
