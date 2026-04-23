@@ -21,21 +21,21 @@
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
     "lucide-react": "^1.8.0",
-    "ra-i18n-polyglot": "^5.14.5",
-    "ra-language-english": "^5.14.5",
+    "ra-i18n-polyglot": "^5.14.6",
+    "ra-language-english": "^5.14.6",
     "ra-supabase": "^3.5.2",
     "react": "^19.2.0",
-    "react-admin": "^5.14.5",
+    "react-admin": "^5.14.6",
     "react-dom": "^19.2.0",
     "react-error-boundary": "^6.1.1",
-    "react-router-dom": "^7.14.1",
+    "react-router-dom": "^7.14.2",
     "remark-breaks": "^4.0.0",
     "tailwind-merge": "^3.5.0"
   },
   "devDependencies": {
     "@ianvs/prettier-plugin-sort-imports": "4.7.1",
     "@eslint/js": "^10.0.1",
-    "@tailwindcss/postcss": "^4.2.3",
+    "@tailwindcss/postcss": "^4.2.4",
     "@types/react": "~19.2.14",
     "@types/react-dom": "~19.2.3",
     "@vitejs/plugin-react": "^6.0.1",
@@ -50,6 +50,6 @@
     "postcss": "^8.5.10",
     "tailwindcss": "^4.1.18",
     "typescript": "~6.0.3",
-    "vite": "^8.0.9"
+    "vite": "^8.0.10"
   }
 }
