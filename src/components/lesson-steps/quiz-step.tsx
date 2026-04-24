@@ -6,18 +6,20 @@ import { ScrollView, TouchableOpacity } from 'react-native'
 
 import { useLingui } from '@lingui/react/macro'
 
+import { SparkleIcon } from '@/components/icons'
 import { Button, Card, Text, View } from '@/components/ui'
 import { useLanguage } from '@/hooks/use-language'
 
 interface QuizStepProps {
   activity: LessonActivity
   onAnswer: (isCorrect: boolean, answer: string) => void
+  progressPercent?: number
 }
 
 /** For true_false: index 0 = true, index 1 = false */
 const TRUE_FALSE_VALUES: [boolean, boolean] = [true, false]
 
-const QuizStep = ({ activity, onAnswer }: QuizStepProps) => {
+const QuizStep = ({ activity, onAnswer, progressPercent = 0 }: QuizStepProps) => {
   const { t } = useLingui()
   const { getValue, currentLanguage } = useLanguage()
   const activityData = activity.data as QuizActivityData | null | undefined
@@ -137,6 +139,27 @@ const QuizStep = ({ activity, onAnswer }: QuizStepProps) => {
             )
           })}
         </View>
+
+        {/* Motivational card – fills the void on T/F and short MCQ screens */}
+        {!showFeedback && (
+          <View className="mt-4 mb-2">
+            <View className="bg-primary/5 flex-row items-center gap-4 rounded-2xl px-5 py-4">
+              <SparkleIcon size={28} weight="fill" className="text-primary" />
+              <View className="flex-1">
+                <Text variant="h6" weight="semibold" className="text-primary">
+                  {progressPercent < 33
+                    ? t`Every expert was once a beginner!`
+                    : progressPercent < 66
+                      ? t`Halfway there — keep going!`
+                      : t`Almost done — you're doing great!`}
+                </Text>
+                <Text variant="caption" className="text-foreground-secondary mt-0.5">
+                  {t`Take your time and think it through.`}
+                </Text>
+              </View>
+            </View>
+          </View>
+        )}
 
         {/* Feedback */}
         {showFeedback && selectedIndex !== null && (

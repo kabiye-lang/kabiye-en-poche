@@ -123,15 +123,15 @@ const OrderWordsStep = ({ activity, onAnswer }: OrderWordsStepProps) => {
           </View>
         )}
 
-        {/* Reset Button */}
-        {!showFeedback && orderedWords.length > 0 && (
+        {/* Reset Button - shown when words are arranged (pre-check) or after wrong answer */}
+        {(!showFeedback && orderedWords.length > 0) || (showFeedback && !isCorrect) ? (
           <TouchableOpacity onPress={handleReset} className="mb-4 flex-row items-center justify-center">
             <ArrowsClockwiseIcon size={20} className="text-primary" />
             <Text variant="body" className="text-primary ml-2">
               {t`Reset`}
             </Text>
           </TouchableOpacity>
-        )}
+        ) : null}
 
         {/* Feedback */}
         {showFeedback && (
@@ -141,7 +141,7 @@ const OrderWordsStep = ({ activity, onAnswer }: OrderWordsStepProps) => {
               weight="bold"
               className={`text-center ${isCorrect ? 'text-success-text' : 'text-error-text'}`}
             >
-              {isCorrect ? t`Perfect! Correct order!` : t`Not quite right. Try again!`}
+              {isCorrect ? t`Perfect! Correct order!` : t`Not quite — tap Reset and try again`}
             </Text>
             {!isCorrect && (
               <Text variant="body" className="text-foreground mt-2 text-center">
@@ -159,11 +159,11 @@ const OrderWordsStep = ({ activity, onAnswer }: OrderWordsStepProps) => {
         <Button
           variant="primary"
           onPress={showFeedback ? handleContinue : handleCheck}
-          disabled={!showFeedback && !(orderedWords.length === words.length)}
+          disabled={(!showFeedback && !(orderedWords.length === words.length)) || (showFeedback && !isCorrect)}
           className="w-full"
         >
           <Text variant="body" weight="bold" className="text-white">
-            {t`Continue`}
+            {showFeedback ? t`Continue` : t`Check`}
           </Text>
         </Button>
       </View>

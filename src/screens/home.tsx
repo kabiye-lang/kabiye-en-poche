@@ -78,7 +78,7 @@ const HomeScreen = () => {
           {/* Word of the Day — promoted to hero position */}
           <View className="mb-5">
             <View className="mb-2.5 flex-row items-center">
-              <SparkleIcon size={20} weight="duotone" className="text-secondary mr-1.5" />
+              <SparkleIcon size={20} weight="duotone" className="text-primary mr-1.5" />
               <Text variant="h5" weight="semibold" className="text-foreground">
                 {t`Word of the Day`}
               </Text>
@@ -106,22 +106,32 @@ const HomeScreen = () => {
             </TouchableOpacity>
           </Link>
 
-          {/* Quick Links */}
-          <View className="mb-5 flex-row gap-3">
+          {/* Quick Links — compact navigation shortcuts (tabs always visible) */}
+          <View className="border-border mb-5 overflow-hidden rounded-2xl border">
             <Link href="/learn" asChild>
-              <TouchableOpacity className="bg-primary/10 flex-1 items-center rounded-2xl py-6">
-                <BookOpenTextIcon size={24} weight="duotone" className="text-primary mb-2" />
-                <Text variant="body" weight="semibold" className="text-primary">
+              <TouchableOpacity
+                className="border-border flex-row items-center border-b px-4 py-3.5"
+                style={{ minHeight: 44 }}
+                accessibilityRole="link"
+              >
+                <BookOpenTextIcon size={20} weight="duotone" className="text-primary mr-3" />
+                <Text variant="body" weight="medium" className="text-foreground flex-1">
                   {t`Lessons`}
                 </Text>
+                <CaretRightIcon size={16} weight="regular" className="text-foreground-secondary" />
               </TouchableOpacity>
             </Link>
             <Link href="/dictionary" asChild>
-              <TouchableOpacity className="bg-primary/10 flex-1 items-center rounded-2xl py-6">
-                <ArticleIcon size={24} weight="duotone" className="text-primary mb-2" />
-                <Text variant="body" weight="semibold" className="text-primary">
+              <TouchableOpacity
+                className="flex-row items-center px-4 py-3.5"
+                style={{ minHeight: 44 }}
+                accessibilityRole="link"
+              >
+                <ArticleIcon size={20} weight="duotone" className="text-primary mr-3" />
+                <Text variant="body" weight="medium" className="text-foreground flex-1">
                   {t`Dictionary`}
                 </Text>
+                <CaretRightIcon size={16} weight="regular" className="text-foreground-secondary" />
               </TouchableOpacity>
             </Link>
           </View>

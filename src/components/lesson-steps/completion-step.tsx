@@ -75,7 +75,7 @@ const CompletionStep = ({ score = 0, totalQuestions = 0, onComplete }: Completio
       <View className="w-full gap-3">
         <Button variant="primary" onPress={onComplete} className="w-full">
           <Text variant="body" weight="bold" className="text-white">
-            {t`Continue`}
+            {t`Back to Lessons`}
           </Text>
         </Button>
 

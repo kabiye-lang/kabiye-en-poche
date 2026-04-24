@@ -15,7 +15,7 @@ import { Appearance } from './types'
 export const brandColors = {
   primary: '#6200EE',
   primaryDark: '#BB86FC',
-  secondary: '#C8922A',
+  secondary: '#8B5CF6',
   bgGrey: '#F5F3F7',
   textDark: '#1E1B2E',
   accent: '#BF3626',

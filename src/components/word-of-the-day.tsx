@@ -22,7 +22,7 @@ type Props = {
 }
 
 const WordOfTheDaySkeleton = () => (
-  <View className="bg-gold-light rounded-2xl p-4">
+  <View className="bg-card rounded-2xl p-4">
     <View className="bg-secondary/20 mb-2 h-6 w-32 rounded" />
     <View className="bg-secondary/10 h-4 w-48 rounded" />
   </View>
@@ -51,12 +51,12 @@ const WordOfTheDayCard = ({ word, language, index }: { word: WordGroup; language
     <Animated.View entering={FadeInUp.duration(300).delay(index * 100)}>
       <Link href={`/word/${firstEntry.entry_data.headword}`} asChild>
         <TouchableOpacity>
-          <View className="bg-gold-light mb-3 rounded-2xl p-4">
-            <Text variant="lg" weight="bold" className="text-secondary-text">
+          <View className="bg-card mb-3 rounded-2xl p-4">
+            <Text variant="lg" weight="bold" className="text-foreground">
               {displayHeadword}
             </Text>
             {firstEntry.entry_data.pronunciations?.[0] && (
-              <Text variant="caption" className="text-secondary-text/70 mt-1">
+              <Text variant="caption" className="text-foreground-secondary mt-1">
                 [{firstEntry.entry_data.pronunciations[0]}]
               </Text>
             )}

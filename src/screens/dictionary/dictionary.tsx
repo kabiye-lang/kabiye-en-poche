@@ -62,44 +62,7 @@ const DictionaryScreen: React.FC = () => {
   return (
     <View flex className="bg-background">
       <View className="px-2.5 py-2.5">
-        {/* Mode Tabs */}
-        <View className="mb-3 flex-row gap-2">
-          <TouchableOpacity
-            onPress={() => setSearchMode('kabiye')}
-            className={`flex-1 items-center rounded-lg px-4 py-2.5 ${
-              searchMode === 'kabiye' ? 'bg-primary' : 'border-border bg-card border'
-            }`}
-          >
-            <Text
-              variant="body"
-              weight="semibold"
-              className={searchMode === 'kabiye' ? 'text-primary-foreground' : 'text-foreground'}
-            >
-              {t`Kabiyè`}
-            </Text>
-          </TouchableOpacity>
-          <TouchableOpacity
-            onPress={() => setSearchMode('translation')}
-            className={`flex-1 items-center rounded-lg px-4 py-2.5 ${
-              searchMode === 'translation' ? 'bg-primary' : 'border-border bg-card border'
-            }`}
-          >
-            <Text
-              variant="body"
-              weight="semibold"
-              className={searchMode === 'translation' ? 'text-primary-foreground' : 'text-foreground'}
-            >
-              {currentLanguage === 'fr' ? t`Français` : t`English`}
-            </Text>
-          </TouchableOpacity>
-        </View>
-
-        {/* Helper Text */}
-        <Text variant="caption" className="text-foreground-secondary mb-2">
-          {getHelperText()}
-        </Text>
-
-        {/* Search Bar */}
+        {/* Search Bar — primary interaction, no pre-decision required */}
         <View className="border-border bg-card flex-row items-center rounded-lg border px-3 py-2">
           <MagnifyingGlassIcon size={24} className="text-foreground-secondary mr-2.5" />
           <TextInput
@@ -112,6 +75,37 @@ const DictionaryScreen: React.FC = () => {
             returnKeyType="search"
           />
           {(isSearching || isFetching) && <ActivityIndicator size="small" className="ml-2" />}
+        </View>
+
+        {/* Search direction — secondary refinement below the input */}
+        <View className="mt-2 flex-row items-center gap-2">
+          <Text variant="caption" className="text-foreground-secondary">
+            {t`Search in:`}
+          </Text>
+          <TouchableOpacity
+            onPress={() => setSearchMode('kabiye')}
+            className={`rounded-full px-3 py-1 ${searchMode === 'kabiye' ? 'bg-primary' : 'border-border border bg-transparent'}`}
+          >
+            <Text
+              variant="caption"
+              weight="semibold"
+              className={searchMode === 'kabiye' ? 'text-primary-foreground' : 'text-foreground-secondary'}
+            >
+              {t`Kabiyè`}
+            </Text>
+          </TouchableOpacity>
+          <TouchableOpacity
+            onPress={() => setSearchMode('translation')}
+            className={`rounded-full px-3 py-1 ${searchMode === 'translation' ? 'bg-primary' : 'border-border border bg-transparent'}`}
+          >
+            <Text
+              variant="caption"
+              weight="semibold"
+              className={searchMode === 'translation' ? 'text-primary-foreground' : 'text-foreground-secondary'}
+            >
+              {currentLanguage === 'fr' ? t`Français` : t`English`}
+            </Text>
+          </TouchableOpacity>
         </View>
 
         {/* Quick search results dropdown */}
@@ -144,7 +138,7 @@ const DictionaryScreen: React.FC = () => {
         {/* Word of the Day */}
         <View className="mt-2.5 px-2.5">
           <View className="mb-2.5 flex-row items-center">
-            <SparkleIcon size={20} weight="duotone" className="text-secondary mr-1.5" />
+            <SparkleIcon size={20} weight="duotone" className="text-primary mr-1.5" />
             <Text variant="h5" weight="semibold" className="text-foreground">
               {t`Word of the Day`}
             </Text>

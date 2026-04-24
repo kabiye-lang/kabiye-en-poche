@@ -3,7 +3,7 @@
 
 @theme {
   /* Brand colors from design system (non-theme-specific) */
-  --color-secondary: #C8922A;
+  --color-secondary: #8B5CF6;
 
   /* New semantic tokens */
   --color-primary-light: #EDE4F7;
@@ -74,11 +74,11 @@
       /* Accent (e.g. delete/danger) */
       --color-accent: #BF3626;
 
-      /* Gold light (theme-aware) */
-      --color-gold-light: #FDF5E6;
+      /* Secondary tint (theme-aware) */
+      --color-gold-light: #F3EEFF;
 
-      /* Secondary text (dark gold for light mode) */
-      --color-secondary-text: #8B6914;
+      /* Secondary text (for light mode) */
+      --color-secondary-text: #5B3AB8;
 
       /* Difficulty badges */
       --color-difficulty-beginner-bg: #dcfce7;
@@ -128,11 +128,11 @@
       /* Accent */
       --color-accent: #E05A4A;
 
-      /* Gold light (theme-aware dark variant) */
-      --color-gold-light: rgba(200, 146, 42, 0.12);
+      /* Secondary tint (theme-aware dark variant) */
+      --color-gold-light: rgba(187, 134, 252, 0.16);
 
-      /* Secondary text (lighter gold for dark mode) */
-      --color-secondary-text: #D4A843;
+      /* Secondary text (for dark mode) */
+      --color-secondary-text: #C9B5FF;
 
       /* Difficulty badges */
       --color-difficulty-beginner-bg: rgba(22, 101, 52, 0.2);

@@ -251,7 +251,11 @@ const LessonScreen = () => {
         {audioStepContent}
 
         {currentStep.type === 'multiple_choice' || currentStep.type === 'true_false' ? (
-          <QuizStep activity={currentStep.activity} onAnswer={handleQuizAnswer} />
+          <QuizStep
+            activity={currentStep.activity}
+            onAnswer={handleQuizAnswer}
+            progressPercent={Math.round((currentStepIndex / Math.max(steps.length - 1, 1)) * 100)}
+          />
         ) : null}
 
         {currentStep.type === 'fill_blank' ? (

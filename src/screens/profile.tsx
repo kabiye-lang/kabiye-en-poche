@@ -127,7 +127,7 @@ const ProfileScreen = () => {
       <ScrollView className="px-4 pb-5">
         <ScreenTitle title={t`Profile`} />
         {/* Progress Overview */}
-        <View className="bg-card mb-8 rounded-2xl p-4">
+        <View className="bg-card mb-5 rounded-2xl p-4">
           <View className="mb-4 flex-row items-center">
             <UserIcon size={24} className="text-primary" />
             <Text variant="h5" weight="semibold" className="text-foreground ml-2">
@@ -205,7 +205,7 @@ const ProfileScreen = () => {
                       router.push(item.href as Href)
                     }
                   }}
-                  className={`min-h-20 flex-row items-center px-4 py-3 ${
+                  className={`flex-row items-center px-4 py-3 ${
                     index < listItem.items.length - 1 ? 'border-border border-b' : ''
                   }`}
                 >

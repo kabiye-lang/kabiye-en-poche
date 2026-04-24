@@ -17,6 +17,9 @@ import {
 } from '@/components/icons'
 import { Button, ScreenTitle, Text, View } from '@/components/ui'
 
+// Characters unique to Kabiyè (IPA-derived letters not in standard Latin)
+const KABIYE_SPECIFIC = new Set(['ɖ', 'ɛ', 'ɣ', 'ɩ', 'ŋ', 'ɔ', 'ʋ', 'ñ'])
+
 // Static alphabet list for keyboard (no database calls needed)
 const ALPHABET_LIST = [
   { id: 'a', caps: 'A' },
@@ -121,16 +124,21 @@ export default function KeyboardScreen() {
   const buttonWidth = (Dimensions.get('screen').width - 10) / 11 - 4
 
   const renderButton = (letter: { id: string; caps: string }) => {
+    const isKabiye = KABIYE_SPECIFIC.has(letter.id)
     return (
       <Button
         key={letter.id}
         variant="ghost"
         size="sm"
-        className="bg-card rounded-md !px-0 !py-0"
+        className={`rounded-md !px-0 !py-0 ${isKabiye ? 'bg-primary/15' : 'bg-card'}`}
         style={{ width: buttonWidth, minWidth: buttonWidth, height: 35 }}
         onPress={() => changeText(letter)}
       >
-        <Text variant="lg" weight="regular" className="font-fig-light text-foreground text-base">
+        <Text
+          variant="lg"
+          weight="regular"
+          className={`font-fig-light text-base ${isKabiye ? 'text-primary' : 'text-foreground'}`}
+        >
           {capsLock > 0 ? letter.caps : letter.id}
         </Text>
       </Button>

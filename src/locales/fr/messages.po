@@ -44,6 +44,10 @@ msgstr "Académie Kabiyè"
 msgid "Advanced"
 msgstr "Avancé"
 
+#: src/components/lesson-steps/quiz-step.tsx
+msgid "Almost done — you're doing great!"
+msgstr "Presque fini — vous êtes fantastique !"
+
 #: src/screens/profile.tsx
 msgid "App Language"
 msgstr "Langue de l'application"
@@ -64,6 +68,10 @@ msgstr "Mots disponibles :"
 msgid "Back to Learn"
 msgstr "Retour à l'apprentissage"
 
+#: src/components/lesson-steps/completion-step.tsx
+msgid "Back to Lessons"
+msgstr "Retour aux leçons"
+
 #: src/utils/difficulty.ts
 msgid "Beginner"
 msgstr "Débutant"
@@ -76,6 +84,10 @@ msgstr "Parcourir par lettre"
 #: src/screens/profile.tsx
 msgid "Cancel"
 msgstr "Annuler"
+
+#: src/components/lesson-steps/order-words-step.tsx
+msgid "Check"
+msgstr "Vérifier"
 
 #: src/screens/dictionary/search.tsx
 msgid "Check the spelling or try a different Kabiyè word. Remember, Kabiyè uses special characters like ɖ, ɛ, ɣ, ɩ, ŋ, ɔ, ʋ."
@@ -114,7 +126,6 @@ msgid "Consonant"
 msgstr "Consonne"
 
 #: src/components/lesson-steps/audio-step.tsx
-#: src/components/lesson-steps/completion-step.tsx
 #: src/components/lesson-steps/content-step.tsx
 #: src/components/lesson-steps/fill-blank-step.tsx
 #: src/components/lesson-steps/listen-choose-step.tsx
@@ -196,6 +207,10 @@ msgstr "Erreur lors du chargement des entrées"
 msgid "Error loading results"
 msgstr "Erreur lors du chargement des résultats"
 
+#: src/components/lesson-steps/quiz-step.tsx
+msgid "Every expert was once a beginner!"
+msgstr "Tout expert a un jour été débutant !"
+
 #: src/components/lesson-steps/content-step.tsx
 msgid "Examples"
 msgstr "Exemples"
@@ -272,6 +287,10 @@ msgstr "Excellent travail !"
 #: src/screens/lesson.tsx
 msgid "Great job! You've completed this lesson."
 msgstr "Excellent travail ! Vous avez terminé cette leçon."
+
+#: src/components/lesson-steps/quiz-step.tsx
+msgid "Halfway there — keep going!"
+msgstr "À mi-chemin — continuez !"
 
 #: src/components/lesson-steps/listen-type-step.tsx
 msgid "Hide hints"
@@ -529,6 +548,10 @@ msgstr "Aucun mot disponible aujourd'hui"
 msgid "No words start with this letter"
 msgstr "Aucun mot ne commence par cette lettre"
 
+#: src/components/lesson-steps/order-words-step.tsx
+msgid "Not quite — tap Reset and try again"
+msgstr "Pas tout à fait — appuyez sur Réinitialiser et réessayez"
+
 #: src/components/lesson-steps/listen-choose-step.tsx
 #: src/components/lesson-steps/quiz-step.tsx
 msgid "Not quite right"
@@ -538,10 +561,6 @@ msgstr "Pas tout à fait correct"
 #: src/components/lesson-steps/listen-type-step.tsx
 msgid "Not quite right ✗"
 msgstr "Pas tout à fait correct ✗"
-
-#: src/components/lesson-steps/order-words-step.tsx
-msgid "Not quite right. Try again!"
-msgstr "Pas tout à fait. Réessayez !"
 
 #: src/screens/profile.tsx
 msgid "Official Kabiyè Academy website"
@@ -655,6 +674,10 @@ msgid "Search in French to find matching Kabiyè words"
 msgstr "Rechercher en français pour trouver des mots Kabiyè correspondants"
 
 #: src/screens/dictionary/dictionary.tsx
+msgid "Search in:"
+msgstr "Rechercher dans :"
+
+#: src/screens/dictionary/dictionary.tsx
 msgid "Search Kabiyè words..."
 msgstr "Rechercher des mots Kabiyè..."
 
@@ -723,6 +746,10 @@ msgstr "Succès"
 #: src/screens/profile.tsx
 msgid "Support"
 msgstr "Support"
+
+#: src/components/lesson-steps/quiz-step.tsx
+msgid "Take your time and think it through."
+msgstr "Prenez votre temps et réfléchissez bien."
 
 #: src/components/lesson-steps/match-pairs-step.tsx
 msgid "Tap pairs to match them"

@@ -40,14 +40,14 @@ const OnboardingScreen = () => {
       emoji: '📖',
       titleKey: t`Your Personal Dictionary`,
       descriptionKey: t`Look up any Kabiyè word instantly. Browse by letter, search in French or English, and discover the Word of the Day.`,
-      accentColors: ['#C8922A', '#D4A843'],
+      accentColors: ['#8B5CF6', '#BB86FC'],
     },
     {
       id: '3',
       emoji: '⌨️',
       titleKey: t`Type in Kabiyè`,
       descriptionKey: t`Use the built-in Kabiyè keyboard to type special characters. Copy text and share it anywhere.`,
-      accentColors: ['#6200EE', '#C8922A'],
+      accentColors: ['#6200EE', '#8B5CF6'],
     },
   ]
 
@@ -84,7 +84,7 @@ const OnboardingScreen = () => {
               transition={{ type: 'timing', duration: 2200, easing: 'easeInOut', loop: 'reverse' }}
             >
               <View className="bg-primary/10 rounded-[28px] p-10">
-                <Text variant="h1" weight="bold" className="text-foreground text-center">
+                <Text variant="h1" weight="bold" className="text-foreground text-center leading-loose">
                   {item.emoji}
                 </Text>
               </View>

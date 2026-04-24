@@ -131,7 +131,7 @@ const ContentStep = ({
                     </View>
                     {hasAudio && (
                       <View className="ml-3">
-                        <SpeakerHighIcon size={24} weight="fill" color="#059669" />
+                        <SpeakerHighIcon size={24} weight="fill" className="text-primary" />
                       </View>
                     )}
                   </Card>
