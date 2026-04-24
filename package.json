@@ -22,11 +22,12 @@
     "bundle:analyze": "EXPO_ATLAS=true npx expo start --clear --no-dev",
     "pretestflight": "npm run i18n:extract",
     "testflight": "npx testflight",
-    "i18n:extract": "lingui extract",
+    "i18n:extract": "lingui extract --clean",
     "//not used, we use po files with metro bundler: i18n:compile": "lingui compile",
     "//not used, we use po files with metro bundler: i18n:extract-compile": "lingui extract && lingui compile",
     "test": "jest",
-    "test:watch": "jest --watch"
+    "test:watch": "jest --watch",
+    "debug-output": "eas build:inspect --platform android --stage archive --output ./debug-output"
   },
   "dependencies": {
     "@babel/plugin-transform-export-namespace-from": "^7.27.1",
