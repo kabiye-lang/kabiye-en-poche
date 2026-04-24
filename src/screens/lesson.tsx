@@ -3,6 +3,7 @@ import type { ActivityStep, LessonStep } from '@/types/lesson-steps'
 
 import { useEffect, useState } from 'react'
 import { ActivityIndicator } from 'react-native'
+import Animated, { FadeIn, FadeInRight } from 'react-native-reanimated'
 
 import { router, useLocalSearchParams } from 'expo-router'
 
@@ -229,14 +230,20 @@ const LessonScreen = () => {
       s.type === 'true_false'
   ).length
 
+  const totalContentSteps = steps.filter((s) => s.type === 'content').length
+
   // Render current step
   return (
     <View className="bg-background flex-1">
       {/* Progress Bar */}
       <ProgressBar currentStep={currentStepIndex + 1} totalSteps={steps.length} />
 
-      {/* Step Content */}
-      <View className="flex-1">
+      {/* Step Content — keyed so each new step triggers the entering animation */}
+      <Animated.View
+        key={currentStep.id}
+        entering={currentStep.type === 'completion' ? FadeIn.duration(220) : FadeInRight.duration(260)}
+        className="flex-1"
+      >
         {currentStep.type === 'content' ? (
           <ContentStep
             lessonTitle={getValue(lesson, 'title') || undefined}
@@ -279,9 +286,14 @@ const LessonScreen = () => {
         )}
 
         {currentStep.type === 'completion' ? (
-          <CompletionStep score={score} totalQuestions={totalQuizQuestions} onComplete={handleLessonComplete} />
+          <CompletionStep
+            score={score}
+            totalQuestions={totalQuizQuestions}
+            contentSteps={totalContentSteps}
+            onComplete={handleLessonComplete}
+          />
         ) : null}
-      </View>
+      </Animated.View>
     </View>
   )
 }

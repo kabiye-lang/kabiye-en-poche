@@ -1,4 +1,5 @@
 import { TouchableOpacity } from 'react-native'
+import Animated, { FadeInUp, ZoomIn } from 'react-native-reanimated'
 
 import { router } from 'expo-router'
 
@@ -10,10 +11,11 @@ import { Button, Card, Text, View } from '@/components/ui'
 interface CompletionStepProps {
   score?: number
   totalQuestions?: number
+  contentSteps?: number
   onComplete: () => void
 }
 
-const CompletionStep = ({ score = 0, totalQuestions = 0, onComplete }: CompletionStepProps) => {
+const CompletionStep = ({ score = 0, totalQuestions = 0, contentSteps = 0, onComplete }: CompletionStepProps) => {
   const { t } = useLingui()
 
   const percentage = totalQuestions > 0 ? Math.round((score / totalQuestions) * 100) : 100
@@ -29,50 +31,57 @@ const CompletionStep = ({ score = 0, totalQuestions = 0, onComplete }: Completio
   }
 
   const getColor = () => {
-    if (isPerfect) return 'text-yellow-500'
-    if (isGood) return 'text-green-500'
-    if (isPass) return 'text-blue-500'
-    return 'text-orange-500'
+    if (isPerfect) return 'text-hint'
+    if (isGood) return 'text-success-text'
+    if (isPass) return 'text-primary'
+    return 'text-accent'
   }
 
   return (
     <View className="flex-1 items-center justify-center px-6">
       {/* Success Icon */}
-      <View className="mb-6 items-center">
+      <Animated.View entering={ZoomIn.duration(320)} className="mb-6 items-center">
         <View className="bg-success-bg h-32 w-32 items-center justify-center rounded-full">
-          <CheckCircleIcon size={80} weight="fill" className="text-green-500" />
+          <CheckCircleIcon size={80} weight="fill" className="text-success-text" />
         </View>
-      </View>
+      </Animated.View>
 
-      {/* Title */}
-      <Text variant="h1" weight="bold" className="text-primary mb-2 text-center">
-        {t`Lesson Complete!`}
-      </Text>
-
-      {/* Message */}
-      <Text variant="h4" weight="semibold" className={`mb-8 text-center ${getColor()}`}>
-        {getMessage()}
-      </Text>
+      {/* Title + Message */}
+      <Animated.View entering={FadeInUp.duration(280).delay(200)} className="items-center">
+        <Text variant="h1" weight="bold" className="text-primary mb-2 text-center">
+          {t`Lesson Complete!`}
+        </Text>
+        <Text variant="h4" weight="semibold" className={`mb-8 text-center ${getColor()}`}>
+          {getMessage()}
+        </Text>
+      </Animated.View>
 
       {/* Score Card */}
-      {totalQuestions > 0 && (
-        <Card className="mb-8 w-full p-6">
-          <View className="items-center">
-            <Text variant="caption" className="text-foreground-secondary mb-2">
-              {t`Your Score`}
-            </Text>
-            <Text variant="h1" weight="bold" className={getColor()}>
-              {percentage}%
-            </Text>
-            <Text variant="caption" className="text-foreground-secondary mt-2">
-              {score} {t`out of`} {totalQuestions} {t`correct`}
-            </Text>
-          </View>
-        </Card>
-      )}
+      <Animated.View entering={FadeInUp.duration(280).delay(360)} className="w-full">
+        {totalQuestions > 0 && (
+          <Card className="mb-8 w-full p-6">
+            <View className="items-center">
+              <Text variant="caption" className="text-foreground-secondary mb-2">
+                {t`Your Score`}
+              </Text>
+              <Text variant="h1" weight="bold" className={getColor()}>
+                {percentage}%
+              </Text>
+              <Text variant="caption" className="text-foreground-secondary mt-2">
+                {score} {t`out of`} {totalQuestions} {t`correct`}
+              </Text>
+              {contentSteps > 0 && (
+                <Text variant="caption" className="text-foreground-secondary mt-1">
+                  {contentSteps} {contentSteps === 1 ? t`reading slide` : t`reading slides`}
+                </Text>
+              )}
+            </View>
+          </Card>
+        )}
+      </Animated.View>
 
       {/* Action Buttons */}
-      <View className="w-full gap-3">
+      <Animated.View entering={FadeInUp.duration(280).delay(480)} className="w-full gap-3">
         <Button variant="primary" onPress={onComplete} className="w-full">
           <Text variant="body" weight="bold" className="text-white">
             {t`Back to Lessons`}
@@ -87,7 +96,7 @@ const CompletionStep = ({ score = 0, totalQuestions = 0, onComplete }: Completio
             </Text>
           </View>
         </TouchableOpacity>
-      </View>
+      </Animated.View>
     </View>
   )
 }

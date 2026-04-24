@@ -502,6 +502,10 @@ msgstr "Loading unit..."
 msgid "Loading..."
 msgstr "Loading..."
 
+#: src/screens/learn.tsx
+msgid "Locked"
+msgstr "Locked"
+
 #: src/app/(onboarding)/index.tsx
 msgid "Look up any Kabiyè word instantly. Browse by letter, search in French or English, and discover the Word of the Day."
 msgstr "Look up any Kabiyè word instantly. Browse by letter, search in French or English, and discover the Word of the Day."
@@ -643,6 +647,14 @@ msgstr "Progress Overview"
 #: src/components/lesson-steps/order-words-step.tsx
 msgid "Put the words in the correct order"
 msgstr "Put the words in the correct order"
+
+#: src/components/lesson-steps/completion-step.tsx
+msgid "reading slide"
+msgstr "reading slide"
+
+#: src/components/lesson-steps/completion-step.tsx
+msgid "reading slides"
+msgstr "reading slides"
 
 #: src/components/word/word-sections.tsx
 msgid "Related Expressions"

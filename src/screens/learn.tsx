@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import { ActivityIndicator, ScrollView, TouchableOpacity } from 'react-native'
+import Animated, { FadeInDown } from 'react-native-reanimated'
 
 import { Link } from 'expo-router'
 
@@ -100,7 +101,11 @@ const UnitCard = ({ unit, isExpanded, onToggle }: UnitCardProps) => {
 
   if (!isAvailable) {
     return (
-      <View className="border-border mb-4 overflow-hidden rounded-2xl border border-dashed">
+      <View
+        className="border-border mb-4 overflow-hidden rounded-2xl border border-dashed"
+        accessibilityState={{ disabled: true }}
+        accessibilityLabel={`${unitTitle}, ${isComingSoon ? t`Coming Soon` : isMaintenance ? t`Under Maintenance` : t`Temporarily Unavailable`}`}
+      >
         <View className="bg-card/60 p-4">
           <View className="flex-row items-center justify-between">
             <View className="flex-1">
@@ -175,8 +180,8 @@ const UnitCard = ({ unit, isExpanded, onToggle }: UnitCardProps) => {
             </View>
           ) : lessons && lessons.length > 0 ? (
             <View className="space-y-2">
-              {lessons.map((lesson) => (
-                <LessonItem key={lesson.id} lesson={lesson} />
+              {lessons.map((lesson, index) => (
+                <LessonItem key={lesson.id} lesson={lesson} index={index} />
               ))}
             </View>
           ) : (
@@ -200,9 +205,10 @@ interface LessonItemProps {
     is_completed: boolean
     is_locked: boolean
   }
+  index?: number
 }
 
-const LessonItem = ({ lesson }: LessonItemProps) => {
+const LessonItem = ({ lesson, index = 0 }: LessonItemProps) => {
   const { t } = useLingui()
   const { getValue } = useLanguage()
 
@@ -216,65 +222,50 @@ const LessonItem = ({ lesson }: LessonItemProps) => {
 
   if (!isAvailable) {
     return (
-      <View className="border-border flex-row items-center rounded-lg border border-dashed p-3">
-        <LockIcon size={16} className="text-foreground-secondary" />
-        <View className="ml-3 flex-1">
-          <Text variant="body" className="text-foreground-secondary mb-1">
-            {lessonTitle}
-          </Text>
-          <View className="bg-secondary/15 self-start rounded-full px-2 py-0.5">
-            <Text variant="caption" weight="medium" className="text-secondary-text">
-              {isComingSoon && t`Coming Soon`}
-              {isMaintenance && t`Under Maintenance`}
-              {isDisabled && t`Temporarily Unavailable`}
+      <Animated.View entering={FadeInDown.duration(200).delay(index * 60)}>
+        <View
+          className="border-border flex-row items-center rounded-lg border border-dashed p-3"
+          accessibilityState={{ disabled: true }}
+          accessibilityLabel={`${lessonTitle}, ${isComingSoon ? t`Coming Soon` : isMaintenance ? t`Under Maintenance` : t`Temporarily Unavailable`}`}
+        >
+          <LockIcon size={16} className="text-foreground-secondary" />
+          <View className="ml-3 flex-1">
+            <Text variant="body" className="text-foreground-secondary mb-1">
+              {lessonTitle}
+            </Text>
+            <View className="bg-secondary/15 self-start rounded-full px-2 py-0.5">
+              <Text variant="caption" weight="medium" className="text-secondary-text">
+                {isComingSoon && t`Coming Soon`}
+                {isMaintenance && t`Under Maintenance`}
+                {isDisabled && t`Temporarily Unavailable`}
+              </Text>
+            </View>
+          </View>
+          <View className="rounded px-2 py-1" style={{ backgroundColor: difficultyColor + '20' }}>
+            <Text variant="caption" style={{ color: difficultyColor }}>
+              {difficultyLabel}
             </Text>
           </View>
         </View>
-        <View className="rounded px-2 py-1" style={{ backgroundColor: difficultyColor + '20' }}>
-          <Text variant="caption" style={{ color: difficultyColor }}>
-            {difficultyLabel}
-          </Text>
-        </View>
-      </View>
+      </Animated.View>
     )
   }
 
   if (lesson.is_locked) {
     return (
-      <View className="bg-background-tertiary flex-row items-center rounded-lg p-3 opacity-50">
-        <LockIcon size={20} className="text-foreground-secondary" />
-        <View className="ml-3 flex-1">
-          <Text variant="body" className="text-foreground-secondary mb-1">
-            {lessonTitle}
-          </Text>
-          <Text variant="caption" className="text-foreground-secondary">
-            {t`Complete previous lesson to unlock`}
-          </Text>
-        </View>
-        <View className="rounded px-2 py-1" style={{ backgroundColor: difficultyColor + '20' }}>
-          <Text variant="caption" style={{ color: difficultyColor }}>
-            {difficultyLabel}
-          </Text>
-        </View>
-      </View>
-    )
-  }
-
-  return (
-    <Link href={`/lesson/${lesson.id}`} asChild>
-      <TouchableOpacity>
-        <View className="bg-card flex-row items-center rounded-lg p-3">
-          {lesson.is_completed ? (
-            <CheckCircleIcon size={20} className="text-success" />
-          ) : (
-            <View className="border-primary h-5 w-5 rounded-full border-2" />
-          )}
+      <Animated.View entering={FadeInDown.duration(200).delay(index * 60)}>
+        <View
+          className="bg-background-tertiary flex-row items-center rounded-lg p-3 opacity-50"
+          accessibilityState={{ disabled: true }}
+          accessibilityLabel={`${lessonTitle}, ${t`Locked`}`}
+        >
+          <LockIcon size={20} className="text-foreground-secondary" />
           <View className="ml-3 flex-1">
-            <Text variant="body" weight={lesson.is_completed ? 'medium' : 'regular'} className="text-foreground mb-1">
+            <Text variant="body" className="text-foreground-secondary mb-1">
               {lessonTitle}
             </Text>
             <Text variant="caption" className="text-foreground-secondary">
-              {lesson.is_completed ? t`Completed` : t`Tap to start`}
+              {t`Complete previous lesson to unlock`}
             </Text>
           </View>
           <View className="rounded px-2 py-1" style={{ backgroundColor: difficultyColor + '20' }}>
@@ -283,8 +274,37 @@ const LessonItem = ({ lesson }: LessonItemProps) => {
             </Text>
           </View>
         </View>
-      </TouchableOpacity>
-    </Link>
+      </Animated.View>
+    )
+  }
+
+  return (
+    <Animated.View entering={FadeInDown.duration(200).delay(index * 60)}>
+      <Link href={`/lesson/${lesson.id}`} asChild>
+        <TouchableOpacity>
+          <View className="bg-card flex-row items-center rounded-lg p-3">
+            {lesson.is_completed ? (
+              <CheckCircleIcon size={20} className="text-success" />
+            ) : (
+              <View className="border-primary h-5 w-5 rounded-full border-2" />
+            )}
+            <View className="ml-3 flex-1">
+              <Text variant="body" weight={lesson.is_completed ? 'medium' : 'regular'} className="text-foreground mb-1">
+                {lessonTitle}
+              </Text>
+              <Text variant="caption" className="text-foreground-secondary">
+                {lesson.is_completed ? t`Completed` : t`Tap to start`}
+              </Text>
+            </View>
+            <View className="rounded px-2 py-1" style={{ backgroundColor: difficultyColor + '20' }}>
+              <Text variant="caption" style={{ color: difficultyColor }}>
+                {difficultyLabel}
+              </Text>
+            </View>
+          </View>
+        </TouchableOpacity>
+      </Link>
+    </Animated.View>
   )
 }
 

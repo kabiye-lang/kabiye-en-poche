@@ -3,6 +3,7 @@ import type { LessonActivity } from '@/types/supabase'
 
 import { useEffect, useState } from 'react'
 import { ScrollView, TouchableOpacity } from 'react-native'
+import Animated, { FadeIn, FadeInDown } from 'react-native-reanimated'
 
 import { useLingui } from '@lingui/react/macro'
 
@@ -85,16 +86,17 @@ const OrderWordsStep = ({ activity, onAnswer }: OrderWordsStepProps) => {
               </Text>
             ) : (
               orderedWords.map((word, index) => (
-                <TouchableOpacity
-                  key={`ordered-${index}`}
-                  onPress={() => !showFeedback && handleRemoveWord(word, index)}
-                  disabled={showFeedback}
-                  className="border-primary bg-primary/10 rounded-lg border-2 px-4 py-2"
-                >
-                  <Text variant="body" weight="bold" className="text-primary">
-                    {word}
-                  </Text>
-                </TouchableOpacity>
+                <Animated.View key={`ordered-${index}`} entering={FadeIn.duration(160)}>
+                  <TouchableOpacity
+                    onPress={() => !showFeedback && handleRemoveWord(word, index)}
+                    disabled={showFeedback}
+                    className="border-primary bg-primary/10 rounded-lg border-2 px-4 py-2"
+                  >
+                    <Text variant="body" weight="bold" className="text-primary">
+                      {word}
+                    </Text>
+                  </TouchableOpacity>
+                </Animated.View>
               ))
             )}
           </View>
@@ -135,20 +137,22 @@ const OrderWordsStep = ({ activity, onAnswer }: OrderWordsStepProps) => {
 
         {/* Feedback */}
         {showFeedback && (
-          <Card className={`mb-4 p-4 ${isCorrect ? 'bg-success-bg' : 'bg-error-bg'}`}>
-            <Text
-              variant="h6"
-              weight="bold"
-              className={`text-center ${isCorrect ? 'text-success-text' : 'text-error-text'}`}
-            >
-              {isCorrect ? t`Perfect! Correct order!` : t`Not quite — tap Reset and try again`}
-            </Text>
-            {!isCorrect && (
-              <Text variant="body" className="text-foreground mt-2 text-center">
-                {t`Correct order:`} {correctOrder.join(' ')}
+          <Animated.View entering={FadeInDown.duration(220)}>
+            <Card className={`mb-4 p-4 ${isCorrect ? 'bg-success-bg' : 'bg-error-bg'}`}>
+              <Text
+                variant="h6"
+                weight="bold"
+                className={`text-center ${isCorrect ? 'text-success-text' : 'text-error-text'}`}
+              >
+                {isCorrect ? t`Perfect! Correct order!` : t`Not quite — tap Reset and try again`}
               </Text>
-            )}
-          </Card>
+              {!isCorrect && (
+                <Text variant="body" className="text-foreground mt-2 text-center">
+                  {t`Correct order:`} {correctOrder.join(' ')}
+                </Text>
+              )}
+            </Card>
+          </Animated.View>
         )}
 
         <View className="h-24" />

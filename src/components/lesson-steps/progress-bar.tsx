@@ -1,4 +1,6 @@
+import { useEffect, useState } from 'react'
 import { TouchableOpacity } from 'react-native'
+import Animated, { Easing, ReduceMotion, useAnimatedStyle, useSharedValue, withTiming } from 'react-native-reanimated'
 import { useSafeAreaInsets } from 'react-native-safe-area-context'
 
 import { router } from 'expo-router'
@@ -15,6 +17,21 @@ interface ProgressBarProps {
 const ProgressBar = ({ currentStep, totalSteps, onClose }: ProgressBarProps) => {
   const insets = useSafeAreaInsets()
   const progress = (currentStep / totalSteps) * 100
+
+  const [trackWidth, setTrackWidth] = useState(0)
+  const fillWidth = useSharedValue(0)
+
+  useEffect(() => {
+    if (trackWidth > 0) {
+      fillWidth.value = withTiming((progress / 100) * trackWidth, {
+        duration: 400,
+        easing: Easing.out(Easing.quad),
+        reduceMotion: ReduceMotion.System,
+      })
+    }
+  }, [progress, trackWidth])
+
+  const fillStyle = useAnimatedStyle(() => ({ width: fillWidth.value }))
 
   const handleClose = () => {
     if (onClose) {
@@ -34,11 +51,11 @@ const ProgressBar = ({ currentStep, totalSteps, onClose }: ProgressBarProps) => 
 
         {/* Progress Bar */}
         <View className="flex-1">
-          <View className="bg-progress-track h-3 overflow-hidden rounded-full">
-            <View
-              className="bg-primary h-full rounded-full transition-all duration-300"
-              style={{ width: `${progress}%` }}
-            />
+          <View
+            className="bg-progress-track h-3 overflow-hidden rounded-full"
+            onLayout={(e) => setTrackWidth(e.nativeEvent.layout.width)}
+          >
+            <Animated.View className="bg-primary h-full rounded-full" style={fillStyle} />
           </View>
         </View>
 

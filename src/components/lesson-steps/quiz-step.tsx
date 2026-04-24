@@ -3,6 +3,7 @@ import type { LessonActivity } from '@/types/supabase'
 
 import { useEffect, useState } from 'react'
 import { ScrollView, TouchableOpacity } from 'react-native'
+import Animated, { FadeIn, FadeInDown } from 'react-native-reanimated'
 
 import { useLingui } from '@lingui/react/macro'
 
@@ -142,7 +143,7 @@ const QuizStep = ({ activity, onAnswer, progressPercent = 0 }: QuizStepProps) =>
 
         {/* Motivational card – fills the void on T/F and short MCQ screens */}
         {!showFeedback && (
-          <View className="mt-4 mb-2">
+          <Animated.View entering={FadeIn.duration(350)} className="mt-4 mb-2">
             <View className="bg-primary/5 flex-row items-center gap-4 rounded-2xl px-5 py-4">
               <SparkleIcon size={28} weight="fill" className="text-primary" />
               <View className="flex-1">
@@ -158,37 +159,39 @@ const QuizStep = ({ activity, onAnswer, progressPercent = 0 }: QuizStepProps) =>
                 </Text>
               </View>
             </View>
-          </View>
+          </Animated.View>
         )}
 
         {/* Feedback */}
         {showFeedback && selectedIndex !== null && (
-          <Card
-            className={`mb-4 p-4 ${
-              (isTrueFalse ? TRUE_FALSE_VALUES[selectedIndex] : options[selectedIndex]) === correctAnswer
-                ? 'bg-success-bg'
-                : 'bg-error-bg'
-            }`}
-          >
-            <Text
-              variant="h6"
-              weight="bold"
-              className={`mb-2 ${
+          <Animated.View entering={FadeInDown.duration(220)}>
+            <Card
+              className={`mb-4 p-4 ${
                 (isTrueFalse ? TRUE_FALSE_VALUES[selectedIndex] : options[selectedIndex]) === correctAnswer
-                  ? 'text-success-text'
-                  : 'text-error-text'
+                  ? 'bg-success-bg'
+                  : 'bg-error-bg'
               }`}
             >
-              {(isTrueFalse ? TRUE_FALSE_VALUES[selectedIndex] : options[selectedIndex]) === correctAnswer
-                ? t`Correct!`
-                : t`Not quite right`}
-            </Text>
-            {explanation && (
-              <Text variant="body" className="text-foreground">
-                {explanation}
+              <Text
+                variant="h6"
+                weight="bold"
+                className={`mb-2 ${
+                  (isTrueFalse ? TRUE_FALSE_VALUES[selectedIndex] : options[selectedIndex]) === correctAnswer
+                    ? 'text-success-text'
+                    : 'text-error-text'
+                }`}
+              >
+                {(isTrueFalse ? TRUE_FALSE_VALUES[selectedIndex] : options[selectedIndex]) === correctAnswer
+                  ? t`Correct!`
+                  : t`Not quite right`}
               </Text>
-            )}
-          </Card>
+              {explanation && (
+                <Text variant="body" className="text-foreground">
+                  {explanation}
+                </Text>
+              )}
+            </Card>
+          </Animated.View>
         )}
 
         <View className="h-24" />
