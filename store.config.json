@@ -1,0 +1,10 @@
+{
+  "configVersion": 0,
+  "apple": {
+    "version": "1.0",
+    "copyright": "",
+    "release": {
+      "automaticRelease": true
+    }
+  }
+}

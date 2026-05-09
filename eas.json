@@ -20,6 +20,10 @@
     }
   },
   "submit": {
-    "production": {}
+    "production": {
+      "ios": {
+        "metadataPath": "./store.config.js"
+      }
+    }
   }
 }

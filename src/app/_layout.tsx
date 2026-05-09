@@ -122,7 +122,9 @@ export default function RootLayout() {
   useEffect(() => {
     if (ready) {
       SplashScreen.hideAsync()
-      if (hasSeenOnboarding === false) {
+      if (hasSeenOnboarding) {
+        router.replace('/(tabs)')
+      } else {
         router.replace('/(onboarding)')
       }
     }
