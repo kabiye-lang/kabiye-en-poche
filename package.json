@@ -95,6 +95,7 @@
     "@lingui/babel-plugin-transform-react": "^2.9.2",
     "@lingui/metro-transformer": "^6.0.0",
     "@react-native/eslint-config": "^0.85.2",
+    "@react-native/jest-preset": "^0.85.3",
     "@testing-library/jest-native": "^5.4.3",
     "@testing-library/react-native": "^13.3.3",
     "@types/jest": "29.5.14",
@@ -121,18 +122,6 @@
   },
   "overrides": {
     "hermes-compiler": "250829098.0.4"
-  },
-  "jest": {
-    "preset": "jest-expo",
-    "setupFiles": [
-      "./jest.setup.js"
-    ],
-    "transformIgnorePatterns": [
-      "node_modules/(?!((jest-)?react-native|@react-native(-community)?)|expo(nent)?|@expo(nent)?/.*|@expo-google-fonts/.*|react-navigation|@react-navigation/.*|@sentry/react-native|native-base|react-native-svg|phosphor-react-native|sonner-native|uniwind|tailwind-variants|tailwind-merge)"
-    ],
-    "moduleNameMapper": {
-      "^@/(.*)$": "<rootDir>/src/$1"
-    }
   },
   "engines": {
     "node": ">=22.19.0"
