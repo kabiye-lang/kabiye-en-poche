@@ -20,7 +20,9 @@ export default function TabLayout() {
         name="(home)"
         options={{
           title: t`Home`,
-          tabBarIcon: ({ color, focused }) => <LightbulbIcon color={color} weight={focused ? 'fill' : 'regular'} />,
+          tabBarIcon: ({ color, focused }) => (
+            <LightbulbIcon color={color as string} weight={focused ? 'fill' : 'regular'} />
+          ),
           href: '/',
           // headerRight: () => (
           //   <Link href="/modal" asChild>
@@ -42,7 +44,9 @@ export default function TabLayout() {
         name="learn"
         options={{
           title: t`Learn`,
-          tabBarIcon: ({ color, focused }) => <BookOpenTextIcon color={color} weight={focused ? 'fill' : 'regular'} />,
+          tabBarIcon: ({ color, focused }) => (
+            <BookOpenTextIcon color={color as string} weight={focused ? 'fill' : 'regular'} />
+          ),
         }}
       />
       <Tabs.Screen
@@ -50,21 +54,27 @@ export default function TabLayout() {
         options={{
           href: '/dictionary',
           title: t`Dictionary`,
-          tabBarIcon: ({ color, focused }) => <ArticleIcon color={color} weight={focused ? 'fill' : 'regular'} />,
+          tabBarIcon: ({ color, focused }) => (
+            <ArticleIcon color={color as string} weight={focused ? 'fill' : 'regular'} />
+          ),
         }}
       />
       <Tabs.Screen
         name="keyboard"
         options={{
           title: t`Keyboard`,
-          tabBarIcon: ({ color, focused }) => <KeyboardIcon color={color} weight={focused ? 'fill' : 'regular'} />,
+          tabBarIcon: ({ color, focused }) => (
+            <KeyboardIcon color={color as string} weight={focused ? 'fill' : 'regular'} />
+          ),
         }}
       />
       <Tabs.Screen
         name="profile"
         options={{
           title: t`Profile`,
-          tabBarIcon: ({ color, focused }) => <UserIcon color={color} weight={focused ? 'fill' : 'regular'} />,
+          tabBarIcon: ({ color, focused }) => (
+            <UserIcon color={color as string} weight={focused ? 'fill' : 'regular'} />
+          ),
         }}
       />
     </Tabs>

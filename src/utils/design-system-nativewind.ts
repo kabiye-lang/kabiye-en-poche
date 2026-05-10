@@ -1,9 +1,9 @@
-import type { BottomTabNavigationOptions } from '@react-navigation/bottom-tabs'
-import type { Theme } from '@react-navigation/native'
+// @ts-expect-error TODO: Expo router 56 migration, remove this when the types are updated
+import type { BottomTabNavigationOptions } from 'expo-router/js-tabs'
+import type { Theme } from 'expo-router/react-navigation'
 
+import { DarkTheme, DefaultTheme } from 'expo-router/react-navigation'
 import { StatusBarStyle } from 'expo-status-bar'
-
-import { DarkTheme, DefaultTheme } from '@react-navigation/native'
 
 import { Appearance } from './types'
 

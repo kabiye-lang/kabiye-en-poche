@@ -2,9 +2,9 @@ import React from 'react'
 import { ActivityIndicator, Alert, ScrollView, TouchableOpacity } from 'react-native'
 
 import { Link, useLocalSearchParams } from 'expo-router'
+import { useHeaderHeight } from 'expo-router/react-navigation'
 
 import { useLingui } from '@lingui/react/macro'
-import { useHeaderHeight } from '@react-navigation/elements'
 
 import { ArrowRightIcon, InfoIcon } from '@/components/icons'
 import { Card, Text, View } from '@/components/ui'

@@ -4,8 +4,8 @@ const fs = require('fs')
 const ncuCfg = require('./.ncurc.json')
 const pkg = require('./package.json')
 
-// SDK-55
-const url = 'https://raw.githubusercontent.com/expo/expo/sdk-55/packages/expo/bundledNativeModules.json'
+// SDK-56
+const url = 'https://raw.githubusercontent.com/expo/expo/sdk-56/packages/expo/bundledNativeModules.json'
 
 const req = https.get(url, function (res) {
   let data = '',

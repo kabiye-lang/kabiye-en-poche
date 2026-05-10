@@ -2,9 +2,9 @@ import React from 'react'
 import { ActivityIndicator, FlatList, TouchableOpacity } from 'react-native'
 
 import { Link, useLocalSearchParams } from 'expo-router'
+import { useHeaderHeight } from 'expo-router/react-navigation'
 
 import { useLingui } from '@lingui/react/macro'
-import { useHeaderHeight } from '@react-navigation/elements'
 
 import { Card, Text, View } from '@/components/ui'
 import { useEntriesByLetter } from '@/hooks/use-dictionary'

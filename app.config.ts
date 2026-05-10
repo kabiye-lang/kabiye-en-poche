@@ -54,8 +54,6 @@ export default ({ config }: ConfigContext): ExpoConfig => ({
     [
       'expo-build-properties',
       {
-        buildReactNativeFromSource: true,
-        useHermesV1: true,
         ios: {
           useFrameworks: 'static',
           /**
@@ -102,7 +100,6 @@ export default ({ config }: ConfigContext): ExpoConfig => ({
     'expo-web-browser',
     'expo-audio',
     'expo-secure-store',
-    './fmtfix.js',
   ],
   experiments: {
     tsconfigPaths: true,

@@ -1,4 +1,5 @@
-import type { BottomTabBarProps } from '@react-navigation/bottom-tabs'
+// @ts-expect-error TODO: Expo router 56 migration, remove this when the types are updated
+import type { BottomTabBarProps } from 'expo-router'
 
 import { useEffect } from 'react'
 import { Dimensions, Platform, TouchableOpacity } from 'react-native'
@@ -6,8 +7,7 @@ import Animated, { useAnimatedStyle, useSharedValue, withTiming } from 'react-na
 import { useSafeAreaInsets } from 'react-native-safe-area-context'
 
 import { usePathname } from 'expo-router'
-
-import { useTheme } from '@react-navigation/native'
+import { useTheme } from 'expo-router/react-navigation'
 
 import { Text, View } from '@/components/ui'
 
@@ -21,6 +21,7 @@ export default function CustomTabBar({ state, descriptors, navigation }: BottomT
   const safeAreaInsets = useSafeAreaInsets()
   useEffect(() => {
     if (state.routes.length === 0) return
+    // @ts-expect-error TODO: Expo router 56 migration, remove this when the types are updated
     const currentTabIdx = state.routes.findIndex((item) => {
       return (pathname === '/' && item.name === 'index') || item.name.indexOf(pathname.substring(1)) === 0
     })
@@ -60,6 +61,7 @@ export default function CustomTabBar({ state, descriptors, navigation }: BottomT
           animationStyle,
         ]}
       />
+      {/* @ts-expect-error TODO: Expo router 56 migration, remove this when the types are updated */}
       {state.routes.map((route, index) => {
         const { options } = descriptors[route.key]
         const label =

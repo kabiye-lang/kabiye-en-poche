@@ -11,6 +11,7 @@ import { useColorScheme } from 'react-native'
 
 import { loadAsync } from 'expo-font'
 import { router, SplashScreen, Stack } from 'expo-router'
+import { ThemeProvider } from 'expo-router/react-navigation'
 import { StatusBar } from 'expo-status-bar'
 
 import {
@@ -40,7 +41,6 @@ import {
 } from '@expo-google-fonts/ibm-plex-sans-hebrew'
 import { defineMessage as msg } from '@lingui/core/macro'
 import AsyncStorage from '@react-native-async-storage/async-storage'
-import { ThemeProvider } from '@react-navigation/native'
 import { QueryClientProvider } from '@tanstack/react-query'
 import { Toaster } from 'sonner-native'
 
