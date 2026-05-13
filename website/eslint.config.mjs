@@ -8,5 +8,5 @@ export default tseslint.config(
   eslintPluginPrettierRecommended,
   {
     ignores: ["node_modules/**", "dist/**", "build/**"],
-  }
+  },
 );

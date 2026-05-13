@@ -7,7 +7,7 @@ const eslintPluginPrettierRecommended = require('eslint-plugin-prettier/recommen
 module.exports = defineConfig([
   expoConfig,
   {
-    ignores: ['dist/*', 'admin/*', 'supabase/*'],
+    ignores: ['dist', 'admin', 'supabase', 'website'],
   },
   {
     rules: {
@@ -51,6 +51,22 @@ module.exports = defineConfig([
   },
   reactCompiler.configs.recommended,
   eslintPluginPrettierRecommended,
+  {
+    files: ['jest.setup.js', '**/__tests__/**/*', '**/__mocks__/**/*'],
+    languageOptions: {
+      globals: {
+        jest: 'readonly',
+        expect: 'readonly',
+        describe: 'readonly',
+        it: 'readonly',
+        test: 'readonly',
+        beforeAll: 'readonly',
+        beforeEach: 'readonly',
+        afterAll: 'readonly',
+        afterEach: 'readonly',
+      },
+    },
+  },
   {
     settings: {
       // Fix for ESLint 10+: eslint-plugin-react uses context.getFilename() (legacy API)
