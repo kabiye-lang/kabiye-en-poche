@@ -1,5 +1,6 @@
 {
   "upgrade": false,
+  "cooldown": "7d",
   "reject": [
     "tailwindcss",
     "@expo/fingerprint",
@@ -19,6 +20,7 @@
     "expo-analytics-amplitude",
     "expo-app-auth",
     "expo-app-loader-provider",
+    "expo-app-metrics",
     "expo-apple-authentication",
     "expo-application",
     "expo-asset",
@@ -42,7 +44,6 @@
     "expo-dev-client",
     "expo-device",
     "expo-document-picker",
-    "expo-eas-observe",
     "expo-file-system",
     "expo-font",
     "expo-gl",
@@ -72,6 +73,7 @@
     "expo-navigation-bar",
     "expo-network",
     "expo-notifications",
+    "expo-observe",
     "expo-print",
     "expo-live-photo",
     "expo-router",
@@ -95,6 +97,7 @@
     "expo-video-thumbnails",
     "expo-video",
     "expo-web-browser",
+    "expo-widgets",
     "jest-expo",
     "lottie-react-native",
     "react",

@@ -1,8 +1,8 @@
 const https = require('https')
 const fs = require('fs')
 
-const ncuCfg = require('./.ncurc.json')
-const pkg = require('./package.json')
+const ncuCfg = require('../.ncurc.json')
+const pkg = require('../package.json')
 
 // SDK-56 (In beta so we get from main branch)
 const url = 'https://raw.githubusercontent.com/expo/expo/main/packages/expo/bundledNativeModules.json'
