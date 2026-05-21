@@ -121,6 +121,5 @@ export default ({ config }: ConfigContext): ExpoConfig => ({
   },
   updates: {
     url: 'https://u.expo.dev/804c3e23-d136-4f76-81b4-c0ec5ba01117',
-    enableBsdiffPatchSupport: true,
   },
 })

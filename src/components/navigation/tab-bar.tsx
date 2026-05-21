@@ -1,5 +1,4 @@
-// @ts-expect-error TODO: Expo router 56 migration, remove this when the types are updated
-import type { BottomTabBarProps } from 'expo-router'
+import type { BottomTabBarProps } from 'expo-router/build/react-navigation/bottom-tabs'
 
 import { useEffect } from 'react'
 import { Dimensions, Platform, TouchableOpacity } from 'react-native'
@@ -61,7 +60,6 @@ export default function CustomTabBar({ state, descriptors, navigation }: BottomT
           animationStyle,
         ]}
       />
-      {/* @ts-expect-error TODO: Expo router 56 migration, remove this when the types are updated */}
       {state.routes.map((route, index) => {
         const { options } = descriptors[route.key]
         const label =
