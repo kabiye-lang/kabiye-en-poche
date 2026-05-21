@@ -54,6 +54,7 @@ export default ({ config }: ConfigContext): ExpoConfig => ({
     [
       'expo-build-properties',
       {
+        android: { usePrecompiledHeaders: true },
         ios: {
           useFrameworks: 'static',
           /**
