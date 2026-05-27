@@ -10,4 +10,6 @@ allowBuilds:
   esbuild: true
   msgpackr-extract: false
   protobufjs: false
+  sharp: false
   unrs-resolver: false
+  workerd: false
