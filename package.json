@@ -2,6 +2,7 @@
   "name": "kabye-en-poche",
   "version": "0.0.1",
   "main": "expo-router/entry",
+  "packageManager": "pnpm@11.2.2",
   "scripts": {
     "start": "expo start",
     "android": "expo run:android",
