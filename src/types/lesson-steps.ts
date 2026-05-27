@@ -1,4 +1,5 @@
 // Lesson step types for the progressive lesson flow
+import type { Json } from './db.types'
 import type { LessonActivity } from './supabase'
 
 /** Type guard: step has an activity (all activity-based steps including audio) */
@@ -43,8 +44,7 @@ export interface ContentStep extends BaseStep {
   type: 'content'
   title?: string
   content: string
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  examples?: any // Raw examples from database, transformed in ContentStep component
+  examples?: Json | null // Raw examples from database, transformed in ContentStep component
 }
 
 export interface AudioStep extends BaseStep {
@@ -64,8 +64,7 @@ export interface ExerciseStep extends BaseStep {
   exerciseType: 'listen_choose' | 'listen_type' | 'match_pairs' | 'order_words'
   title: string
   instructions?: string
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  data: any // Exercise-specific data
+  data: Json // Exercise-specific data
 }
 
 export interface QuizStep extends BaseStep {
@@ -123,7 +122,6 @@ export interface LessonProgress {
   currentStep: number
   totalSteps: number
   completedSteps: Set<number>
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  answers: Map<string, any>
+  answers: Map<string, unknown>
   score: number
 }

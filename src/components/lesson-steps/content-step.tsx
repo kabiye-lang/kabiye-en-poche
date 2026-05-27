@@ -20,8 +20,7 @@ interface ContentStepProps {
   title?: string
   difficulty?: 'beginner' | 'intermediate' | 'advanced'
   content: string
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  examples?: any // Raw examples from database
+  examples?: unknown // Raw examples from database
   onContinue: () => void
 }
 
@@ -39,13 +38,12 @@ const ContentStep = ({
   // Transform raw examples from database into typed format
   const examples: Example[] | undefined = rawExamples
     ? Array.isArray(rawExamples)
-      ? // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        rawExamples.map((ex: any) => ({
-          kbp: ex.kbp || '',
-          en: ex.en || '',
-          fr: ex.fr || '',
-          pronunciation: ex.pronunciation,
-          audio_url: ex.audio_url,
+      ? rawExamples.map((ex: Record<string, unknown>) => ({
+          kbp: (ex.kbp as string) || '',
+          en: (ex.en as string) || '',
+          fr: (ex.fr as string) || '',
+          pronunciation: ex.pronunciation as string | undefined,
+          audio_url: ex.audio_url as string | undefined,
         }))
       : []
     : undefined

@@ -22,32 +22,29 @@ export function useLanguage() {
    * @param field - The base field name without language suffix
    * @returns The value in the current language, or null if not found
    */
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const getValue = <T extends Record<string, any>>(obj: T | null | undefined, field: string): string | null => {
+  const getValue = <T extends object>(obj: T | null | undefined, field: string): string | null => {
     if (!obj) return null
     const fieldName = getField(field)
-    return obj[fieldName] ?? null
+    return ((obj as Record<string, unknown>)[fieldName] as string | undefined) ?? null
   }
 
   /**
    * Get array value based on current language
    */
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const getArrayValue = <T extends Record<string, any>>(obj: T | null | undefined, field: string): string[] | null => {
+  const getArrayValue = <T extends object>(obj: T | null | undefined, field: string): string[] | null => {
     if (!obj) return null
     const fieldName = getField(field)
-    const value = obj[fieldName]
-    return Array.isArray(value) ? value : null
+    const value = (obj as Record<string, unknown>)[fieldName]
+    return Array.isArray(value) ? (value as string[]) : null
   }
 
   /**
    * Get JSON value based on current language
    */
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const getJsonValue = <T extends Record<string, any>, R = any>(obj: T | null | undefined, field: string): R | null => {
+  const getJsonValue = <T extends object, R = unknown>(obj: T | null | undefined, field: string): R | null => {
     if (!obj) return null
     const fieldName = getField(field)
-    return obj[fieldName] ?? null
+    return ((obj as Record<string, unknown>)[fieldName] as R | undefined) ?? null
   }
 
   return {
