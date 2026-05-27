@@ -6,7 +6,7 @@
  */
 describe('Keyboard collapsible hint logic', () => {
   it('hint starts collapsed (showHint = false)', () => {
-    let showHint = false
+    const showHint = false
     expect(showHint).toBe(false)
   })
 

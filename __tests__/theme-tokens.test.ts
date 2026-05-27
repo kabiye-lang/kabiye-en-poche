@@ -13,7 +13,7 @@ describe('Theme tokens', () => {
 
   it('colors should be valid hex values', () => {
     const hexPattern = /^#[0-9A-Fa-f]{6}$/
-    Object.entries(brandColors).forEach(([key, value]) => {
+    Object.entries(brandColors).forEach(([_key, value]) => {
       expect(value).toMatch(hexPattern)
     })
   })

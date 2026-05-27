@@ -1,4 +1,4 @@
-import { ScrollView, TouchableOpacity } from 'react-native'
+import { Pressable, ScrollView } from 'react-native'
 
 import { useLingui } from '@lingui/react/macro'
 
@@ -20,6 +20,7 @@ interface ContentStepProps {
   title?: string
   difficulty?: 'beginner' | 'intermediate' | 'advanced'
   content: string
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   examples?: any // Raw examples from database
   onContinue: () => void
 }
@@ -38,7 +39,8 @@ const ContentStep = ({
   // Transform raw examples from database into typed format
   const examples: Example[] | undefined = rawExamples
     ? Array.isArray(rawExamples)
-      ? rawExamples.map((ex: any) => ({
+      ? // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        rawExamples.map((ex: any) => ({
           kbp: ex.kbp || '',
           en: ex.en || '',
           fr: ex.fr || '',
@@ -103,7 +105,7 @@ const ContentStep = ({
             </Text>
             {examples.map((example, index) => {
               const hasAudio = !!example.audio_url
-              const ExampleWrapper = hasAudio ? TouchableOpacity : View
+              const ExampleWrapper = hasAudio ? Pressable : View
 
               return (
                 <ExampleWrapper
@@ -111,7 +113,6 @@ const ContentStep = ({
                   {...(hasAudio
                     ? {
                         onPress: () => handlePlayAudio(example.audio_url!),
-                        activeOpacity: 0.7,
                       }
                     : {})}
                 >

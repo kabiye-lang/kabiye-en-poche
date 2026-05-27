@@ -1,5 +1,5 @@
 import { useRef, useState } from 'react'
-import { Dimensions, FlatList, TouchableOpacity } from 'react-native'
+import { Dimensions, FlatList, Pressable } from 'react-native'
 import { EaseView } from 'react-native-ease'
 
 import { router } from 'expo-router'
@@ -135,15 +135,11 @@ const OnboardingScreen = () => {
     <View flex safeArea="all" className="bg-background">
       {/* Skip */}
       {currentIndex < pages.length - 1 && (
-        <TouchableOpacity
-          onPress={completeOnboarding}
-          className="absolute top-12 right-8 mt-3 py-3"
-          style={{ minHeight: 44 }}
-        >
+        <Pressable onPress={completeOnboarding} className="absolute top-12 right-8 mt-3 py-3" style={{ minHeight: 44 }}>
           <Text variant="body" className="text-foreground-secondary">
             {t`Skip`}
           </Text>
-        </TouchableOpacity>
+        </Pressable>
       )}
       <FlatList
         ref={flatListRef}
@@ -172,11 +168,11 @@ const OnboardingScreen = () => {
         </View>
 
         {/* Action Button */}
-        <TouchableOpacity onPress={goToNext} className="bg-primary w-full items-center rounded-full py-4">
+        <Pressable onPress={goToNext} className="bg-primary w-full items-center rounded-full py-4">
           <Text variant="body" weight="semibold" className="text-primary-foreground">
             {currentIndex === pages.length - 1 ? t`Get Started` : t`Next`}
           </Text>
-        </TouchableOpacity>
+        </Pressable>
       </View>
     </View>
   )

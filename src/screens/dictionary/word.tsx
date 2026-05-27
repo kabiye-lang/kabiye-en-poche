@@ -1,5 +1,5 @@
 import React from 'react'
-import { ActivityIndicator, Alert, ScrollView, TouchableOpacity } from 'react-native'
+import { ActivityIndicator, Alert, Pressable, ScrollView } from 'react-native'
 
 import { Link, useLocalSearchParams } from 'expo-router'
 import { useHeaderHeight } from 'expo-router/react-navigation'
@@ -59,14 +59,14 @@ const WordDetailsScreen: React.FC = () => {
               {t`This is a variant form. See the main entry for the full definition.`}
             </Text>
             <Link href={`/word/${entry_data.mainEntry}`} asChild>
-              <TouchableOpacity>
+              <Pressable>
                 <View className="bg-primary flex-row items-center rounded-lg px-4 py-3">
                   <Text variant="lg" weight="semibold" className="flex-1 text-white">
                     {t`View main entry:`} {entry_data.mainEntry}
                   </Text>
                   <ArrowRightIcon size={20} className="text-white" />
                 </View>
-              </TouchableOpacity>
+              </Pressable>
             </Link>
           </Card>
         </ScrollView>
@@ -95,7 +95,7 @@ const WordDetailsScreen: React.FC = () => {
             <Text variant="body" className="text-foreground-secondary italic">
               {entry_data.grammaticalInfo}
             </Text>
-            <TouchableOpacity
+            <Pressable
               className="ml-1.5"
               hitSlop={8}
               onPress={() => {
@@ -117,7 +117,7 @@ const WordDetailsScreen: React.FC = () => {
               }}
             >
               <InfoIcon size={16} weight="regular" className="text-foreground-secondary" />
-            </TouchableOpacity>
+            </Pressable>
           </View>
         )}
 

@@ -1,4 +1,3 @@
-// @ts-expect-error TODO: Expo router 56 migration, remove this when the types are updated
 import type { BottomTabNavigationOptions } from 'expo-router/js-tabs'
 import type { Theme } from 'expo-router/react-navigation'
 

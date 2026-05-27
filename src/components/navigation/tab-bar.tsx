@@ -1,7 +1,7 @@
 import type { BottomTabBarProps } from 'expo-router/build/react-navigation/bottom-tabs'
 
 import { useEffect } from 'react'
-import { Dimensions, Platform, TouchableOpacity } from 'react-native'
+import { Dimensions, Platform, Pressable } from 'react-native'
 import Animated, { useAnimatedStyle, useSharedValue, withTiming } from 'react-native-reanimated'
 import { useSafeAreaInsets } from 'react-native-safe-area-context'
 
@@ -20,7 +20,6 @@ export default function CustomTabBar({ state, descriptors, navigation }: BottomT
   const safeAreaInsets = useSafeAreaInsets()
   useEffect(() => {
     if (state.routes.length === 0) return
-    // @ts-expect-error TODO: Expo router 56 migration, remove this when the types are updated
     const currentTabIdx = state.routes.findIndex((item) => {
       return (pathname === '/' && item.name === 'index') || item.name.indexOf(pathname.substring(1)) === 0
     })
@@ -91,8 +90,7 @@ export default function CustomTabBar({ state, descriptors, navigation }: BottomT
         }
 
         return (
-          <TouchableOpacity
-            activeOpacity={0.6}
+          <Pressable
             key={route.key}
             accessibilityRole="button"
             accessibilityState={isFocused ? { selected: true } : {}}
@@ -118,7 +116,7 @@ export default function CustomTabBar({ state, descriptors, navigation }: BottomT
             >
               {label}
             </Text>
-          </TouchableOpacity>
+          </Pressable>
         )
       })}
     </View>

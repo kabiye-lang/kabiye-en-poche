@@ -1,0 +1,306 @@
+name: Deploy
+
+# ─── Triggers ────────────────────────────────────────────────────────────────
+#
+#  push develop  → staging  (changed services deploy in parallel)
+#  push main     → production (same, no confirmation gate)
+#  dispatch      → choose service + environment; production requires confirm="production"
+#
+on:
+  push:
+    branches:
+      - develop
+      - main
+  workflow_dispatch:
+    inputs:
+      service:
+        description: "Service to deploy"
+        required: true
+        default: all
+        type: choice
+        options:
+          - all
+          - admin
+          - website
+      environment:
+        description: "Target environment"
+        required: true
+        default: staging
+        type: choice
+        options:
+          - staging
+          - production
+      confirm:
+        description: "Type 'production' to confirm a production deploy (ignored for staging)"
+        required: false
+        default: ""
+
+jobs:
+  # ── Resolve: environment + which services need deploying ─────────────────────
+  #
+  #  On push:     dorny/paths-filter detects changed paths against the last
+  #               pre-push commit on the branch (handles first push, multi-commit
+  #               pushes, and shallow clones automatically).
+  #  On dispatch: use the 'service' input directly.
+  #
+  resolve:
+    name: Resolve
+    runs-on: ubuntu-latest
+    outputs:
+      env_name:     ${{ steps.pick.outputs.env_name }}
+      wrangler_env: ${{ steps.pick.outputs.wrangler_env }}
+      admin:        ${{ steps.services.outputs.admin }}
+      website:      ${{ steps.services.outputs.website }}
+      app:          ${{ steps.services.outputs.app }}
+    steps:
+      - uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8 # v5
+        with:
+          fetch-depth: 2
+
+      - name: Resolve environment
+        id: pick
+        run: |
+          if [[ "${{ github.event_name }}" == "push" ]]; then
+            if [[ "${{ github.ref }}" == "refs/heads/develop" ]]; then
+              echo "env_name=staging"           >> $GITHUB_OUTPUT
+              echo "wrangler_env=--env staging" >> $GITHUB_OUTPUT
+            else
+              echo "env_name=production"           >> $GITHUB_OUTPUT
+              echo "wrangler_env=--env production" >> $GITHUB_OUTPUT
+            fi
+          else
+            if [[ "${{ github.event.inputs.environment }}" == "production" ]]; then
+              echo "env_name=production"           >> $GITHUB_OUTPUT
+              echo "wrangler_env=--env production" >> $GITHUB_OUTPUT
+            else
+              echo "env_name=staging"           >> $GITHUB_OUTPUT
+              echo "wrangler_env=--env staging" >> $GITHUB_OUTPUT
+            fi
+          fi
+
+      - name: Detect changed paths
+        id: filter
+        if: github.event_name == 'push'
+        # dorny/paths-filter handles first push, multi-commit pushes, and shallow clones.
+        # Pin to SHA for supply-chain safety: https://github.com/dorny/paths-filter/releases/tag/v4.0.1
+        uses: dorny/paths-filter@v4.0.1
+        with:
+          filters: |
+            admin:
+              - 'admin/**'
+              - '.github/workflows/deploy.yml'
+            website:
+              - 'website/**'
+              - '.github/workflows/deploy.yml'
+            app:
+              - 'src/**'
+              - 'assets/**'
+              - 'locales/**'
+              - '.eas/**'
+              - 'app.config.ts'
+              - 'babel.config.js'
+              - 'metro.config.js'
+              - 'package.json'
+              - 'eas.json'
+
+      - name: Detect which services need deploying
+        id: services
+        run: |
+          if [[ "${{ github.event_name }}" == "workflow_dispatch" ]]; then
+            SVC="${{ github.event.inputs.service }}"
+            [[ "$SVC" == "all" || "$SVC" == "admin"   ]] && echo "admin=true"   >> $GITHUB_OUTPUT || echo "admin=false"   >> $GITHUB_OUTPUT
+            [[ "$SVC" == "all" || "$SVC" == "website" ]] && echo "website=true" >> $GITHUB_OUTPUT || echo "website=false" >> $GITHUB_OUTPUT
+            # EAS production trigger only fires on push; skip app detection for dispatch
+            echo "app=false" >> $GITHUB_OUTPUT
+          else
+            echo "admin=${{ steps.filter.outputs.admin }}"     >> $GITHUB_OUTPUT
+            echo "website=${{ steps.filter.outputs.website }}" >> $GITHUB_OUTPUT
+            echo "app=${{ steps.filter.outputs.app }}"         >> $GITHUB_OUTPUT
+          fi
+
+  # ── Production confirmation gate (dispatch only) ─────────────────────────────
+  gate:
+    name: Production gate
+    needs: resolve
+    if: needs.resolve.outputs.env_name == 'production' && github.event_name == 'workflow_dispatch'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Verify confirmation
+        run: |
+          if [[ "${{ github.event.inputs.confirm }}" != "production" ]]; then
+            echo "❌ Type 'production' in the confirm field to deploy to production."
+            exit 1
+          fi
+
+  # ── Install ───────────────────────────────────────────────────────────────────
+  install:
+    name: Install dependencies
+    needs: [resolve, gate]
+    if: |
+      always()
+      && needs.resolve.result == 'success'
+      && (needs.gate.result == 'success' || needs.gate.result == 'skipped')
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8 # v5
+      - uses: pnpm/action-setup@0e279bb959325dab635dd2c09392533439d90093 # v6
+      - uses: actions/setup-node@48b55a011bda9f5d6aeb4c2d9c7362e8dae4041e # v6
+        with:
+          node-version: 24
+          cache: pnpm
+          cache-dependency-path: pnpm-lock.yaml
+      - name: Restore node_modules cache
+        id: cache-nm
+        uses: actions/cache@v4
+        with:
+          path: node_modules
+          key: node-modules-${{ runner.os }}-${{ hashFiles('pnpm-lock.yaml') }}
+      - name: Install
+        if: steps.cache-nm.outputs.cache-hit != 'true'
+        run: pnpm install --frozen-lockfile
+
+  # ── Admin ─────────────────────────────────────────────────────────────────────
+  deploy-admin:
+    name: Admin → ${{ needs.resolve.outputs.env_name }}
+    needs: [resolve, gate, install]
+    if: |
+      always()
+      && needs.install.result == 'success'
+      && needs.resolve.outputs.admin == 'true'
+    runs-on: ubuntu-latest
+    environment: admin-${{ needs.resolve.outputs.env_name }}
+    steps:
+      - uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8 # v5
+      - uses: pnpm/action-setup@0e279bb959325dab635dd2c09392533439d90093 # v6
+      - uses: actions/setup-node@48b55a011bda9f5d6aeb4c2d9c7362e8dae4041e # v6
+        with:
+          node-version: 24
+      - name: Restore node_modules
+        uses: actions/cache/restore@v4
+        with:
+          path: node_modules
+          key: node-modules-${{ runner.os }}-${{ hashFiles('pnpm-lock.yaml') }}
+          fail-on-cache-miss: true
+      - name: Build
+        working-directory: admin
+        run: pnpm run build
+        env:
+          VITE_SUPABASE_URL: ${{ vars.VITE_SUPABASE_URL }}
+          VITE_SUPABASE_ANON_KEY: ${{ vars.VITE_SUPABASE_ANON_KEY }}
+      - name: Deploy
+        working-directory: admin
+        run: pnpm exec wrangler deploy ${{ needs.resolve.outputs.wrangler_env }} --minify
+        env:
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+
+  # ── Website ───────────────────────────────────────────────────────────────────
+  deploy-website:
+    name: Website → ${{ needs.resolve.outputs.env_name }}
+    needs: [resolve, gate, install]
+    if: |
+      always()
+      && needs.install.result == 'success'
+      && needs.resolve.outputs.website == 'true'
+    runs-on: ubuntu-latest
+    environment: website-${{ needs.resolve.outputs.env_name }}
+    steps:
+      - uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8 # v5
+      - uses: pnpm/action-setup@0e279bb959325dab635dd2c09392533439d90093 # v6
+      - uses: actions/setup-node@48b55a011bda9f5d6aeb4c2d9c7362e8dae4041e # v6
+        with:
+          node-version: 24
+      - name: Restore node_modules
+        uses: actions/cache/restore@v4
+        with:
+          path: node_modules
+          key: node-modules-${{ runner.os }}-${{ hashFiles('pnpm-lock.yaml') }}
+          fail-on-cache-miss: true
+      - name: Build
+        working-directory: website
+        run: pnpm run build
+      - name: Deploy
+        working-directory: website
+        run: pnpm exec wrangler deploy ${{ needs.resolve.outputs.wrangler_env }} --minify
+        env:
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+
+  # ── Mobile check (ts:check + lint + test) ────────────────────────────────────
+  # Runs on every push to develop/main when app files change.
+  # Acts as the CI gate before the EAS production workflow is triggered.
+  mobile-check:
+    name: Mobile — ts:check + lint + test
+    needs: [resolve, install]
+    if: |
+      always()
+      && needs.install.result == 'success'
+      && needs.resolve.outputs.app == 'true'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8 # v5
+      - uses: pnpm/action-setup@0e279bb959325dab635dd2c09392533439d90093 # v6
+      - uses: actions/setup-node@48b55a011bda9f5d6aeb4c2d9c7362e8dae4041e # v6
+        with:
+          node-version: 24
+      - name: Restore node_modules
+        uses: actions/cache/restore@v4
+        with:
+          path: node_modules
+          key: node-modules-${{ runner.os }}-${{ hashFiles('pnpm-lock.yaml') }}
+          fail-on-cache-miss: true
+      - name: Type check
+        run: pnpm run ts:check
+      - name: Lint
+        run: pnpm run lint
+      - name: Test
+        run: pnpm test
+
+  # ── Trigger EAS production release (main only) ─────────────────────────────
+  # Fires the production-release EAS workflow when mobile-check passes on main.
+  # The EAS workflow itself uses fingerprint + get-build to avoid rebuilding
+  # when only JS changed.
+  trigger-eas-production:
+    name: Trigger EAS production release
+    needs: [resolve, mobile-check]
+    if: |
+      needs.mobile-check.result == 'success'
+      && needs.resolve.outputs.app == 'true'
+      && github.ref == 'refs/heads/main'
+      && github.event_name == 'push'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/setup-node@48b55a011bda9f5d6aeb4c2d9c7362e8dae4041e # v6
+        with:
+          node-version: 24
+      - name: Trigger EAS workflow
+        run: npx eas-cli@latest workflow:run .eas/workflows/production-release.yml --non-interactive
+        env:
+          EXPO_TOKEN: ${{ secrets.EXPO_TOKEN }}
+
+  # ── Sync develop ──────────────────────────────────────────────────────────────
+  # After any main push, open a PR to merge main back into develop so they
+  # don't diverge after a hotfix or release commit lands on main.
+  sync-develop:
+    name: Sync develop branch
+    runs-on: ubuntu-latest
+    needs: [deploy-admin, deploy-website, mobile-check, trigger-eas-production]
+    if: |
+      always()
+      && !cancelled()
+      && github.ref == 'refs/heads/main'
+      && github.event_name == 'push'
+    steps:
+      - name: Open PR — merge main into develop
+        continue-on-error: true
+        uses: thomaseizinger/create-pull-request@955adb4634198898bc24dca0468514c63a8fc98d # 1.4.0
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          head: main
+          base: develop
+          title: "chore: merge main into develop [skip ci]"
+          body: |
+            Automated PR to keep `develop` in sync after a release or hotfix was pushed to `main`.
+
+            Merge this once you're ready to bring the changes into the develop branch.

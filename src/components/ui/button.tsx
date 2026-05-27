@@ -1,7 +1,7 @@
 import type { VariantProps } from 'tailwind-variants'
 
 import React from 'react'
-import { TouchableOpacity, TouchableOpacityProps } from 'react-native'
+import { Pressable, PressableProps } from 'react-native'
 
 import { tv } from 'tailwind-variants'
 
@@ -62,7 +62,7 @@ const textVariants = tv({
   },
 })
 
-export interface ButtonProps extends TouchableOpacityProps, VariantProps<typeof buttonVariants> {
+export interface ButtonProps extends Omit<PressableProps, 'disabled'>, VariantProps<typeof buttonVariants> {
   loading?: boolean
   children: React.ReactNode
   className?: string
@@ -83,10 +83,10 @@ export function Button({
   const textClassName = cn(textVariants({ variant, size }))
 
   return (
-    <TouchableOpacity className={buttonClassName} disabled={disabled || loading} {...props}>
+    <Pressable className={buttonClassName} disabled={disabled || loading} {...props}>
       <Text weight="medium" className={textClassName}>
         {loading ? 'Loading...' : children}
       </Text>
-    </TouchableOpacity>
+    </Pressable>
   )
 }

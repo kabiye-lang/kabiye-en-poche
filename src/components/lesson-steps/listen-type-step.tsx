@@ -2,7 +2,7 @@ import type { ListenTypeActivityData } from '@/types/activity-data'
 import type { LessonActivity } from '@/types/supabase'
 
 import { useEffect, useState } from 'react'
-import { ActivityIndicator, ScrollView, TextInput, TouchableOpacity } from 'react-native'
+import { ActivityIndicator, Pressable, ScrollView, TextInput } from 'react-native'
 
 import { useLingui } from '@lingui/react/macro'
 
@@ -33,12 +33,14 @@ const ListenTypeStep = ({ activity, onAnswer }: ListenTypeStepProps) => {
   const [showFeedback, setShowFeedback] = useState(false)
   const [showHints, setShowHints] = useState(false)
 
-  // Reset state when question changes (new activity)
-  useEffect(() => {
+  // Reset state when activity changes (render-time state adjustment — avoids useEffect)
+  const [prevCorrectAnswer, setPrevCorrectAnswer] = useState(correctAnswer)
+  if (prevCorrectAnswer !== correctAnswer) {
+    setPrevCorrectAnswer(correctAnswer)
     setUserAnswer('')
     setShowFeedback(false)
     setShowHints(false)
-  }, [correctAnswer])
+  }
 
   // Auto-play audio when component mounts or changes
   useEffect(() => {
@@ -86,7 +88,7 @@ const ListenTypeStep = ({ activity, onAnswer }: ListenTypeStepProps) => {
 
           {/* Audio Player */}
           <View className="items-center py-4">
-            <TouchableOpacity
+            <Pressable
               onPress={handleToggleAudio}
               disabled={!audioUrl || isLoading}
               className={`h-20 w-20 items-center justify-center rounded-full shadow-lg ${
@@ -100,7 +102,7 @@ const ListenTypeStep = ({ activity, onAnswer }: ListenTypeStepProps) => {
               ) : (
                 <SpeakerSlashIcon size={40} color="white" weight="fill" />
               )}
-            </TouchableOpacity>
+            </Pressable>
             <Text variant="caption" className="text-foreground-secondary mt-2 text-center">
               {!audioUrl
                 ? t`No audio available`
@@ -127,7 +129,7 @@ const ListenTypeStep = ({ activity, onAnswer }: ListenTypeStepProps) => {
 
         {/* Hints Button */}
         {hints.length > 0 && (
-          <TouchableOpacity
+          <Pressable
             onPress={() => setShowHints(!showHints)}
             className="mb-4 flex-row items-center justify-center gap-2"
           >
@@ -135,7 +137,7 @@ const ListenTypeStep = ({ activity, onAnswer }: ListenTypeStepProps) => {
             <Text variant="body" className="text-hint">
               {showHints ? t`Hide hints` : t`Show hints`}
             </Text>
-          </TouchableOpacity>
+          </Pressable>
         )}
 
         {/* Hints Display */}

@@ -38,7 +38,7 @@ jest.mock('../src/components/icons', () => {
   const { Text } = require('react-native')
   const RN = require('react')
   return {
-    ArrowRightIcon: (props: any) => RN.createElement(Text, {}, '→'),
+    ArrowRightIcon: (_props: any) => RN.createElement(Text, {}, '→'),
   }
 })
 

@@ -2,12 +2,11 @@ import type { ListenChooseActivityData } from '@/types/activity-data'
 import type { LessonActivity } from '@/types/supabase'
 
 import { useEffect, useState } from 'react'
-import { ScrollView, TouchableOpacity } from 'react-native'
+import { Pressable, ScrollView } from 'react-native'
 
 import { useLingui } from '@lingui/react/macro'
 
 import { AudioPlayButton } from '@/components/audio-play-button'
-import { SpeakerHighIcon, SpeakerSlashIcon } from '@/components/icons'
 import { Button, Card, Text, View } from '@/components/ui'
 import { useAudio } from '@/hooks/use-audio'
 import { useLanguage } from '@/hooks/use-language'
@@ -37,11 +36,13 @@ const ListenChooseStep = ({ activity, onAnswer }: ListenChooseStepProps) => {
   const [selectedIndex, setSelectedIndex] = useState<number | null>(null)
   const [showFeedback, setShowFeedback] = useState(false)
 
-  // Reset state when question changes (new activity)
-  useEffect(() => {
+  // Reset state when activity changes (render-time state adjustment — avoids useEffect)
+  const [prevCorrectAnswer, setPrevCorrectAnswer] = useState(correctAnswer)
+  if (prevCorrectAnswer !== correctAnswer) {
+    setPrevCorrectAnswer(correctAnswer)
     setSelectedIndex(null)
     setShowFeedback(false)
-  }, [correctAnswer])
+  }
 
   // Auto-play audio when component mounts or changes
   useEffect(() => {
@@ -131,7 +132,7 @@ const ListenChooseStep = ({ activity, onAnswer }: ListenChooseStepProps) => {
             const showIncorrect = showFeedback && isSelected && !isCorrect
 
             return (
-              <TouchableOpacity
+              <Pressable
                 key={index}
                 onPress={() => handleSelectAnswer(index)}
                 disabled={showFeedback}
@@ -172,7 +173,7 @@ const ListenChooseStep = ({ activity, onAnswer }: ListenChooseStepProps) => {
                     {option}
                   </Text>
                 </View>
-              </TouchableOpacity>
+              </Pressable>
             )
           })}
         </View>

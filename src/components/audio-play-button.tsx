@@ -44,6 +44,7 @@ export const AudioPlayButton = ({
         transitionProperty: 'transform',
         transitionDuration: 150,
         backgroundColor: disabled ? '#d1d5db' : isPlaying ? '#22c55e' : undefined,
+        borderCurve: 'continuous',
       }}
       className={disabled ? '' : isPlaying ? '' : 'bg-primary'}
       {...rest}

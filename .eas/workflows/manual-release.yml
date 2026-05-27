@@ -1,0 +1,58 @@
+# Manual release workflow
+#
+# Triggered manually from the EAS dashboard or CLI.
+# Replaces the local `pnpm testflight` command with a cloud-based build.
+#
+# Inputs:
+#   platform  — ios | android | all  (default: all)
+#   profile   — development | preview | production  (default: production)
+#   submit    — true | false  (default: false)
+#
+# Examples:
+#   eas workflow:run .eas/workflows/manual-release.yml
+#   eas workflow:run .eas/workflows/manual-release.yml \
+#     --input platform=ios --input profile=preview --input submit=false
+
+on:
+  workflow_dispatch:
+    inputs:
+      platform:
+        type: string
+        default: all
+        description: "Platform to build (ios / android / all)"
+      profile:
+        type: string
+        default: production
+        description: "Build profile (development / preview / production)"
+      submit:
+        type: boolean
+        default: false
+        description: "Submit to stores after build (production only)"
+
+jobs:
+  # ── Build ───────────────────────────────────────────────────────────────────
+  build:
+    name: Build (${{ inputs.platform }}, ${{ inputs.profile }})
+    type: build
+    params:
+      platform: ${{ inputs.platform }}
+      profile: ${{ inputs.profile }}
+
+  # ── Submit (optional, only when submit=true) ────────────────────────────────
+  ios_submit:
+    name: Submit iOS to App Store
+    type: submit
+    needs: [build]
+    if: ${{ inputs.submit == true && (inputs.platform == 'ios' || inputs.platform == 'all') }}
+    params:
+      build_id: ${{ needs.build.outputs.build_id }}
+      profile: ${{ inputs.profile }}
+
+  android_submit:
+    name: Submit Android to Play Store
+    type: submit
+    needs: [build]
+    if: ${{ inputs.submit == true && (inputs.platform == 'android' || inputs.platform == 'all') }}
+    params:
+      build_id: ${{ needs.build.outputs.build_id }}
+      profile: ${{ inputs.profile }}

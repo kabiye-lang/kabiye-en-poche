@@ -1,8 +1,8 @@
 import type { OrderWordsActivityData } from '@/types/activity-data'
 import type { LessonActivity } from '@/types/supabase'
 
-import { useEffect, useState } from 'react'
-import { ScrollView, TouchableOpacity } from 'react-native'
+import { useState } from 'react'
+import { Pressable, ScrollView } from 'react-native'
 import Animated, { FadeIn, FadeInDown } from 'react-native-reanimated'
 
 import { useLingui } from '@lingui/react/macro'
@@ -29,13 +29,15 @@ const OrderWordsStep = ({ activity, onAnswer }: OrderWordsStepProps) => {
   const [showFeedback, setShowFeedback] = useState(false)
   const [isCorrect, setIsCorrect] = useState(false)
 
-  // Reset state when question changes (new activity)
-  useEffect(() => {
+  // Reset state when activity changes (render-time state adjustment — avoids useEffect)
+  const [prevActivity, setPrevActivity] = useState(activity)
+  if (prevActivity !== activity) {
+    setPrevActivity(activity)
     setAvailableWords([...words])
     setOrderedWords([])
     setShowFeedback(false)
     setIsCorrect(false)
-  }, [words])
+  }
 
   const handleSelectWord = (word: string) => {
     setAvailableWords(availableWords.filter((w) => w !== word))
@@ -87,7 +89,7 @@ const OrderWordsStep = ({ activity, onAnswer }: OrderWordsStepProps) => {
             ) : (
               orderedWords.map((word, index) => (
                 <Animated.View key={`ordered-${index}`} entering={FadeIn.duration(160)}>
-                  <TouchableOpacity
+                  <Pressable
                     onPress={() => !showFeedback && handleRemoveWord(word, index)}
                     disabled={showFeedback}
                     className="border-primary bg-primary/10 rounded-lg border-2 px-4 py-2"
@@ -95,7 +97,7 @@ const OrderWordsStep = ({ activity, onAnswer }: OrderWordsStepProps) => {
                     <Text variant="body" weight="bold" className="text-primary">
                       {word}
                     </Text>
-                  </TouchableOpacity>
+                  </Pressable>
                 </Animated.View>
               ))
             )}
@@ -110,7 +112,7 @@ const OrderWordsStep = ({ activity, onAnswer }: OrderWordsStepProps) => {
             </Text>
             <View className="flex-row flex-wrap gap-2">
               {availableWords.map((word, index) => (
-                <TouchableOpacity
+                <Pressable
                   key={`available-${index}`}
                   onPress={() => handleSelectWord(word)}
                   disabled={showFeedback}
@@ -119,7 +121,7 @@ const OrderWordsStep = ({ activity, onAnswer }: OrderWordsStepProps) => {
                   <Text variant="body" weight="bold" className="text-foreground">
                     {word}
                   </Text>
-                </TouchableOpacity>
+                </Pressable>
               ))}
             </View>
           </View>
@@ -127,12 +129,12 @@ const OrderWordsStep = ({ activity, onAnswer }: OrderWordsStepProps) => {
 
         {/* Reset Button - shown when words are arranged (pre-check) or after wrong answer */}
         {(!showFeedback && orderedWords.length > 0) || (showFeedback && !isCorrect) ? (
-          <TouchableOpacity onPress={handleReset} className="mb-4 flex-row items-center justify-center">
+          <Pressable onPress={handleReset} className="mb-4 flex-row items-center justify-center">
             <ArrowsClockwiseIcon size={20} className="text-primary" />
             <Text variant="body" className="text-primary ml-2">
               {t`Reset`}
             </Text>
-          </TouchableOpacity>
+          </Pressable>
         ) : null}
 
         {/* Feedback */}

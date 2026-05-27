@@ -1,0 +1,13 @@
+packages:
+  - admin
+  - website
+
+autoInstallPeers: true
+minReleaseAge: 1
+
+allowBuilds:
+  '@firebase/util': true
+  esbuild: true
+  msgpackr-extract: false
+  protobufjs: false
+  unrs-resolver: false

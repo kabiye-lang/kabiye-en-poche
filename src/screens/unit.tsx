@@ -1,5 +1,5 @@
 import React from 'react'
-import { ActivityIndicator, ScrollView, TouchableOpacity } from 'react-native'
+import { ActivityIndicator, Pressable, ScrollView } from 'react-native'
 import { useSafeAreaInsets } from 'react-native-safe-area-context'
 
 import { Link, useLocalSearchParams } from 'expo-router'
@@ -211,7 +211,7 @@ const LessonItem = ({ lesson }: LessonItemProps) => {
 
   return (
     <Link href={`/lesson/${lesson.id}`} asChild>
-      <TouchableOpacity>
+      <Pressable>
         <View className="flex-row items-center rounded-lg bg-white p-3">
           {lesson.is_completed ? (
             <CheckCircleIcon size={20} className="text-success" />
@@ -232,7 +232,7 @@ const LessonItem = ({ lesson }: LessonItemProps) => {
             </Text>
           </View>
         </View>
-      </TouchableOpacity>
+      </Pressable>
     </Link>
   )
 }

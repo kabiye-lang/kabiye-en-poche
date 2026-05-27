@@ -142,7 +142,7 @@ export function View({
   const safeAreaStyle = React.useMemo(() => {
     if (!safeArea || safeArea === 'none') return {}
 
-    const style: any = {}
+    const style: Record<string, number> = {}
 
     switch (safeArea) {
       case 'all':

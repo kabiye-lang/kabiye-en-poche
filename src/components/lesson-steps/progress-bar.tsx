@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react'
-import { TouchableOpacity } from 'react-native'
+import { Pressable } from 'react-native'
 import Animated, { Easing, ReduceMotion, useAnimatedStyle, useSharedValue, withTiming } from 'react-native-reanimated'
 import { useSafeAreaInsets } from 'react-native-safe-area-context'
 
@@ -45,9 +45,9 @@ const ProgressBar = ({ currentStep, totalSteps, onClose }: ProgressBarProps) => 
     <View className="border-border bg-card border-b px-4 pb-3" style={{ paddingTop: insets.top + 12 }}>
       <View className="flex-row items-center">
         {/* Close Button */}
-        <TouchableOpacity onPress={handleClose} className="mr-3 rounded-full p-1">
+        <Pressable onPress={handleClose} className="mr-3 rounded-full p-1">
           <XIcon size={24} className="text-foreground" />
-        </TouchableOpacity>
+        </Pressable>
 
         {/* Progress Bar */}
         <View className="flex-1">

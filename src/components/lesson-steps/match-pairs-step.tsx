@@ -1,8 +1,8 @@
 import type { MatchPairsActivityData } from '@/types/activity-data'
 import type { LessonActivity } from '@/types/supabase'
 
-import { useEffect, useState } from 'react'
-import { ScrollView, TouchableOpacity } from 'react-native'
+import { useState } from 'react'
+import { Pressable, ScrollView } from 'react-native'
 
 import { useLingui } from '@lingui/react/macro'
 
@@ -17,6 +17,15 @@ interface MatchPairsStepProps {
 interface SelectedPair {
   value: string
   side: 'left' | 'right'
+}
+
+const shuffleArray = <T,>(array: T[]): T[] => {
+  const shuffled = [...array]
+  for (let i = shuffled.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1))
+    ;[shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]]
+  }
+  return shuffled
 }
 
 const MatchPairsStep = ({ activity, onAnswer }: MatchPairsStepProps) => {
@@ -41,33 +50,22 @@ const MatchPairsStep = ({ activity, onAnswer }: MatchPairsStepProps) => {
     return { left: legacy.left, right: right || '' }
   })
 
-  const [leftItems, setLeftItems] = useState<string[]>([])
-  const [rightItems, setRightItems] = useState<string[]>([])
+  const [leftItems, setLeftItems] = useState<string[]>(() => shuffleArray(pairs.map((p) => p.left)))
+  const [rightItems, setRightItems] = useState<string[]>(() => shuffleArray(pairs.map((p) => p.right)))
   const [selected, setSelected] = useState<SelectedPair | null>(null)
   const [matched, setMatched] = useState<Set<string>>(new Set())
   const [showFeedback, setShowFeedback] = useState(false)
 
-  // Reset state and shuffle when question changes (new activity)
-  useEffect(() => {
-    // Shuffle both sides independently
-    const shuffleArray = <T,>(array: T[]): T[] => {
-      const shuffled = [...array]
-      for (let i = shuffled.length - 1; i > 0; i--) {
-        const j = Math.floor(Math.random() * (i + 1))
-        ;[shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]]
-      }
-      return shuffled
-    }
-
-    // Reset state
+  // Reset state when activity changes (render-time state adjustment — avoids useEffect)
+  const [prevActivity, setPrevActivity] = useState(activity)
+  if (prevActivity !== activity) {
+    setPrevActivity(activity)
     setSelected(null)
     setMatched(new Set())
     setShowFeedback(false)
-
-    // Shuffle items
     setLeftItems(shuffleArray(pairs.map((p) => p.left)))
     setRightItems(shuffleArray(pairs.map((p) => p.right)))
-  }, [pairs])
+  }
 
   const handleSelect = (value: string, side: 'left' | 'right') => {
     if (matched.has(value)) return
@@ -141,7 +139,7 @@ const MatchPairsStep = ({ activity, onAnswer }: MatchPairsStepProps) => {
           {/* Left column */}
           <View className="flex-1 gap-3">
             {leftItems.map((item, index) => (
-              <TouchableOpacity
+              <Pressable
                 key={`left-${index}`}
                 onPress={() => handleSelect(item, 'left')}
                 disabled={matched.has(item)}
@@ -154,14 +152,14 @@ const MatchPairsStep = ({ activity, onAnswer }: MatchPairsStepProps) => {
                 >
                   {item}
                 </Text>
-              </TouchableOpacity>
+              </Pressable>
             ))}
           </View>
 
           {/* Right column */}
           <View className="flex-1 gap-3">
             {rightItems.map((item, index) => (
-              <TouchableOpacity
+              <Pressable
                 key={`right-${index}`}
                 onPress={() => handleSelect(item, 'right')}
                 disabled={matched.has(item)}
@@ -173,7 +171,7 @@ const MatchPairsStep = ({ activity, onAnswer }: MatchPairsStepProps) => {
                 >
                   {item}
                 </Text>
-              </TouchableOpacity>
+              </Pressable>
             ))}
           </View>
         </View>

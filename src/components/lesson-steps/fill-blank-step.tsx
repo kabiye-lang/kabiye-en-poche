@@ -1,8 +1,8 @@
 import type { FillBlankActivityData } from '@/types/activity-data'
 import type { LessonActivity } from '@/types/supabase'
 
-import { useEffect, useState } from 'react'
-import { ScrollView, TouchableOpacity } from 'react-native'
+import { useState } from 'react'
+import { Pressable, ScrollView } from 'react-native'
 
 import { useLingui } from '@lingui/react/macro'
 
@@ -30,11 +30,13 @@ const FillBlankStep = ({ activity, onAnswer }: FillBlankStepProps) => {
   const [selectedAnswer, setSelectedAnswer] = useState<string | null>(null)
   const [showFeedback, setShowFeedback] = useState(false)
 
-  // Reset state when activity changes
-  useEffect(() => {
+  // Reset state when activity changes (render-time state adjustment — avoids useEffect)
+  const [prevCorrectAnswer, setPrevCorrectAnswer] = useState(correctAnswer)
+  if (prevCorrectAnswer !== correctAnswer) {
+    setPrevCorrectAnswer(correctAnswer)
     setSelectedAnswer(null)
     setShowFeedback(false)
-  }, [correctAnswer])
+  }
 
   const isCorrect = selectedAnswer === correctAnswer
 
@@ -121,7 +123,7 @@ const FillBlankStep = ({ activity, onAnswer }: FillBlankStepProps) => {
             const showIncorrect = showFeedback && isSelected && !isCorrectOption
 
             return (
-              <TouchableOpacity
+              <Pressable
                 key={index}
                 onPress={() => handleSelectOption(option)}
                 disabled={showFeedback}
@@ -150,7 +152,7 @@ const FillBlankStep = ({ activity, onAnswer }: FillBlankStepProps) => {
                 >
                   {option}
                 </Text>
-              </TouchableOpacity>
+              </Pressable>
             )
           })}
         </View>

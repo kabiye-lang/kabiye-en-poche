@@ -1,7 +1,7 @@
 import type { AudioActivityData } from '@/types/activity-data'
 import type { ActivityStep, LessonStep } from '@/types/lesson-steps'
 
-import { useEffect, useState } from 'react'
+import { useMemo, useState } from 'react'
 import { ActivityIndicator } from 'react-native'
 import Animated, { FadeIn, FadeInRight } from 'react-native-reanimated'
 
@@ -39,13 +39,12 @@ const LessonScreen = () => {
   const completeLessonMutation = useAppCompleteLesson()
 
   const [currentStepIndex, setCurrentStepIndex] = useState(0)
-  const [steps, setSteps] = useState<LessonStep[]>([])
   const [score, setScore] = useState(0)
   const [answers, setAnswers] = useState<Map<string, { answer: string; isCorrect: boolean }>>(new Map())
 
-  // Build steps when data is loaded
-  useEffect(() => {
-    if (!lesson || !contents || contents.length === 0) return
+  // Build steps when data is loaded (derived from lesson data, no useEffect needed)
+  const steps = useMemo<LessonStep[]>(() => {
+    if (!lesson || !contents || contents.length === 0) return []
 
     const builtSteps: LessonStep[] = []
     let stepOrder = 0
@@ -87,7 +86,7 @@ const LessonScreen = () => {
       order: stepOrder++,
     })
 
-    setSteps(builtSteps)
+    return builtSteps
   }, [lesson, contents, activities, getValue])
 
   const handleStepComplete = () => {

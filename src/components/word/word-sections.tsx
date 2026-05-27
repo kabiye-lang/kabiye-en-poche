@@ -1,6 +1,6 @@
 import type { EntryData } from '@/types/dictionary'
 
-import { TouchableOpacity } from 'react-native'
+import { Pressable } from 'react-native'
 
 import { Link } from 'expo-router'
 
@@ -92,14 +92,14 @@ export const LexicalReferences = ({ lexRefs }: { lexRefs: EntryData['senses'][nu
           <View className="flex-row flex-wrap gap-2">
             {ref.targets.map((target, targetIdx) => (
               <Link key={targetIdx} href={`/word/${encodeURIComponent(target)}`} asChild>
-                <TouchableOpacity>
+                <Pressable>
                   <View className="bg-primary/10 flex-row items-center rounded px-2 py-1">
                     <Text variant="caption" className="text-primary">
                       {target}
                     </Text>
                     <ArrowRightIcon size={12} className="text-primary ml-1" />
                   </View>
-                </TouchableOpacity>
+                </Pressable>
               </Link>
             ))}
           </View>
@@ -201,14 +201,14 @@ export const CrossReferences = ({ crossRefs }: { crossRefs: EntryData['crossRefs
           <View className="flex-row flex-wrap gap-2">
             {ref.targets.map((target, targetIdx) => (
               <Link key={targetIdx} href={`/word/${encodeURIComponent(target)}`} asChild>
-                <TouchableOpacity>
+                <Pressable>
                   <View className="bg-primary/10 flex-row items-center rounded px-2 py-1">
                     <Text variant="caption" className="text-primary">
                       {target}
                     </Text>
                     <ArrowRightIcon size={12} className="text-primary ml-1" />
                   </View>
-                </TouchableOpacity>
+                </Pressable>
               </Link>
             ))}
           </View>

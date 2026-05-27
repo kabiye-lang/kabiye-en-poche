@@ -1,4 +1,4 @@
-import { ScrollView, TouchableOpacity } from 'react-native'
+import { Pressable, ScrollView } from 'react-native'
 
 import { Link } from 'expo-router'
 
@@ -34,7 +34,7 @@ const HomeScreen = () => {
                 {getValue(nextLesson, 'title')}
               </Text>
               <Link href={`/lesson/${nextLesson.id}`} asChild>
-                <TouchableOpacity
+                <Pressable
                   className="bg-primary-foreground/20 flex-row items-center self-start rounded-full px-5 py-3"
                   style={{ minHeight: 44 }}
                   accessibilityRole="button"
@@ -43,7 +43,7 @@ const HomeScreen = () => {
                   <Text variant="body" weight="semibold" className="text-primary-foreground">
                     {t`Resume lesson`}
                   </Text>
-                </TouchableOpacity>
+                </Pressable>
               </Link>
             </View>
           ) : nextLessonLoading ? (
@@ -62,7 +62,7 @@ const HomeScreen = () => {
                 {t`Start your Kabiyè journey`}
               </Text>
               <Link href="/learn" asChild>
-                <TouchableOpacity
+                <Pressable
                   className="bg-primary-foreground/20 self-start rounded-full px-5 py-3"
                   style={{ minHeight: 44 }}
                   accessibilityRole="button"
@@ -70,7 +70,7 @@ const HomeScreen = () => {
                   <Text variant="body" weight="semibold" className="text-primary-foreground">
                     {t`Start Learning`}
                   </Text>
-                </TouchableOpacity>
+                </Pressable>
               </Link>
             </View>
           )}
@@ -93,7 +93,7 @@ const HomeScreen = () => {
 
           {/* Alphabet Section */}
           <Link href="/alphabet" asChild>
-            <TouchableOpacity className="bg-card mb-5 flex-row items-center justify-between rounded-2xl p-4">
+            <Pressable className="bg-card mb-5 flex-row items-center justify-between rounded-2xl p-4">
               <View className="flex-1">
                 <Text variant="h6" weight="bold" className="text-primary">
                   {t`Kabiyè Alphabet`}
@@ -103,13 +103,13 @@ const HomeScreen = () => {
                 </Text>
               </View>
               <CaretRightIcon size={20} weight="regular" className="text-primary" />
-            </TouchableOpacity>
+            </Pressable>
           </Link>
 
           {/* Quick Links — compact navigation shortcuts (tabs always visible) */}
           <View className="border-border mb-5 overflow-hidden rounded-2xl border">
             <Link href="/learn" asChild>
-              <TouchableOpacity
+              <Pressable
                 className="border-border flex-row items-center border-b px-4 py-3.5"
                 style={{ minHeight: 44 }}
                 accessibilityRole="link"
@@ -119,10 +119,10 @@ const HomeScreen = () => {
                   {t`Lessons`}
                 </Text>
                 <CaretRightIcon size={16} weight="regular" className="text-foreground-secondary" />
-              </TouchableOpacity>
+              </Pressable>
             </Link>
             <Link href="/dictionary" asChild>
-              <TouchableOpacity
+              <Pressable
                 className="flex-row items-center px-4 py-3.5"
                 style={{ minHeight: 44 }}
                 accessibilityRole="link"
@@ -132,7 +132,7 @@ const HomeScreen = () => {
                   {t`Dictionary`}
                 </Text>
                 <CaretRightIcon size={16} weight="regular" className="text-foreground-secondary" />
-              </TouchableOpacity>
+              </Pressable>
             </Link>
           </View>
         </View>

@@ -11,5 +11,30 @@
   },
   "compatibility_flags": [
     "nodejs_compat"
-  ]
+  ],
+  // Top-level config is used for local `wrangler dev` only.
+  // CI always deploys with --env staging or --env production.
+  // -------------------------------------------------------------------------
+  "env": {
+    "staging": {
+      "name": "kabiye-en-poche-website-staging"
+      // "routes": [
+      //   {
+      //     // TODO: replace with actual staging custom domain
+      //     "pattern": "staging.kabiye-en-poche.app",
+      //     "custom_domain": true
+      //   }
+      // ]
+    },
+    "production": {
+      "name": "kabiye-en-poche-website"
+      // "routes": [
+      //   {
+      //     // TODO: replace with actual production custom domain
+      //     "pattern": "kabiye-en-poche.app",
+      //     "custom_domain": true
+      //   }
+      // ]
+    }
+  }
 }

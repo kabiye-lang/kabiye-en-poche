@@ -1,0 +1,89 @@
+# Production release workflow
+#
+# Triggered by GitHub Actions on push to main when app files change.
+# Uses the fingerprint + get-build pattern:
+#
+#   Native changed  → build new binary → submit to stores
+#   JS only changed → publish OTA update (0 EAS build minutes consumed)
+#
+# Invoked via:
+#   npx eas-cli@latest workflow:run .eas/workflows/production-release.yml --non-interactive
+
+jobs:
+  # ── 1. Compute native fingerprint ──────────────────────────────────────────
+  fingerprint:
+    name: Fingerprint
+    type: fingerprint
+    environment: production
+
+  # ── 2. Look for existing production builds matching the fingerprint ─────────
+  ios_get_build:
+    name: Get existing iOS build
+    type: get-build
+    needs: [fingerprint]
+    params:
+      fingerprint_hash: ${{ needs.fingerprint.outputs.ios_fingerprint_hash }}
+      profile: production
+
+  android_get_build:
+    name: Get existing Android build
+    type: get-build
+    needs: [fingerprint]
+    params:
+      fingerprint_hash: ${{ needs.fingerprint.outputs.android_fingerprint_hash }}
+      profile: production
+
+  # ── 3. Build only when no matching build was found ──────────────────────────
+  ios_build:
+    name: Build iOS (production)
+    type: build
+    needs: [ios_get_build]
+    if: ${{ !needs.ios_get_build.outputs.build_id }}
+    params:
+      platform: ios
+      profile: production
+
+  android_build:
+    name: Build Android (production)
+    type: build
+    needs: [android_get_build]
+    if: ${{ !needs.android_get_build.outputs.build_id }}
+    params:
+      platform: android
+      profile: production
+
+  # ── 4. Submit only when a new build was just created ───────────────────────
+  ios_submit:
+    name: Submit iOS to App Store
+    type: submit
+    needs: [ios_build]
+    if: ${{ needs.ios_build.result == 'success' }}
+    params:
+      build_id: ${{ needs.ios_build.outputs.build_id }}
+
+  android_submit:
+    name: Submit Android to Play Store
+    type: submit
+    needs: [android_build]
+    if: ${{ needs.android_build.result == 'success' }}
+    params:
+      build_id: ${{ needs.android_build.outputs.build_id }}
+
+  # ── 5. OTA update when a matching build already exists ─────────────────────
+  publish_ios_update:
+    name: Publish iOS update
+    type: update
+    needs: [ios_get_build]
+    if: ${{ needs.ios_get_build.outputs.build_id }}
+    params:
+      branch: production
+      platform: ios
+
+  publish_android_update:
+    name: Publish Android update
+    type: update
+    needs: [android_get_build]
+    if: ${{ needs.android_get_build.outputs.build_id }}
+    params:
+      branch: production
+      platform: android

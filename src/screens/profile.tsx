@@ -1,4 +1,4 @@
-import { Alert, Linking, Platform, ScrollView, TouchableOpacity } from 'react-native'
+import { Alert, Linking, Platform, Pressable, ScrollView } from 'react-native'
 
 import * as Application from 'expo-application'
 import { Href, useRouter } from 'expo-router'
@@ -196,7 +196,7 @@ const ProfileScreen = () => {
 
             <View className="bg-card overflow-hidden rounded-xl">
               {listItem.items.map((item, index) => (
-                <TouchableOpacity
+                <Pressable
                   key={'listItemSub-' + item.href}
                   onPress={() => {
                     if (item.external) {
@@ -221,7 +221,7 @@ const ProfileScreen = () => {
                     )}
                   </View>
                   <CaretRightIcon weight="regular" size={18} className="text-foreground-secondary" />
-                </TouchableOpacity>
+                </Pressable>
               ))}
             </View>
           </View>
@@ -238,7 +238,7 @@ const ProfileScreen = () => {
 
           <View className="bg-card overflow-hidden rounded-xl">
             {/* Language Setting */}
-            <TouchableOpacity
+            <Pressable
               className="border-border flex-row items-center justify-between border-b px-4 py-3"
               onPress={openLanguageSettings}
             >
@@ -254,10 +254,10 @@ const ProfileScreen = () => {
                 </View>
               </View>
               <CaretRightIcon weight="regular" size={18} className="text-foreground-secondary" />
-            </TouchableOpacity>
+            </Pressable>
 
             {/* Reset Progress */}
-            <TouchableOpacity className="flex-row items-center justify-between px-4 py-3" onPress={handleResetProgress}>
+            <Pressable className="flex-row items-center justify-between px-4 py-3" onPress={handleResetProgress}>
               <View className="flex-1 flex-row items-center">
                 <TrashIcon size={20} className="text-accent" />
                 <View className="ml-3">
@@ -269,7 +269,7 @@ const ProfileScreen = () => {
                   </Text>
                 </View>
               </View>
-            </TouchableOpacity>
+            </Pressable>
           </View>
         </View>
 

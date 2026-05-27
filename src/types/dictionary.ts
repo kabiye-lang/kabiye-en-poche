@@ -3,7 +3,7 @@ import type { Database } from './supabase'
 // Base types from Supabase
 type DbDictionaryEntry = Database['public']['Tables']['dictionary_entries']['Row']
 type DbSearchResult = Database['public']['Functions']['search_dictionary']['Returns'][number]
-type DbDictionaryStats = Database['public']['Views']['dictionary_statistics']['Row']
+type _DbDictionaryStats = Database['public']['Views']['dictionary_statistics']['Row']
 
 export interface DictionaryEntry extends Omit<DbDictionaryEntry, 'entry_data'> {
   entry_data: EntryData

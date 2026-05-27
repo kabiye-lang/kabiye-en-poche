@@ -4,7 +4,7 @@ import { AudioPlayButton } from '../src/components/audio-play-button'
 
 // Mock react-native-reanimated
 jest.mock('react-native-reanimated', () => {
-  const { View, Pressable } = require('react-native')
+  const { View } = require('react-native')
   return {
     __esModule: true,
     default: {
@@ -19,8 +19,8 @@ jest.mock('../src/components/icons', () => {
   const { Text } = require('react-native')
   const RN = require('react')
   return {
-    SpeakerHighIcon: (props: any) => RN.createElement(Text, { testID: 'speaker-high' }, 'SpeakerHigh'),
-    SpeakerSlashIcon: (props: any) => RN.createElement(Text, { testID: 'speaker-slash' }, 'SpeakerSlash'),
+    SpeakerHighIcon: (_props: any) => RN.createElement(Text, { testID: 'speaker-high' }, 'SpeakerHigh'),
+    SpeakerSlashIcon: (_props: any) => RN.createElement(Text, { testID: 'speaker-slash' }, 'SpeakerSlash'),
   }
 })
 
@@ -49,7 +49,7 @@ describe('AudioPlayButton', () => {
   })
 
   it('calls onPress when tapped', () => {
-    const { UNSAFE_getByType } = render(<AudioPlayButton isPlaying={false} isLoading={false} onPress={onPress} />)
+    render(<AudioPlayButton isPlaying={false} isLoading={false} onPress={onPress} />)
     // The root pressable should respond to press
     fireEvent.press(screen.getByText('SpeakerSlash'))
     // onPress may not fire on the icon -- this tests the render at minimum

@@ -1,5 +1,5 @@
 import { useEffect } from 'react'
-import { ScrollView, TouchableOpacity } from 'react-native'
+import { Pressable, ScrollView } from 'react-native'
 
 import { useLingui } from '@lingui/react/macro'
 
@@ -94,7 +94,7 @@ const AudioStep = ({ audioType, audioUrl, conversation, transcript, onContinue }
                     </Text>
                   </View>
                   {line.audioUrl && (
-                    <TouchableOpacity
+                    <Pressable
                       onPress={() => handleToggleAudio(line.audioUrl)}
                       className={`ml-3 rounded-full p-2 ${isPlaying ? 'bg-green-500' : 'bg-primary'}`}
                     >
@@ -103,7 +103,7 @@ const AudioStep = ({ audioType, audioUrl, conversation, transcript, onContinue }
                       ) : (
                         <SpeakerSlashIcon size={20} color="white" />
                       )}
-                    </TouchableOpacity>
+                    </Pressable>
                   )}
                 </View>
               </Card>

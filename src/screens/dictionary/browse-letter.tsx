@@ -1,5 +1,5 @@
 import React from 'react'
-import { ActivityIndicator, FlatList, TouchableOpacity } from 'react-native'
+import { ActivityIndicator, FlatList, Pressable } from 'react-native'
 
 import { Link, useLocalSearchParams } from 'expo-router'
 import { useHeaderHeight } from 'expo-router/react-navigation'
@@ -84,7 +84,7 @@ const BrowseByLetterScreen: React.FC = () => {
 
           return (
             <Link href={`/word/${item.headword}`} asChild>
-              <TouchableOpacity>
+              <Pressable>
                 <Card className="mb-3 p-4">
                   <Text variant="h6" weight="bold" className="text-primary">
                     {entry.headword}
@@ -114,7 +114,7 @@ const BrowseByLetterScreen: React.FC = () => {
                     </Text>
                   )}
                 </Card>
-              </TouchableOpacity>
+              </Pressable>
             </Link>
           )
         }}

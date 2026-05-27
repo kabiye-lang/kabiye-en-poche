@@ -1,5 +1,5 @@
 import React from 'react'
-import { ActivityIndicator, FlatList, TouchableOpacity } from 'react-native'
+import { ActivityIndicator, FlatList, Pressable } from 'react-native'
 
 import { Link, useLocalSearchParams } from 'expo-router'
 
@@ -83,7 +83,7 @@ const SearchResultsScreen: React.FC = () => {
         contentContainerStyle={{ paddingHorizontal: 10, paddingBottom: 20 }}
         renderItem={({ item }) => (
           <Link href={`/word/${item.headword}`} asChild>
-            <TouchableOpacity>
+            <Pressable>
               <Card className="mb-4 p-4">
                 <View className="mb-1 flex-row items-center justify-between">
                   <Text variant="h6" weight="bold" className="text-primary flex-1">
@@ -108,7 +108,7 @@ const SearchResultsScreen: React.FC = () => {
                   </Text>
                 )}
               </Card>
-            </TouchableOpacity>
+            </Pressable>
           </Link>
         )}
       />

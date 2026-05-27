@@ -1,8 +1,8 @@
 import type { QuizActivityData } from '@/types/activity-data'
 import type { LessonActivity } from '@/types/supabase'
 
-import { useEffect, useState } from 'react'
-import { ScrollView, TouchableOpacity } from 'react-native'
+import { useState } from 'react'
+import { Pressable, ScrollView } from 'react-native'
 import Animated, { FadeIn, FadeInDown } from 'react-native-reanimated'
 
 import { useLingui } from '@lingui/react/macro'
@@ -51,10 +51,13 @@ const QuizStep = ({ activity, onAnswer, progressPercent = 0 }: QuizStepProps) =>
   const [selectedIndex, setSelectedIndex] = useState<number | null>(null)
   const [showFeedback, setShowFeedback] = useState(false)
 
-  useEffect(() => {
+  // Reset state when activity changes (render-time state adjustment — avoids useEffect)
+  const [prevCorrectAnswer, setPrevCorrectAnswer] = useState<string | boolean>(correctAnswer)
+  if (prevCorrectAnswer !== correctAnswer) {
+    setPrevCorrectAnswer(correctAnswer)
     setSelectedIndex(null)
     setShowFeedback(false)
-  }, [question, correctAnswer, activityData?.answer])
+  }
 
   const handleSelectAnswer = (index: number) => {
     if (showFeedback) return
@@ -96,7 +99,7 @@ const QuizStep = ({ activity, onAnswer, progressPercent = 0 }: QuizStepProps) =>
             const showIncorrect = showFeedback && isSelected && !isCorrectOption
 
             return (
-              <TouchableOpacity
+              <Pressable
                 key={index}
                 onPress={() => handleSelectAnswer(index)}
                 disabled={showFeedback}
@@ -136,7 +139,7 @@ const QuizStep = ({ activity, onAnswer, progressPercent = 0 }: QuizStepProps) =>
                     {option}
                   </Text>
                 </View>
-              </TouchableOpacity>
+              </Pressable>
             )
           })}
         </View>

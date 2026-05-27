@@ -1,4 +1,4 @@
-import { TouchableOpacity } from 'react-native'
+import { Pressable } from 'react-native'
 import Animated, { FadeInUp, ZoomIn } from 'react-native-reanimated'
 
 import { router } from 'expo-router'
@@ -88,14 +88,14 @@ const CompletionStep = ({ score = 0, totalQuestions = 0, contentSteps = 0, onCom
           </Text>
         </Button>
 
-        <TouchableOpacity onPress={() => router.push('/learn')} className="w-full">
+        <Pressable onPress={() => router.push('/learn')} className="w-full">
           <View className="flex-row items-center justify-center py-3">
             <HouseIcon size={20} className="text-primary" />
             <Text variant="body" className="text-primary ml-2">
               {t`Back to Learn`}
             </Text>
           </View>
-        </TouchableOpacity>
+        </Pressable>
       </Animated.View>
     </View>
   )

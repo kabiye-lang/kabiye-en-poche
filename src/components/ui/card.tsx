@@ -1,7 +1,7 @@
 import type { VariantProps } from 'tailwind-variants'
 
 import React from 'react'
-import { TouchableOpacity } from 'react-native'
+import { Pressable } from 'react-native'
 
 import { tv } from 'tailwind-variants'
 
@@ -46,9 +46,9 @@ export function Card({ variant, padding, backgroundColor, onPress, children, cla
   if (onPress) {
     const { onBlur, onFocus, ...touchableProps } = props
     return (
-      <TouchableOpacity className={cardClassName} style={cardStyle} onPress={onPress} {...touchableProps}>
+      <Pressable className={cardClassName} style={cardStyle} onPress={onPress} {...touchableProps}>
         {children}
-      </TouchableOpacity>
+      </Pressable>
     )
   }
 

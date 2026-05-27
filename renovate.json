@@ -1,7 +1,20 @@
 {
-  "upgrade": false,
-  "cooldown": "1d",
-  "reject": [
+  "$schema": "https://docs.renovatebot.com/renovate-schema.json",
+  "extends": [
+    "config:recommended",
+    ":dependencyDashboard"
+  ],
+  "baseBranches": [
+    "develop"
+  ],
+  "labels": [
+    "dependencies"
+  ],
+  "minimumReleaseAge": "1 day",
+  "prConcurrentLimit": 8,
+  "prHourlyLimit": 2,
+  "ignoreDeps": [
+    "expo",
     "@expo/fingerprint",
     "@expo/metro-runtime",
     "@expo/vector-icons",

@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import { ActivityIndicator, ScrollView, TextInput, TouchableOpacity } from 'react-native'
+import { ActivityIndicator, Pressable, ScrollView, TextInput } from 'react-native'
 
 import { Link, router } from 'expo-router'
 
@@ -48,7 +48,7 @@ const DictionaryScreen: React.FC = () => {
     return currentLanguage === 'fr' ? t`Find Kabiyè words in French...` : t`Find Kabiyè words in English...`
   }
 
-  const getHelperText = () => {
+  const _getHelperText = () => {
     if (searchMode === 'kabiye') {
       return t`Search for Kabiyè words and see their translations`
     }
@@ -82,7 +82,7 @@ const DictionaryScreen: React.FC = () => {
           <Text variant="caption" className="text-foreground-secondary">
             {t`Search in:`}
           </Text>
-          <TouchableOpacity
+          <Pressable
             onPress={() => setSearchMode('kabiye')}
             className={`rounded-full px-3 py-1 ${searchMode === 'kabiye' ? 'bg-primary' : 'border-border border bg-transparent'}`}
           >
@@ -93,8 +93,8 @@ const DictionaryScreen: React.FC = () => {
             >
               {t`Kabiyè`}
             </Text>
-          </TouchableOpacity>
-          <TouchableOpacity
+          </Pressable>
+          <Pressable
             onPress={() => setSearchMode('translation')}
             className={`rounded-full px-3 py-1 ${searchMode === 'translation' ? 'bg-primary' : 'border-border border bg-transparent'}`}
           >
@@ -105,7 +105,7 @@ const DictionaryScreen: React.FC = () => {
             >
               {currentLanguage === 'fr' ? t`Français` : t`English`}
             </Text>
-          </TouchableOpacity>
+          </Pressable>
         </View>
 
         {/* Quick search results dropdown */}
@@ -113,22 +113,22 @@ const DictionaryScreen: React.FC = () => {
           <View className="border-border bg-card mt-2 rounded-lg border">
             {searchResults.slice(0, 5).map((result) => (
               <Link key={result.entry_id} href={`/word/${result.headword}`} asChild onPress={() => setSearchQuery('')}>
-                <TouchableOpacity className="border-border border-b px-4 py-3">
+                <Pressable className="border-border border-b px-4 py-3">
                   <Text variant="body" weight="semibold" className="text-foreground">
                     {result.headword}
                   </Text>
                   <Text variant="caption" className="text-foreground-secondary mt-0.5">
                     {result.match_text ?? result.headword}
                   </Text>
-                </TouchableOpacity>
+                </Pressable>
               </Link>
             ))}
             {searchResults.length > 5 && (
-              <TouchableOpacity onPress={handleSearch} className="px-4 py-2">
+              <Pressable onPress={handleSearch} className="px-4 py-2">
                 <Text variant="caption" className="text-primary text-center">
                   {t`See all ${searchResults.length} results`}
                 </Text>
-              </TouchableOpacity>
+              </Pressable>
             )}
           </View>
         )}
@@ -157,13 +157,13 @@ const DictionaryScreen: React.FC = () => {
             <View className="flex-row flex-wrap justify-center gap-2">
               {letters?.map((letter) => (
                 <Link key={letter} href={`/dictionary/letter/${letter}`} asChild>
-                  <TouchableOpacity>
+                  <Pressable>
                     <View className="border-border items-center justify-center rounded-xl border bg-transparent px-4 py-3">
                       <Text variant="lg" weight="bold" className="text-primary">
                         {letter}
                       </Text>
                     </View>
-                  </TouchableOpacity>
+                  </Pressable>
                 </Link>
               ))}
             </View>

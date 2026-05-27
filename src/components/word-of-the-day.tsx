@@ -1,6 +1,6 @@
 import type { DictionaryEntry } from '@/types/dictionary'
 
-import { TouchableOpacity } from 'react-native'
+import { Pressable } from 'react-native'
 import Animated, { FadeInUp } from 'react-native-reanimated'
 
 import { Link } from 'expo-router'
@@ -50,7 +50,7 @@ const WordOfTheDayCard = ({ word, language, index }: { word: WordGroup; language
   return (
     <Animated.View entering={FadeInUp.duration(300).delay(index * 100)}>
       <Link href={`/word/${firstEntry.entry_data.headword}`} asChild>
-        <TouchableOpacity>
+        <Pressable>
           <View className="bg-card mb-3 rounded-2xl p-4">
             <Text variant="lg" weight="bold" className="text-foreground">
               {displayHeadword}
@@ -68,7 +68,7 @@ const WordOfTheDayCard = ({ word, language, index }: { word: WordGroup; language
               </Text>
             )}
           </View>
-        </TouchableOpacity>
+        </Pressable>
       </Link>
     </Animated.View>
   )

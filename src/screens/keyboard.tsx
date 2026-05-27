@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react'
-import { Dimensions, TextInput, TouchableOpacity } from 'react-native'
+import { Dimensions, Pressable, TextInput } from 'react-native'
 
 import * as Clipboard from 'expo-clipboard'
 
@@ -133,6 +133,7 @@ export default function KeyboardScreen() {
         className={`rounded-md !px-0 !py-0 ${isKabiye ? 'bg-primary/15' : 'bg-card'}`}
         style={{ width: buttonWidth, minWidth: buttonWidth, height: 35 }}
         onPress={() => changeText(letter)}
+        hitSlop={3}
       >
         <Text
           variant="lg"
@@ -150,7 +151,7 @@ export default function KeyboardScreen() {
       <View className="px-2.5">
         <ScreenTitle title={t`Keyboard`} />
         {/* Collapsible hint */}
-        <TouchableOpacity onPress={() => setShowHint(!showHint)} className="mb-2 flex-row items-center">
+        <Pressable onPress={() => setShowHint(!showHint)} className="mb-2 flex-row items-center">
           <Text variant="caption" weight="medium" className="text-foreground-secondary">
             {t`How to use`}
           </Text>
@@ -159,7 +160,7 @@ export default function KeyboardScreen() {
           ) : (
             <CaretDownIcon size={14} className="text-foreground-secondary ml-1" />
           )}
-        </TouchableOpacity>
+        </Pressable>
         {showHint && (
           <View className="mb-2">
             <Text variant="caption" className="text-foreground-secondary">
@@ -196,6 +197,7 @@ export default function KeyboardScreen() {
             className="rounded-md"
             style={{ width: 90, minWidth: 90, height: 35 }}
             onPress={() => setContent('')}
+            hitSlop={3}
           >
             <Text variant="body" weight="medium" className="text-primary">
               {t`Clear`}
@@ -207,6 +209,7 @@ export default function KeyboardScreen() {
             className="rounded-md"
             style={{ width: 90, minWidth: 90, height: 35 }}
             onPress={async () => await Clipboard.setStringAsync(content)}
+            hitSlop={3}
           >
             <Text variant="body" weight="medium" className="text-white">
               {t`Copy`}
@@ -229,6 +232,7 @@ export default function KeyboardScreen() {
               style={{ width: 50, minWidth: 50, height: 35 }}
               onPress={() => setCapsLock((capsLockOld) => (capsLockOld > 0 ? 0 : 1))}
               onLongPress={() => setCapsLock((capsLockOld) => (capsLockOld > 0 ? 0 : 2))}
+              hitSlop={3}
             >
               {capsLock === 2 ? (
                 <ArrowFatLinesUpIcon weight="fill" className="text-foreground" />
@@ -242,6 +246,7 @@ export default function KeyboardScreen() {
               className="bg-card rounded-md"
               style={{ width: 50, minWidth: 50, height: 35 }}
               onPress={() => changeText({ id: '.' })}
+              hitSlop={3}
             >
               <DotIcon className="text-foreground" />
             </Button>
@@ -251,6 +256,7 @@ export default function KeyboardScreen() {
               className="bg-card rounded-md"
               style={{ width: 90, minWidth: 90, height: 35 }}
               onPress={() => changeText({ id: ' ' })}
+              hitSlop={3}
             >
               <Text variant="body" weight="light" className="text-foreground">
                 {t`Space`}
@@ -262,6 +268,7 @@ export default function KeyboardScreen() {
               className="bg-card rounded-md"
               style={{ width: 50, minWidth: 50, height: 35 }}
               onPress={() => setContent((content) => content.substring(0, content.length - 1))}
+              hitSlop={3}
             >
               <BackspaceIcon weight="light" className="text-foreground" />
             </Button>
@@ -274,6 +281,7 @@ export default function KeyboardScreen() {
                 changeText({ id: '\n' })
                 setCapsLock(1)
               }}
+              hitSlop={3}
             >
               <KeyReturnIcon weight="light" className="text-foreground" />
             </Button>

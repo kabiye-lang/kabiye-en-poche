@@ -111,6 +111,7 @@ export default function RootLayout() {
 
   useEffect(() => {
     // crashlytics().log('App mounted.')
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     onLaunch()
   }, [])
 
@@ -130,18 +131,14 @@ export default function RootLayout() {
     }
   }, [ready, hasSeenOnboarding])
 
-  const NotReady = () => {
-    // [Tip]
-    // You can show loading state here.
-    return <></>
-  }
-
   if (!ready) {
     return <NotReady />
   }
 
   return <RootLayoutNav />
 }
+
+const NotReady = () => <></>
 
 function RootLayoutNav() {
   const colorScheme = useColorScheme()

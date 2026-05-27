@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { ActivityIndicator, ScrollView, TouchableOpacity } from 'react-native'
+import { ActivityIndicator, Pressable, ScrollView } from 'react-native'
 import Animated, { FadeInDown } from 'react-native-reanimated'
 
 import { Link } from 'expo-router'
@@ -136,7 +136,7 @@ const UnitCard = ({ unit, isExpanded, onToggle }: UnitCardProps) => {
 
   return (
     <View className="bg-card mb-4 overflow-hidden rounded-2xl">
-      <TouchableOpacity onPress={onToggle} className="p-4">
+      <Pressable onPress={onToggle} className="p-4">
         <View className="flex-row items-center justify-between">
           <View className="flex-1">
             <Text variant="h6" weight="bold" className="text-primary mb-1">
@@ -165,7 +165,7 @@ const UnitCard = ({ unit, isExpanded, onToggle }: UnitCardProps) => {
             style={{ transform: [{ rotate: isExpanded ? '90deg' : '0deg' }] }}
           />
         </View>
-      </TouchableOpacity>
+      </Pressable>
 
       {isExpanded && (
         <View className="border-border mx-4 mb-4 border-t pt-4">
@@ -281,7 +281,7 @@ const LessonItem = ({ lesson, index = 0 }: LessonItemProps) => {
   return (
     <Animated.View entering={FadeInDown.duration(200).delay(index * 60)}>
       <Link href={`/lesson/${lesson.id}`} asChild>
-        <TouchableOpacity>
+        <Pressable>
           <View className="bg-card flex-row items-center rounded-lg p-3">
             {lesson.is_completed ? (
               <CheckCircleIcon size={20} className="text-success" />
@@ -302,7 +302,7 @@ const LessonItem = ({ lesson, index = 0 }: LessonItemProps) => {
               </Text>
             </View>
           </View>
-        </TouchableOpacity>
+        </Pressable>
       </Link>
     </Animated.View>
   )
