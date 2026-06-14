@@ -1,8 +1,8 @@
 import fs from 'fs'
 import https from 'https'
 
-const ncuCfg = JSON.parse(fs.readFileSync(new URL('../.ncurc.json', import.meta.url), 'utf8'))
-const pkg = JSON.parse(fs.readFileSync(new URL('../package.json', import.meta.url), 'utf8'))
+import ncuCfg from '../mobile/.ncurc.json' with { type: 'json' }
+import pkg from '../mobile/package.json' with { type: 'json' }
 
 /** Parse ncu cooldown string (e.g. "7d", "2w") → milliseconds. */
 function parseCooldownMs(str = '7d') {
@@ -80,6 +80,7 @@ const expoJsonData = await fetchJson(`https://unpkg.com/expo@${expoVersion}/bund
 const bundledPackages = Object.keys(expoJsonData)
 
 ncuCfg.reject = [...bundledPackages]
+if (pkg.dependencies['expo']) pkg.dependencies['expo'] = expoVersion
 Object.keys(expoJsonData).forEach((dep) => {
   if (pkg.dependencies[dep]) pkg.dependencies[dep] = expoJsonData[dep]
   if (pkg.devDependencies[dep]) pkg.devDependencies[dep] = expoJsonData[dep]
@@ -93,6 +94,6 @@ renovateCfg.ignoreDeps = ['expo', ...bundledPackages]
 fs.writeFileSync('renovate.json', JSON.stringify(renovateCfg, null, 2) + '\n')
 console.log(`Updated renovate.json ignoreDeps (${renovateCfg.ignoreDeps.length} packages).`)
 
-fs.writeFileSync('.ncurc.json', JSON.stringify(ncuCfg, null, 2))
-fs.writeFileSync('package.json', JSON.stringify(pkg, null, 2))
+fs.writeFileSync('mobile/package.json', JSON.stringify(pkg, null, 2) + '\n')
+fs.writeFileSync('mobile/.ncurc.json', JSON.stringify(ncuCfg, null, 2))
 console.log('Done.')

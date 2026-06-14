@@ -1,5 +1,6 @@
 packages:
   - admin
+  - mobile
   - website
 
 autoInstallPeers: true

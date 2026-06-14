@@ -3,7 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "type": "module",
-  "packageManager": "pnpm@11.2.2",
+  "packageManager": "pnpm@11.6.0",
   "scripts": {
     "dev": "vite",
     "build": "tsc -b && vite build",
@@ -15,32 +15,32 @@
     "@fontsource-variable/geist": "^5.2.9",
     "@phosphor-icons/react": "^2.1.10",
     "framer-motion": "^12.40.0",
-    "react": "^19.2.6",
-    "react-dom": "^19.2.6"
+    "react": "^19.2.7",
+    "react-dom": "^19.2.7"
   },
   "devDependencies": {
-    "@cloudflare/vite-plugin": "^1.39.0",
+    "@cloudflare/vite-plugin": "^1.40.2",
     "@eslint/js": "^10.0.1",
     "@rolldown/plugin-babel": "^0.2.3",
-    "@tailwindcss/postcss": "^4.3.0",
+    "@tailwindcss/postcss": "^4.3.1",
     "@types/node": "^25",
-    "@types/react": "^19.2.15",
+    "@types/react": "^19.2.17",
     "@types/react-dom": "^19.2.3",
     "@vitejs/plugin-basic-ssl": "^2.3.0",
     "@vitejs/plugin-react": "^6.0.2",
     "eslint": "^10",
     "eslint-config-prettier": "^10.1.8",
-    "eslint-plugin-prettier": "^5.5.5",
+    "eslint-plugin-prettier": "^5.5.6",
     "postcss": "^8",
-    "prettier": "^3.8.3",
-    "tailwindcss": "^4.3.0",
+    "prettier": "^3.8.4",
+    "tailwindcss": "^4.3.1",
     "typescript": "^6",
-    "typescript-eslint": "^8.60.0",
-    "vite": "^8.0.14",
-    "wrangler": "^4.95.0"
+    "typescript-eslint": "^8.61.0",
+    "vite": "^8.0.16",
+    "wrangler": "^4.100.0"
   },
   "overrides": {
-    "@types/react": "^19.2.15",
+    "@types/react": "^19.2.17",
     "@types/react-dom": "^19.2.3"
   }
 }
