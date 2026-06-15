@@ -360,7 +360,7 @@ importers:
         version: 10.1.8(eslint@10.4.0(jiti@2.7.0))
       eslint-plugin-prettier:
         specifier: ^5.5.5
-        version: 5.5.5(eslint-config-prettier@10.1.8(eslint@10.4.0(jiti@2.7.0)))(eslint@10.4.0(jiti@2.7.0))(prettier@3.8.4)
+        version: 5.5.6(eslint-config-prettier@10.1.8(eslint@10.4.0(jiti@2.7.0)))(eslint@10.4.0(jiti@2.7.0))(prettier@3.8.4)
       eslint-plugin-react-compiler:
         specifier: ^19.1.0-rc.2
         version: 19.1.0-rc.2(eslint@10.4.0(jiti@2.7.0))
@@ -2297,7 +2297,7 @@ packages:
     engines: {node: ^18.14.0 || ^20.0.0 || ^22.0.0 || >=24.0.0}
 
   '@jonasmerlin/react-native-markdown-display@https://codeload.github.com/jonasmerlin/react-native-markdown-display/tar.gz/d4bf241ae67a33885ac69c58466c4a0e8ab79d49':
-    resolution: {gitHosted: true, tarball: https://codeload.github.com/jonasmerlin/react-native-markdown-display/tar.gz/d4bf241ae67a33885ac69c58466c4a0e8ab79d49}
+    resolution: {gitHosted: true, integrity: sha512-g+Z97znsPDrTzJ3oR3qGKp7kbISp+f3/8WfCSzVwMQVMolzBL+8WV3dvzeMfIJzZEDqavvU/b2ecpm65ondd0g==, tarball: https://codeload.github.com/jonasmerlin/react-native-markdown-display/tar.gz/d4bf241ae67a33885ac69c58466c4a0e8ab79d49}
     version: 1.0.2
     peerDependencies:
       react: ^16.2.0 || ^18.0.0
@@ -4850,20 +4850,6 @@ packages:
       jest:
         optional: true
       typescript:
-        optional: true
-
-  eslint-plugin-prettier@5.5.5:
-    resolution: {integrity: sha512-hscXkbqUZ2sPithAuLm5MXL+Wph+U7wHngPBv9OMWwlP8iaflyxpjTYZkmdgB4/vPIhemRlBEoLrH7UC1n7aUw==}
-    engines: {node: ^14.18.0 || >=16.0.0}
-    peerDependencies:
-      '@types/eslint': '>=8.0.0'
-      eslint: '>=8.0.0'
-      eslint-config-prettier: '>= 7.0.0 <10.0.0 || >=10.1.0'
-      prettier: '>=3.0.0'
-    peerDependenciesMeta:
-      '@types/eslint':
-        optional: true
-      eslint-config-prettier:
         optional: true
 
   eslint-plugin-prettier@5.5.6:
@@ -13784,15 +13770,6 @@ snapshots:
       typescript: 6.0.3
     transitivePeerDependencies:
       - supports-color
-
-  eslint-plugin-prettier@5.5.5(eslint-config-prettier@10.1.8(eslint@10.4.0(jiti@2.7.0)))(eslint@10.4.0(jiti@2.7.0))(prettier@3.8.4):
-    dependencies:
-      eslint: 10.4.0(jiti@2.7.0)
-      prettier: 3.8.4
-      prettier-linter-helpers: 1.0.1
-      synckit: 0.11.13
-    optionalDependencies:
-      eslint-config-prettier: 10.1.8(eslint@10.4.0(jiti@2.7.0))
 
   eslint-plugin-prettier@5.5.6(eslint-config-prettier@10.1.8(eslint@10.4.0(jiti@2.7.0)))(eslint@10.4.0(jiti@2.7.0))(prettier@3.8.4):
     dependencies:
