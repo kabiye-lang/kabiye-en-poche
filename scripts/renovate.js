@@ -79,7 +79,7 @@ const expoJsonData = await fetchJson(`https://unpkg.com/expo@${expoVersion}/bund
 
 const bundledPackages = Object.keys(expoJsonData)
 
-ncuCfg.reject = [...bundledPackages]
+ncuCfg.reject = ['@babel/types', ...bundledPackages]
 if (pkg.dependencies['expo']) pkg.dependencies['expo'] = expoVersion
 Object.keys(expoJsonData).forEach((dep) => {
   if (pkg.dependencies[dep]) pkg.dependencies[dep] = expoJsonData[dep]
@@ -90,9 +90,26 @@ Object.keys(expoJsonData).forEach((dep) => {
 // 'expo' itself is not in bundledNativeModules but must always be ignored (SDK upgrades
 // are intentional and handled by this script, not by Renovate).
 const renovateCfg = JSON.parse(fs.readFileSync('renovate.json', 'utf8'))
-renovateCfg.ignoreDeps = ['expo', ...bundledPackages]
+renovateCfg.ignoreDeps = ['@babel/types', 'expo', ...bundledPackages]
 fs.writeFileSync('renovate.json', JSON.stringify(renovateCfg, null, 2) + '\n')
 console.log(`Updated renovate.json ignoreDeps (${renovateCfg.ignoreDeps.length} packages).`)
+
+// Keep Expo SDK-related packages exempt from pnpm's minimumReleaseAge gating, since
+// their versions are pinned to bundledNativeModules and updated by this script directly.
+const minimumReleaseAgeExclude = [...new Set([
+  'expo',
+  'babel-preset-expo',
+  'jest-expo',
+  ...bundledPackages.filter((dep) => dep.startsWith('expo-') || dep.startsWith('@expo/')),
+])].sort()
+
+const workspaceYaml = fs.readFileSync('pnpm-workspace.yaml', 'utf8')
+const minimumReleaseAgeExcludeLines = minimumReleaseAgeExclude.map((dep) => `  - "${dep}"`).join('\n')
+const updatedWorkspaceYaml = workspaceYaml
+  .replace(/\nminimumReleaseAgeExclude:[\s\S]*?(?=\n[a-zA-Z][\w-]*:|$)/, '')
+  .replace(/minimumReleaseAge: \d+\n/, (match) => `${match}\nminimumReleaseAgeExclude:\n${minimumReleaseAgeExcludeLines}\n`)
+fs.writeFileSync('pnpm-workspace.yaml', updatedWorkspaceYaml)
+console.log(`Updated pnpm-workspace.yaml minimumReleaseAgeExclude (${minimumReleaseAgeExclude.length} packages).`)
 
 fs.writeFileSync('mobile/package.json', JSON.stringify(pkg, null, 2) + '\n')
 fs.writeFileSync('mobile/.ncurc.json', JSON.stringify(ncuCfg, null, 2))

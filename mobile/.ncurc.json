@@ -2,6 +2,8 @@
   "upgrade": false,
   "cooldown": "1d",
   "reject": [
+    "@babel/types",
+    "@expo/dom-webview",
     "@expo/fingerprint",
     "@expo/metro-runtime",
     "@expo/vector-icons",

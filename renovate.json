@@ -14,7 +14,9 @@
   "prConcurrentLimit": 8,
   "prHourlyLimit": 2,
   "ignoreDeps": [
+    "@babel/types",
     "expo",
+    "@expo/dom-webview",
     "@expo/fingerprint",
     "@expo/metro-runtime",
     "@expo/vector-icons",
