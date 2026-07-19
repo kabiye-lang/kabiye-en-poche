@@ -4,7 +4,7 @@
     "config:recommended",
     ":dependencyDashboard"
   ],
-  "baseBranches": [
+  "baseBranchPatterns": [
     "develop"
   ],
   "labels": [
@@ -138,5 +138,29 @@
     "@shopify/flash-list",
     "@sentry/react-native",
     "react-native-bootsplash"
+  ],
+  "packageRules": [
+    {
+      "description": "GitHub Actions - group all updates and pin to SHA digest",
+      "matchManagers": [
+        "github-actions"
+      ],
+      "groupName": "GitHub Actions",
+      "pinDigests": true
+    },
+    {
+      "description": "NPM - only check major updates; skip minor/patch to speed up runs and cut resource usage",
+      "matchFileNames": [
+        "package.json",
+        "mobile/package.json",
+        "admin/package.json",
+        "website/package.json"
+      ],
+      "matchUpdateTypes": [
+        "minor",
+        "patch"
+      ],
+      "enabled": false
+    }
   ]
 }
