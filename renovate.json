@@ -58,6 +58,7 @@
     "expo-dev-client",
     "expo-device",
     "expo-document-picker",
+    "expo-eas-client",
     "expo-file-system",
     "expo-font",
     "expo-gl",
