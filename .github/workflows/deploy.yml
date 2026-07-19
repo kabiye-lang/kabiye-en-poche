@@ -83,7 +83,7 @@ jobs:
         if: github.event_name == 'push'
         # dorny/paths-filter handles first push, multi-commit pushes, and shallow clones.
         # Pin to SHA for supply-chain safety: https://github.com/dorny/paths-filter/releases/tag/v4.0.1
-        uses: dorny/paths-filter@v4.0.1
+        uses: dorny/paths-filter@v4.0.2
         with:
           filters: |
             admin:
