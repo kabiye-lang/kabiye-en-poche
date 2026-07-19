@@ -185,7 +185,7 @@ importers:
         version: 2.108.1
       '@tanstack/react-query':
         specifier: ^5.100.14
-        version: 5.101.0(react@19.2.3)
+        version: 5.101.2(react@19.2.3)
       airtable:
         specifier: ^0.12.2
         version: 0.12.2
@@ -12045,15 +12045,15 @@ snapshots:
 
   '@tanstack/query-core@5.101.2': {}
 
-  '@tanstack/react-query@5.101.0(react@19.2.3)':
-    dependencies:
-      '@tanstack/query-core': 5.101.0
-      react: 19.2.3
-
   '@tanstack/react-query@5.101.0(react@19.2.7)':
     dependencies:
       '@tanstack/query-core': 5.101.0
       react: 19.2.7
+
+  '@tanstack/react-query@5.101.2(react@19.2.3)':
+    dependencies:
+      '@tanstack/query-core': 5.101.2
+      react: 19.2.3
 
   '@tanstack/react-query@5.101.2(react@19.2.7)':
     dependencies:
