@@ -25,7 +25,7 @@
     "debug-output": "eas build:inspect --platform android --stage archive --output ./debug-output"
   },
   "dependencies": {
-    "@babel/plugin-transform-export-namespace-from": "^7.29.7",
+    "@babel/plugin-transform-export-namespace-from": "^8.0.0",
     "@expo-google-fonts/figtree": "^0.4.1",
     "@expo-google-fonts/ibm-plex-sans-hebrew": "^0.4.1",
     "@expo/metro-runtime": "~57.0.6",
@@ -84,7 +84,7 @@
     "uniwind": "^1.7.0"
   },
   "devDependencies": {
-    "@babel/core": "^7.29.7",
+    "@babel/core": "^8.0.0",
     "@ianvs/prettier-plugin-sort-imports": "^4.7.1",
     "@lingui/babel-plugin-lingui-macro": "^6.1.0",
     "@lingui/metro-transformer": "^6.1.0",
