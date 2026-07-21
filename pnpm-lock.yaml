@@ -178,8 +178,8 @@ importers:
         specifier: ^24.0.0
         version: 24.1.1(@react-native-firebase/app@24.1.1(@react-native-async-storage/async-storage@2.2.0(react-native@0.86.0(@babel/core@8.0.1)(@react-native/jest-preset@0.85.3(@babel/core@8.0.1)(react@19.2.3)(supports-color@10.2.2))(@react-native/metro-config@0.86.0(@babel/core@8.0.1)(supports-color@10.2.2))(@types/react@19.2.17)(react@19.2.3)(supports-color@10.2.2)))(expo@57.0.7)(react-native@0.86.0(@babel/core@8.0.1)(@react-native/jest-preset@0.85.3(@babel/core@8.0.1)(react@19.2.3)(supports-color@10.2.2))(@react-native/metro-config@0.86.0(@babel/core@8.0.1)(supports-color@10.2.2))(@types/react@19.2.17)(react@19.2.3)(supports-color@10.2.2))(react@19.2.3))(expo@57.0.7)
       '@react-native-firebase/crashlytics':
-        specifier: ^24.0.0
-        version: 24.1.1(@react-native-firebase/app@24.1.1(@react-native-async-storage/async-storage@2.2.0(react-native@0.86.0(@babel/core@8.0.1)(@react-native/jest-preset@0.85.3(@babel/core@8.0.1)(react@19.2.3)(supports-color@10.2.2))(@react-native/metro-config@0.86.0(@babel/core@8.0.1)(supports-color@10.2.2))(@types/react@19.2.17)(react@19.2.3)(supports-color@10.2.2)))(expo@57.0.7)(react-native@0.86.0(@babel/core@8.0.1)(@react-native/jest-preset@0.85.3(@babel/core@8.0.1)(react@19.2.3)(supports-color@10.2.2))(@react-native/metro-config@0.86.0(@babel/core@8.0.1)(supports-color@10.2.2))(@types/react@19.2.17)(react@19.2.3)(supports-color@10.2.2))(react@19.2.3))(expo@57.0.7)
+        specifier: ^25.0.0
+        version: 25.1.0(@react-native-firebase/app@24.1.1(@react-native-async-storage/async-storage@2.2.0(react-native@0.86.0(@babel/core@8.0.1)(@react-native/jest-preset@0.85.3(@babel/core@8.0.1)(react@19.2.3)(supports-color@10.2.2))(@react-native/metro-config@0.86.0(@babel/core@8.0.1)(supports-color@10.2.2))(@types/react@19.2.17)(react@19.2.3)(supports-color@10.2.2)))(expo@57.0.7)(react-native@0.86.0(@babel/core@8.0.1)(@react-native/jest-preset@0.85.3(@babel/core@8.0.1)(react@19.2.3)(supports-color@10.2.2))(@react-native/metro-config@0.86.0(@babel/core@8.0.1)(supports-color@10.2.2))(@types/react@19.2.17)(react@19.2.3)(supports-color@10.2.2))(react@19.2.3))(expo@57.0.7)
       '@supabase/supabase-js':
         specifier: ^2.106.2
         version: 2.108.1
@@ -2959,10 +2959,10 @@ packages:
       expo:
         optional: true
 
-  '@react-native-firebase/crashlytics@24.1.1':
-    resolution: {integrity: sha512-ZCUfWLjejcI/YJtXa6eYR1uGbIMSsC2IhiMVb/qUI9BhG4Rh2BhkQNmpAz2sgtpz+UhjFCJ5pcFV7ez6303iLg==}
+  '@react-native-firebase/crashlytics@25.1.0':
+    resolution: {integrity: sha512-blzIOgOnQvqS3050ETY7N246UaYs76S7hRwPh9/NpActOsirLIR55j0C2l2zxncTzyWTnNn8FoMXvIdmdeC0XA==}
     peerDependencies:
-      '@react-native-firebase/app': 24.1.1
+      '@react-native-firebase/app': 25.1.0
       expo: '>=47.0.0'
     peerDependenciesMeta:
       expo:
@@ -12183,7 +12183,7 @@ snapshots:
     optionalDependencies:
       expo: 57.0.7(a94e1e8879a90c489bafe514d0b996ac)
 
-  '@react-native-firebase/crashlytics@24.1.1(@react-native-firebase/app@24.1.1(@react-native-async-storage/async-storage@2.2.0(react-native@0.86.0(@babel/core@8.0.1)(@react-native/jest-preset@0.85.3(@babel/core@8.0.1)(react@19.2.3)(supports-color@10.2.2))(@react-native/metro-config@0.86.0(@babel/core@8.0.1)(supports-color@10.2.2))(@types/react@19.2.17)(react@19.2.3)(supports-color@10.2.2)))(expo@57.0.7)(react-native@0.86.0(@babel/core@8.0.1)(@react-native/jest-preset@0.85.3(@babel/core@8.0.1)(react@19.2.3)(supports-color@10.2.2))(@react-native/metro-config@0.86.0(@babel/core@8.0.1)(supports-color@10.2.2))(@types/react@19.2.17)(react@19.2.3)(supports-color@10.2.2))(react@19.2.3))(expo@57.0.7)':
+  '@react-native-firebase/crashlytics@25.1.0(@react-native-firebase/app@24.1.1(@react-native-async-storage/async-storage@2.2.0(react-native@0.86.0(@babel/core@8.0.1)(@react-native/jest-preset@0.85.3(@babel/core@8.0.1)(react@19.2.3)(supports-color@10.2.2))(@react-native/metro-config@0.86.0(@babel/core@8.0.1)(supports-color@10.2.2))(@types/react@19.2.17)(react@19.2.3)(supports-color@10.2.2)))(expo@57.0.7)(react-native@0.86.0(@babel/core@8.0.1)(@react-native/jest-preset@0.85.3(@babel/core@8.0.1)(react@19.2.3)(supports-color@10.2.2))(@react-native/metro-config@0.86.0(@babel/core@8.0.1)(supports-color@10.2.2))(@types/react@19.2.17)(react@19.2.3)(supports-color@10.2.2))(react@19.2.3))(expo@57.0.7)':
     dependencies:
       '@react-native-firebase/app': 24.1.1(@react-native-async-storage/async-storage@2.2.0(react-native@0.86.0(@babel/core@8.0.1)(@react-native/jest-preset@0.85.3(@babel/core@8.0.1)(react@19.2.3)(supports-color@10.2.2))(@react-native/metro-config@0.86.0(@babel/core@8.0.1)(supports-color@10.2.2))(@types/react@19.2.17)(react@19.2.3)(supports-color@10.2.2)))(expo@57.0.7)(react-native@0.86.0(@babel/core@8.0.1)(@react-native/jest-preset@0.85.3(@babel/core@8.0.1)(react@19.2.3)(supports-color@10.2.2))(@react-native/metro-config@0.86.0(@babel/core@8.0.1)(supports-color@10.2.2))(@types/react@19.2.17)(react@19.2.3)(supports-color@10.2.2))(react@19.2.3)
       stacktrace-js: 2.0.2
