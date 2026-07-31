@@ -142,15 +142,16 @@
   ],
   "packageRules": [
     {
-      "description": "GitHub Actions - group all updates and pin to SHA digest",
+      "description": "GitHub Actions - group all updates, pin to SHA digest, automerge",
       "matchManagers": [
         "github-actions"
       ],
       "groupName": "GitHub Actions",
-      "pinDigests": true
+      "pinDigests": true,
+      "automerge": true
     },
     {
-      "description": "NPM - only check major updates; skip minor/patch to speed up runs and cut resource usage",
+      "description": "NPM - only check major updates; skip everything else to speed up runs and cut resource usage",
       "matchFileNames": [
         "package.json",
         "mobile/package.json",
@@ -159,9 +160,25 @@
       ],
       "matchUpdateTypes": [
         "minor",
-        "patch"
+        "patch",
+        "pin",
+        "digest",
+        "lockFileMaintenance"
       ],
       "enabled": false
+    },
+    {
+      "description": "NPM - group all major updates into one PR",
+      "matchFileNames": [
+        "package.json",
+        "mobile/package.json",
+        "admin/package.json",
+        "website/package.json"
+      ],
+      "matchUpdateTypes": [
+        "major"
+      ],
+      "groupName": "Major npm dependencies"
     }
   ]
 }
