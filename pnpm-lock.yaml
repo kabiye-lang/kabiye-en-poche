@@ -172,14 +172,14 @@ importers:
         specifier: ^4.4.1
         version: 4.4.1(react-native@0.86.0(@babel/core@8.0.1)(@react-native/jest-preset@0.85.3(@babel/core@8.0.1)(react@19.2.3)(supports-color@10.2.2))(@react-native/metro-config@0.86.0(@babel/core@8.0.1)(supports-color@10.2.2))(@types/react@19.2.17)(react@19.2.3)(supports-color@10.2.2))(react@19.2.3)
       '@react-native-firebase/app':
-        specifier: ^25.0.0
-        version: 25.1.0(@react-native-async-storage/async-storage@2.2.0(react-native@0.86.0(@babel/core@8.0.1)(@react-native/jest-preset@0.85.3(@babel/core@8.0.1)(react@19.2.3)(supports-color@10.2.2))(@react-native/metro-config@0.86.0(@babel/core@8.0.1)(supports-color@10.2.2))(@types/react@19.2.17)(react@19.2.3)(supports-color@10.2.2)))(expo@57.0.7)(react-native@0.86.0(@babel/core@8.0.1)(@react-native/jest-preset@0.85.3(@babel/core@8.0.1)(react@19.2.3)(supports-color@10.2.2))(@react-native/metro-config@0.86.0(@babel/core@8.0.1)(supports-color@10.2.2))(@types/react@19.2.17)(react@19.2.3)(supports-color@10.2.2))(react@19.2.3)
+        specifier: ^26.0.0
+        version: 26.0.0(@react-native-async-storage/async-storage@2.2.0(react-native@0.86.0(@babel/core@8.0.1)(@react-native/jest-preset@0.85.3(@babel/core@8.0.1)(react@19.2.3)(supports-color@10.2.2))(@react-native/metro-config@0.86.0(@babel/core@8.0.1)(supports-color@10.2.2))(@types/react@19.2.17)(react@19.2.3)(supports-color@10.2.2)))(expo@57.0.7)(react-native@0.86.0(@babel/core@8.0.1)(@react-native/jest-preset@0.85.3(@babel/core@8.0.1)(react@19.2.3)(supports-color@10.2.2))(@react-native/metro-config@0.86.0(@babel/core@8.0.1)(supports-color@10.2.2))(@types/react@19.2.17)(react@19.2.3)(supports-color@10.2.2))(react@19.2.3)
       '@react-native-firebase/auth':
         specifier: ^25.0.0
-        version: 25.1.0(@react-native-firebase/app@25.1.0(@react-native-async-storage/async-storage@2.2.0(react-native@0.86.0(@babel/core@8.0.1)(@react-native/jest-preset@0.85.3(@babel/core@8.0.1)(react@19.2.3)(supports-color@10.2.2))(@react-native/metro-config@0.86.0(@babel/core@8.0.1)(supports-color@10.2.2))(@types/react@19.2.17)(react@19.2.3)(supports-color@10.2.2)))(expo@57.0.7)(react-native@0.86.0(@babel/core@8.0.1)(@react-native/jest-preset@0.85.3(@babel/core@8.0.1)(react@19.2.3)(supports-color@10.2.2))(@react-native/metro-config@0.86.0(@babel/core@8.0.1)(supports-color@10.2.2))(@types/react@19.2.17)(react@19.2.3)(supports-color@10.2.2))(react@19.2.3))(expo@57.0.7)
+        version: 25.1.0(@react-native-firebase/app@26.0.0(@react-native-async-storage/async-storage@2.2.0(react-native@0.86.0(@babel/core@8.0.1)(@react-native/jest-preset@0.85.3(@babel/core@8.0.1)(react@19.2.3)(supports-color@10.2.2))(@react-native/metro-config@0.86.0(@babel/core@8.0.1)(supports-color@10.2.2))(@types/react@19.2.17)(react@19.2.3)(supports-color@10.2.2)))(expo@57.0.7)(react-native@0.86.0(@babel/core@8.0.1)(@react-native/jest-preset@0.85.3(@babel/core@8.0.1)(react@19.2.3)(supports-color@10.2.2))(@react-native/metro-config@0.86.0(@babel/core@8.0.1)(supports-color@10.2.2))(@types/react@19.2.17)(react@19.2.3)(supports-color@10.2.2))(react@19.2.3))(expo@57.0.7)
       '@react-native-firebase/crashlytics':
         specifier: ^25.0.0
-        version: 25.1.0(@react-native-firebase/app@25.1.0(@react-native-async-storage/async-storage@2.2.0(react-native@0.86.0(@babel/core@8.0.1)(@react-native/jest-preset@0.85.3(@babel/core@8.0.1)(react@19.2.3)(supports-color@10.2.2))(@react-native/metro-config@0.86.0(@babel/core@8.0.1)(supports-color@10.2.2))(@types/react@19.2.17)(react@19.2.3)(supports-color@10.2.2)))(expo@57.0.7)(react-native@0.86.0(@babel/core@8.0.1)(@react-native/jest-preset@0.85.3(@babel/core@8.0.1)(react@19.2.3)(supports-color@10.2.2))(@react-native/metro-config@0.86.0(@babel/core@8.0.1)(supports-color@10.2.2))(@types/react@19.2.17)(react@19.2.3)(supports-color@10.2.2))(react@19.2.3))(expo@57.0.7)
+        version: 25.1.0(@react-native-firebase/app@26.0.0(@react-native-async-storage/async-storage@2.2.0(react-native@0.86.0(@babel/core@8.0.1)(@react-native/jest-preset@0.85.3(@babel/core@8.0.1)(react@19.2.3)(supports-color@10.2.2))(@react-native/metro-config@0.86.0(@babel/core@8.0.1)(supports-color@10.2.2))(@types/react@19.2.17)(react@19.2.3)(supports-color@10.2.2)))(expo@57.0.7)(react-native@0.86.0(@babel/core@8.0.1)(@react-native/jest-preset@0.85.3(@babel/core@8.0.1)(react@19.2.3)(supports-color@10.2.2))(@react-native/metro-config@0.86.0(@babel/core@8.0.1)(supports-color@10.2.2))(@types/react@19.2.17)(react@19.2.3)(supports-color@10.2.2))(react@19.2.3))(expo@57.0.7)
       '@supabase/supabase-js':
         specifier: ^2.106.2
         version: 2.108.1
@@ -2702,8 +2702,8 @@ packages:
   '@protobufjs/pool@1.1.0':
     resolution: {integrity: sha512-0kELaGSIDBKvcgS4zkjz1PeddatrjYcmMWOlAuAPwAeccUrPHdUqo/J6LiymHHEiJT5NrF1UVwxY14f+fy4WQw==}
 
-  '@protobufjs/utf8@1.1.1':
-    resolution: {integrity: sha512-oOAWABowe8EAbMyWKM0tYDKi8Yaox52D+HWZhAIJqQXbqe0xI/GV7FhLWqlEKreMkfDjshR5FKgi3mnle0h6Eg==}
+  '@protobufjs/utf8@1.1.2':
+    resolution: {integrity: sha512-b1UQwcEZ4yCnMCD8DAL1VlbvBJE9/IX4FTIp7BG1xYpf29SLazLSrqUkj4w7Y5y7cCVP6E5tcqqcI0xemPkHug==}
 
   '@radix-ui/primitive@1.1.4':
     resolution: {integrity: sha512-7AdCK9PQyiljKoBDbN8OuctCbd/esdwZPQ8RtOE3SsyQtUpiPb+ND75q0jEhC1m1ecBI0MFNeLJvwIh9iKHRcQ==}
@@ -2940,8 +2940,8 @@ packages:
       react: '*'
       react-native: '*'
 
-  '@react-native-firebase/app@25.1.0':
-    resolution: {integrity: sha512-IRBM0Uwrs1O+SkUF8D9g7FgC8WI5b/3xEbt3JzFTTsHWvQyXxvTflKd4rNFNegV+2mFrM53XC9cS1BNVjWSSSg==}
+  '@react-native-firebase/app@26.0.0':
+    resolution: {integrity: sha512-TuLOl5RL/9hS3Y61XqnIQ9p/1nM/lYfS0eGeVgLsY5mSY7nLL+KCNPTDvD3o5n6bGqrr72Apr/d2nL2XqvT/Vg==}
     peerDependencies:
       expo: '>=47.0.0'
       react: '*'
@@ -3583,6 +3583,9 @@ packages:
 
   '@types/node@26.1.1':
     resolution: {integrity: sha512-nxAkRSVkN1Y0JC1W8ky/fTfkGsMmcrRsbx+3XoZE+rMOX71kLYTV7fLXpqud1GpbpP5TuffXFqfX7fH2GgZREw==}
+
+  '@types/node@26.1.2':
+    resolution: {integrity: sha512-Vu4a5UFA9rIIFJ7rB/Vaafh9lrCQszopTCx6KjFboXTGQbPNasehVR5TEiithSDGyd1DEiUByggTZsg8jukeIg==}
 
   '@types/parse-json@4.0.2':
     resolution: {integrity: sha512-dISoDXWWQwUquiKsyZ4Ng+HX2KsPL7LyHKHQwgGFEA3IaKac4Obd+h2a/a6waisAoepJlBcx9paWqjA8/HVjCw==}
@@ -7571,8 +7574,8 @@ packages:
   property-information@7.2.0:
     resolution: {integrity: sha512-IAtzIB6sUiWaJYrX9smp3V46pBGbBeLFRGdh25kg1334VcBlD8HzhPeNIWQH9zhGmo2itIe25EHt9dQP7G5hmg==}
 
-  protobufjs@7.6.4:
-    resolution: {integrity: sha512-RJJPTTpvFfHcWLkIa2JFWK4XvtSzS0yEWDmunqHXli1h3JlkbcQZXDZdcWxv+JK3Xsl5/UFDPZ0iGm7DAengYw==}
+  protobufjs@7.6.5:
+    resolution: {integrity: sha512-/FPD0nUc9jH6rfFjji9IBqOz4pcSE3CsT1m7Ep6Mdb0LxSUMj8hgl6GomOvZzpNpAqqGaXA0P3VSrZLFzIhQrw==}
     engines: {node: '>=12.0.0'}
 
   proxy-addr@2.0.7:
@@ -9072,6 +9075,10 @@ packages:
 
   yargs@17.7.2:
     resolution: {integrity: sha512-7dSzzRQ++CKnNI/krKnYRV7JKKPUXMEh61soaHKg9mrWEhzFWhFnxPxGl+69cD1Ou63C13NUPCnmIcrvqCuM6w==}
+    engines: {node: '>=12'}
+
+  yargs@17.7.3:
+    resolution: {integrity: sha512-GZtjxm/J/4TSxuL3FNYjCmLktBTnIw/rVmKSIyKeYAZpmJB2ig9VauCC5xsa82GNKVKDAqpOn3KVzNt0zmrU0g==}
     engines: {node: '>=12'}
 
   yargs@18.0.0:
@@ -11185,14 +11192,14 @@ snapshots:
   '@grpc/grpc-js@1.9.16':
     dependencies:
       '@grpc/proto-loader': 0.7.15
-      '@types/node': 26.1.1
+      '@types/node': 26.1.2
 
   '@grpc/proto-loader@0.7.15':
     dependencies:
       lodash.camelcase: 4.3.0
       long: 5.3.2
-      protobufjs: 7.6.4
-      yargs: 17.7.2
+      protobufjs: 7.6.5
+      yargs: 17.7.3
 
   '@humanfs/core@0.19.2':
     dependencies:
@@ -11959,7 +11966,7 @@ snapshots:
 
   '@protobufjs/pool@1.1.0': {}
 
-  '@protobufjs/utf8@1.1.1': {}
+  '@protobufjs/utf8@1.1.2': {}
 
   '@radix-ui/primitive@1.1.4': {}
 
@@ -12170,7 +12177,7 @@ snapshots:
       react: 19.2.3
       react-native: 0.86.0(@babel/core@8.0.1)(@react-native/jest-preset@0.85.3(@babel/core@8.0.1)(react@19.2.3)(supports-color@10.2.2))(@react-native/metro-config@0.86.0(@babel/core@8.0.1)(supports-color@10.2.2))(@types/react@19.2.17)(react@19.2.3)(supports-color@10.2.2)
 
-  '@react-native-firebase/app@25.1.0(@react-native-async-storage/async-storage@2.2.0(react-native@0.86.0(@babel/core@8.0.1)(@react-native/jest-preset@0.85.3(@babel/core@8.0.1)(react@19.2.3)(supports-color@10.2.2))(@react-native/metro-config@0.86.0(@babel/core@8.0.1)(supports-color@10.2.2))(@types/react@19.2.17)(react@19.2.3)(supports-color@10.2.2)))(expo@57.0.7)(react-native@0.86.0(@babel/core@8.0.1)(@react-native/jest-preset@0.85.3(@babel/core@8.0.1)(react@19.2.3)(supports-color@10.2.2))(@react-native/metro-config@0.86.0(@babel/core@8.0.1)(supports-color@10.2.2))(@types/react@19.2.17)(react@19.2.3)(supports-color@10.2.2))(react@19.2.3)':
+  '@react-native-firebase/app@26.0.0(@react-native-async-storage/async-storage@2.2.0(react-native@0.86.0(@babel/core@8.0.1)(@react-native/jest-preset@0.85.3(@babel/core@8.0.1)(react@19.2.3)(supports-color@10.2.2))(@react-native/metro-config@0.86.0(@babel/core@8.0.1)(supports-color@10.2.2))(@types/react@19.2.17)(react@19.2.3)(supports-color@10.2.2)))(expo@57.0.7)(react-native@0.86.0(@babel/core@8.0.1)(@react-native/jest-preset@0.85.3(@babel/core@8.0.1)(react@19.2.3)(supports-color@10.2.2))(@react-native/metro-config@0.86.0(@babel/core@8.0.1)(supports-color@10.2.2))(@types/react@19.2.17)(react@19.2.3)(supports-color@10.2.2))(react@19.2.3)':
     dependencies:
       firebase: 12.15.0(@react-native-async-storage/async-storage@2.2.0(react-native@0.86.0(@babel/core@8.0.1)(@react-native/jest-preset@0.85.3(@babel/core@8.0.1)(react@19.2.3)(supports-color@10.2.2))(@react-native/metro-config@0.86.0(@babel/core@8.0.1)(supports-color@10.2.2))(@types/react@19.2.17)(react@19.2.3)(supports-color@10.2.2)))
       react: 19.2.3
@@ -12180,16 +12187,16 @@ snapshots:
     transitivePeerDependencies:
       - '@react-native-async-storage/async-storage'
 
-  '@react-native-firebase/auth@25.1.0(@react-native-firebase/app@25.1.0(@react-native-async-storage/async-storage@2.2.0(react-native@0.86.0(@babel/core@8.0.1)(@react-native/jest-preset@0.85.3(@babel/core@8.0.1)(react@19.2.3)(supports-color@10.2.2))(@react-native/metro-config@0.86.0(@babel/core@8.0.1)(supports-color@10.2.2))(@types/react@19.2.17)(react@19.2.3)(supports-color@10.2.2)))(expo@57.0.7)(react-native@0.86.0(@babel/core@8.0.1)(@react-native/jest-preset@0.85.3(@babel/core@8.0.1)(react@19.2.3)(supports-color@10.2.2))(@react-native/metro-config@0.86.0(@babel/core@8.0.1)(supports-color@10.2.2))(@types/react@19.2.17)(react@19.2.3)(supports-color@10.2.2))(react@19.2.3))(expo@57.0.7)':
+  '@react-native-firebase/auth@25.1.0(@react-native-firebase/app@26.0.0(@react-native-async-storage/async-storage@2.2.0(react-native@0.86.0(@babel/core@8.0.1)(@react-native/jest-preset@0.85.3(@babel/core@8.0.1)(react@19.2.3)(supports-color@10.2.2))(@react-native/metro-config@0.86.0(@babel/core@8.0.1)(supports-color@10.2.2))(@types/react@19.2.17)(react@19.2.3)(supports-color@10.2.2)))(expo@57.0.7)(react-native@0.86.0(@babel/core@8.0.1)(@react-native/jest-preset@0.85.3(@babel/core@8.0.1)(react@19.2.3)(supports-color@10.2.2))(@react-native/metro-config@0.86.0(@babel/core@8.0.1)(supports-color@10.2.2))(@types/react@19.2.17)(react@19.2.3)(supports-color@10.2.2))(react@19.2.3))(expo@57.0.7)':
     dependencies:
-      '@react-native-firebase/app': 25.1.0(@react-native-async-storage/async-storage@2.2.0(react-native@0.86.0(@babel/core@8.0.1)(@react-native/jest-preset@0.85.3(@babel/core@8.0.1)(react@19.2.3)(supports-color@10.2.2))(@react-native/metro-config@0.86.0(@babel/core@8.0.1)(supports-color@10.2.2))(@types/react@19.2.17)(react@19.2.3)(supports-color@10.2.2)))(expo@57.0.7)(react-native@0.86.0(@babel/core@8.0.1)(@react-native/jest-preset@0.85.3(@babel/core@8.0.1)(react@19.2.3)(supports-color@10.2.2))(@react-native/metro-config@0.86.0(@babel/core@8.0.1)(supports-color@10.2.2))(@types/react@19.2.17)(react@19.2.3)(supports-color@10.2.2))(react@19.2.3)
+      '@react-native-firebase/app': 26.0.0(@react-native-async-storage/async-storage@2.2.0(react-native@0.86.0(@babel/core@8.0.1)(@react-native/jest-preset@0.85.3(@babel/core@8.0.1)(react@19.2.3)(supports-color@10.2.2))(@react-native/metro-config@0.86.0(@babel/core@8.0.1)(supports-color@10.2.2))(@types/react@19.2.17)(react@19.2.3)(supports-color@10.2.2)))(expo@57.0.7)(react-native@0.86.0(@babel/core@8.0.1)(@react-native/jest-preset@0.85.3(@babel/core@8.0.1)(react@19.2.3)(supports-color@10.2.2))(@react-native/metro-config@0.86.0(@babel/core@8.0.1)(supports-color@10.2.2))(@types/react@19.2.17)(react@19.2.3)(supports-color@10.2.2))(react@19.2.3)
       plist: 3.1.1
     optionalDependencies:
       expo: 57.0.7(a94e1e8879a90c489bafe514d0b996ac)
 
-  '@react-native-firebase/crashlytics@25.1.0(@react-native-firebase/app@25.1.0(@react-native-async-storage/async-storage@2.2.0(react-native@0.86.0(@babel/core@8.0.1)(@react-native/jest-preset@0.85.3(@babel/core@8.0.1)(react@19.2.3)(supports-color@10.2.2))(@react-native/metro-config@0.86.0(@babel/core@8.0.1)(supports-color@10.2.2))(@types/react@19.2.17)(react@19.2.3)(supports-color@10.2.2)))(expo@57.0.7)(react-native@0.86.0(@babel/core@8.0.1)(@react-native/jest-preset@0.85.3(@babel/core@8.0.1)(react@19.2.3)(supports-color@10.2.2))(@react-native/metro-config@0.86.0(@babel/core@8.0.1)(supports-color@10.2.2))(@types/react@19.2.17)(react@19.2.3)(supports-color@10.2.2))(react@19.2.3))(expo@57.0.7)':
+  '@react-native-firebase/crashlytics@25.1.0(@react-native-firebase/app@26.0.0(@react-native-async-storage/async-storage@2.2.0(react-native@0.86.0(@babel/core@8.0.1)(@react-native/jest-preset@0.85.3(@babel/core@8.0.1)(react@19.2.3)(supports-color@10.2.2))(@react-native/metro-config@0.86.0(@babel/core@8.0.1)(supports-color@10.2.2))(@types/react@19.2.17)(react@19.2.3)(supports-color@10.2.2)))(expo@57.0.7)(react-native@0.86.0(@babel/core@8.0.1)(@react-native/jest-preset@0.85.3(@babel/core@8.0.1)(react@19.2.3)(supports-color@10.2.2))(@react-native/metro-config@0.86.0(@babel/core@8.0.1)(supports-color@10.2.2))(@types/react@19.2.17)(react@19.2.3)(supports-color@10.2.2))(react@19.2.3))(expo@57.0.7)':
     dependencies:
-      '@react-native-firebase/app': 25.1.0(@react-native-async-storage/async-storage@2.2.0(react-native@0.86.0(@babel/core@8.0.1)(@react-native/jest-preset@0.85.3(@babel/core@8.0.1)(react@19.2.3)(supports-color@10.2.2))(@react-native/metro-config@0.86.0(@babel/core@8.0.1)(supports-color@10.2.2))(@types/react@19.2.17)(react@19.2.3)(supports-color@10.2.2)))(expo@57.0.7)(react-native@0.86.0(@babel/core@8.0.1)(@react-native/jest-preset@0.85.3(@babel/core@8.0.1)(react@19.2.3)(supports-color@10.2.2))(@react-native/metro-config@0.86.0(@babel/core@8.0.1)(supports-color@10.2.2))(@types/react@19.2.17)(react@19.2.3)(supports-color@10.2.2))(react@19.2.3)
+      '@react-native-firebase/app': 26.0.0(@react-native-async-storage/async-storage@2.2.0(react-native@0.86.0(@babel/core@8.0.1)(@react-native/jest-preset@0.85.3(@babel/core@8.0.1)(react@19.2.3)(supports-color@10.2.2))(@react-native/metro-config@0.86.0(@babel/core@8.0.1)(supports-color@10.2.2))(@types/react@19.2.17)(react@19.2.3)(supports-color@10.2.2)))(expo@57.0.7)(react-native@0.86.0(@babel/core@8.0.1)(@react-native/jest-preset@0.85.3(@babel/core@8.0.1)(react@19.2.3)(supports-color@10.2.2))(@react-native/metro-config@0.86.0(@babel/core@8.0.1)(supports-color@10.2.2))(@types/react@19.2.17)(react@19.2.3)(supports-color@10.2.2))(react@19.2.3)
       stacktrace-js: 2.0.2
     optionalDependencies:
       expo: 57.0.7(a94e1e8879a90c489bafe514d0b996ac)
@@ -12820,6 +12827,10 @@ snapshots:
       undici-types: 7.24.6
 
   '@types/node@26.1.1':
+    dependencies:
+      undici-types: 8.3.0
+
+  '@types/node@26.1.2':
     dependencies:
       undici-types: 8.3.0
 
@@ -18005,7 +18016,7 @@ snapshots:
 
   property-information@7.2.0: {}
 
-  protobufjs@7.6.4:
+  protobufjs@7.6.5:
     dependencies:
       '@protobufjs/aspromise': 1.1.2
       '@protobufjs/base64': 1.1.2
@@ -18015,8 +18026,8 @@ snapshots:
       '@protobufjs/float': 1.0.2
       '@protobufjs/path': 1.1.2
       '@protobufjs/pool': 1.1.0
-      '@protobufjs/utf8': 1.1.1
-      '@types/node': 26.1.1
+      '@protobufjs/utf8': 1.1.2
+      '@types/node': 26.1.2
       long: 5.3.2
 
   proxy-addr@2.0.7:
@@ -19870,6 +19881,16 @@ snapshots:
   yargs-parser@22.0.0: {}
 
   yargs@17.7.2:
+    dependencies:
+      cliui: 8.0.1
+      escalade: 3.2.0
+      get-caller-file: 2.0.5
+      require-directory: 2.1.1
+      string-width: 4.2.3
+      y18n: 5.0.8
+      yargs-parser: 21.1.1
+
+  yargs@17.7.3:
     dependencies:
       cliui: 8.0.1
       escalade: 3.2.0
