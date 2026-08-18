@@ -250,7 +250,7 @@ jobs:
           key: node-modules-${{ runner.os }}-${{ hashFiles('pnpm-lock.yaml') }}
           fail-on-cache-miss: true
       - name: Type check
-        run: pnpm run ts:check
+        run: pnpm run check-types
       - name: Lint
         run: pnpm run lint
       - name: Test

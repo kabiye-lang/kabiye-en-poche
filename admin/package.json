@@ -13,6 +13,7 @@
   "dependencies": {
     "@codemirror/lang-json": "^6.0.2",
     "@codemirror/lint": "^6.9.7",
+    "@codemirror/state": "^6.7.1",
     "@mui/utils": "^9.3.0",
     "@phosphor-icons/react": "^2.1.10",
     "@supabase/supabase-js": "^2.112.3",
@@ -22,6 +23,7 @@
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
     "lucide-react": "^1.31.0",
+    "ra-core": "^5.15.0",
     "ra-i18n-polyglot": "^5.15.0",
     "ra-language-english": "^5.15.0",
     "ra-supabase": "^3.5.2",
@@ -29,13 +31,14 @@
     "react-admin": "^5.15.1",
     "react-dom": "^19.2.8",
     "react-error-boundary": "^6.1.3",
+    "react-hook-form": "^7.85.0",
     "react-router-dom": "^7.18.2",
     "remark-breaks": "^4.0.0",
     "tailwind-merge": "^3.6.0"
   },
   "devDependencies": {
-    "@ianvs/prettier-plugin-sort-imports": "4.7.1",
     "@eslint/js": "^10.0.1",
+    "@ianvs/prettier-plugin-sort-imports": "4.7.1",
     "@tailwindcss/postcss": "^4.3.3",
     "@types/react": "~19.2.18",
     "@types/react-dom": "~19.2.4",

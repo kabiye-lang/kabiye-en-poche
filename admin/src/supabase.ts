@@ -1,4 +1,4 @@
-import type { Database } from '../../src/types/db.types'
+import type { Database } from '../../mobile/src/types/db.types'
 
 import { createClient } from '@supabase/supabase-js'
 

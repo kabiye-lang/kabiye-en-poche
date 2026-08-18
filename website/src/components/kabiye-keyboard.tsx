@@ -1,6 +1,6 @@
 import { useState, useRef, useEffect } from "react";
-import { motion, AnimatePresence } from "framer-motion";
-import { X, Copy, Link } from "@phosphor-icons/react";
+import { motion, AnimatePresence } from "motion/react";
+import { XIcon, CopyIcon, LinkIcon } from "@phosphor-icons/react";
 
 interface KabiyeKeyboardProps {
   isOpen: boolean;
@@ -118,7 +118,7 @@ export default function KabiyeKeyboard({
                   rel="noopener noreferrer"
                   className="text-[#6200EE] hover:text-[#3700B3] flex items-center"
                 >
-                  <Link size={18} className="mr-1" />
+                  <LinkIcon size={18} className="mr-1" />
                   {t.externalKeyboard}
                 </a>
                 <button
@@ -126,7 +126,7 @@ export default function KabiyeKeyboard({
                   className="text-[#757575] hover:text-[#6200EE] transition-colors"
                   aria-label={t.close}
                 >
-                  <X size={24} />
+                  <XIcon size={24} />
                 </button>
               </div>
             </div>
@@ -181,7 +181,7 @@ export default function KabiyeKeyboard({
                   whileTap={{ scale: 0.95 }}
                   disabled={copied}
                 >
-                  <Copy className="mr-2" size={18} />
+                  <CopyIcon className="mr-2" size={18} />
                   {copied ? t.copied : t.copy}
                 </motion.button>
               </div>

@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { SpeakerHigh } from "@phosphor-icons/react";
-import { motion, AnimatePresence } from "framer-motion";
+import { motion, AnimatePresence } from "motion/react";
 
 const lessons = [
   {

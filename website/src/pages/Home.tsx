@@ -6,7 +6,7 @@ import {
   GithubLogo,
   Keyboard,
 } from "@phosphor-icons/react";
-import { motion } from "framer-motion";
+import { motion } from "motion/react";
 import SampleLesson from "@/components/sample-lesson";
 import LanguageSwitcher from "@/components/language-switcher";
 import NewsletterSignup from "@/components/newsletter-signup";
