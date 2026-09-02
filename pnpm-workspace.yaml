@@ -97,6 +97,7 @@ minimumReleaseAgeExclude:
   - "expo-web-browser"
   - "expo-widgets"
   - "jest-expo"
+  - expo-modules-jsi@57.0.7
 
 allowBuilds:
   '@firebase/util': true

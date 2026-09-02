@@ -67,5 +67,6 @@
             "[\"'`]([^\"'`]*).*?[\"'`]"
         ]
     ],
-    "gitlens.ai.generateCommitMessage.customInstructions": "The first line should be a single line summary with no more than 50 characters. The second line should be blank. Start the full summary on the third line. The body should be no longer than 100 characters."
+    "gitlens.ai.generateCommitMessage.customInstructions": "The first line should be a single line summary with no more than 50 characters. The second line should be blank. Start the full summary on the third line. The body should be no longer than 100 characters.",
+    "explorerExcludeManager.backup": {}
 }
