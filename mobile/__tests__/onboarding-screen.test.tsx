@@ -36,13 +36,13 @@ jest.mock('../src/components/ui', () => {
 })
 
 describe('OnboardingScreen render', () => {
-  it('renders the first slide title text', () => {
-    render(<OnboardingScreen />)
+  it('renders the first slide title text', async () => {
+    await render(<OnboardingScreen />)
     expect(screen.getByText('Discover Kabiyè')).toBeTruthy()
   })
 
-  it('renders the first slide description text', () => {
-    render(<OnboardingScreen />)
+  it('renders the first slide description text', async () => {
+    await render(<OnboardingScreen />)
     expect(
       screen.getByText(
         'Explore a rich West African language spoken by millions. Learn words, phrases, and the beautiful Kabiyè alphabet.'
@@ -50,18 +50,18 @@ describe('OnboardingScreen render', () => {
     ).toBeTruthy()
   })
 
-  it('shows Next button on the first slide', () => {
-    render(<OnboardingScreen />)
+  it('shows Next button on the first slide', async () => {
+    await render(<OnboardingScreen />)
     expect(screen.getByText('Next')).toBeTruthy()
   })
 
-  it('shows Skip button on the first slide', () => {
-    render(<OnboardingScreen />)
+  it('shows Skip button on the first slide', async () => {
+    await render(<OnboardingScreen />)
     expect(screen.getByText('Skip')).toBeTruthy()
   })
 
-  it('does not show Get Started on the first slide', () => {
-    render(<OnboardingScreen />)
+  it('does not show Get Started on the first slide', async () => {
+    await render(<OnboardingScreen />)
     expect(screen.queryByText('Get Started')).toBeNull()
   })
 })

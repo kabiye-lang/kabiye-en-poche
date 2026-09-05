@@ -126,7 +126,6 @@ export default function KeyboardScreen() {
   const buttonWidth = (Dimensions.get('screen').width - 10) / 11 - 4
 
   const renderButton = (letter: { id: string; caps: string }) => {
-  const placeholderColor = usePlaceholderColor()
     const isKabiye = KABIYE_SPECIFIC.has(letter.id)
     return (
       <Button

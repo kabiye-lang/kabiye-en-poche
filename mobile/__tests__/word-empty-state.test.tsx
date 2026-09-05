@@ -48,7 +48,7 @@ describe('Word empty state — SenseDefinitions', () => {
     expect(toJSON()).toBeNull()
   })
 
-  it('renders definitions when senses are provided', () => {
+  it('renders definitions when senses are provided', async () => {
     const senses = [
       {
         senseNumber: 1,
@@ -63,7 +63,7 @@ describe('Word empty state — SenseDefinitions', () => {
         lexRefs: [],
       },
     ]
-    render(<SenseDefinitions senses={senses} translation="en" />, { wrapper })
+    await render(<SenseDefinitions senses={senses} translation="en" />, { wrapper })
     expect(screen.getByText(/test-en/)).toBeTruthy()
   })
 })

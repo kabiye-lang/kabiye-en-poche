@@ -525,6 +525,12 @@ msgstr "Next"
 #: src/components/lesson-steps/audio-step.tsx
 #: src/components/lesson-steps/listen-choose-step.tsx
 #: src/components/lesson-steps/listen-type-step.tsx
+msgid "Audio unavailable"
+msgstr ""
+
+#: src/components/lesson-steps/audio-step.tsx
+#: src/components/lesson-steps/listen-choose-step.tsx
+#: src/components/lesson-steps/listen-type-step.tsx
 msgid "No audio available"
 msgstr "No audio available"
 
@@ -953,3 +959,11 @@ msgstr "Your progress has been reset successfully."
 #: src/components/lesson-steps/completion-step.tsx
 msgid "Your Score"
 msgstr "Your Score"
+
+#: src/components/audio-play-button.tsx
+msgid "Play audio"
+msgstr ""
+
+#: src/components/audio-play-button.tsx
+msgid "Stop audio"
+msgstr ""

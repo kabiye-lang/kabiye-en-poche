@@ -84,25 +84,25 @@ const mockWord = {
 }
 
 describe('WordOfTheDay', () => {
-  it('renders skeleton when loading', () => {
-    render(<WordOfTheDay words={[]} language="en" isLoading={true} />)
+  it('renders skeleton when loading', async () => {
+    await render(<WordOfTheDay words={[]} language="en" isLoading={true} />)
     // Skeleton has placeholder shapes but no text content
     expect(screen.queryByText('taa')).toBeNull()
   })
 
-  it('renders fallback when words array is empty', () => {
-    render(<WordOfTheDay words={[]} language="en" isLoading={false} />)
+  it('renders fallback when words array is empty', async () => {
+    await render(<WordOfTheDay words={[]} language="en" isLoading={false} />)
     // Fallback view renders instead of null so home section stays visible
     expect(screen.getByText('No word available today')).toBeTruthy()
   })
 
-  it('renders fallback when error prop is true', () => {
-    render(<WordOfTheDay words={[]} language="en" isLoading={false} isError={true} />)
+  it('renders fallback when error prop is true', async () => {
+    await render(<WordOfTheDay words={[]} language="en" isLoading={false} isError={true} />)
     expect(screen.getByText('No word available today')).toBeTruthy()
   })
 
-  it('renders word card with headword and translation', () => {
-    render(<WordOfTheDay words={[mockWord as any]} language="en" isLoading={false} />)
+  it('renders word card with headword and translation', async () => {
+    await render(<WordOfTheDay words={[mockWord as any]} language="en" isLoading={false} />)
     expect(screen.getByText('taa')).toBeTruthy()
     expect(screen.getByText('father')).toBeTruthy()
   })

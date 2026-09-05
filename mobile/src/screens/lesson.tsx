@@ -26,6 +26,23 @@ import { Text, View } from '../components/ui'
 import { useAppCompleteLesson, useAppLesson, useAppLessonActivities, useAppLessonContents } from '../hooks/use-app-data'
 import { useLanguage } from '../hooks/use-language'
 import { hasActivity } from '../types/lesson-steps'
+import { usableAudioUrl } from '../utils/audio-source'
+
+/**
+ * "Listen and choose", "listen and type" and plain audio steps exist only to
+ * deliver a recording. With no usable audio (see utils/audio-source) the first
+ * two are unanswerable -- the learner is asked to identify a word they were
+ * never played -- and the third has nothing to deliver. Drop them from the
+ * lesson rather than showing a dead exercise; they reappear on their own once
+ * real recordings are hosted.
+ */
+const isAnswerable = (activity: { activity_type: string; data: unknown }): boolean => {
+  if (!AUDIO_DEPENDENT_ACTIVITIES.has(activity.activity_type)) return true
+  const data = (activity.data ?? {}) as { audio_url?: string; audioUrl?: string }
+  return usableAudioUrl(data.audio_url ?? data.audioUrl) !== undefined
+}
+
+const AUDIO_DEPENDENT_ACTIVITIES = new Set(['audio', 'listen_choose', 'listen_type'])
 
 const LessonScreen = () => {
   const { t } = useLingui()
@@ -69,7 +86,7 @@ const LessonScreen = () => {
     // Step 3+: Activities (quizzes and exercises)
     // Each component will handle its own data transformation
     if (activities && activities.length > 0) {
-      activities.forEach((activity) => {
+      activities.filter(isAnswerable).forEach((activity) => {
         builtSteps.push({
           id: `activity-${activity.id}`,
           type: activity.activity_type as ActivityStep['type'],

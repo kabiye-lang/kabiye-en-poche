@@ -3,6 +3,9 @@ import type { PressableProps } from 'react-native'
 import { ActivityIndicator, Pressable } from 'react-native'
 import Animated from 'react-native-reanimated'
 
+import { useLingui } from '@lingui/react/macro'
+
+import { usePrimaryColor } from '../hooks/use-theme-color'
 import { SpeakerHighIcon, SpeakerSlashIcon } from './icons'
 
 const AnimatedPressable = Animated.createAnimatedComponent(Pressable)
@@ -30,11 +33,22 @@ export const AudioPlayButton = ({
   ...rest
 }: AudioPlayButtonProps) => {
   const { button, icon } = sizeConfig[size]
+  const { t } = useLingui()
+  const primary = usePrimaryColor()
+
+  // All three backgrounds are set here. The idle colour used to come from a
+  // `bg-primary` class instead, but this inline `backgroundColor` -- `undefined`
+  // in the idle case -- won the merge, so the white icon sat on a transparent
+  // circle and the button was invisible on the white activity card.
+  const background = disabled ? '#d1d5db' : isPlaying ? '#22c55e' : primary
 
   return (
     <AnimatedPressable
       onPress={onPress}
       disabled={disabled || isLoading}
+      accessibilityRole="button"
+      accessibilityLabel={isPlaying ? t`Stop audio` : t`Play audio`}
+      accessibilityState={{ disabled: disabled || isLoading, busy: isLoading }}
       style={{
         width: button,
         height: button,
@@ -43,10 +57,9 @@ export const AudioPlayButton = ({
         justifyContent: 'center',
         transitionProperty: 'transform',
         transitionDuration: 150,
-        backgroundColor: disabled ? '#d1d5db' : isPlaying ? '#22c55e' : undefined,
+        backgroundColor: background,
         borderCurve: 'continuous',
       }}
-      className={disabled ? '' : isPlaying ? '' : 'bg-primary'}
       {...rest}
     >
       {({ pressed }) => (

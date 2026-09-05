@@ -28,6 +28,26 @@ const shuffleArray = <T,>(array: T[]): T[] => {
   return shuffled
 }
 
+/**
+ * Lay the two columns out so no row already holds its own match.
+ *
+ * Shuffling each column independently leaves the answer sitting on the adjacent
+ * row surprisingly often -- with the three pairs these activities typically have,
+ * one deal in six is a freebie. Redeal until every row is a mismatch (a derangement);
+ * give up after a bounded number of tries so a degenerate set, such as two pairs
+ * sharing a translation, can never spin here.
+ */
+export const dealColumns = (pairs: { left: string; right: string }[]) => {
+  const left = shuffleArray(pairs.map((p) => p.left))
+  const rightFor = new Map(pairs.map((p) => [p.left, p.right]))
+
+  for (let attempt = 0; attempt < 20; attempt++) {
+    const right = shuffleArray(pairs.map((p) => p.right))
+    if (left.every((l, i) => rightFor.get(l) !== right[i])) return { left, right }
+  }
+  return { left, right: shuffleArray(pairs.map((p) => p.right)) }
+}
+
 const MatchPairsStep = ({ activity, onAnswer }: MatchPairsStepProps) => {
   const { t } = useLingui()
   const { getValue, currentLanguage } = useLanguage()
@@ -50,8 +70,9 @@ const MatchPairsStep = ({ activity, onAnswer }: MatchPairsStepProps) => {
     return { left: legacy.left, right: right || '' }
   })
 
-  const [leftItems, setLeftItems] = useState<string[]>(() => shuffleArray(pairs.map((p) => p.left)))
-  const [rightItems, setRightItems] = useState<string[]>(() => shuffleArray(pairs.map((p) => p.right)))
+  const [initialDeal] = useState(() => dealColumns(pairs))
+  const [leftItems, setLeftItems] = useState<string[]>(initialDeal.left)
+  const [rightItems, setRightItems] = useState<string[]>(initialDeal.right)
   const [selected, setSelected] = useState<SelectedPair | null>(null)
   const [matched, setMatched] = useState<Set<string>>(new Set())
   const [showFeedback, setShowFeedback] = useState(false)
@@ -63,8 +84,9 @@ const MatchPairsStep = ({ activity, onAnswer }: MatchPairsStepProps) => {
     setSelected(null)
     setMatched(new Set())
     setShowFeedback(false)
-    setLeftItems(shuffleArray(pairs.map((p) => p.left)))
-    setRightItems(shuffleArray(pairs.map((p) => p.right)))
+    const deal = dealColumns(pairs)
+    setLeftItems(deal.left)
+    setRightItems(deal.right)
   }
 
   const handleSelect = (value: string, side: 'left' | 'right') => {

@@ -4,6 +4,7 @@ import { Pressable, ScrollView } from 'react-native'
 import { useLingui } from '@lingui/react/macro'
 
 import { useAudio } from '../../hooks/use-audio'
+import { usableAudioUrl } from '../../utils/audio-source'
 import { AudioPlayButton } from '../audio-play-button'
 import { SpeakerHighIcon, SpeakerSlashIcon } from '../icons'
 import { Button, Card, Text, View } from '../ui'
@@ -20,9 +21,22 @@ interface AudioStepProps {
   onContinue: () => void
 }
 
-const AudioStep = ({ audioType, audioUrl, conversation, transcript, onContinue }: AudioStepProps) => {
+const AudioStep = ({
+  audioType,
+  audioUrl: rawAudioUrl,
+  conversation: rawConversation,
+  transcript,
+  onContinue,
+}: AudioStepProps) => {
   const { t } = useLingui()
-  const { playAudio, stopAudio, isPlaying, isLoading } = useAudio()
+  const { playAudio, stopAudio, isPlaying, isLoading, error: audioError } = useAudio()
+
+  // Only play recordings we host -- see utils/audio-source.
+  const audioUrl = usableAudioUrl(rawAudioUrl)
+  const conversation = rawConversation?.map((line) => ({
+    ...line,
+    audioUrl: usableAudioUrl(line.audioUrl),
+  }))
 
   // Auto-play audio when component mounts (for single audio only)
   useEffect(() => {
@@ -67,11 +81,13 @@ const AudioStep = ({ audioType, audioUrl, conversation, transcript, onContinue }
             <Text variant="h6" className="text-foreground mt-4 text-center">
               {!audioUrl
                 ? t`No audio available`
-                : isLoading
-                  ? t`Loading audio...`
-                  : isPlaying
-                    ? t`Playing... (Tap to stop)`
-                    : t`Tap to listen`}
+                : audioError
+                  ? t`Audio unavailable`
+                  : isLoading
+                    ? t`Loading audio...`
+                    : isPlaying
+                      ? t`Playing... (Tap to stop)`
+                      : t`Tap to listen`}
             </Text>
           </View>
         )}

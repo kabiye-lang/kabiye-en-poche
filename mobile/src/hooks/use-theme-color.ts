@@ -17,10 +17,12 @@ const TOKENS = {
   light: {
     foregroundSecondary: '#6E6B7B',
     foreground: '#1E1B2E',
+    primary: '#6200EE',
   },
   dark: {
     foregroundSecondary: '#9B97A8',
     foreground: '#E8E4F0',
+    primary: '#BB86FC',
   },
 } as const
 
@@ -34,4 +36,16 @@ export function useThemeColors() {
 /** The placeholder colour for `TextInput`, matching `text-foreground-secondary`. */
 export function usePlaceholderColor() {
   return useThemeColors().foregroundSecondary
+}
+
+/**
+ * The brand colour, matching `bg-primary`.
+ *
+ * AudioPlayButton needs this as a value rather than a class: it already sets its
+ * disabled and playing backgrounds inline, and an inline `backgroundColor` of
+ * `undefined` beat the `bg-primary` class, leaving a white icon on a transparent
+ * circle -- an invisible button.
+ */
+export function usePrimaryColor() {
+  return useThemeColors().primary
 }

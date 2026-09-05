@@ -8,9 +8,10 @@ import { useLingui } from '@lingui/react/macro'
 
 import { useAudio } from '../../hooks/use-audio'
 import { useLanguage } from '../../hooks/use-language'
+import { usePlaceholderColor } from '../../hooks/use-theme-color'
+import { usableAudioUrl } from '../../utils/audio-source'
 import { LightbulbIcon, SpeakerHighIcon, SpeakerSlashIcon } from '../icons'
 import { Button, Card, Text, View } from '../ui'
-import { usePlaceholderColor } from '../../hooks/use-theme-color'
 
 interface ListenTypeStepProps {
   activity: LessonActivity
@@ -21,12 +22,12 @@ const ListenTypeStep = ({ activity, onAnswer }: ListenTypeStepProps) => {
   const placeholderColor = usePlaceholderColor()
   const { t } = useLingui()
   const { getValue } = useLanguage()
-  const { playAudio, stopAudio, isPlaying, isLoading } = useAudio()
+  const { playAudio, stopAudio, isPlaying, isLoading, error: audioError } = useAudio()
 
   const activityData = activity.data as ListenTypeActivityData | null | undefined
   const question = getValue(activity, 'question') || undefined
   const instructions = getValue(activity, 'instructions') || undefined
-  const audioUrl = activityData?.audio_url
+  const audioUrl = usableAudioUrl(activityData?.audio_url)
   const correctAnswer = activityData?.correct_answer || ''
   const hints = activityData?.hints || []
   const translation = getValue(activityData, 'translation') || ''
@@ -108,11 +109,13 @@ const ListenTypeStep = ({ activity, onAnswer }: ListenTypeStepProps) => {
             <Text variant="caption" className="text-foreground-secondary mt-2 text-center">
               {!audioUrl
                 ? t`No audio available`
-                : isLoading
-                  ? t`Loading audio...`
-                  : isPlaying
-                    ? t`Playing... (Tap to stop)`
-                    : t`Tap to listen`}
+                : audioError
+                  ? t`Audio unavailable`
+                  : isLoading
+                    ? t`Loading audio...`
+                    : isPlaying
+                      ? t`Playing... (Tap to stop)`
+                      : t`Tap to listen`}
             </Text>
 
             {/* Translation hint */}

@@ -33,7 +33,7 @@ export function getMainEntryHeadword(entry: DictionaryEntry): string | undefined
 export function translationFor(
   translations: { fr?: string | null; en?: string | null } | null | undefined,
   language: 'fr' | 'en',
-  fallbackText = '',
+  fallbackText = ''
 ): string {
   if (!translations) return fallbackText
   const preferred = language === 'fr' ? translations.fr : translations.en

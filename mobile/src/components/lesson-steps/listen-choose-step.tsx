@@ -8,6 +8,7 @@ import { useLingui } from '@lingui/react/macro'
 
 import { useAudio } from '../../hooks/use-audio'
 import { useLanguage } from '../../hooks/use-language'
+import { usableAudioUrl } from '../../utils/audio-source'
 import { AudioPlayButton } from '../audio-play-button'
 import { Button, Card, Text, View } from '../ui'
 
@@ -19,12 +20,12 @@ interface ListenChooseStepProps {
 const ListenChooseStep = ({ activity, onAnswer }: ListenChooseStepProps) => {
   const { t } = useLingui()
   const { getValue } = useLanguage()
-  const { playAudio, stopAudio, isPlaying, isLoading } = useAudio()
+  const { playAudio, stopAudio, isPlaying, isLoading, error: audioError } = useAudio()
 
   const activityData = activity.data as ListenChooseActivityData | null | undefined
   const question = getValue(activity, 'question') || undefined
   const instructions = getValue(activity, 'instructions') || undefined
-  const audioUrl = activityData?.audio_url // Audio URL comes from data only
+  const audioUrl = usableAudioUrl(activityData?.audio_url)
 
   // Options are not localized - they are plain strings (Kabiyè words)
   const options = activityData?.options || []
@@ -102,11 +103,13 @@ const ListenChooseStep = ({ activity, onAnswer }: ListenChooseStepProps) => {
             <Text variant="caption" className="text-foreground-secondary mt-2 text-center">
               {!audioUrl
                 ? t`No audio available`
-                : isLoading
-                  ? t`Loading audio...`
-                  : isPlaying
-                    ? t`Playing... (Tap to stop)`
-                    : t`Tap to listen`}
+                : audioError
+                  ? t`Audio unavailable`
+                  : isLoading
+                    ? t`Loading audio...`
+                    : isPlaying
+                      ? t`Playing... (Tap to stop)`
+                      : t`Tap to listen`}
             </Text>
 
             {/* Translation hint */}
