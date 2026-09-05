@@ -9,6 +9,7 @@ import { useLingui } from '@lingui/react/macro'
 import { Card, Text, View } from '../../components/ui'
 import { useEntriesByLetter } from '../../hooks/use-dictionary'
 import { useLanguage } from '../../hooks/use-language'
+import { translationFor } from '../../utils/dictionary-helpers'
 
 const BrowseByLetterScreen: React.FC = () => {
   const { letter } = useLocalSearchParams<{ letter: string }>()
@@ -104,7 +105,7 @@ const BrowseByLetterScreen: React.FC = () => {
 
                   {firstDefinition && (
                     <Text variant="body" className="text-foreground mt-2">
-                      {firstDefinition.translations[translation]}
+                      {translationFor(firstDefinition.translations, translation, firstDefinition.definition)}
                     </Text>
                   )}
 

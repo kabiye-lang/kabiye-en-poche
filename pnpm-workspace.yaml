@@ -107,3 +107,25 @@ allowBuilds:
   sharp: false
   unrs-resolver: false
   workerd: false
+
+# Pin the whole Metro family to one version.
+# @react-native/community-cli-plugin@0.86.3 asks for metro 0.84.4 while uniwind@1.9.0 asks
+# for 0.84.5, so pnpm installed both. Metro's Bundler then held a transformer instance from
+# the other copy and every bundle failed with "Cannot read properties of undefined (reading
+# 'transformFile')" — the app could not start at all. They are patch-compatible; 0.84.5 is
+# the version uniwind, the styling layer, actually requires.
+overrides:
+  metro: 0.84.5
+  metro-babel-transformer: 0.84.5
+  metro-cache: 0.84.5
+  metro-cache-key: 0.84.5
+  metro-config: 0.84.5
+  metro-core: 0.84.5
+  metro-file-map: 0.84.5
+  metro-minify-terser: 0.84.5
+  metro-resolver: 0.84.5
+  metro-runtime: 0.84.5
+  metro-source-map: 0.84.5
+  metro-symbolicate: 0.84.5
+  metro-transform-plugins: 0.84.5
+  metro-transform-worker: 0.84.5

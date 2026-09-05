@@ -8,6 +8,7 @@ import { Link } from 'expo-router'
 import { useLingui } from '@lingui/react/macro'
 
 import { Text, View } from './ui'
+import { translationFor } from '../utils/dictionary-helpers'
 
 type WordGroup = {
   baseHeadword: string
@@ -62,9 +63,10 @@ const WordOfTheDayCard = ({ word, language, index }: { word: WordGroup; language
             )}
             {firstEntry.entry_data.senses[0]?.definitions[0] && (
               <Text variant="body" className="text-foreground mt-2">
-                {language === 'fr'
-                  ? firstEntry.entry_data.senses[0].definitions[0].translations.fr
-                  : firstEntry.entry_data.senses[0].definitions[0].translations.en}
+                {translationFor(
+                  firstEntry.entry_data.senses[0].definitions[0].translations,
+                  language === 'fr' ? 'fr' : 'en',
+                )}
               </Text>
             )}
           </View>

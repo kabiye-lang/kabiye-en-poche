@@ -21,15 +21,21 @@ export function useSearchDictionary(query: string, language: 'all' | 'fr' | 'en'
       })
       if (error) throw error
       return (data ?? []).map((r) => {
-        // Extract a meaningful match_text from entry_data for translation searches
-        let matchText = r.headword
-        if (language !== 'all' && r.entry_data) {
-          const entryData = typeof r.entry_data === 'string' ? JSON.parse(r.entry_data) : r.entry_data
-          const firstDef = entryData?.senses?.[0]?.definitions?.[0]
-          if (firstDef) {
-            matchText = firstDef.translations?.[language] || firstDef.definition || r.headword
-          }
-        }
+        // The subtitle under each result should be what the word *means*. This used to
+        // derive a definition only when searching by translation, so a Kabiyè search --
+        // the default -- rendered every row as "kalimiye / kalimiye", the headword twice
+        // and no gloss. Derive it for every mode, and fall back across languages, since
+        // not every entry is glossed in both.
+        const entryData = typeof r.entry_data === 'string' ? JSON.parse(r.entry_data) : r.entry_data
+        const firstDef = entryData?.senses?.[0]?.definitions?.[0]
+        const preferred = language === 'all' ? undefined : language
+        const matchText =
+          (preferred && firstDef?.translations?.[preferred]) ||
+          firstDef?.translations?.en ||
+          firstDef?.translations?.fr ||
+          firstDef?.definition ||
+          undefined
+
         return {
           ...r,
           entry_id: r.id,

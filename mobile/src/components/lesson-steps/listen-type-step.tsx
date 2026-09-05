@@ -10,6 +10,7 @@ import { useAudio } from '../../hooks/use-audio'
 import { useLanguage } from '../../hooks/use-language'
 import { LightbulbIcon, SpeakerHighIcon, SpeakerSlashIcon } from '../icons'
 import { Button, Card, Text, View } from '../ui'
+import { usePlaceholderColor } from '../../hooks/use-theme-color'
 
 interface ListenTypeStepProps {
   activity: LessonActivity
@@ -17,6 +18,7 @@ interface ListenTypeStepProps {
 }
 
 const ListenTypeStep = ({ activity, onAnswer }: ListenTypeStepProps) => {
+  const placeholderColor = usePlaceholderColor()
   const { t } = useLingui()
   const { getValue } = useLanguage()
   const { playAudio, stopAudio, isPlaying, isLoading } = useAudio()
@@ -157,7 +159,7 @@ const ListenTypeStep = ({ activity, onAnswer }: ListenTypeStepProps) => {
             value={userAnswer}
             onChangeText={setUserAnswer}
             placeholder={t`Type what you hear...`}
-            placeholderTextColor="#6E6B7B"
+            placeholderTextColor={placeholderColor}
             editable={!showFeedback}
             className={`min-h-[80px] rounded-lg border-2 p-4 text-lg ${
               showFeedback

@@ -8,6 +8,7 @@ import { useLingui } from '@lingui/react/macro'
 
 import { ArrowRightIcon } from '../icons'
 import { Card, Text, View } from '../ui'
+import { translationFor } from '../../utils/dictionary-helpers'
 
 type Translation = 'fr' | 'en'
 
@@ -32,7 +33,7 @@ export const SenseDefinitions = ({
           {sense.definitions.map((def, defIdx) => (
             <View key={defIdx} className="mb-3">
               <Text variant="body" className="text-foreground mb-1">
-                {sense.senseNumber || senseIdx + 1}.{defIdx + 1} {def.translations[translation]}
+                {sense.senseNumber || senseIdx + 1}.{defIdx + 1} {translationFor(def.translations, translation, def.definition)}
               </Text>
               {def.grammar && (
                 <Text variant="caption" className="text-foreground-secondary mb-1 italic">
@@ -140,7 +141,7 @@ export const SubEntries = ({
               {sense.definitions.map((def, defIdx) => (
                 <Text key={defIdx} variant="body" className="text-foreground mb-1">
                   {sense.senseNumber ? `${sense.senseNumber}. ` : ''}
-                  {def.translations[translation]}
+                  {translationFor(def.translations, translation, def.definition)}
                 </Text>
               ))}
               {sense.examples && sense.examples.length > 0 && (

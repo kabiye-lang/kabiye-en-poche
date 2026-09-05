@@ -16,6 +16,7 @@ import {
   KeyReturnIcon,
 } from '../components/icons'
 import { Button, ScreenTitle, Text, View } from '../components/ui'
+import { usePlaceholderColor } from '../hooks/use-theme-color'
 
 // Characters unique to Kabiyè (IPA-derived letters not in standard Latin)
 const KABIYE_SPECIFIC = new Set(['ɖ', 'ɛ', 'ɣ', 'ɩ', 'ŋ', 'ɔ', 'ʋ', 'ñ'])
@@ -104,6 +105,7 @@ const OTHER_CHARACTERS = [
 ]
 
 export default function KeyboardScreen() {
+  const placeholderColor = usePlaceholderColor()
   const { t } = useLingui()
   const [capsLock, setCapsLock] = useState<0 | 1 | 2>(0)
   const [content, setContent] = useState('')
@@ -124,6 +126,7 @@ export default function KeyboardScreen() {
   const buttonWidth = (Dimensions.get('screen').width - 10) / 11 - 4
 
   const renderButton = (letter: { id: string; caps: string }) => {
+  const placeholderColor = usePlaceholderColor()
     const isKabiye = KABIYE_SPECIFIC.has(letter.id)
     return (
       <Button
@@ -186,7 +189,7 @@ export default function KeyboardScreen() {
             multiline
             className="border-border bg-card text-foreground max-h-[120px] min-h-[80px] w-full rounded-xl border p-2.5 text-base"
             placeholder={t`Type here...`}
-            placeholderTextColor="#6E6B7B"
+            placeholderTextColor={placeholderColor}
           />
         </View>
         {/* Inline toolbar */}

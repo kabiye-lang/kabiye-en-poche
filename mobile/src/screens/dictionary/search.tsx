@@ -99,9 +99,11 @@ const SearchResultsScreen: React.FC = () => {
                     </Text>
                   </View>
                 </View>
-                <Text variant="body" className="text-foreground mt-1">
-                  {item.match_text ?? item.headword}
-                </Text>
+                {item.match_text && item.match_text !== item.headword && (
+                  <Text variant="body" className="text-foreground mt-1">
+                    {item.match_text}
+                  </Text>
+                )}
                 {item.entry_data.grammaticalInfo && (
                   <Text variant="caption" className="text-foreground-secondary mt-1 italic">
                     {item.entry_data.grammaticalInfo}
