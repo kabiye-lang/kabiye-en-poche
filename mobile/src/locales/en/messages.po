@@ -967,3 +967,31 @@ msgstr ""
 #: src/components/audio-play-button.tsx
 msgid "Stop audio"
 msgstr ""
+
+#: src/screens/keyboard.tsx
+msgid "Shift"
+msgstr ""
+
+#: src/screens/keyboard.tsx
+msgid "Shift on"
+msgstr ""
+
+#: src/screens/keyboard.tsx
+msgid "Caps lock on"
+msgstr ""
+
+#: src/screens/keyboard.tsx
+msgid "Period"
+msgstr ""
+
+#: src/screens/keyboard.tsx
+msgid "Backspace"
+msgstr ""
+
+#: src/screens/keyboard.tsx
+msgid "New line"
+msgstr ""
+
+#: src/app/_layout.tsx
+msgid "Back"
+msgstr ""

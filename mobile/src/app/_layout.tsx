@@ -156,7 +156,10 @@ function RootLayoutNav() {
               <GestureHandlerRootView style={{ flex: 1 }}>
                 <Stack>
                   <Stack.Screen name="(onboarding)" options={{ headerShown: false }} />
-                  <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
+                  {/* The header is hidden here, but the detail screens pushed on top of this
+                      one take their back button's accessibility label from its title. Without
+                      one, VoiceOver announced the route group -- "(tabs)". */}
+                  <Stack.Screen name="(tabs)" options={{ headerShown: false, title: i18n._(msg`Back`) }} />
 
                   <Stack.Screen
                     name="alphabet/[letter]"

@@ -88,7 +88,12 @@ const CompletionStep = ({ score = 0, totalQuestions = 0, contentSteps = 0, onCom
           </Text>
         </Button>
 
-        <Pressable onPress={() => router.push('/learn')} className="w-full">
+        <Pressable
+          accessibilityRole="button"
+          accessibilityLabel={t`Back to Learn`}
+          onPress={() => router.push('/learn')}
+          className="w-full"
+        >
           <View className="flex-row items-center justify-center py-3">
             <HouseIcon size={20} className="text-primary" />
             <Text variant="body" className="text-primary ml-2">

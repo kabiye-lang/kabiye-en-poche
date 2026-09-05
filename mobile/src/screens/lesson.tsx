@@ -140,15 +140,17 @@ const LessonScreen = () => {
   }
 
   const handleLessonComplete = async () => {
+    // "Back to Lessons" used to record the lesson and stop there, leaving the learner
+    // on the completion screen with no way out but the close button -- and every
+    // further tap fired the mutation again. Record it, then actually go back.
+    if (completeLessonMutation.isPending) return
+
     try {
       await completeLessonMutation.mutateAsync(lessonId)
       toast.success(t`Lesson Completed!`, {
         description: t`Great job! You've completed this lesson.`,
-        action: {
-          label: t`Continue`,
-          onClick: () => router.back(),
-        },
       })
+      router.back()
     } catch {
       toast.error(t`Error`, {
         description: t`Failed to complete lesson. Please try again.`,

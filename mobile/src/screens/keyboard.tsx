@@ -232,6 +232,7 @@ export default function KeyboardScreen() {
               size="sm"
               className="bg-card rounded-md"
               style={{ width: 50, minWidth: 50, height: 35 }}
+              accessibilityLabel={capsLock === 2 ? t`Caps lock on` : capsLock === 1 ? t`Shift on` : t`Shift`}
               onPress={() => setCapsLock((capsLockOld) => (capsLockOld > 0 ? 0 : 1))}
               onLongPress={() => setCapsLock((capsLockOld) => (capsLockOld > 0 ? 0 : 2))}
               hitSlop={3}
@@ -247,6 +248,7 @@ export default function KeyboardScreen() {
               size="sm"
               className="bg-card rounded-md"
               style={{ width: 50, minWidth: 50, height: 35 }}
+              accessibilityLabel={t`Period`}
               onPress={() => changeText({ id: '.' })}
               hitSlop={3}
             >
@@ -269,6 +271,7 @@ export default function KeyboardScreen() {
               size="sm"
               className="bg-card rounded-md"
               style={{ width: 50, minWidth: 50, height: 35 }}
+              accessibilityLabel={t`Backspace`}
               onPress={() => setContent((content) => content.substring(0, content.length - 1))}
               hitSlop={3}
             >
@@ -279,6 +282,7 @@ export default function KeyboardScreen() {
               size="sm"
               className="bg-card rounded-md"
               style={{ width: 50, minWidth: 50, height: 35 }}
+              accessibilityLabel={t`New line`}
               onPress={() => {
                 changeText({ id: '\n' })
                 setCapsLock(1)

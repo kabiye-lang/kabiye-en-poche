@@ -82,7 +82,16 @@ export function Button({
   const textClassName = cn(textVariants({ variant, size }))
 
   return (
-    <Pressable className={buttonClassName} disabled={disabled || loading} {...props}>
+    // Without an explicit role every Button in the app reaches VoiceOver as a plain
+    // group rather than a button. Both are defaults: `props` is spread after, so a
+    // caller can still override either.
+    <Pressable
+      accessibilityRole="button"
+      accessibilityState={{ disabled: !!(disabled || loading), busy: loading }}
+      className={buttonClassName}
+      disabled={disabled || loading}
+      {...props}
+    >
       <Text weight="medium" className={textClassName}>
         {loading ? 'Loading...' : children}
       </Text>
