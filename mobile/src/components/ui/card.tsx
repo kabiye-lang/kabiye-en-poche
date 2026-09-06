@@ -12,9 +12,13 @@ import { View, ViewProps } from './view'
 const cardVariants = tv({
   base: 'rounded-xl',
   variants: {
+    // Depth is tonal, not cast: surfaces separate through the background / card /
+    // tertiary steps rather than shadows. `shadow-card` and `shadow-card-lg` were
+    // referenced here but defined nowhere, so both did nothing -- the flat look was
+    // already the real one. `elevated` now says so with a stronger tonal step.
     variant: {
-      default: 'shadow-card bg-card',
-      elevated: 'shadow-card-lg bg-card',
+      default: 'bg-card',
+      elevated: 'bg-background-secondary border-border border',
       outlined: 'border-border bg-card border',
       filled: 'bg-background-tertiary',
     },
