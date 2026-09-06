@@ -15,8 +15,6 @@
   "prHourlyLimit": 2,
   "ignoreDeps": [
     "@babel/types",
-    "@babel/plugin-transform-export-namespace-from",
-    "@babel/core",
     "expo",
     "@expo/dom-webview",
     "@expo/fingerprint",

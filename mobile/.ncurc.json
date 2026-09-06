@@ -3,8 +3,6 @@
   "cooldown": "1d",
   "reject": [
     "@babel/types",
-    "@babel/plugin-transform-export-namespace-from",
-    "@babel/core",
     "@expo/dom-webview",
     "@expo/fingerprint",
     "@expo/metro-runtime",
