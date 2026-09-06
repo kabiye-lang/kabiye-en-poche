@@ -168,6 +168,7 @@ const MatchPairsStep = ({ activity, onAnswer }: MatchPairsStepProps) => {
                 className={`rounded-xl border-2 p-4 ${getItemStyle(item, 'left')}`}
               >
                 <Text
+                  kabiye
                   variant="body"
                   weight="bold"
                   className={`text-center ${matched.has(item) ? 'text-success-text' : 'text-foreground'}`}

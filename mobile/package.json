@@ -26,6 +26,7 @@
   },
   "dependencies": {
     "@babel/plugin-transform-export-namespace-from": "^7.27.1",
+    "@expo-google-fonts/andika": "^0.4.1",
     "@expo-google-fonts/figtree": "^0.4.1",
     "@expo-google-fonts/ibm-plex-sans-hebrew": "^0.4.1",
     "@expo/metro-runtime": "~57.0.14",

@@ -3,6 +3,7 @@ import type { VariantProps } from 'tailwind-variants'
 import React from 'react'
 import { Pressable, PressableProps } from 'react-native'
 
+import { Trans } from '@lingui/react/macro'
 import { tv } from 'tailwind-variants'
 
 import { cn } from '../../utils/cn'
@@ -93,7 +94,7 @@ export function Button({
       {...props}
     >
       <Text weight="medium" className={textClassName}>
-        {loading ? 'Loading...' : children}
+        {loading ? <Trans>Loading…</Trans> : children}
       </Text>
     </Pressable>
   )

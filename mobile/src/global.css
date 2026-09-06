@@ -17,6 +17,20 @@
   --font-ibm-semibold: 'IBMPlexSansHebrew_600SemiBold';
   --font-ibm-bold: 'IBMPlexSansHebrew_700Bold';
 
+  /* Font family - Kabiyè.
+     Figtree carries 4 of the 16 letters Kabiyè needs and IBM Plex Sans Hebrew carries 2,
+     so every Kabiyè word was drawn half in Figtree and half in the iOS fallback -- visible
+     mid-word, and visible inside a single grapheme on the alphabet cards that teach it.
+     Andika is SIL's face for African-language literacy: it covers the full set, its
+     x-height (0.508em) sits within 2% of Figtree's (0.500em) so the two share an optical
+     line, and it draws ɩ/i and ʋ/u unambiguously, which is the whole point when a learner
+     is still telling them apart. It ships Regular and Bold only; the Text component maps
+     Figtree's wider weight scale onto those two. */
+  --font-kbp-regular: 'Andika_400Regular';
+  --font-kbp-bold: 'Andika_700Bold';
+  --font-kbp-italic: 'Andika_400Regular_Italic';
+  --font-kbp-bold-italic: 'Andika_700Bold_Italic';
+
   /* Font families - Figtree */
   --font-fig-light: 'Figtree_300Light';
   --font-fig-light-italic: 'Figtree_300Light_Italic';

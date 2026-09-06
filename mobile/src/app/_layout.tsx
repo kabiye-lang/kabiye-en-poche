@@ -15,6 +15,12 @@ import { ThemeProvider } from 'expo-router/react-navigation'
 import { StatusBar } from 'expo-status-bar'
 
 import {
+  Andika_400Regular,
+  Andika_400Regular_Italic,
+  Andika_700Bold,
+  Andika_700Bold_Italic,
+} from '@expo-google-fonts/andika'
+import {
   Figtree_300Light,
   Figtree_300Light_Italic,
   Figtree_400Regular,
@@ -70,6 +76,11 @@ export default function RootLayout() {
     try {
       const [, onboardingResult] = await Promise.all([
         loadAsync({
+          // Kabiyè's own letters; see the --font-kbp-* note in global.css.
+          Andika_400Regular,
+          Andika_400Regular_Italic,
+          Andika_700Bold,
+          Andika_700Bold_Italic,
           IBMPlexSansHebrew_100Thin,
           IBMPlexSansHebrew_200ExtraLight,
           IBMPlexSansHebrew_300Light,

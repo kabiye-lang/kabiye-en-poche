@@ -3,6 +3,7 @@ import type { DictionaryEntry, DictionaryStatistics, EntryByTermResult, SearchRe
 import { useInfiniteQuery, useQueries, useQuery } from '@tanstack/react-query'
 
 import { supabase } from '../lib/supabase'
+import { resolveTranslation } from '../utils/dictionary-helpers'
 
 /**
  * Search dictionary entries
@@ -28,18 +29,17 @@ export function useSearchDictionary(query: string, language: 'all' | 'fr' | 'en'
         // not every entry is glossed in both.
         const entryData = typeof r.entry_data === 'string' ? JSON.parse(r.entry_data) : r.entry_data
         const firstDef = entryData?.senses?.[0]?.definitions?.[0]
-        const preferred = language === 'all' ? undefined : language
-        const matchText =
-          (preferred && firstDef?.translations?.[preferred]) ||
-          firstDef?.translations?.en ||
-          firstDef?.translations?.fr ||
-          firstDef?.definition ||
-          undefined
+        // 'all' searches Kabiyè, so the reader's language decides which gloss to prefer.
+        const preferred = language === 'all' ? 'en' : language
+        const resolved = resolveTranslation(firstDef?.translations, preferred, firstDef?.definition ?? '')
 
         return {
           ...r,
           entry_id: r.id,
-          match_text: matchText,
+          match_text: resolved.text || undefined,
+          // Surfaced so a French gloss shown to an English reader can say so, the way
+          // Word of the Day does. Without it the two lists disagree about the same entry.
+          match_language: resolved.isFallback ? resolved.language : undefined,
         }
       }) as unknown as SearchResult[]
     },
@@ -183,7 +183,10 @@ export function useWordOfTheDay(count = 3) {
             base_param: base,
           })
           if (error) throw error
-          return { baseHeadword: base, entries: (data as unknown as DictionaryEntry[]) ?? [] }
+          return {
+            baseHeadword: base,
+            entries: (data as unknown as DictionaryEntry[]) ?? [],
+          }
         },
         staleTime: Infinity,
       })) ?? [],

@@ -62,6 +62,8 @@ export interface SearchResult extends Omit<DbSearchResult, 'entry_data'> {
   entry_id: string
   /** Matched text snippet; use headword as fallback when absent */
   match_text?: string
+  /** Set when match_text had to fall back to the other language. */
+  match_language?: 'fr' | 'en'
 }
 
 /** Response from get_entry_by_term – includes resolution metadata */

@@ -121,7 +121,7 @@ const ContentStep = ({
                 >
                   <Card className="bg-background-tertiary mb-3 flex-row items-center p-4">
                     <View className="flex-1">
-                      <Text variant="h6" weight="bold" className="text-primary">
+                      <Text kabiye variant="h6" weight="bold" className="text-primary">
                         {example.kbp}
                       </Text>
                       <Text variant="body" className="text-foreground mt-1">

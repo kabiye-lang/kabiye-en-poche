@@ -138,9 +138,10 @@ export default function KeyboardScreen() {
         hitSlop={3}
       >
         <Text
+          kabiye
           variant="lg"
-          weight="regular"
-          className={`font-fig-light text-base ${isKabiye ? 'text-primary' : 'text-foreground'}`}
+          weight="light"
+          className={`text-base ${isKabiye ? 'text-primary' : 'text-foreground'}`}
         >
           {capsLock > 0 ? letter.caps : letter.id}
         </Text>
@@ -186,7 +187,8 @@ export default function KeyboardScreen() {
             value={content}
             editable={false}
             multiline
-            className="border-border bg-card text-foreground max-h-[120px] min-h-[80px] w-full rounded-xl border p-2.5 text-base"
+            // What is typed here is Kabiyè, so it gets the face that can draw it.
+            className="border-border bg-card text-foreground font-kbp-regular max-h-[120px] min-h-[80px] w-full rounded-xl border p-2.5 text-base"
             placeholder={t`Type here...`}
             placeholderTextColor={placeholderColor}
           />

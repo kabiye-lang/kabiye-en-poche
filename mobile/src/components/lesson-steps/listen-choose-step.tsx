@@ -167,6 +167,7 @@ const ListenChooseStep = ({ activity, onAnswer }: ListenChooseStepProps) => {
 
                   {/* Option Text */}
                   <Text
+                    kabiye
                     variant="h6"
                     weight="bold"
                     className={`flex-1 ${

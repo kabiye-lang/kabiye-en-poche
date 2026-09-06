@@ -6,6 +6,7 @@ import { Link, router } from 'expo-router'
 import { useLingui } from '@lingui/react/macro'
 
 import { MagnifyingGlassIcon, SparkleIcon } from '../../components/icons'
+import { LanguageTag } from '../../components/language-tag'
 import { Text, View } from '../../components/ui'
 import { WordOfTheDay } from '../../components/word-of-the-day'
 import { useDebounce } from '../../hooks/use-debounce'
@@ -137,15 +138,18 @@ const DictionaryScreen: React.FC = () => {
             {searchResults.slice(0, 5).map((result) => (
               <Link key={result.entry_id} href={`/word/${result.headword}`} asChild onPress={() => setSearchQuery('')}>
                 <Pressable className="border-border border-b px-4 py-3">
-                  <Text variant="body" weight="semibold" className="text-foreground">
+                  <Text kabiye variant="body" weight="semibold" className="text-foreground">
                     {result.headword}
                   </Text>
                   {/* Only render a subtitle when it says something the headword does
                       not. Falling back to the headword printed the word twice. */}
                   {result.match_text && result.match_text !== result.headword && (
-                    <Text variant="caption" className="text-foreground-secondary mt-0.5">
-                      {result.match_text}
-                    </Text>
+                    <View className="mt-0.5 flex-row items-baseline gap-2">
+                      <Text variant="caption" className="text-foreground-secondary flex-1">
+                        {result.match_text}
+                      </Text>
+                      {result.match_language && <LanguageTag language={result.match_language} />}
+                    </View>
                   )}
                 </Pressable>
               </Link>

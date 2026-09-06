@@ -172,6 +172,9 @@ importers:
       '@babel/plugin-transform-export-namespace-from':
         specifier: ^7.27.1
         version: 7.29.7(@babel/core@7.29.7(supports-color@10.2.2))
+      '@expo-google-fonts/andika':
+        specifier: ^0.4.1
+        version: 0.4.1
       '@expo-google-fonts/figtree':
         specifier: ^0.4.1
         version: 0.4.1
@@ -1633,6 +1636,9 @@ packages:
   '@eslint/plugin-kit@0.7.2':
     resolution: {integrity: sha512-+CNAzxglkrpNf/kKywqQfk74QjtceuOE7Qm+AF8miRvPF/wmmK5+OJOgVh3AVTT3RP2mH3+FOaxlE5v72owk0A==}
     engines: {node: ^20.19.0 || ^22.13.0 || >=24}
+
+  '@expo-google-fonts/andika@0.4.1':
+    resolution: {integrity: sha512-S9uvDEZZpZ2jw0FBb/iJj62I5DVXrqdrOPILN4x4cm1j2AglnnUh9Xax7FZ/+1nGStBN7W1vsRoLAQ2o+wTLjw==}
 
   '@expo-google-fonts/figtree@0.4.1':
     resolution: {integrity: sha512-6IQQddGeR3yZBSwiIjy2kd1gA+5s2esF8JAFw6M1qqU4RUlj4Zxkw9J+gixAtZFgd+QIS875EPHqeYlpaRcCRw==}
@@ -10269,6 +10275,8 @@ snapshots:
     dependencies:
       '@eslint/core': 1.2.1
       levn: 0.4.1
+
+  '@expo-google-fonts/andika@0.4.1': {}
 
   '@expo-google-fonts/figtree@0.4.1': {}
 

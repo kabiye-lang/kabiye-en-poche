@@ -35,9 +35,37 @@ export function translationFor(
   language: 'fr' | 'en',
   fallbackText = ''
 ): string {
-  if (!translations) return fallbackText
+  return resolveTranslation(translations, language, fallbackText).text
+}
+
+export interface ResolvedTranslation {
+  text: string
+  /** The language the text is actually in, or undefined when the fallback text was used. */
+  language?: 'fr' | 'en'
+  /** True when the gloss had to come from the other language. */
+  isFallback: boolean
+}
+
+/**
+ * As `translationFor`, but says which language the answer came from.
+ *
+ * Falling back silently means an English reader is shown French with no hint that it is
+ * French -- Word of the Day rendered `fɛŋgɛ / léger(ère) sans poids` with nothing to
+ * explain it. Callers use `isFallback` to mark the gloss instead of hiding the entry.
+ */
+export function resolveTranslation(
+  translations: { fr?: string | null; en?: string | null } | null | undefined,
+  language: 'fr' | 'en',
+  fallbackText = ''
+): ResolvedTranslation {
+  if (!translations) return { text: fallbackText, isFallback: false }
+
   const preferred = language === 'fr' ? translations.fr : translations.en
-  if (preferred?.trim()) return preferred
+  if (preferred?.trim()) return { text: preferred, language, isFallback: false }
+
+  const otherLanguage = language === 'fr' ? 'en' : 'fr'
   const other = language === 'fr' ? translations.en : translations.fr
-  return other?.trim() ? other : fallbackText
+  if (other?.trim()) return { text: other, language: otherLanguage, isFallback: true }
+
+  return { text: fallbackText, isFallback: false }
 }

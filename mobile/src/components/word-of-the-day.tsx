@@ -7,7 +7,8 @@ import { Link } from 'expo-router'
 
 import { useLingui } from '@lingui/react/macro'
 
-import { translationFor } from '../utils/dictionary-helpers'
+import { resolveTranslation } from '../utils/dictionary-helpers'
+import { LanguageTag } from './language-tag'
 import { Text, View } from './ui'
 
 type WordGroup = {
@@ -45,29 +46,35 @@ const WordOfTheDayCard = ({ word, language, index }: { word: WordGroup; language
   const firstEntry = entries[0]
   if (!firstEntry) return null
 
-  const displayHeadword =
-    entries.length > 1 ? entries.map((e) => e.entry_data.headword).join(', ') : firstEntry.entry_data.headword
+  // Homographs are distinct entries that can share a spelling, so joining them printed
+  // the same word twice ("ñɩŋgbasɩ, ñɩŋgbasɩ"). Only list spellings that actually differ.
+  const displayHeadword = [...new Set(entries.map((e) => e.entry_data.headword))].join(', ')
+
+  const gloss = resolveTranslation(
+    firstEntry.entry_data.senses[0]?.definitions[0]?.translations,
+    language === 'fr' ? 'fr' : 'en'
+  )
 
   return (
     <Animated.View entering={FadeInUp.duration(300).delay(index * 100)}>
       <Link href={`/word/${firstEntry.entry_data.headword}`} asChild>
         <Pressable>
           <View className="bg-card mb-3 rounded-2xl p-4">
-            <Text variant="lg" weight="bold" className="text-foreground">
+            <Text kabiye variant="lg" weight="bold" className="text-foreground">
               {displayHeadword}
             </Text>
             {firstEntry.entry_data.pronunciations?.[0] && (
-              <Text variant="caption" className="text-foreground-secondary mt-1">
+              <Text kabiye variant="caption" className="text-foreground-secondary mt-1">
                 [{firstEntry.entry_data.pronunciations[0]}]
               </Text>
             )}
-            {firstEntry.entry_data.senses[0]?.definitions[0] && (
-              <Text variant="body" className="text-foreground mt-2">
-                {translationFor(
-                  firstEntry.entry_data.senses[0].definitions[0].translations,
-                  language === 'fr' ? 'fr' : 'en'
-                )}
-              </Text>
+            {!!gloss.text && (
+              <View className="mt-2 flex-row items-baseline gap-2">
+                <Text variant="body" className="text-foreground flex-1">
+                  {gloss.text}
+                </Text>
+                {gloss.isFallback && gloss.language && <LanguageTag language={gloss.language} />}
+              </View>
             )}
           </View>
         </Pressable>

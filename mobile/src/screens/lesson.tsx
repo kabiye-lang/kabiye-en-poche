@@ -264,8 +264,11 @@ const LessonScreen = () => {
       >
         {currentStep.type === 'content' ? (
           <ContentStep
-            lessonTitle={getValue(lesson, 'title') || undefined}
-            difficulty={lesson?.difficulty}
+            // Only the opening slide carries the lesson title and difficulty. It used to
+            // repeat on every content step and then disappear for the activities, so the
+            // heaviest type on the screen was the one thing that had not changed.
+            lessonTitle={currentStep.id === 'content-0' ? getValue(lesson, 'title') || undefined : undefined}
+            difficulty={currentStep.id === 'content-0' ? lesson?.difficulty : undefined}
             title={currentStep.title}
             content={currentStep.content}
             examples={currentStep.examples}

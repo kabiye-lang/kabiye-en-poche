@@ -87,7 +87,7 @@ const BrowseByLetterScreen: React.FC = () => {
             <Link href={`/word/${item.headword}`} asChild>
               <Pressable>
                 <Card className="mb-3 p-4">
-                  <Text variant="h6" weight="bold" className="text-primary">
+                  <Text kabiye variant="h6" weight="bold" className="text-primary">
                     {entry.headword}
                   </Text>
 
