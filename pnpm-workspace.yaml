@@ -107,13 +107,24 @@ allowBuilds:
   unrs-resolver: false
   workerd: false
 
-# Pin the whole Metro family to one version.
-# @react-native/community-cli-plugin@0.86.3 asks for metro 0.84.4 while uniwind@1.9.0 asks
-# for 0.84.5, so pnpm installed both. Metro's Bundler then held a transformer instance from
-# the other copy and every bundle failed with "Cannot read properties of undefined (reading
-# 'transformFile')" — the app could not start at all. They are patch-compatible; 0.84.5 is
-# the version uniwind, the styling layer, actually requires.
+# Every entry here exists because two copies of one package were installed and the
+# duplication broke something. Neither version was wrong; having both was.
 overrides:
+  # admin depends on 2.115.0 directly while ra-supabase-core@3.5.2 asks for ^2.48.1 and
+  # resolved 2.112.4, so pnpm installed both — plus 2.108.1 at the root. `SupabaseClient`
+  # declares `supabaseUrl` as `protected`, and TypeScript accepts a protected member
+  # across two types only when one class derives from the other. Independent copies are
+  # not related, so passing admin's client to ra-supabase's providers failed to compile:
+  #   Property 'supabaseUrl' is protected but type 'SupabaseClient<...>' is not a class
+  #   derived from 'SupabaseClient<...>'
+  # 2.115.0 satisfies ra-supabase-core's ^2.48.1, so one copy serves both.
+  '@supabase/supabase-js': 2.115.0
+
+  # @react-native/community-cli-plugin@0.86.3 asks for metro 0.84.4 while uniwind@1.9.0
+  # asks for 0.84.5, so pnpm installed both. Metro's Bundler then held a transformer
+  # instance from the other copy and every bundle failed with "Cannot read properties of
+  # undefined (reading 'transformFile')" — the app could not start at all. They are
+  # patch-compatible; 0.84.5 is the version uniwind, the styling layer, actually requires.
   metro: 0.84.5
   metro-babel-transformer: 0.84.5
   metro-cache: 0.84.5
