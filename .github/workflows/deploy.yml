@@ -86,20 +86,28 @@ jobs:
         uses: dorny/paths-filter@ceb8a2b8f2d89434be7ff52d3de7ec3738c5cc9d # v4.0.3
         with:
           filters: |
+            # The dependency files are shared, so every service watches them. A pnpm
+            # override or a lockfile bump changes what all three build against without
+            # touching any service directory: the @supabase/supabase-js pin that fixed
+            # admin's build was root-only, so admin skipped and the fix went unverified
+            # behind a green tick. A skipped job reports success.
+            deps: &deps
+              - 'package.json'
+              - 'pnpm-lock.yaml'
+              - 'pnpm-workspace.yaml'
+              - '.github/workflows/deploy.yml'
             admin:
+              - *deps
               - 'admin/**'
-              - '.github/workflows/deploy.yml'
             website:
+              - *deps
               - 'website/**'
-              - '.github/workflows/deploy.yml'
             app:
               # These moved under mobile/ in the monorepo restructure. While they
               # pointed at the repo root this filter was effectively always false, so
               # mobile-check never ran and trigger-eas-production never fired.
+              - *deps
               - 'mobile/**'
-              - 'package.json'
-              - 'pnpm-lock.yaml'
-              - '.github/workflows/deploy.yml'
 
       - name: Detect which services need deploying
         id: services
