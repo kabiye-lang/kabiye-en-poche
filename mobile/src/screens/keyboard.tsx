@@ -16,6 +16,7 @@ import {
   KeyReturnIcon,
 } from '../components/icons'
 import { Button, ScreenTitle, Text, View } from '../components/ui'
+import { usePlaceholderColor } from '../hooks/use-theme-color'
 
 // Characters unique to Kabiyè (IPA-derived letters not in standard Latin)
 const KABIYE_SPECIFIC = new Set(['ɖ', 'ɛ', 'ɣ', 'ɩ', 'ŋ', 'ɔ', 'ʋ', 'ñ'])
@@ -104,6 +105,7 @@ const OTHER_CHARACTERS = [
 ]
 
 export default function KeyboardScreen() {
+  const placeholderColor = usePlaceholderColor()
   const { t } = useLingui()
   const [capsLock, setCapsLock] = useState<0 | 1 | 2>(0)
   const [content, setContent] = useState('')
@@ -136,9 +138,10 @@ export default function KeyboardScreen() {
         hitSlop={3}
       >
         <Text
+          kabiye
           variant="lg"
-          weight="regular"
-          className={`font-fig-light text-base ${isKabiye ? 'text-primary' : 'text-foreground'}`}
+          weight="light"
+          className={`text-base ${isKabiye ? 'text-primary' : 'text-foreground'}`}
         >
           {capsLock > 0 ? letter.caps : letter.id}
         </Text>
@@ -184,9 +187,10 @@ export default function KeyboardScreen() {
             value={content}
             editable={false}
             multiline
-            className="border-border bg-card text-foreground max-h-[120px] min-h-[80px] w-full rounded-xl border p-2.5 text-base"
+            // What is typed here is Kabiyè, so it gets the face that can draw it.
+            className="border-border bg-card text-foreground font-kbp-regular max-h-[120px] min-h-[80px] w-full rounded-xl border p-2.5 text-base"
             placeholder={t`Type here...`}
-            placeholderTextColor="#6E6B7B"
+            placeholderTextColor={placeholderColor}
           />
         </View>
         {/* Inline toolbar */}
@@ -230,6 +234,7 @@ export default function KeyboardScreen() {
               size="sm"
               className="bg-card rounded-md"
               style={{ width: 50, minWidth: 50, height: 35 }}
+              accessibilityLabel={capsLock === 2 ? t`Caps lock on` : capsLock === 1 ? t`Shift on` : t`Shift`}
               onPress={() => setCapsLock((capsLockOld) => (capsLockOld > 0 ? 0 : 1))}
               onLongPress={() => setCapsLock((capsLockOld) => (capsLockOld > 0 ? 0 : 2))}
               hitSlop={3}
@@ -245,6 +250,7 @@ export default function KeyboardScreen() {
               size="sm"
               className="bg-card rounded-md"
               style={{ width: 50, minWidth: 50, height: 35 }}
+              accessibilityLabel={t`Period`}
               onPress={() => changeText({ id: '.' })}
               hitSlop={3}
             >
@@ -267,6 +273,7 @@ export default function KeyboardScreen() {
               size="sm"
               className="bg-card rounded-md"
               style={{ width: 50, minWidth: 50, height: 35 }}
+              accessibilityLabel={t`Backspace`}
               onPress={() => setContent((content) => content.substring(0, content.length - 1))}
               hitSlop={3}
             >
@@ -277,6 +284,7 @@ export default function KeyboardScreen() {
               size="sm"
               className="bg-card rounded-md"
               style={{ width: 50, minWidth: 50, height: 35 }}
+              accessibilityLabel={t`New line`}
               onPress={() => {
                 changeText({ id: '\n' })
                 setCapsLock(1)

@@ -78,7 +78,7 @@ export default function AlphabetListScreen() {
                 </Text>
               </Card>
 
-              <Text variant="h2" weight="medium" className="text-center">
+              <Text kabiye variant="h2" weight="medium" className="text-center">
                 {item.id}
               </Text>
             </View>

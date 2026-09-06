@@ -5,6 +5,7 @@ import { Link, useLocalSearchParams } from 'expo-router'
 
 import { useLingui } from '@lingui/react/macro'
 
+import { LanguageTag } from '../../components/language-tag'
 import { Card, Text, View } from '../../components/ui'
 import { useSearchDictionary } from '../../hooks/use-dictionary'
 
@@ -86,7 +87,7 @@ const SearchResultsScreen: React.FC = () => {
             <Pressable>
               <Card className="mb-4 p-4">
                 <View className="mb-1 flex-row items-center justify-between">
-                  <Text variant="h6" weight="bold" className="text-primary flex-1">
+                  <Text kabiye variant="h6" weight="bold" className="text-primary flex-1">
                     {item.headword}
                   </Text>
                   <View className="bg-background-tertiary rounded-full px-2 py-1">
@@ -99,9 +100,14 @@ const SearchResultsScreen: React.FC = () => {
                     </Text>
                   </View>
                 </View>
-                <Text variant="body" className="text-foreground mt-1">
-                  {item.match_text ?? item.headword}
-                </Text>
+                {item.match_text && item.match_text !== item.headword && (
+                  <View className="mt-1 flex-row items-baseline gap-2">
+                    <Text variant="body" className="text-foreground flex-1">
+                      {item.match_text}
+                    </Text>
+                    {item.match_language && <LanguageTag language={item.match_language} />}
+                  </View>
+                )}
                 {item.entry_data.grammaticalInfo && (
                   <Text variant="caption" className="text-foreground-secondary mt-1 italic">
                     {item.entry_data.grammaticalInfo}

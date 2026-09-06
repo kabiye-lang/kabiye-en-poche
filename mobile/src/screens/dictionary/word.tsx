@@ -52,7 +52,7 @@ const WordDetailsScreen: React.FC = () => {
       <View flex className="bg-background" safeArea="vertical">
         <ScrollView contentContainerStyle={{ paddingTop: headerHeight / 2, paddingHorizontal: 20 }}>
           <Card className="p-5">
-            <Text variant="h4" weight="bold" className="text-foreground mb-3">
+            <Text kabiye variant="h4" weight="bold" className="text-foreground mb-3">
               {entry_data.headword}
             </Text>
             <Text variant="body" className="text-foreground-secondary mb-4">
@@ -78,13 +78,13 @@ const WordDetailsScreen: React.FC = () => {
     <View flex className="bg-background" safeArea="vertical">
       <ScrollView contentContainerStyle={{ paddingTop: headerHeight / 2, paddingHorizontal: 20, paddingBottom: 40 }}>
         {/* Headword */}
-        <Text variant="h3" weight="bold" className="text-primary mb-2">
+        <Text kabiye variant="h3" weight="bold" className="text-primary mb-2">
           {entry_data.headword}
         </Text>
 
         {/* Pronunciations */}
         {entry_data.pronunciations && entry_data.pronunciations.length > 0 && (
-          <Text variant="lg" className="text-foreground-secondary mb-2">
+          <Text kabiye variant="lg" className="text-foreground-secondary mb-2">
             [{entry_data.pronunciations.join(', ')}]
           </Text>
         )}
@@ -137,7 +137,7 @@ const WordDetailsScreen: React.FC = () => {
               {t`Variant Forms`}
             </Text>
             {entry_data.variantRefs.map((variant, idx) => (
-              <Text key={idx} variant="body" className="text-foreground mb-1">
+              <Text kabiye key={idx} variant="body" className="text-foreground mb-1">
                 • {variant.variant}
                 {variant.pronunciation && ` [${variant.pronunciation}]`}
               </Text>

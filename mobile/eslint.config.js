@@ -1,11 +1,19 @@
 // https://docs.expo.dev/guides/using-eslint/
-import tsEslint from '@typescript-eslint/eslint-plugin'
 import tsParser from '@typescript-eslint/parser'
 import expoConfig from 'eslint-config-expo/flat.js'
 import eslintPluginPrettierRecommended from 'eslint-plugin-prettier/recommended'
 import reactYouMightNotNeedAnEffect from 'eslint-plugin-react-you-might-not-need-an-effect'
 import refined from 'eslint-plugin-refined'
 import { defineConfig } from 'eslint/config'
+
+// eslint-config-expo registers @typescript-eslint itself, at its own version (8.67
+// where this package depends on 8.61), so pnpm resolves two distinct plugin objects.
+// Registering the second one is "Cannot redefine plugin" in ESLint 10, and simply
+// dropping it means the @typescript-eslint/* rules below have no plugin in their own
+// config object to resolve against. Reuse Expo's instance for both.
+const tsEslint = (Array.isArray(expoConfig) ? expoConfig : [expoConfig]).find(
+  (entry) => entry?.plugins?.['@typescript-eslint']
+)?.plugins['@typescript-eslint']
 
 export default defineConfig([
   // 1. Base / Third-party configs first

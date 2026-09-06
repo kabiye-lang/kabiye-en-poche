@@ -3,6 +3,7 @@ import type { DictionaryEntry, DictionaryStatistics, EntryByTermResult, SearchRe
 import { useInfiniteQuery, useQueries, useQuery } from '@tanstack/react-query'
 
 import { supabase } from '../lib/supabase'
+import { resolveTranslation } from '../utils/dictionary-helpers'
 
 /**
  * Search dictionary entries
@@ -21,19 +22,24 @@ export function useSearchDictionary(query: string, language: 'all' | 'fr' | 'en'
       })
       if (error) throw error
       return (data ?? []).map((r) => {
-        // Extract a meaningful match_text from entry_data for translation searches
-        let matchText = r.headword
-        if (language !== 'all' && r.entry_data) {
-          const entryData = typeof r.entry_data === 'string' ? JSON.parse(r.entry_data) : r.entry_data
-          const firstDef = entryData?.senses?.[0]?.definitions?.[0]
-          if (firstDef) {
-            matchText = firstDef.translations?.[language] || firstDef.definition || r.headword
-          }
-        }
+        // The subtitle under each result should be what the word *means*. This used to
+        // derive a definition only when searching by translation, so a Kabiyè search --
+        // the default -- rendered every row as "kalimiye / kalimiye", the headword twice
+        // and no gloss. Derive it for every mode, and fall back across languages, since
+        // not every entry is glossed in both.
+        const entryData = typeof r.entry_data === 'string' ? JSON.parse(r.entry_data) : r.entry_data
+        const firstDef = entryData?.senses?.[0]?.definitions?.[0]
+        // 'all' searches Kabiyè, so the reader's language decides which gloss to prefer.
+        const preferred = language === 'all' ? 'en' : language
+        const resolved = resolveTranslation(firstDef?.translations, preferred, firstDef?.definition ?? '')
+
         return {
           ...r,
           entry_id: r.id,
-          match_text: matchText,
+          match_text: resolved.text || undefined,
+          // Surfaced so a French gloss shown to an English reader can say so, the way
+          // Word of the Day does. Without it the two lists disagree about the same entry.
+          match_language: resolved.isFallback ? resolved.language : undefined,
         }
       }) as unknown as SearchResult[]
     },
@@ -177,7 +183,10 @@ export function useWordOfTheDay(count = 3) {
             base_param: base,
           })
           if (error) throw error
-          return { baseHeadword: base, entries: (data as unknown as DictionaryEntry[]) ?? [] }
+          return {
+            baseHeadword: base,
+            entries: (data as unknown as DictionaryEntry[]) ?? [],
+          }
         },
         staleTime: Infinity,
       })) ?? [],

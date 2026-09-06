@@ -15,6 +15,12 @@ import { ThemeProvider } from 'expo-router/react-navigation'
 import { StatusBar } from 'expo-status-bar'
 
 import {
+  Andika_400Regular,
+  Andika_400Regular_Italic,
+  Andika_700Bold,
+  Andika_700Bold_Italic,
+} from '@expo-google-fonts/andika'
+import {
   Figtree_300Light,
   Figtree_300Light_Italic,
   Figtree_400Regular,
@@ -70,6 +76,11 @@ export default function RootLayout() {
     try {
       const [, onboardingResult] = await Promise.all([
         loadAsync({
+          // Kabiyè's own letters; see the --font-kbp-* note in global.css.
+          Andika_400Regular,
+          Andika_400Regular_Italic,
+          Andika_700Bold,
+          Andika_700Bold_Italic,
           IBMPlexSansHebrew_100Thin,
           IBMPlexSansHebrew_200ExtraLight,
           IBMPlexSansHebrew_300Light,
@@ -156,7 +167,10 @@ function RootLayoutNav() {
               <GestureHandlerRootView style={{ flex: 1 }}>
                 <Stack>
                   <Stack.Screen name="(onboarding)" options={{ headerShown: false }} />
-                  <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
+                  {/* The header is hidden here, but the detail screens pushed on top of this
+                      one take their back button's accessibility label from its title. Without
+                      one, VoiceOver announced the route group -- "(tabs)". */}
+                  <Stack.Screen name="(tabs)" options={{ headerShown: false, title: i18n._(msg`Back`) }} />
 
                   <Stack.Screen
                     name="alphabet/[letter]"

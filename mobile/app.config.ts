@@ -101,7 +101,7 @@ export default ({ config }: ConfigContext): ExpoConfig => ({
     'expo-web-browser',
     'expo-audio',
     'expo-secure-store',
-    'expo-assets',
+    'expo-asset',
   ],
   experiments: {
     tsconfigPaths: true,

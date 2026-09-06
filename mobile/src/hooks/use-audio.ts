@@ -80,5 +80,9 @@ export const useAudio = () => {
     resumeAudio,
     isPlaying: status.playing,
     isLoading,
+    // A URL can point at a recording that no longer exists in storage. Without
+    // this the control just silently does nothing when tapped; callers use it to
+    // say so instead.
+    error: status.error ?? null,
   }
 }

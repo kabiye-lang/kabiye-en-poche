@@ -6,7 +6,9 @@ import { Link } from 'expo-router'
 
 import { useLingui } from '@lingui/react/macro'
 
+import { resolveTranslation, translationFor } from '../../utils/dictionary-helpers'
 import { ArrowRightIcon } from '../icons'
+import { LanguageTag } from '../language-tag'
 import { Card, Text, View } from '../ui'
 
 type Translation = 'fr' | 'en'
@@ -29,18 +31,24 @@ export const SenseDefinitions = ({
       </Text>
       {senses.map((sense, senseIdx) => (
         <View key={senseIdx} className="mb-4">
-          {sense.definitions.map((def, defIdx) => (
-            <View key={defIdx} className="mb-3">
-              <Text variant="body" className="text-foreground mb-1">
-                {sense.senseNumber || senseIdx + 1}.{defIdx + 1} {def.translations[translation]}
-              </Text>
-              {def.grammar && (
-                <Text variant="caption" className="text-foreground-secondary mb-1 italic">
-                  {def.grammar}
-                </Text>
-              )}
-            </View>
-          ))}
+          {sense.definitions.map((def, defIdx) => {
+            const gloss = resolveTranslation(def.translations, translation, def.definition)
+            return (
+              <View key={defIdx} className="mb-3">
+                <View className="mb-1 flex-row items-baseline gap-2">
+                  <Text variant="body" className="text-foreground flex-1">
+                    {sense.senseNumber || senseIdx + 1}.{defIdx + 1} {gloss.text}
+                  </Text>
+                  {gloss.isFallback && gloss.language && <LanguageTag language={gloss.language} />}
+                </View>
+                {def.grammar && (
+                  <Text variant="caption" className="text-foreground-secondary mb-1 italic">
+                    {def.grammar}
+                  </Text>
+                )}
+              </View>
+            )
+          })}
 
           <WordExamples examples={sense.examples} />
           <LexicalReferences lexRefs={sense.lexRefs} />
@@ -127,7 +135,7 @@ export const SubEntries = ({
       </Text>
       {subEntries.map((subEntry, subIdx) => (
         <Card key={subIdx} className="mb-3 p-3">
-          <Text variant="lg" weight="semibold" className="text-primary mb-1">
+          <Text kabiye variant="lg" weight="semibold" className="text-primary mb-1">
             {subEntry.headword}
           </Text>
           {subEntry.type && (
@@ -140,7 +148,7 @@ export const SubEntries = ({
               {sense.definitions.map((def, defIdx) => (
                 <Text key={defIdx} variant="body" className="text-foreground mb-1">
                   {sense.senseNumber ? `${sense.senseNumber}. ` : ''}
-                  {def.translations[translation]}
+                  {translationFor(def.translations, translation, def.definition)}
                 </Text>
               ))}
               {sense.examples && sense.examples.length > 0 && (

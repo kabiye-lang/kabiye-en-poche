@@ -43,12 +43,12 @@ jest.mock('../src/components/icons', () => {
 })
 
 describe('Word empty state — SenseDefinitions', () => {
-  it('renders nothing when senses are empty', () => {
-    const { toJSON } = render(<SenseDefinitions senses={[]} translation="en" />, { wrapper })
+  it('renders nothing when senses are empty', async () => {
+    const { toJSON } = await render(<SenseDefinitions senses={[]} translation="en" />, { wrapper })
     expect(toJSON()).toBeNull()
   })
 
-  it('renders definitions when senses are provided', () => {
+  it('renders definitions when senses are provided', async () => {
     const senses = [
       {
         senseNumber: 1,
@@ -63,21 +63,21 @@ describe('Word empty state — SenseDefinitions', () => {
         lexRefs: [],
       },
     ]
-    render(<SenseDefinitions senses={senses} translation="en" />, { wrapper })
+    await render(<SenseDefinitions senses={senses} translation="en" />, { wrapper })
     expect(screen.getByText(/test-en/)).toBeTruthy()
   })
 })
 
 describe('Word empty state — CrossReferences', () => {
-  it('renders nothing when cross refs are empty', () => {
-    const { toJSON } = render(<CrossReferences crossRefs={[]} />, { wrapper })
+  it('renders nothing when cross refs are empty', async () => {
+    const { toJSON } = await render(<CrossReferences crossRefs={[]} />, { wrapper })
     expect(toJSON()).toBeNull()
   })
 })
 
 describe('Word empty state — SubEntries', () => {
-  it('renders nothing when sub entries are empty', () => {
-    const { toJSON } = render(<SubEntries subEntries={[]} translation="en" />, { wrapper })
+  it('renders nothing when sub entries are empty', async () => {
+    const { toJSON } = await render(<SubEntries subEntries={[]} translation="en" />, { wrapper })
     expect(toJSON()).toBeNull()
   })
 })

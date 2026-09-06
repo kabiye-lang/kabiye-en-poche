@@ -525,6 +525,12 @@ msgstr "Suivant"
 #: src/components/lesson-steps/audio-step.tsx
 #: src/components/lesson-steps/listen-choose-step.tsx
 #: src/components/lesson-steps/listen-type-step.tsx
+msgid "Audio unavailable"
+msgstr "Audio indisponible"
+
+#: src/components/lesson-steps/audio-step.tsx
+#: src/components/lesson-steps/listen-choose-step.tsx
+#: src/components/lesson-steps/listen-type-step.tsx
 msgid "No audio available"
 msgstr "Aucun audio disponible"
 
@@ -953,3 +959,39 @@ msgstr "Votre progression a été réinitialisée avec succès."
 #: src/components/lesson-steps/completion-step.tsx
 msgid "Your Score"
 msgstr "Votre score"
+
+#: src/components/audio-play-button.tsx
+msgid "Play audio"
+msgstr "Écouter l'audio"
+
+#: src/components/audio-play-button.tsx
+msgid "Stop audio"
+msgstr "Arrêter l'audio"
+
+#: src/screens/keyboard.tsx
+msgid "Shift"
+msgstr "Maj"
+
+#: src/screens/keyboard.tsx
+msgid "Shift on"
+msgstr "Maj activée"
+
+#: src/screens/keyboard.tsx
+msgid "Caps lock on"
+msgstr "Verr. maj activé"
+
+#: src/screens/keyboard.tsx
+msgid "Period"
+msgstr "Point"
+
+#: src/screens/keyboard.tsx
+msgid "Backspace"
+msgstr "Retour arrière"
+
+#: src/screens/keyboard.tsx
+msgid "New line"
+msgstr "Nouvelle ligne"
+
+#: src/app/_layout.tsx
+msgid "Back"
+msgstr "Retour"

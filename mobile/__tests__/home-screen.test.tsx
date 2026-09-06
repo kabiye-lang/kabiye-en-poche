@@ -82,24 +82,24 @@ beforeEach(() => {
 })
 
 describe('HomeScreen render', () => {
-  it('always renders the Word of the Day section heading', () => {
-    render(<HomeScreen />)
+  it('always renders the Word of the Day section heading', async () => {
+    await render(<HomeScreen />)
     expect(screen.getByText('Word of the Day')).toBeTruthy()
   })
 
-  it('renders new-user CTA when no lesson is available', () => {
-    render(<HomeScreen />)
+  it('renders new-user CTA when no lesson is available', async () => {
+    await render(<HomeScreen />)
     expect(screen.getByText('Start Learning')).toBeTruthy()
   })
 
-  it('WotD content is shown when hook returns data', () => {
-    render(<HomeScreen />)
+  it('WotD content is shown when hook returns data', async () => {
+    await render(<HomeScreen />)
     expect(screen.getByTestId('wotd-content')).toBeTruthy()
   })
 
-  it('WotD error fallback is shown when useWordOfTheDay returns isError=true', () => {
+  it('WotD error fallback is shown when useWordOfTheDay returns isError=true', async () => {
     mockUseWordOfTheDay.mockReturnValueOnce({ data: [], isLoading: false, isError: true })
-    render(<HomeScreen />)
+    await render(<HomeScreen />)
     expect(screen.getByTestId('wotd-error-fallback')).toBeTruthy()
   })
 })

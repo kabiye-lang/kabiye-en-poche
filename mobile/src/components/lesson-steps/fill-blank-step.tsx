@@ -54,14 +54,18 @@ const FillBlankStep = ({ activity, onAnswer }: FillBlankStepProps) => {
   const renderSentenceWithBlank = () => {
     const parts = sentence?.split('___') || []
 
+    // Each blank is grouped with the text that FOLLOWS it, not the text before it.
+    // Grouping it with the text before left the tail of the sentence as its own flex
+    // item, so a sentence ending in a blank dropped its final full stop onto a line of
+    // its own, centred and orphaned.
     return (
-      <View className="flex-row flex-wrap items-center justify-center">
-        {parts.map((part: string, index: number) => (
-          <View key={index} className="flex-row items-center">
-            <Text variant="h6" className="text-foreground">
-              {part}
-            </Text>
-            {index < parts.length - 1 && (
+      <View className="flex-row flex-wrap items-baseline justify-center">
+        <Text variant="h6" className="text-foreground">
+          {parts[0]}
+        </Text>
+        {parts.slice(1).map((part: string, index: number) => (
+          <View key={index} className="flex-row items-baseline">
+            {
               <View
                 className={`mx-2 min-w-[100px] rounded-lg border-2 border-dashed px-4 py-2 ${
                   selectedAnswer
@@ -89,7 +93,10 @@ const FillBlankStep = ({ activity, onAnswer }: FillBlankStepProps) => {
                   {selectedAnswer || '___'}
                 </Text>
               </View>
-            )}
+            }
+            <Text variant="h6" className="text-foreground">
+              {part}
+            </Text>
           </View>
         ))}
       </View>
@@ -138,6 +145,7 @@ const FillBlankStep = ({ activity, onAnswer }: FillBlankStepProps) => {
                 }`}
               >
                 <Text
+                  kabiye
                   variant="body"
                   weight={isSelected ? 'semibold' : 'regular'}
                   className={`text-center ${

@@ -6,13 +6,16 @@ import { Link, router } from 'expo-router'
 import { useLingui } from '@lingui/react/macro'
 
 import { MagnifyingGlassIcon, SparkleIcon } from '../../components/icons'
+import { LanguageTag } from '../../components/language-tag'
 import { Text, View } from '../../components/ui'
 import { WordOfTheDay } from '../../components/word-of-the-day'
 import { useDebounce } from '../../hooks/use-debounce'
 import { useAvailableLetters, useSearchDictionary, useWordOfTheDay } from '../../hooks/use-dictionary'
 import { useLanguage } from '../../hooks/use-language'
+import { usePlaceholderColor } from '../../hooks/use-theme-color'
 
 const DictionaryScreen: React.FC = () => {
+  const placeholderColor = usePlaceholderColor()
   const { t } = useLingui()
   const { currentLanguage } = useLanguage()
   const [searchQuery, setSearchQuery] = useState('')
@@ -33,6 +36,7 @@ const DictionaryScreen: React.FC = () => {
     data: searchResults,
     isLoading: isSearching,
     isFetching,
+    isError: isSearchError,
   } = useSearchDictionary(debouncedQuery, searchLanguage, debouncedQuery.length >= 2)
 
   const handleSearch = () => {
@@ -71,8 +75,14 @@ const DictionaryScreen: React.FC = () => {
             onSubmitEditing={handleSearch}
             placeholder={getPlaceholder()}
             className="text-foreground flex-1 text-base"
-            placeholderTextColor="#6E6B7B"
+            placeholderTextColor={placeholderColor}
             returnKeyType="search"
+            // Kabiyè is not in any device dictionary, so autocorrect actively fights the
+            // user: typing "kalimiye" is corrected to "Kali,iye" and the search returns
+            // nothing. Autocapitalise would also break the lowercase headwords.
+            autoCorrect={false}
+            autoCapitalize="none"
+            spellCheck={false}
           />
           {(isSearching || isFetching) && <ActivityIndicator size="small" className="ml-2" />}
         </View>
@@ -108,18 +118,39 @@ const DictionaryScreen: React.FC = () => {
           </Pressable>
         </View>
 
+        {/* A failed search used to render nothing at all: the spinner stopped, no
+            results appeared, and the user was left unable to tell a network error from
+            a word that genuinely is not in the dictionary. */}
+        {isSearchError && debouncedQuery.length >= 2 && (
+          <View className="border-border bg-card mt-2 rounded-lg border px-4 py-3">
+            <Text variant="body" weight="semibold" className="text-foreground">
+              {t`Couldn't search right now`}
+            </Text>
+            <Text variant="caption" className="text-foreground-secondary mt-0.5">
+              {t`Check your connection and try again.`}
+            </Text>
+          </View>
+        )}
+
         {/* Quick search results dropdown */}
         {showSearchResults && searchResults.length > 0 && (
           <View className="border-border bg-card mt-2 rounded-lg border">
             {searchResults.slice(0, 5).map((result) => (
               <Link key={result.entry_id} href={`/word/${result.headword}`} asChild onPress={() => setSearchQuery('')}>
                 <Pressable className="border-border border-b px-4 py-3">
-                  <Text variant="body" weight="semibold" className="text-foreground">
+                  <Text kabiye variant="body" weight="semibold" className="text-foreground">
                     {result.headword}
                   </Text>
-                  <Text variant="caption" className="text-foreground-secondary mt-0.5">
-                    {result.match_text ?? result.headword}
-                  </Text>
+                  {/* Only render a subtitle when it says something the headword does
+                      not. Falling back to the headword printed the word twice. */}
+                  {result.match_text && result.match_text !== result.headword && (
+                    <View className="mt-0.5 flex-row items-baseline gap-2">
+                      <Text variant="caption" className="text-foreground-secondary flex-1">
+                        {result.match_text}
+                      </Text>
+                      {result.match_language && <LanguageTag language={result.match_language} />}
+                    </View>
+                  )}
                 </Pressable>
               </Link>
             ))}

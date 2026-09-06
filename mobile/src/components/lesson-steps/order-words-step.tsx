@@ -94,7 +94,7 @@ const OrderWordsStep = ({ activity, onAnswer }: OrderWordsStepProps) => {
                     disabled={showFeedback}
                     className="border-primary bg-primary/10 rounded-lg border-2 px-4 py-2"
                   >
-                    <Text variant="body" weight="bold" className="text-primary">
+                    <Text kabiye variant="body" weight="bold" className="text-primary">
                       {word}
                     </Text>
                   </Pressable>
@@ -118,7 +118,7 @@ const OrderWordsStep = ({ activity, onAnswer }: OrderWordsStepProps) => {
                   disabled={showFeedback}
                   className="border-border bg-card rounded-lg border-2 px-4 py-2"
                 >
-                  <Text variant="body" weight="bold" className="text-foreground">
+                  <Text kabiye variant="body" weight="bold" className="text-foreground">
                     {word}
                   </Text>
                 </Pressable>

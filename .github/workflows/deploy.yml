@@ -93,15 +93,13 @@ jobs:
               - 'website/**'
               - '.github/workflows/deploy.yml'
             app:
-              - 'src/**'
-              - 'assets/**'
-              - 'locales/**'
-              - '.eas/**'
-              - 'app.config.ts'
-              - 'babel.config.js'
-              - 'metro.config.js'
+              # These moved under mobile/ in the monorepo restructure. While they
+              # pointed at the repo root this filter was effectively always false, so
+              # mobile-check never ran and trigger-eas-production never fired.
+              - 'mobile/**'
               - 'package.json'
-              - 'eas.json'
+              - 'pnpm-lock.yaml'
+              - '.github/workflows/deploy.yml'
 
       - name: Detect which services need deploying
         id: services
@@ -249,12 +247,17 @@ jobs:
           path: node_modules
           key: node-modules-${{ runner.os }}-${{ hashFiles('pnpm-lock.yaml') }}
           fail-on-cache-miss: true
+      # check-types, lint and test are defined in mobile/package.json, not at the root.
+      # Without working-directory these fail with "Command not found".
       - name: Type check
         run: pnpm run check-types
+        working-directory: mobile
       - name: Lint
         run: pnpm run lint
+        working-directory: mobile
       - name: Test
         run: pnpm test
+        working-directory: mobile
 
   # ── Trigger EAS production release (main only) ─────────────────────────────
   # Fires the production-release EAS workflow when mobile-check passes on main.

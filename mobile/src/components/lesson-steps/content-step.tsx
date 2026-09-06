@@ -3,6 +3,7 @@ import { Pressable, ScrollView } from 'react-native'
 import { useLingui } from '@lingui/react/macro'
 
 import { useAudio } from '../../hooks/use-audio'
+import { hasUsableAudio, usableAudioUrl } from '../../utils/audio-source'
 import { getDifficultyBgClass, getDifficultyLabel, getDifficultyTextClass } from '../../utils/difficulty'
 import { SpeakerHighIcon } from '../icons'
 import { Button, Card, Text, View } from '../ui'
@@ -43,10 +44,12 @@ const ContentStep = ({
           en: (ex.en as string) || '',
           fr: (ex.fr as string) || '',
           pronunciation: ex.pronunciation as string | undefined,
-          audio_url: ex.audio_url as string | undefined,
+          audio_url: usableAudioUrl(ex.audio_url as string | undefined),
         }))
       : []
     : undefined
+
+  const anyExampleHasAudio = hasUsableAudio(examples?.map((e) => e.audio_url) ?? [])
 
   const difficultyLabel = difficulty ? getDifficultyLabel(difficulty) : undefined
 
@@ -98,9 +101,11 @@ const ContentStep = ({
             <Text variant="h5" weight="semibold" className="text-primary mb-3">
               {t`Examples`}
             </Text>
-            <Text variant="caption" className="text-foreground mb-2">
-              {t`Tap the speaker icon to hear pronunciation`}
-            </Text>
+            {anyExampleHasAudio && (
+              <Text variant="caption" className="text-foreground mb-2">
+                {t`Tap the speaker icon to hear pronunciation`}
+              </Text>
+            )}
             {examples.map((example, index) => {
               const hasAudio = !!example.audio_url
               const ExampleWrapper = hasAudio ? Pressable : View
@@ -116,7 +121,7 @@ const ContentStep = ({
                 >
                   <Card className="bg-background-tertiary mb-3 flex-row items-center p-4">
                     <View className="flex-1">
-                      <Text variant="h6" weight="bold" className="text-primary">
+                      <Text kabiye variant="h6" weight="bold" className="text-primary">
                         {example.kbp}
                       </Text>
                       <Text variant="body" className="text-foreground mt-1">
