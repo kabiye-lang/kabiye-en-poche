@@ -35,4 +35,18 @@ update lesson_activities
 set question_en = 'Arrange the words: ''You and me.'''
 where question_en = 'Arrange the words: ''Toi et moi.''';
 
+-- 3. A Kabiye word spelled with `n` where the language uses `ŋ` ----------------
+-- Found by the validator's new interface-copy check, 2026-09-06. `taŋga` is attested;
+-- `tanga` is not. It sits in prose, which the Kabiye field walker never visited.
+
+update lesson_activities
+set question_en = replace(question_en, 'tanga', 'taŋga'),
+    question_fr = replace(question_fr, 'tanga', 'taŋga')
+where question_en like '%tanga%' or question_fr like '%tanga%';
+
+update lesson_contents
+set content_en = replace(content_en, 'tanga', 'taŋga'),
+    content_fr = replace(content_fr, 'tanga', 'taŋga')
+where content_en like '%tanga%' or content_fr like '%tanga%';
+
 commit;
