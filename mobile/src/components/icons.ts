@@ -10,6 +10,7 @@ import { CaretDownIcon as PhosphorCaretDownIcon } from 'phosphor-react-native/sr
 import { CaretLeftIcon as PhosphorCaretLeftIcon } from 'phosphor-react-native/src/icons/CaretLeft'
 import { CaretRightIcon as PhosphorCaretRightIcon } from 'phosphor-react-native/src/icons/CaretRight'
 import { CaretUpIcon as PhosphorCaretUpIcon } from 'phosphor-react-native/src/icons/CaretUp'
+import { CheckIcon as PhosphorCheckIcon } from 'phosphor-react-native/src/icons/Check'
 import { CheckCircleIcon as PhosphorCheckCircleIcon } from 'phosphor-react-native/src/icons/CheckCircle'
 import { DotIcon as PhosphorDotIcon } from 'phosphor-react-native/src/icons/Dot'
 import { FilePdfIcon as PhosphorFilePdfIcon } from 'phosphor-react-native/src/icons/FilePdf'
@@ -49,6 +50,7 @@ export const CaretLeftIcon = withUniwind(PhosphorCaretLeftIcon)
 export const CaretRightIcon = withUniwind(PhosphorCaretRightIcon)
 export const CaretUpIcon = withUniwind(PhosphorCaretUpIcon)
 export const CheckCircleIcon = withUniwind(PhosphorCheckCircleIcon)
+export const CheckIcon = withUniwind(PhosphorCheckIcon)
 export const DotIcon = withUniwind(PhosphorDotIcon)
 export const FilePdfIcon = withUniwind(PhosphorFilePdfIcon)
 export const GearIcon = withUniwind(PhosphorGearIcon)

@@ -1,310 +1,207 @@
-import { useState } from 'react'
 import { ActivityIndicator, Pressable, ScrollView } from 'react-native'
 import Animated, { FadeInDown } from 'react-native-reanimated'
 
-import { Link } from 'expo-router'
+import { router } from 'expo-router'
 
 import { useLingui } from '@lingui/react/macro'
 
-import { CaretRightIcon, CheckCircleIcon, LockIcon } from '../components/icons'
-import { ScreenTitle, Text, View } from '../components/ui'
-import { useAppLessonsWithProgress, useAppUnits } from '../hooks/use-app-data'
+import { CaretRightIcon, CheckIcon, LockIcon, PlayIcon } from '../components/icons'
+import { Text, View } from '../components/ui'
+import { useAppLessonsWithProgress, useAppNextLesson, useAppUnits } from '../hooks/use-app-data'
 import { useLanguage } from '../hooks/use-language'
-import { getDifficultyColor, getDifficultyLabel } from '../utils/difficulty'
+import { orderUnitsForPath, usePath, type LearnerPath } from '../hooks/use-path'
+
+/**
+ * The whole path on one screen.
+ *
+ * Units used to be cards you tapped into, which put a navigation step between the
+ * learner and the only thing they came for -- the next lesson -- and hid how far the
+ * curriculum went. Laterite makes the units chapters of a single list: every lesson is
+ * visible, the current one is an ink card you can start from here, and what is finished
+ * is struck through rather than removed.
+ */
+const PATH_DESCRIPTION: Record<LearnerPath, string> = {
+  speaker: 'Set for someone who already speaks Kabiyè.',
+  heritage: 'Set for someone who grew up hearing Kabiyè.',
+  new: 'Set for someone new to Kabiyè.',
+}
 
 const LearnScreen = () => {
   const { t } = useLingui()
-  const [expandedUnits, setExpandedUnits] = useState<Set<string>>(new Set())
+  const { data: units, isLoading, error } = useAppUnits()
+  const { data: nextLesson } = useAppNextLesson()
+  const { path } = usePath()
 
-  const { data: units, isLoading: unitsLoading, error: unitsError } = useAppUnits()
+  const ordered = orderUnitsForPath(units ?? [], path)
 
-  const toggleUnit = (unitId: string) => {
-    const newExpanded = new Set(expandedUnits)
-    if (newExpanded.has(unitId)) {
-      newExpanded.delete(unitId)
-    } else {
-      newExpanded.add(unitId)
-    }
-    setExpandedUnits(newExpanded)
-  }
-
-  if (unitsLoading) {
+  if (isLoading) {
     return (
-      <View flex safeArea="top" className="bg-background">
-        <View className="flex-1 items-center justify-center">
-          <ActivityIndicator size="large" className="text-primary" />
-          <Text className="text-foreground mt-4">{t`Loading learning units...`}</Text>
-        </View>
+      <View className="bg-background flex-1 items-center justify-center">
+        <ActivityIndicator size="large" className="text-foreground" />
       </View>
     )
   }
 
-  if (unitsError) {
+  if (error) {
     return (
-      <View flex safeArea="top" className="bg-background">
-        <View className="flex-1 items-center justify-center px-4">
-          <Text variant="h6" className="text-primary text-center">
-            {t`Failed to load learning units`}
-          </Text>
-          <Text variant="caption" className="text-foreground-secondary mt-2 text-center">
-            {unitsError.message}
-          </Text>
-        </View>
+      <View className="bg-background flex-1 items-center justify-center px-6">
+        <Text className="text-foreground text-center text-[17px]">{t`We could not load your path.`}</Text>
       </View>
     )
   }
 
   return (
-    <View flex className="bg-background">
-      <ScrollView className="px-4 pb-5">
-        <ScreenTitle title={t`Learn Kabiyè`} />
-        {units?.map((unit) => (
-          <UnitCard
-            key={unit.id}
-            unit={unit}
-            isExpanded={expandedUnits.has(unit.id)}
-            onToggle={() => toggleUnit(unit.id)}
-          />
+    <ScrollView className="bg-background flex-1" contentContainerClassName="px-6 pb-10 pt-16">
+      <Text className="text-accent text-[13px] font-semibold uppercase tracking-[0.1em]">{t`Learn`}</Text>
+      <Text weight="semibold" className="text-foreground mt-2 text-[40px] leading-[1.0]">
+        {t`Your path`}
+      </Text>
+
+      <View className="mt-3 flex-row flex-wrap items-baseline gap-2">
+        <Text className="text-foreground-secondary text-[15px]">
+          {path ? PATH_DESCRIPTION[path] : t`Not set yet.`}
+        </Text>
+        <Pressable accessibilityRole="button" onPress={() => router.push('/(onboarding)')}>
+          <Text className="text-foreground text-[15px] underline">{t`Change`}</Text>
+        </Pressable>
+      </View>
+
+      <View className="mt-8">
+        {ordered.map((unit, index) => (
+          <UnitChapter key={unit.id} unit={unit} index={index} currentLessonId={nextLesson?.id} />
         ))}
-      </ScrollView>
-    </View>
+      </View>
+    </ScrollView>
   )
 }
 
-interface UnitCardProps {
+interface UnitChapterProps {
   unit: {
     id: string
+    code?: string | null
     title_en: string
     title_fr: string
-    description_en: string | null
-    description_fr: string | null
     status: 'available' | 'coming_soon' | 'maintenance' | 'disabled' | null
   }
-  isExpanded: boolean
-  onToggle: () => void
+  index: number
+  /** The one lesson to resume, across the whole path. */
+  currentLessonId?: string
 }
 
-const UnitCard = ({ unit, isExpanded, onToggle }: UnitCardProps) => {
+const UnitChapter = ({ unit, index, currentLessonId }: UnitChapterProps) => {
   const { t } = useLingui()
   const { getValue } = useLanguage()
-  const { data: lessons, isLoading: lessonsLoading } = useAppLessonsWithProgress(unit.id)
+  const { data: lessons } = useAppLessonsWithProgress(unit.id)
 
-  const unitTitle = getValue(unit, 'title')
-  const unitDescription = getValue(unit, 'description')
+  const title = getValue(unit, 'title')
+  const isOpen = unit.status === 'available' || unit.status === null
+  const done = lessons?.filter((lesson) => lesson.is_completed).length ?? 0
+  const total = lessons?.length ?? 0
 
-  const completedLessons = lessons?.filter((lesson) => lesson.is_completed).length || 0
-  const totalLessons = lessons?.length || 0
-  const isAvailable = unit.status === 'available'
-  const isComingSoon = unit.status === 'coming_soon'
-  const isMaintenance = unit.status === 'maintenance'
-  const isDisabled = unit.status === 'disabled'
-
-  if (!isAvailable) {
-    return (
-      <View
-        className="border-border mb-4 overflow-hidden rounded-2xl border border-dashed"
-        accessibilityState={{ disabled: true }}
-        accessibilityLabel={`${unitTitle}, ${isComingSoon ? t`Coming Soon` : isMaintenance ? t`Under Maintenance` : t`Temporarily Unavailable`}`}
-      >
-        <View className="bg-card/60 p-4">
-          <View className="flex-row items-center justify-between">
-            <View className="flex-1">
-              <View className="mb-1 flex-row items-center">
-                <LockIcon size={16} className="text-foreground-secondary mr-2" />
-                <Text variant="h6" weight="bold" className="text-foreground-secondary">
-                  {unitTitle}
-                </Text>
-              </View>
-              {unitDescription && (
-                <Text variant="caption" className="text-foreground-secondary mb-2">
-                  {unitDescription}
-                </Text>
-              )}
-              <View className="bg-secondary/15 mt-1 self-start rounded-full px-3 py-1">
-                <Text variant="caption" weight="semibold" className="text-secondary-text">
-                  {isComingSoon && t`Coming Soon`}
-                  {isMaintenance && t`Under Maintenance`}
-                  {isDisabled && t`Temporarily Unavailable`}
-                </Text>
-              </View>
-            </View>
-          </View>
-        </View>
-      </View>
-    )
-  }
+  // The ink card marks where to resume, and there is exactly one of those on the screen.
+  // Computing it per unit gave every unit its own -- three "continue here" cards on one
+  // path, which is three answers to a question that has one. `useAppNextLesson` already
+  // knows the globally next lesson, so the unit only asks whether it holds it.
 
   return (
-    <View className="bg-card mb-4 overflow-hidden rounded-2xl">
-      <Pressable onPress={onToggle} className="p-4">
-        <View className="flex-row items-center justify-between">
-          <View className="flex-1">
-            <Text variant="h6" weight="bold" className="text-primary mb-1">
-              {unitTitle}
-            </Text>
-            {unitDescription && (
-              <Text variant="caption" className="text-foreground-secondary mb-2">
-                {unitDescription}
-              </Text>
-            )}
-            <View className="flex-row items-center">
-              <Text variant="caption" className="text-foreground-secondary">
-                {completedLessons}/{totalLessons} {t`lessons completed`}
-              </Text>
-              <View className="bg-progress-track ml-2 h-1.5 w-16 rounded-full">
-                <View
-                  className="bg-primary h-1.5 rounded-full transition-all duration-300"
-                  style={{ width: totalLessons > 0 ? `${(completedLessons / totalLessons) * 100}%` : '0%' }}
-                />
-              </View>
-            </View>
+    <Animated.View entering={FadeInDown.duration(240).delay(Math.min(index, 4) * 60)} className="mb-9">
+      <View className="border-foreground flex-row items-baseline border-b-[1.5px] pb-2">
+        <Text className="text-accent text-[13px] font-semibold uppercase tracking-[0.1em]">
+          {unit.code ? unit.code.replace(/^U0*/, t`Unit ` + '') : t`Unit`}
+        </Text>
+        <Text weight="semibold" className="text-foreground ml-3 flex-1 text-[22px] leading-[1.15]">
+          {title ?? ''}
+        </Text>
+        {isOpen && total > 0 ? (
+          <Text className="text-foreground-secondary text-[14px]">{t`${done} of ${total}`}</Text>
+        ) : null}
+        {!isOpen ? (
+          <View className="border-border rounded-full border px-3 py-1">
+            <Text className="text-foreground-secondary text-[13px]">{t`Soon`}</Text>
           </View>
-          <CaretRightIcon
-            size={20}
-            className="text-primary"
-            style={{ transform: [{ rotate: isExpanded ? '90deg' : '0deg' }] }}
-          />
-        </View>
-      </Pressable>
+        ) : null}
+      </View>
 
-      {isExpanded && (
-        <View className="border-border mx-4 mb-4 border-t pt-4">
-          {lessonsLoading ? (
-            <View className="space-y-2">
-              {[1, 2, 3].map((i) => (
-                <View key={i} className="flex-row items-center p-2">
-                  <ActivityIndicator size="small" className="text-primary" />
-                  <Text className="ml-2">{t`Loading lessons...`}</Text>
-                </View>
-              ))}
-            </View>
-          ) : lessons && lessons.length > 0 ? (
-            <View className="space-y-2">
-              {lessons.map((lesson, index) => (
-                <LessonItem key={lesson.id} lesson={lesson} index={index} />
-              ))}
-            </View>
-          ) : (
-            <Text variant="body" className="text-foreground-secondary py-4 text-center">
-              {t`No lessons available yet`}
-            </Text>
-          )}
-        </View>
-      )}
-    </View>
+      {isOpen
+        ? lessons?.map((lesson, i) => (
+            <LessonRow key={lesson.id} lesson={lesson} index={i} isCurrent={lesson.id === currentLessonId} />
+          ))
+        : null}
+    </Animated.View>
   )
 }
 
-interface LessonItemProps {
+interface LessonRowProps {
   lesson: {
     id: string
     title_en: string
     title_fr: string
-    difficulty: 'beginner' | 'intermediate' | 'advanced'
     status: 'available' | 'coming_soon' | 'maintenance' | 'disabled' | null
     is_completed: boolean
     is_locked: boolean
   }
-  index?: number
+  index: number
+  isCurrent: boolean
 }
 
-const LessonItem = ({ lesson, index = 0 }: LessonItemProps) => {
+const LessonRow = ({ lesson, index, isCurrent }: LessonRowProps) => {
   const { t } = useLingui()
   const { getValue } = useLanguage()
 
-  const lessonTitle = getValue(lesson, 'title')
-  const difficultyLabel = getDifficultyLabel(lesson.difficulty)
-  const difficultyColor = getDifficultyColor(lesson.difficulty)
-  const isAvailable = lesson.status === 'available' || lesson.status === null
-  const isComingSoon = lesson.status === 'coming_soon'
-  const isMaintenance = lesson.status === 'maintenance'
-  const isDisabled = lesson.status === 'disabled'
+  const title = getValue(lesson, 'title')
+  const open = lesson.status === 'available' || lesson.status === null
+  const number = String(index + 1).padStart(2, '0')
 
-  if (!isAvailable) {
+  if (isCurrent && open && !lesson.is_locked) {
     return (
-      <Animated.View entering={FadeInDown.duration(200).delay(index * 60)}>
-        <View
-          className="border-border flex-row items-center rounded-lg border border-dashed p-3"
-          accessibilityState={{ disabled: true }}
-          accessibilityLabel={`${lessonTitle}, ${isComingSoon ? t`Coming Soon` : isMaintenance ? t`Under Maintenance` : t`Temporarily Unavailable`}`}
-        >
-          <LockIcon size={16} className="text-foreground-secondary" />
-          <View className="ml-3 flex-1">
-            <Text variant="body" className="text-foreground-secondary mb-1">
-              {lessonTitle}
-            </Text>
-            <View className="bg-secondary/15 self-start rounded-full px-2 py-0.5">
-              <Text variant="caption" weight="medium" className="text-secondary-text">
-                {isComingSoon && t`Coming Soon`}
-                {isMaintenance && t`Under Maintenance`}
-                {isDisabled && t`Temporarily Unavailable`}
-              </Text>
-            </View>
-          </View>
-          <View className="rounded px-2 py-1" style={{ backgroundColor: difficultyColor + '20' }}>
-            <Text variant="caption" style={{ color: difficultyColor }}>
-              {difficultyLabel}
-            </Text>
-          </View>
+      <Pressable
+        accessibilityRole="link"
+        accessibilityLabel={`${title}, ${t`continue`}`}
+        onPress={() => router.push(`/lesson/${lesson.id}`)}
+        className="bg-foreground -mx-4 mt-2 flex-row items-center rounded-[14px] px-4 py-4"
+      >
+        <Text className="text-background/60 w-9 text-[14px]">{number}</Text>
+        <View className="flex-1">
+          <Text weight="semibold" className="text-background text-[17px]">
+            {title ?? ''}
+          </Text>
         </View>
-      </Animated.View>
+        <View className="bg-accent ml-3 h-9 w-9 items-center justify-center rounded-full">
+          <PlayIcon size={16} weight="fill" className="text-white" />
+        </View>
+      </Pressable>
     )
   }
 
-  if (lesson.is_locked) {
-    return (
-      <Animated.View entering={FadeInDown.duration(200).delay(index * 60)}>
-        <View
-          className="bg-background-tertiary flex-row items-center rounded-lg p-3 opacity-50"
-          accessibilityState={{ disabled: true }}
-          accessibilityLabel={`${lessonTitle}, ${t`Locked`}`}
-        >
-          <LockIcon size={20} className="text-foreground-secondary" />
-          <View className="ml-3 flex-1">
-            <Text variant="body" className="text-foreground-secondary mb-1">
-              {lessonTitle}
-            </Text>
-            <Text variant="caption" className="text-foreground-secondary">
-              {t`Complete previous lesson to unlock`}
-            </Text>
-          </View>
-          <View className="rounded px-2 py-1" style={{ backgroundColor: difficultyColor + '20' }}>
-            <Text variant="caption" style={{ color: difficultyColor }}>
-              {difficultyLabel}
-            </Text>
-          </View>
-        </View>
-      </Animated.View>
-    )
-  }
+  const locked = lesson.is_locked || !open
 
   return (
-    <Animated.View entering={FadeInDown.duration(200).delay(index * 60)}>
-      <Link href={`/lesson/${lesson.id}`} asChild>
-        <Pressable>
-          <View className="bg-card flex-row items-center rounded-lg p-3">
-            {lesson.is_completed ? (
-              <CheckCircleIcon size={20} className="text-success" />
-            ) : (
-              <View className="border-primary h-5 w-5 rounded-full border-2" />
-            )}
-            <View className="ml-3 flex-1">
-              <Text variant="body" weight={lesson.is_completed ? 'medium' : 'regular'} className="text-foreground mb-1">
-                {lessonTitle}
-              </Text>
-              <Text variant="caption" className="text-foreground-secondary">
-                {lesson.is_completed ? t`Completed` : t`Tap to start`}
-              </Text>
-            </View>
-            <View className="rounded px-2 py-1" style={{ backgroundColor: difficultyColor + '20' }}>
-              <Text variant="caption" style={{ color: difficultyColor }}>
-                {difficultyLabel}
-              </Text>
-            </View>
-          </View>
-        </Pressable>
-      </Link>
-    </Animated.View>
+    <Pressable
+      accessibilityRole={locked ? 'text' : 'link'}
+      accessibilityLabel={
+        locked ? `${title}, ${t`locked`}` : lesson.is_completed ? `${title}, ${t`done`}` : (title ?? '')
+      }
+      accessibilityState={{ disabled: locked }}
+      disabled={locked}
+      onPress={() => router.push(`/lesson/${lesson.id}`)}
+      className={index === 0 ? 'flex-row items-center py-4' : 'border-border flex-row items-center border-t py-4'}
+    >
+      <Text className="text-foreground-secondary w-9 text-[14px]">{number}</Text>
+      <Text
+        className={
+          lesson.is_completed
+            ? 'text-foreground-secondary flex-1 text-[17px] line-through'
+            : locked
+              ? 'text-foreground-secondary flex-1 text-[17px]'
+              : 'text-foreground flex-1 text-[17px]'
+        }
+      >
+        {title ?? ''}
+      </Text>
+      {lesson.is_completed ? <CheckIcon size={16} weight="bold" className="text-foreground" /> : null}
+      {locked && !lesson.is_completed ? <LockIcon size={16} className="text-foreground-secondary" /> : null}
+      {!locked && !lesson.is_completed ? <CaretRightIcon size={16} className="text-foreground-secondary" /> : null}
+    </Pressable>
   )
 }
 

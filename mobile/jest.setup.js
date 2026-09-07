@@ -21,3 +21,10 @@ jest.mock('@ungap/structured-clone', () => ({
 jest.mock('expo/src/winter/fetch', () => ({
   fetch: jest.fn(),
 }))
+
+// Reanimated drives every entering animation in the app. Its native module cannot load
+// under Jest ("Cannot read properties of undefined (reading 'loadUnpackers')"), which
+// fails the whole suite the moment a screen under test imports it -- so any screen that
+// gains an animation would otherwise break its own test. The library ships a mock for
+// exactly this; it renders the views and makes the animations no-ops.
+jest.mock('react-native-reanimated')
