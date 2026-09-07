@@ -112,8 +112,11 @@ const BrowseByLetterScreen: React.FC = () => {
         {/* The alphabet, down the edge. Andika because half of it is letters the
             interface face cannot draw, and scrollable because the dictionary indexes
             both cases separately -- around fifty entries, more than a phone is tall. */}
+        {/* A ScrollView takes the space a class gives it only if the width is a style:
+            `w-9` alone let it claim half the screen and squeeze the list beside it. */}
         <ScrollView
-          className="w-9 pr-1.5"
+          style={{ width: 36, flexGrow: 0, flexShrink: 0 }}
+          className="pr-1.5"
           contentContainerStyle={{ paddingTop: 48, paddingBottom: 32 }}
           showsVerticalScrollIndicator={false}
         >

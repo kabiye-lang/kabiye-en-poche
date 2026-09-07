@@ -33,6 +33,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage'
 import { QueryClientProvider } from '@tanstack/react-query'
 import { Toaster } from 'sonner-native'
 
+import { useAppearance } from '../hooks/use-appearance'
 import i18n, { I18nProvider } from '../i18n'
 import { queryClient } from '../lib/query-client'
 import { AppDarkTheme, AppDefaultTheme } from '../utils/design-system-nativewind'
@@ -123,7 +124,13 @@ export default function RootLayout() {
 const NotReady = () => <></>
 
 function RootLayoutNav() {
-  const colorScheme = useColorScheme()
+  const systemScheme = useColorScheme()
+  // The Appearance setting overrides the system. React Navigation's theme and the status
+  // bar are outside Uniwind's stylesheet, so they have to be told separately -- without
+  // this, choosing Dark left every pushed header and the clock light on a dark screen.
+  const { appearance } = useAppearance()
+  const isDark = appearance === 'system' ? systemScheme === 'dark' : appearance === 'dark'
+
   return (
     <SafeAreaProvider>
       <SafeAreaListener
@@ -132,9 +139,9 @@ function RootLayoutNav() {
         }}
       >
         <QueryClientProvider client={queryClient}>
-          <ThemeProvider value={colorScheme === 'dark' ? AppDarkTheme : AppDefaultTheme}>
+          <ThemeProvider value={isDark ? AppDarkTheme : AppDefaultTheme}>
             <I18nProvider i18n={i18n}>
-              <StatusBar style={'auto'} />
+              <StatusBar style={isDark ? 'light' : 'dark'} />
               <GestureHandlerRootView style={{ flex: 1 }}>
                 <Stack>
                   <Stack.Screen name="(onboarding)" options={{ headerShown: false }} />

@@ -2,6 +2,7 @@ import { ArrowFatLinesUpIcon as PhosphorArrowFatLinesUpIcon } from 'phosphor-rea
 import { ArrowFatLineUpIcon as PhosphorArrowFatLineUpIcon } from 'phosphor-react-native/src/icons/ArrowFatLineUp'
 import { ArrowRightIcon as PhosphorArrowRightIcon } from 'phosphor-react-native/src/icons/ArrowRight'
 import { ArrowsClockwiseIcon as PhosphorArrowsClockwiseIcon } from 'phosphor-react-native/src/icons/ArrowsClockwise'
+import { ArrowUpRightIcon as PhosphorArrowUpRightIcon } from 'phosphor-react-native/src/icons/ArrowUpRight'
 import { ArticleIcon as PhosphorArticleIcon } from 'phosphor-react-native/src/icons/Article'
 import { BackspaceIcon as PhosphorBackspaceIcon } from 'phosphor-react-native/src/icons/Backspace'
 import { BookmarkSimpleIcon as PhosphorBookmarkSimpleIcon } from 'phosphor-react-native/src/icons/BookmarkSimple'
@@ -42,6 +43,8 @@ export const ArticleIcon = withUniwind(PhosphorArticleIcon)
 export const ArrowFatLinesUpIcon = withUniwind(PhosphorArrowFatLinesUpIcon)
 export const ArrowFatLineUpIcon = withUniwind(PhosphorArrowFatLineUpIcon)
 export const ArrowRightIcon = withUniwind(PhosphorArrowRightIcon)
+/** Marks a row that leaves the app, as the direction asks. */
+export const ArrowUpRightIcon = withUniwind(PhosphorArrowUpRightIcon)
 export const BookmarkSimpleIcon = withUniwind(PhosphorBookmarkSimpleIcon)
 export const ArrowsClockwiseIcon = withUniwind(PhosphorArrowsClockwiseIcon)
 export const BackspaceIcon = withUniwind(PhosphorBackspaceIcon)
