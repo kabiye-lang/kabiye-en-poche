@@ -57,34 +57,32 @@ const FillBlankStep = ({ activity, onAnswer }: FillBlankStepProps) => {
   /**
    * The sentence, with the blank as a rule the answer drops onto.
    *
-   * Each blank is grouped with the text that FOLLOWS it, not the text before it.
-   * Grouping it with the text before left the tail of the sentence as its own flex item,
-   * so a sentence ending in a blank dropped its final full stop onto a line of its own.
+   * One `Text` with the blank nested inside it, not a row of flex items. A wrapping
+   * flex-row breaks only between its children, so the text following the blank was one
+   * unbreakable run and ran off the right edge; nested `Text` flows and wraps like prose.
+   * The rule is an underline rather than a 3px border for the same reason -- a bordered
+   * `View` is a flex item again.
    */
   const renderSentenceWithBlank = () => {
     const parts = sentence?.split('___') || []
 
-    // The sentence carries the frame and the blank carries the Kabiyè, so they are not
-    // the same size: 36px is the direction's figure for a Kabiyè sentence, and applying
-    // it to an English one pushed the blank onto a line of its own.
     return (
-      <View className="flex-row flex-wrap items-baseline">
-        <Text className="text-foreground text-[24px]" style={{ lineHeight: 36 }}>
-          {parts[0]}
-        </Text>
+      <Text className="text-foreground text-[24px]" style={{ lineHeight: 38 }}>
+        {parts[0]}
         {parts.slice(1).map((part: string, index: number) => (
-          <View key={index} className="flex-row items-baseline">
-            <View className="border-foreground mx-2 min-w-[120px] border-b-[3px] pb-0.5">
-              <Text kabiye weight="bold" className="text-foreground text-center text-[26px]" style={{ lineHeight: 34 }}>
-                {selectedAnswer || ' '}
-              </Text>
-            </View>
-            <Text className="text-foreground text-[24px]" style={{ lineHeight: 36 }}>
-              {part}
+          <Text key={index} className="text-foreground text-[24px]">
+            <Text
+              kabiye
+              weight="bold"
+              className="text-foreground text-[24px]"
+              style={{ textDecorationLine: 'underline' }}
+            >
+              {selectedAnswer || '\u2007\u2007\u2007\u2007\u2007\u2007'}
             </Text>
-          </View>
+            {part}
+          </Text>
         ))}
-      </View>
+      </Text>
     )
   }
 
