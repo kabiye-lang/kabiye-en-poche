@@ -165,8 +165,10 @@ const WordDetailsScreen: React.FC = () => {
         </Pressable>
         <Pressable
           accessibilityRole="button"
-          onPress={() => {
-            void addMet([{ headword: entry_data.headword }])
+          // Await the write before navigating: My words reads storage on mount, so
+          // pushing first showed an empty list for the word just added.
+          onPress={async () => {
+            await addMet([{ headword: entry_data.headword }])
             router.push('/dictionary/my-words')
           }}
           className="bg-foreground flex-[1.2] items-center rounded-full py-4"

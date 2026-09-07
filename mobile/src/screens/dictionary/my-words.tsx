@@ -1,9 +1,9 @@
 import type { MyWord } from '../../hooks/use-my-words'
 
-import { useState } from 'react'
+import { useCallback, useState } from 'react'
 import { Pressable, ScrollView } from 'react-native'
 
-import { router } from 'expo-router'
+import { router, useFocusEffect } from 'expo-router'
 
 import { useLingui } from '@lingui/react/macro'
 
@@ -23,8 +23,17 @@ type Sort = 'recent' | 'alpha' | 'practise'
  */
 const MyWordsScreen = () => {
   const { t } = useLingui()
-  const { words, isLoading } = useMyWords()
+  const { words, isLoading, refresh } = useMyWords()
   const [sort, setSort] = useState<Sort>('recent')
+
+  // Re-read on every focus, not just on mount. This screen is pushed, so returning to
+  // it reuses the mounted instance and the mount effect never runs again -- a word added
+  // from a dictionary entry showed up in Profile's count but not in this list.
+  useFocusEffect(
+    useCallback(() => {
+      void refresh()
+    }, [refresh])
+  )
 
   const sorted = sortWords(words, sort)
   const unwritten = words.filter((word) => word.writtenCount === 0)
