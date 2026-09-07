@@ -50,6 +50,15 @@ const translations = {
     downloadNow:
       "An independent, community-run project. No ads, no tracking, no paywall.",
     openKeyboard: "Open Kabiyè Keyboard",
+    statEntries: "dictionary entries",
+    statLanguages: "languages — Kabiyè, French, English",
+    statLetters: "letters, 8 not in French",
+    statPrice: "forever — no paywall, no ads",
+    padPlaceholder: "Tap a letter to write it here",
+    padDelete: "Delete",
+    padClear: "Clear",
+    padCopy: "Copy",
+    padCopied: "Copied",
   },
   fr: {
     title: "Kabiyè en poche",
@@ -86,11 +95,31 @@ const translations = {
     downloadNow:
       "Un projet indépendant, porté par la communauté. Sans publicité, sans traçage, sans abonnement.",
     openKeyboard: "Ouvrir le clavier Kabiyè",
+    statEntries: "entrées du dictionnaire",
+    statLanguages: "langues — kabiyè, français, anglais",
+    statLetters: "lettres, dont 8 absentes du français",
+    statPrice: "pour toujours — sans abonnement, sans publicité",
+    padPlaceholder: "Touchez une lettre pour l'écrire ici",
+    padDelete: "Supprimer",
+    padClear: "Effacer",
+    padCopy: "Copier",
+    padCopied: "Copié",
   },
 };
 
+/** The 32 Kabiyè letters, in the order the alphabet teaches them. */
+const ALPHABET = [
+  "a", "aɣ", "b", "c", "d", "ɖ", "e", "eɣ", "ɛ", "ɛɣ", "f", "g", "gb", "ɣ", "h", "i",
+  "iɣ", "ɩ", "ɩɣ", "j", "k", "kp", "l", "m", "n", "ñ", "ŋ", "o", "ɔ", "p", "r", "s",
+];
+
+/** The eight a French keyboard cannot reach. These are the laterite tiles. */
+const KABIYE_ONLY = "ɖɛɣɩŋɔʋñ";
+
 export default function Home() {
   const [lang, setLang] = useState<"en" | "fr">("en");
+  const [pad, setPad] = useState("");
+  const [copied, setCopied] = useState(false);
   const [isKeyboardOpen, setIsKeyboardOpen] = useState(false);
 
   useEffect(() => {
@@ -104,6 +133,13 @@ export default function Home() {
 
   const toggleLanguage = () => {
     setLang((prevLang) => (prevLang === "en" ? "fr" : "en"));
+  };
+
+  const handleCopyPad = async () => {
+    if (!pad) return;
+    await navigator.clipboard.writeText(pad);
+    setCopied(true);
+    setTimeout(() => setCopied(false), 1600);
   };
 
   const t = translations[lang];
@@ -183,6 +219,85 @@ export default function Home() {
           </motion.div>
         </div>
       </header>
+
+      {/* Four numbers, all of them checkable. The dictionary count is the one no
+          neighbouring product can copy; "0 € forever" is a commitment, not a promise
+          about a trial. */}
+      <section className="bg-ink px-8 py-14">
+        <div className="mx-auto grid max-w-[1200px] gap-8 [grid-template-columns:repeat(auto-fit,minmax(180px,1fr))]">
+          {[
+            { n: "9,738", label: t.statEntries },
+            { n: "3", label: t.statLanguages },
+            { n: "32", label: t.statLetters },
+            { n: "0 €", label: t.statPrice },
+          ].map((stat) => (
+            <div key={stat.label}>
+              <div className="text-paper text-[44px] font-semibold leading-[1.0]">{stat.n}</div>
+              <div className="text-paper/70 mt-2 text-[15px] leading-[1.35]">{stat.label}</div>
+            </div>
+          ))}
+        </div>
+      </section>
+
+      {/* The alphabet, playable. Tapping a tile appends the letter to the pad, so a
+          visitor can produce a Kabiyè letter before installing anything -- which is the
+          single most convincing thing this site can do. */}
+      <section className="bg-paper px-8 py-20">
+        <div className="mx-auto max-w-[1200px]">
+          <h2
+            className="text-ink font-semibold leading-[1.02] tracking-[-0.02em]"
+            style={{ fontSize: "clamp(32px, 4vw, 52px)" }}
+          >
+            {t.alphabetTitle}
+          </h2>
+          <div className="mt-10 grid gap-2 [grid-template-columns:repeat(auto-fill,minmax(88px,1fr))]">
+            {ALPHABET.map((letter) => {
+              const special = KABIYE_ONLY.includes(letter);
+              return (
+                <button
+                  key={letter}
+                  onClick={() => setPad((value) => value + letter)}
+                  aria-label={letter}
+                  className={
+                    special
+                      ? "kbp bg-laterite aspect-square rounded-xl text-[30px] font-bold text-white transition-transform hover:-translate-y-[3px] active:scale-[0.94]"
+                      : "kbp bg-leaf border-line text-ink aspect-square rounded-xl border text-[30px] font-bold transition-transform hover:-translate-y-[3px] active:scale-[0.94]"
+                  }
+                >
+                  {letter}
+                </button>
+              );
+            })}
+          </div>
+
+          <div className="border-ink mt-8 rounded-[14px] border-[1.5px] p-5">
+            <div className="kbp text-ink min-h-[44px] break-words text-[28px]" aria-live="polite">
+              {pad || <span className="text-ink-quiet text-[17px]">{t.padPlaceholder}</span>}
+            </div>
+            <div className="mt-4 flex flex-wrap gap-3">
+              <button
+                onClick={() => setPad((value) => [...value].slice(0, -1).join(""))}
+                className="border-ink text-ink rounded-full border-[1.5px] px-5 py-2 text-[15px] font-semibold"
+              >
+                {t.padDelete}
+              </button>
+              <button
+                onClick={() => setPad("")}
+                className="border-ink text-ink rounded-full border-[1.5px] px-5 py-2 text-[15px] font-semibold"
+              >
+                {t.padClear}
+              </button>
+              <button
+                onClick={handleCopyPad}
+                className="bg-ink text-paper rounded-full px-5 py-2 text-[15px] font-semibold"
+              >
+                {copied ? t.padCopied : t.padCopy}
+              </button>
+            </div>
+          </div>
+        </div>
+      </section>
+
       <motion.section
         className="bg-white px-4"
         initial={{ opacity: 0 }}
