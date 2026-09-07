@@ -70,3 +70,36 @@ describe('differingIndices', () => {
     expect(differingIndices('ɖoo', 'ɖoo')).toEqual([])
   })
 })
+
+describe('kabiyeSpellingOf', () => {
+  const { kabiyeSpellingOf } = jest.requireActual('../src/utils/kabiye-variants')
+  const POOL = ['Kabɩyɛ', 'ɖoo', 'alaafɩya', 'sɛtʋ', 'caa']
+
+  it('finds the Kabiyè spelling of a query typed on a French keyboard', () => {
+    expect(kabiyeSpellingOf('kabiye', POOL)).toBe('kabɩyɛ')
+  })
+
+  it('prefers the nearest miss', () => {
+    expect(kabiyeSpellingOf('setʋ', POOL)).toBe('sɛtʋ')
+  })
+
+  it('suggests nothing when the dictionary does not hold the result', () => {
+    // This is the whole point: a suggestion is a lookup, never a guess. Proposing a
+    // spelling we do not hold would invent a word exactly when the learner would
+    // believe it.
+    expect(kabiyeSpellingOf('zzzz', POOL)).toBeUndefined()
+    expect(kabiyeSpellingOf('bonjour', POOL)).toBeUndefined()
+  })
+
+  it('says nothing when the query is already right', () => {
+    expect(kabiyeSpellingOf('kabɩyɛ', POOL)).toBeUndefined()
+  })
+
+  it('never expands n, because ŋ and ñ cannot be told apart', () => {
+    expect(kabiyeSpellingOf('nana', ['ŋaŋa', 'ñaña'])).toBeUndefined()
+  })
+
+  it('ignores an empty query', () => {
+    expect(kabiyeSpellingOf('   ', POOL)).toBeUndefined()
+  })
+})

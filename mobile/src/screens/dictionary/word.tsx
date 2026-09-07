@@ -1,7 +1,7 @@
 import React from 'react'
 import { ActivityIndicator, Alert, Pressable, ScrollView } from 'react-native'
 
-import { Link, useLocalSearchParams } from 'expo-router'
+import { Link, router, useLocalSearchParams } from 'expo-router'
 import { useHeaderHeight } from 'expo-router/react-navigation'
 
 import { useLingui } from '@lingui/react/macro'
@@ -11,12 +11,14 @@ import { Card, Text, View } from '../../components/ui'
 import { CrossReferences, SenseDefinitions, SubEntries } from '../../components/word/word-sections'
 import { useEntryByTerm } from '../../hooks/use-dictionary'
 import { useLanguage } from '../../hooks/use-language'
+import { useMyWords } from '../../hooks/use-my-words'
 import { isRedirectEntry } from '../../utils/dictionary-helpers'
 
 const WordDetailsScreen: React.FC = () => {
   const { id: term } = useLocalSearchParams<{ id: string }>()
   const { t } = useLingui()
   const { currentLanguage } = useLanguage()
+  const { addMet } = useMyWords()
   const { data: entry, isLoading, error } = useEntryByTerm(term || '')
   const headerHeight = useHeaderHeight()
   if (isLoading) {
@@ -77,24 +79,22 @@ const WordDetailsScreen: React.FC = () => {
   return (
     <View flex className="bg-background" safeArea="vertical">
       <ScrollView contentContainerStyle={{ paddingTop: headerHeight / 2, paddingHorizontal: 20, paddingBottom: 40 }}>
-        {/* Headword */}
-        <Text kabiye variant="h3" weight="bold" className="text-primary mb-2">
+        {/* The headword is the page. At 44 it is the first and largest thing, in the
+            face that can actually draw it. */}
+        <Text kabiye weight="bold" className="text-foreground text-[44px] leading-[1.05]">
           {entry_data.headword}
         </Text>
 
-        {/* Pronunciations */}
         {entry_data.pronunciations && entry_data.pronunciations.length > 0 && (
-          <Text kabiye variant="lg" className="text-foreground-secondary mb-2">
+          <Text kabiye className="text-foreground-secondary mt-1 text-[18px]">
             [{entry_data.pronunciations.join(', ')}]
           </Text>
         )}
 
         {/* Grammatical Info */}
         {entry_data.grammaticalInfo && (
-          <View className="mb-4 flex-row items-center">
-            <Text variant="body" className="text-foreground-secondary italic">
-              {entry_data.grammaticalInfo}
-            </Text>
+          <View className="mt-2 flex-row items-center">
+            <Text className="text-foreground-secondary text-[16px] italic">{entry_data.grammaticalInfo}</Text>
             <Pressable
               className="ml-1.5"
               hitSlop={8}
@@ -145,10 +145,35 @@ const WordDetailsScreen: React.FC = () => {
           </View>
         )}
 
+        <View className="border-foreground my-5 border-t-[1.5px]" />
+
         <SenseDefinitions senses={entry_data.senses} translation={translation} />
         <SubEntries subEntries={entry_data.subEntries} translation={translation} />
         <CrossReferences crossRefs={entry_data.crossRefs} />
       </ScrollView>
+
+      {/* Two actions, both about writing rather than reading: the whole product for the
+          audience that already speaks Kabiyè. "Write it" opens the keyboard; "Practise"
+          adds the word to the list Profile counts. */}
+      <View className="flex-row gap-3 px-5 pb-4">
+        <Pressable
+          accessibilityRole="button"
+          onPress={() => router.push('/(tabs)/keyboard')}
+          className="border-foreground flex-1 items-center rounded-full border-[1.5px] py-4"
+        >
+          <Text weight="semibold" className="text-foreground text-[16px]">{t`Write it`}</Text>
+        </Pressable>
+        <Pressable
+          accessibilityRole="button"
+          onPress={() => {
+            void addMet([{ headword: entry_data.headword }])
+            router.push('/dictionary/my-words')
+          }}
+          className="bg-foreground flex-[1.2] items-center rounded-full py-4"
+        >
+          <Text weight="semibold" className="text-background text-[17px]">{t`Practise`}</Text>
+        </Pressable>
+      </View>
     </View>
   )
 }

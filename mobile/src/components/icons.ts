@@ -23,6 +23,7 @@ import { KeyReturnIcon as PhosphorKeyReturnIcon } from 'phosphor-react-native/sr
 import { LightbulbIcon as PhosphorLightbulbIcon } from 'phosphor-react-native/src/icons/Lightbulb'
 import { LockIcon as PhosphorLockIcon } from 'phosphor-react-native/src/icons/Lock'
 import { MagnifyingGlassIcon as PhosphorMagnifyingGlassIcon } from 'phosphor-react-native/src/icons/MagnifyingGlass'
+import { PencilSimpleIcon as PhosphorPencilSimpleIcon } from 'phosphor-react-native/src/icons/PencilSimple'
 import { PlayIcon as PhosphorPlayIcon } from 'phosphor-react-native/src/icons/Play'
 import { SparkleIcon as PhosphorSparkleIcon } from 'phosphor-react-native/src/icons/Sparkle'
 import { SpeakerHighIcon as PhosphorSpeakerHighIcon } from 'phosphor-react-native/src/icons/SpeakerHigh'
@@ -62,6 +63,7 @@ export const KeyReturnIcon = withUniwind(PhosphorKeyReturnIcon)
 export const LightbulbIcon = withUniwind(PhosphorLightbulbIcon)
 export const LockIcon = withUniwind(PhosphorLockIcon)
 export const MagnifyingGlassIcon = withUniwind(PhosphorMagnifyingGlassIcon)
+export const PencilSimpleIcon = withUniwind(PhosphorPencilSimpleIcon)
 export const PlayIcon = withUniwind(PhosphorPlayIcon)
 export const SparkleIcon = withUniwind(PhosphorSparkleIcon)
 export const SpeakerHighIcon = withUniwind(PhosphorSpeakerHighIcon)

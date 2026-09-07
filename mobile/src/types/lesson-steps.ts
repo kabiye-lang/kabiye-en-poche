@@ -44,9 +44,9 @@ export interface LessonExample {
   fr?: string
   pronunciation?: string
   lexeme_id?: string
-  /** Two or three sentences about this word. Optional: older rows have none. */
-  note_en?: string
-  note_fr?: string
+  /** Two or three sentences about this word, keyed by language.
+   *  Optional: content written before the Laterite change has none. */
+  note?: { en?: string; fr?: string }
   audio_url?: string
 }
 

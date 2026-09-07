@@ -173,7 +173,7 @@ const LessonScreen = () => {
         all.push(raw)
       }
     }
-    const authored = all.filter((word) => word.note_en || word.note_fr)
+    const authored = all.filter((word) => word.note?.en || word.note?.fr)
     return authored.length > 0 ? authored : all.slice(0, MAX_TAUGHT_WORDS)
   }, [contents])
 

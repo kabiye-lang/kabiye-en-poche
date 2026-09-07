@@ -39,12 +39,12 @@ function seededOrder<T>(items: T[], seed: string): T[] {
  */
 const SpotLetterStep = ({ activity, onAnswer }: SpotLetterStepProps) => {
   const { t } = useLingui()
-  const { getValue } = useLanguage()
+  const { currentLanguage } = useLanguage()
   const data = activity.data as SpotLetterActivityData | null | undefined
 
   const correct = data?.correct?.trim() ?? ''
-  const gloss = getValue(data ?? null, 'gloss') || undefined
-  const explanation = getValue(data ?? null, 'explanation') || undefined
+  const gloss = data?.gloss?.[currentLanguage] ?? data?.gloss?.en
+  const explanation = data?.explanation?.[currentLanguage] ?? data?.explanation?.en
 
   const [selected, setSelected] = useState<string | null>(null)
 

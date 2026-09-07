@@ -126,7 +126,7 @@ const DictionaryScreen: React.FC = () => {
           </Pressable>
           <Pressable
             accessibilityRole="button"
-            onPress={() => router.push('/(tabs)/profile')}
+            onPress={() => router.push('/dictionary/my-words')}
             className="border-foreground rounded-full border-[1.5px] px-[18px] py-3"
           >
             <Text weight="semibold" className="text-foreground text-[15px]">

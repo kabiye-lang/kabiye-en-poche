@@ -109,3 +109,58 @@ export function differingIndices(a: string, b: string): number[] {
   }
   return out
 }
+
+/**
+ * The Kabiyè spelling of a query typed on a French keyboard.
+ *
+ * Someone searching for `kabiye` means `Kabɩyɛ`; the letters they could not type are
+ * exactly the ones this maps back. It is the reverse of `spellingVariants`, and it is
+ * only safe because of the `pool` argument: a candidate is returned **only if the
+ * dictionary already holds it**. Suggesting a spelling we do not hold would be inventing
+ * a word at the moment the learner is most likely to believe us.
+ *
+ * `n` is deliberately not expanded. It could be ŋ or ñ, and choosing between them would
+ * be a guess rather than a lookup.
+ */
+const KABIYE_FOR_PLAIN: Readonly<Record<string, string[]>> = {
+  d: ['ɖ'],
+  e: ['ɛ'],
+  g: ['ɣ'],
+  i: ['ɩ'],
+  o: ['ɔ'],
+  u: ['ʋ'],
+}
+
+export function kabiyeSpellingOf(query: string, pool: Iterable<string>): string | undefined {
+  const normalised = query.normalize('NFC').trim().toLocaleLowerCase()
+  if (!normalised) return undefined
+
+  const known = new Set([...pool].map((word) => word.normalize('NFC').toLocaleLowerCase()))
+  if (known.has(normalised)) return undefined // it is already the right spelling
+
+  const positions = [...normalised].flatMap((ch, i) => (ch in KABIYE_FOR_PLAIN ? [i] : []))
+  if (positions.length === 0 || positions.length > 8) return undefined
+
+  // Fewest substitutions first, so the nearest miss wins.
+  for (let size = 1; size <= positions.length; size++) {
+    for (const subset of subsets(positions, size)) {
+      const chars = [...normalised]
+      for (const i of subset) chars[i] = KABIYE_FOR_PLAIN[chars[i]][0]
+      const candidate = chars.join('')
+      if (known.has(candidate)) return candidate
+    }
+  }
+  return undefined
+}
+
+function* subsets(items: number[], size: number): Generator<number[]> {
+  if (size === 0) {
+    yield []
+    return
+  }
+  for (let i = 0; i <= items.length - size; i++) {
+    for (const rest of subsets(items.slice(i + 1), size - 1)) {
+      yield [items[i], ...rest]
+    }
+  }
+}

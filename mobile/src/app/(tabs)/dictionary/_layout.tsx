@@ -20,6 +20,16 @@ export default function TabDictionaryLayout() {
         }}
       />
       <Stack.Screen
+        name="my-words"
+        options={{
+          title: t`My words`,
+          headerBackButtonDisplayMode: 'minimal',
+          headerBackTitle: '',
+          headerTransparent: true,
+          headerTitle: '',
+        }}
+      />
+      <Stack.Screen
         name="pdf"
         options={{
           title: t`PDF Dictionary`,

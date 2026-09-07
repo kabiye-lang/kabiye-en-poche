@@ -1,13 +1,15 @@
 import React from 'react'
 import { ActivityIndicator, FlatList, Pressable } from 'react-native'
 
-import { Link, useLocalSearchParams } from 'expo-router'
+import { Link, router, useLocalSearchParams } from 'expo-router'
 
 import { useLingui } from '@lingui/react/macro'
 
+import { EmptyState } from '../../components/empty-state'
 import { LanguageTag } from '../../components/language-tag'
 import { Card, Text, View } from '../../components/ui'
 import { useSearchDictionary } from '../../hooks/use-dictionary'
+import { kabiyeSpellingOf } from '../../utils/kabiye-variants'
 
 const SearchResultsScreen: React.FC = () => {
   const { q: query, lang, mode } = useLocalSearchParams<{ q: string; lang?: string; mode?: string }>()
@@ -17,6 +19,18 @@ const SearchResultsScreen: React.FC = () => {
   const searchMode = (mode as 'kabiye' | 'translation') || 'kabiye'
 
   const { data: searchResults, isLoading, error } = useSearchDictionary(query || '', searchLanguage, !!query)
+
+  /**
+   * Real headwords near the query, used only to check a suggested spelling exists.
+   *
+   * Searching the first two characters is one extra query and returns words the
+   * dictionary actually holds -- which is the point: `kabiyeSpellingOf` will only
+   * propose a spelling that appears in this pool, so the app can never suggest a word
+   * it does not have. Runs only when the full query found nothing.
+   */
+  const prefix = (query || '').trim().slice(0, 2)
+  const { data: nearby } = useSearchDictionary(prefix, 'all', Boolean(prefix) && searchResults?.length === 0)
+  const suggestionPool = (nearby ?? []).map((row) => row.headword)
 
   const getSearchModeLabel = () => {
     if (searchMode === 'kabiye') {
@@ -50,17 +64,43 @@ const SearchResultsScreen: React.FC = () => {
   }
 
   if (!searchResults || searchResults.length === 0) {
+    // The suggestion is the word the learner most likely meant, spelled the way Kabiyè
+    // spells it: their query with each plain letter swapped for the Kabiyè one a French
+    // keyboard cannot reach. It is only offered when that spelling is actually in the
+    // dictionary -- suggesting a word we do not hold would be inventing one.
+    const suggestion = kabiyeSpellingOf(query, suggestionPool)
+
     return (
-      <View flex className="bg-background items-center justify-center px-6">
-        <Text className="mb-3 text-4xl">🔍</Text>
-        <Text variant="h6" weight="semibold" className="text-foreground text-center">
-          {t`No results for "${query}"`}
-        </Text>
-        <Text variant="body" className="text-foreground-secondary mt-2 text-center leading-5">
-          {searchMode === 'kabiye'
-            ? t`Check the spelling or try a different Kabiyè word. Remember, Kabiyè uses special characters like ɖ, ɛ, ɣ, ɩ, ŋ, ɔ, ʋ.`
-            : t`Try a different translation or switch to Kabiyè search mode.`}
-        </Text>
+      <View flex className="bg-background px-6 pt-6">
+        <EmptyState
+          glyph="ɩ"
+          title={t`Not in the dictionary`}
+          body={t`Nothing matches that spelling.`}
+          actions={[{ label: t`Search again`, onPress: () => router.back(), primary: true }]}
+        >
+          <Text kabiye weight="bold" className="text-foreground mt-4 text-[28px]">
+            {query}
+          </Text>
+          {suggestion ? (
+            <>
+              <Text className="text-foreground-secondary mt-4 text-[15px]">{t`Did you mean`}</Text>
+              <Pressable
+                accessibilityRole="link"
+                accessibilityLabel={suggestion}
+                onPress={() => router.replace(`/word/${encodeURIComponent(suggestion)}`)}
+                className="bg-background-tertiary mt-2 self-start rounded-full px-4 py-2"
+              >
+                <Text kabiye weight="bold" className="text-foreground text-[18px]">
+                  {suggestion}
+                </Text>
+              </Pressable>
+            </>
+          ) : (
+            <Text className="text-foreground-secondary mt-4 text-[15px] leading-[1.45]">
+              {t`Kabiyè writes ɩ where French writes i, and ʋ where French writes u — try those.`}
+            </Text>
+          )}
+        </EmptyState>
       </View>
     )
   }

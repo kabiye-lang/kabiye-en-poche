@@ -106,16 +106,12 @@ export type ActivityData =
  * the letters, not the shift key.
  */
 export interface SpellActivityData {
-  /** What to write, in the interface language. */
+  /** What to write, keyed by language. */
   gloss?: Record<string, string>
-  gloss_en?: string
-  gloss_fr?: string
   /** The attested Kabiyè spelling. */
   answer?: string
   /** Optional nudge, e.g. "the last sound is a d with the tongue curled back". */
   hint?: Record<string, string>
-  hint_en?: string
-  hint_fr?: string
 }
 
 /**
@@ -132,10 +128,8 @@ export interface SpotLetterActivityData {
   correct?: string
   /** Optional pre-computed misspellings. Generated when absent. */
   distractors?: string[]
-  /** What the word means, in the interface language. */
+  /** What the word means, keyed by language. */
   gloss?: Record<string, string>
-  gloss_en?: string
-  gloss_fr?: string
   explanation?: Record<string, string>
 }
 

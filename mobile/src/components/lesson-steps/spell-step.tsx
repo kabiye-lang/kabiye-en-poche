@@ -46,12 +46,12 @@ export function matchesSpelling(written: string, answer: string): boolean {
 /** "Write X in Kabiyè" — the step that asks the learner to produce, not recognise. */
 const SpellStep = ({ activity, onAnswer }: SpellStepProps) => {
   const { t } = useLingui()
-  const { getValue } = useLanguage()
+  const { currentLanguage } = useLanguage()
   const data = activity.data as SpellActivityData | null | undefined
 
   const answer = data?.answer?.trim() ?? ''
-  const gloss = getValue(data ?? null, 'gloss') || undefined
-  const hint = getValue(data ?? null, 'hint') || undefined
+  const gloss = data?.gloss?.[currentLanguage] ?? data?.gloss?.en
+  const hint = data?.hint?.[currentLanguage] ?? data?.hint?.en
 
   const [written, setWritten] = useState('')
   const [checked, setChecked] = useState<boolean | null>(null)

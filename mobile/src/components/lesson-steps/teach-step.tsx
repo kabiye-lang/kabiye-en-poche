@@ -40,7 +40,7 @@ const TeachStep = ({ example, onContinue }: TeachStepProps) => {
   const { data: letters } = useAppAlphabetLetters()
 
   const gloss = currentLanguage === 'fr' ? example.fr : example.en
-  const note = currentLanguage === 'fr' ? example.note_fr : example.note_en
+  const note = example.note?.[currentLanguage] ?? example.note?.en
 
   // One chip per distinct Kabiyè-only letter in the word, in the order they appear.
   const chips = [...new Set([...example.kbp].filter((ch) => KABIYE_ONLY.includes(ch)))]
