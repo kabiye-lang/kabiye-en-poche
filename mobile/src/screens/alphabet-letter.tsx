@@ -14,14 +14,16 @@ import { useLingui } from '@lingui/react/macro'
 
 import { CaretLeftIcon } from '../components/icons'
 import { AppMarkdown } from '../components/markdown'
-import { Button, Card, Text, View } from '../components/ui'
+import { Button, Text, View } from '../components/ui'
 import { useAppAlphabetLetter } from '../hooks/use-app-data'
-import { brandColors, LETTER_TYPE_COLORS, MARKDOWN_STYLE } from '../utils/design-system-nativewind'
+import { useLanguage } from '../hooks/use-language'
+import { brandColors, MARKDOWN_STYLE } from '../utils/design-system-nativewind'
 
 // import { useRefreshOnFocus } from '@/hooks/useRefreshOnFocus'
 
 export default function AlphabetLetterScreen() {
   const { t } = useLingui()
+  const { getValue } = useLanguage()
   const { letter: letterParam } = useLocalSearchParams()
   const safeAreaInsets = useSafeAreaInsets()
 
@@ -75,6 +77,12 @@ export default function AlphabetLetterScreen() {
 
   // Use the type from the database
   const letterType = letter.type
+  // Both come from the alphabet table in whichever language the interface is in.
+  const description = getValue(letter, 'description')
+  const pronunciation = getValue(letter, 'pronunciation')
+
+  /** The letters French cannot write; the only ones that earn the filled pill. */
+  const KABIYE_ONLY = 'ɖƉɛƐɣƔɩƖŋŊɔƆʋƲñÑ'
 
   return (
     <View flex className="bg-background" style={{ paddingBottom: 70 + safeAreaInsets.top }}>
@@ -91,30 +99,51 @@ export default function AlphabetLetterScreen() {
           </View>
 
           <Animated.View className="flex-1 pl-2.5" style={[animatedHeaderTitleStyle]}>
-            <Text variant="lg" weight="medium" numberOfLines={1} className="text-foreground">
-              {letter.id} - {letter.id.toUpperCase()}
+            <Text kabiye variant="lg" weight="medium" numberOfLines={1} className="text-foreground">
+              {letter.id.toUpperCase()} {letter.id}
             </Text>
           </Animated.View>
         </View>
       </Animated.View>
       <Animated.ScrollView onScroll={scrollHandler} scrollEventThrottle={16}>
-        <View center className="h-[200px]" style={{ paddingTop: safeAreaInsets.top }}>
-          <Text variant="h1" weight="bold" className="text-foreground mb-2.5">
-            {letter.id} - {letter.id.toUpperCase()}
-          </Text>
-          <Card
-            className="rounded-full px-5 py-2"
-            style={{
-              backgroundColor: LETTER_TYPE_COLORS[letterType as keyof typeof LETTER_TYPE_COLORS],
-            }}
-          >
-            <Text variant="small" weight="medium" className="text-white">
-              {letterType === 'vowel' ? t`Vowel` : letterType === 'consonant' ? t`Consonant` : t`Grapheme`}
+        <View className="px-6" style={{ paddingTop: safeAreaInsets.top + 70 }}>
+          {/* The pair, at 150. Capital in ink, lowercase in laterite -- the same letter
+              twice is the thing a learner has to recognise, and the colour split is what
+              makes the two readable as one letter rather than two. */}
+          <View className="flex-row items-baseline gap-3">
+            <Text kabiye weight="bold" className="text-foreground text-[150px]" style={{ lineHeight: 165 }}>
+              {letter.id.toUpperCase()}
             </Text>
-          </Card>
+            <Text kabiye className="text-accent text-[150px]" style={{ lineHeight: 165 }}>
+              {letter.id}
+            </Text>
+          </View>
+
+          <View className="mt-2 flex-row flex-wrap gap-2">
+            <View className="border-foreground rounded-full border-[1.5px] px-4 py-2">
+              <Text weight="semibold" className="text-foreground text-[15px]">
+                {letterType === 'vowel' ? t`Vowel` : letterType === 'consonant' ? t`Consonant` : t`Grapheme`}
+              </Text>
+            </View>
+            {/* The distinction the app exists to teach earns the filled pill. */}
+            {KABIYE_ONLY.includes(letter.id) ? (
+              <View className="bg-accent rounded-full px-4 py-2">
+                <Text weight="semibold" className="text-[15px] text-white">{t`Not in French`}</Text>
+              </View>
+            ) : null}
+          </View>
+
+          {pronunciation ? (
+            <Text className="text-foreground mt-6 text-[18px] leading-[1.5]">{pronunciation}</Text>
+          ) : null}
+
+          <View className="border-foreground my-6 border-t-[1.5px]" />
         </View>
-        <View className="px-4 py-2.5">
-          <AppMarkdown style={MARKDOWN_STYLE}>{letter.description_fr ?? ''}</AppMarkdown>
+
+        <View className="px-6">
+          {/* The description used to be hard-coded to `description_fr`, so an English
+              reader got French prose on the screen teaching them to read. */}
+          <AppMarkdown style={MARKDOWN_STYLE}>{description ?? ''}</AppMarkdown>
         </View>
         <View className="h-[70px]" />
       </Animated.ScrollView>
