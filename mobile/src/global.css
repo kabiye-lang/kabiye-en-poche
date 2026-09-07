@@ -18,145 +18,165 @@
   --font-ibm-bold: 'IBMPlexSansHebrew_700Bold';
 
   /* Font family - Kabiyè.
-     Figtree carries 4 of the 16 letters Kabiyè needs and IBM Plex Sans Hebrew carries 2,
-     so every Kabiyè word was drawn half in Figtree and half in the iOS fallback -- visible
-     mid-word, and visible inside a single grapheme on the alphabet cards that teach it.
-     Andika is SIL's face for African-language literacy: it covers the full set, its
-     x-height (0.508em) sits within 2% of Figtree's (0.500em) so the two share an optical
-     line, and it draws ɩ/i and ʋ/u unambiguously, which is the whole point when a learner
-     is still telling them apart. It ships Regular and Bold only; the Text component maps
-     Figtree's wider weight scale onto those two. */
+     The interface face carries 4 of the 16 letters Kabiyè needs, so every Kabiyè word
+     was drawn half in it and half in the iOS fallback -- visible mid-word, and visible
+     inside a single grapheme on the alphabet cards that teach it. Andika is SIL's face
+     for African-language literacy: it covers the full set, and it draws ɩ/i and ʋ/u
+     unambiguously, which is the whole point when a learner is still telling them apart.
+     It ships Regular and Bold only; the Text component maps the wider interface weight
+     scale onto those two.
+
+     Bricolage Grotesque misses exactly the same twelve letters Figtree did
+     (ɖ Ɖ ɛ Ɛ ɣ Ɣ ɩ Ɩ ɔ Ɔ ʋ Ʋ) and draws ŋ Ŋ ñ Ñ, so the Laterite typeface change left
+     `utils/kabiye-script.ts` correct as written. `__tests__/kabiye-font-coverage.test.ts`
+     reads the shipped cmap and fails if a future face moves that line. */
   --font-kbp-regular: 'Andika_400Regular';
   --font-kbp-bold: 'Andika_700Bold';
   --font-kbp-italic: 'Andika_400Regular_Italic';
   --font-kbp-bold-italic: 'Andika_700Bold_Italic';
 
-  /* Font families - Figtree */
-  --font-fig-light: 'Figtree_300Light';
-  --font-fig-light-italic: 'Figtree_300Light_Italic';
-  --font-fig-regular: 'Figtree_400Regular';
-  --font-fig-regular-italic: 'Figtree_400Regular_Italic';
-  --font-fig-medium: 'Figtree_500Medium';
-  --font-fig-medium-italic: 'Figtree_500Medium_Italic';
-  --font-fig-semibold: 'Figtree_600SemiBold';
-  --font-fig-semibold-italic: 'Figtree_600SemiBold_Italic';
-  --font-fig-bold: 'Figtree_700Bold';
-  --font-fig-bold-italic: 'Figtree_700Bold_Italic';
-  --font-fig-extrabold: 'Figtree_800ExtraBold';
-  --font-fig-extrabold-italic: 'Figtree_800ExtraBold_Italic';
-  --font-fig-black: 'Figtree_900Black';
-  --font-fig-black-italic: 'Figtree_900Black_Italic';
+  /* Font families - Bricolage Grotesque, the interface face.
+     Laterite uses 500/600/700 only. The `fig-*` names are kept as the token spelling so
+     the swap is one file rather than every className in the app; the values are what
+     changed. Andika still draws every Kabiyè word -- see the Kabiye block above and
+     `utils/kabiye-script.ts` for which letters force the switch. */
+  --font-fig-light: 'BricolageGrotesque_300Light';
+  --font-fig-light-italic: 'BricolageGrotesque_300Light';
+  --font-fig-regular: 'BricolageGrotesque_400Regular';
+  --font-fig-regular-italic: 'BricolageGrotesque_400Regular';
+  --font-fig-medium: 'BricolageGrotesque_500Medium';
+  --font-fig-medium-italic: 'BricolageGrotesque_500Medium';
+  --font-fig-semibold: 'BricolageGrotesque_600SemiBold';
+  --font-fig-semibold-italic: 'BricolageGrotesque_600SemiBold';
+  --font-fig-bold: 'BricolageGrotesque_700Bold';
+  --font-fig-bold-italic: 'BricolageGrotesque_700Bold';
+  --font-fig-extrabold: 'BricolageGrotesque_800ExtraBold';
+  --font-fig-extrabold-italic: 'BricolageGrotesque_800ExtraBold';
+  --font-fig-black: 'BricolageGrotesque_800ExtraBold';
+  --font-fig-black-italic: 'BricolageGrotesque_800ExtraBold';
 }
 
 /* Theme-specific variables: use semantic classes (e.g. bg-background, text-foreground) instead of dark: */
 @layer theme {
   :root {
     @variant light {
+      /* Laterite: red earth of Kara, bone paper, ink. Three colours, no more.
+         Depth is tonal (recessed -> paper -> leaf) or a border -- never a shadow. */
+
       /* Backgrounds */
-      --color-background: #F5F3F7;
-      --color-background-secondary: #ffffff;
-      --color-background-tertiary: #EDE9F0;
-      --color-card: #ffffff;
+      --color-background: #F4EBDD;            /* paper */
+      --color-background-secondary: #FFFFFF;  /* leaf: cards on paper */
+      --color-background-tertiary: #EADFCD;   /* paper-recessed: trays, chips, quiet panels */
+      --color-card: #FFFFFF;
+      --color-tabbar: #221913;
 
       /* Text */
-      --color-foreground: #1E1B2E;
-      --color-foreground-secondary: #6E6B7B;
-      --color-primary: #6200EE;
-      --color-primary-foreground: #ffffff;
+      --color-foreground: #221913;            /* ink */
+      --color-foreground-secondary: #6B5A4E;  /* ink-quiet, 4.5:1 on paper */
+      --color-primary: #221913;               /* the filled button is ink, not the accent */
+      --color-primary-foreground: #F4EBDD;
 
       /* Borders */
-      --color-border: #E0DCE6;
-      --color-border-subtle: #E0DCE6;
+      --color-border: #D9CDB9;                /* line */
+      --color-border-subtle: #D9CDB9;
+      --color-border-strong: #221913;         /* 1.5px outlined buttons, cards, section rules */
 
-      /* Feedback (success/error) */
-      --color-success-bg: #dcfce7;
-      --color-success-text: #15803d;
-      --color-error-bg: #fee2e2;
-      --color-error-text: #b91c1c;
+      /* Feedback carries no colour of its own.
+         Correct fills with ink; wrong is a laterite strikethrough plus an explanation.
+         These stay mapped so legacy call sites degrade to the palette instead of
+         punching green and red through it. */
+      --color-success-bg: #EADFCD;
+      --color-success-text: #221913;
+      --color-error-bg: #EADFCD;
+      --color-error-text: #C4451C;
 
       /* Input fields */
-      --color-input-bg: #EDE9F0;
-      --color-input-border: #6E6B7B;
+      --color-input-bg: #EADFCD;
+      --color-input-border: #221913;
 
-      /* Hints (amber) */
-      --color-hint: #d97706;
-      --color-hint-bg: #fffbeb;
+      /* Hints */
+      --color-hint: #6B5A4E;
+      --color-hint-bg: #EADFCD;
 
       /* Progress track */
-      --color-progress-track: #E0DCE6;
+      --color-progress-track: #D9CDB9;
 
-      /* Accent (e.g. delete/danger) */
-      --color-accent: #BF3626;
+      /* Laterite. Passes 4.5:1 on paper only at >= 24px, or bold >= 19px --
+         hero glyphs, section labels, the one primary action per screen. Never body text. */
+      --color-accent: #C4451C;
+      --color-laterite: #C4451C;
 
-      /* Secondary tint (theme-aware) */
-      --color-gold-light: #F3EEFF;
+      /* Secondary tint */
+      --color-gold-light: #EADFCD;
+      --color-secondary-text: #6B5A4E;
 
-      /* Secondary text (for light mode) */
-      --color-secondary-text: #5B3AB8;
-
-      /* Difficulty badges */
-      --color-difficulty-beginner-bg: #dcfce7;
-      --color-difficulty-beginner-text: #16a34a;
-      --color-difficulty-intermediate-bg: #fef9c3;
-      --color-difficulty-intermediate-text: #ca8a04;
-      --color-difficulty-advanced-bg: #fee2e2;
-      --color-difficulty-advanced-text: #dc2626;
-      --color-difficulty-default-bg: #EDE9F0;
-      --color-difficulty-default-text: #6E6B7B;
+      /* Difficulty badges: tonal, not a traffic light */
+      --color-difficulty-beginner-bg: #EADFCD;
+      --color-difficulty-beginner-text: #221913;
+      --color-difficulty-intermediate-bg: #EADFCD;
+      --color-difficulty-intermediate-text: #221913;
+      --color-difficulty-advanced-bg: #EADFCD;
+      --color-difficulty-advanced-text: #221913;
+      --color-difficulty-default-bg: #EADFCD;
+      --color-difficulty-default-text: #6B5A4E;
     }
 
     @variant dark {
+      /* Ink becomes the ground. Laterite is raised to #E07A55 so it still carries
+         contrast against a dark field. */
+
       /* Backgrounds */
-      --color-background: #1A1A2E;
-      --color-background-secondary: #252538;
-      --color-background-tertiary: #2F2F45;
-      --color-card: #252538;
+      --color-background: #221913;
+      --color-background-secondary: #2E241C;
+      --color-background-tertiary: #2E241C;
+      --color-card: #2E241C;
+      --color-tabbar: #160F0B;
 
       /* Text */
-      --color-foreground: #E8E4F0;
-      --color-foreground-secondary: #9B97A8;
-      --color-primary: #BB86FC;
-      --color-primary-foreground: #1E1E2E;
+      --color-foreground: #F4EBDD;
+      --color-foreground-secondary: rgba(244, 235, 221, 0.7);
+      --color-primary: #F4EBDD;
+      --color-primary-foreground: #221913;
 
       /* Borders */
-      --color-border: #3D3B50;
-      --color-border-subtle: #2F2F45;
+      --color-border: rgba(244, 235, 221, 0.12);
+      --color-border-subtle: rgba(244, 235, 221, 0.12);
+      --color-border-strong: #F4EBDD;
 
-      /* Feedback */
-      --color-success-bg: rgba(22, 101, 52, 0.2);
-      --color-success-text: #86efac;
-      --color-error-bg: rgba(127, 29, 29, 0.2);
-      --color-error-text: #fca5a5;
+      /* Feedback -- see the light block */
+      --color-success-bg: #2E241C;
+      --color-success-text: #F4EBDD;
+      --color-error-bg: #2E241C;
+      --color-error-text: #E07A55;
 
       /* Input fields */
-      --color-input-bg: #2F2F45;
-      --color-input-border: #3D3B50;
+      --color-input-bg: #2E241C;
+      --color-input-border: #F4EBDD;
 
       /* Hints */
-      --color-hint: #fbbf24;
-      --color-hint-bg: rgba(146, 64, 14, 0.2);
+      --color-hint: rgba(244, 235, 221, 0.7);
+      --color-hint-bg: #2E241C;
 
       /* Progress track */
-      --color-progress-track: #2F2F45;
+      --color-progress-track: rgba(244, 235, 221, 0.12);
 
-      /* Accent */
-      --color-accent: #E05A4A;
+      /* Laterite, raised for contrast */
+      --color-accent: #E07A55;
+      --color-laterite: #E07A55;
 
-      /* Secondary tint (theme-aware dark variant) */
-      --color-gold-light: rgba(187, 134, 252, 0.16);
-
-      /* Secondary text (for dark mode) */
-      --color-secondary-text: #C9B5FF;
+      /* Secondary tint */
+      --color-gold-light: #2E241C;
+      --color-secondary-text: rgba(244, 235, 221, 0.7);
 
       /* Difficulty badges */
-      --color-difficulty-beginner-bg: rgba(22, 101, 52, 0.2);
-      --color-difficulty-beginner-text: #86efac;
-      --color-difficulty-intermediate-bg: rgba(161, 98, 7, 0.2);
-      --color-difficulty-intermediate-text: #fde047;
-      --color-difficulty-advanced-bg: rgba(127, 29, 29, 0.2);
-      --color-difficulty-advanced-text: #fca5a5;
-      --color-difficulty-default-bg: rgba(47, 47, 69, 0.2);
-      --color-difficulty-default-text: #9B97A8;
+      --color-difficulty-beginner-bg: #2E241C;
+      --color-difficulty-beginner-text: #F4EBDD;
+      --color-difficulty-intermediate-bg: #2E241C;
+      --color-difficulty-intermediate-text: #F4EBDD;
+      --color-difficulty-advanced-bg: #2E241C;
+      --color-difficulty-advanced-text: #F4EBDD;
+      --color-difficulty-default-bg: #2E241C;
+      --color-difficulty-default-text: rgba(244, 235, 221, 0.7);
     }
   }
 }

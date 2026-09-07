@@ -21,30 +21,13 @@ import {
   Andika_700Bold_Italic,
 } from '@expo-google-fonts/andika'
 import {
-  Figtree_300Light,
-  Figtree_300Light_Italic,
-  Figtree_400Regular,
-  Figtree_400Regular_Italic,
-  Figtree_500Medium,
-  Figtree_500Medium_Italic,
-  Figtree_600SemiBold,
-  Figtree_600SemiBold_Italic,
-  Figtree_700Bold,
-  Figtree_700Bold_Italic,
-  Figtree_800ExtraBold,
-  Figtree_800ExtraBold_Italic,
-  Figtree_900Black,
-  Figtree_900Black_Italic,
-} from '@expo-google-fonts/figtree'
-import {
-  IBMPlexSansHebrew_100Thin,
-  IBMPlexSansHebrew_200ExtraLight,
-  IBMPlexSansHebrew_300Light,
-  IBMPlexSansHebrew_400Regular,
-  IBMPlexSansHebrew_500Medium,
-  IBMPlexSansHebrew_600SemiBold,
-  IBMPlexSansHebrew_700Bold,
-} from '@expo-google-fonts/ibm-plex-sans-hebrew'
+  BricolageGrotesque_300Light,
+  BricolageGrotesque_400Regular,
+  BricolageGrotesque_500Medium,
+  BricolageGrotesque_600SemiBold,
+  BricolageGrotesque_700Bold,
+  BricolageGrotesque_800ExtraBold,
+} from '@expo-google-fonts/bricolage-grotesque'
 import { defineMessage as msg } from '@lingui/core/macro'
 import AsyncStorage from '@react-native-async-storage/async-storage'
 import { QueryClientProvider } from '@tanstack/react-query'
@@ -81,27 +64,15 @@ export default function RootLayout() {
           Andika_400Regular_Italic,
           Andika_700Bold,
           Andika_700Bold_Italic,
-          IBMPlexSansHebrew_100Thin,
-          IBMPlexSansHebrew_200ExtraLight,
-          IBMPlexSansHebrew_300Light,
-          IBMPlexSansHebrew_400Regular,
-          IBMPlexSansHebrew_500Medium,
-          IBMPlexSansHebrew_600SemiBold,
-          IBMPlexSansHebrew_700Bold,
-          Figtree_300Light,
-          Figtree_400Regular,
-          Figtree_500Medium,
-          Figtree_600SemiBold,
-          Figtree_700Bold,
-          Figtree_800ExtraBold,
-          Figtree_900Black,
-          Figtree_300Light_Italic,
-          Figtree_400Regular_Italic,
-          Figtree_500Medium_Italic,
-          Figtree_600SemiBold_Italic,
-          Figtree_700Bold_Italic,
-          Figtree_800ExtraBold_Italic,
-          Figtree_900Black_Italic,
+          // The interface face. Bricolage Grotesque ships no italic, so the
+          // `--font-*-italic` tokens in global.css point at the upright of the same
+          // weight rather than letting the OS synthesise a slant.
+          BricolageGrotesque_300Light,
+          BricolageGrotesque_400Regular,
+          BricolageGrotesque_500Medium,
+          BricolageGrotesque_600SemiBold,
+          BricolageGrotesque_700Bold,
+          BricolageGrotesque_800ExtraBold,
         }),
         AsyncStorage.getItem('@kabiye_onboarding_complete'),
       ])

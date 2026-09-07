@@ -1,15 +1,20 @@
 import type { ReactNode } from 'react'
 
 /**
- * The twelve letters Kabiyè uses that Figtree does not draw.
+ * The twelve letters Kabiyè uses that the interface face does not draw.
  *
- * Figtree covers 4 of the 16 letters in the Kabiyè alphabet and IBM Plex Sans Hebrew
- * covers 2, so a word like `ɖoo` or a grapheme like `aɣ` was rendered half in Figtree
- * and half in whatever the OS fell back to -- two typefaces inside one word, on an
- * alphabet card whose whole job is to show the learner what that letter looks like.
+ * The interface face covers 4 of the 16 letters in the Kabiyè alphabet, so a word like
+ * `ɖoo` or a grapheme like `aɣ` was rendered half in it and half in whatever the OS fell
+ * back to -- two typefaces inside one word, on an alphabet card whose whole job is to
+ * show the learner what that letter looks like.
  *
- * `ñ` and `ŋ` are deliberately absent from this set: Figtree draws both, so text
- * containing only those still belongs to the interface face.
+ * `ñ` and `ŋ` are deliberately absent from this set: the interface face draws both, so
+ * text containing only those still belongs to it.
+ *
+ * This list survived the Laterite change of interface face unaltered -- Bricolage
+ * Grotesque misses precisely the same twelve letters Figtree did. That is luck, not a
+ * property of grotesques, so `__tests__/kabiye-font-coverage.test.ts` reads the shipped
+ * font binary and fails if the next face moves the line.
  */
 const KABIYE_ONLY_LETTERS = /[ɖƉɛƐɣƔɩƖɔƆʋƲ]/
 

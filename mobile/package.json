@@ -27,6 +27,7 @@
   "dependencies": {
     "@babel/plugin-transform-export-namespace-from": "^7.27.1",
     "@expo-google-fonts/andika": "^0.4.1",
+    "@expo-google-fonts/bricolage-grotesque": "^0.4.1",
     "@expo-google-fonts/figtree": "^0.4.1",
     "@expo-google-fonts/ibm-plex-sans-hebrew": "^0.4.1",
     "@expo/metro-runtime": "~57.0.15",
@@ -93,6 +94,7 @@
     "@react-native/jest-preset": "^0.86.3",
     "@testing-library/react-native": "^14.0.0",
     "@types/jest": "^29.5.14",
+    "@types/node": "^26.4.1",
     "@types/react": "~19.2.15",
     "@typescript-eslint/eslint-plugin": "^8.60.0",
     "@typescript-eslint/parser": "^8.60.0",

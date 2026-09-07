@@ -1,13 +1,13 @@
-// Jest Snapshot v1, https://jestjs.io/docs/snapshot-testing
+// Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`Theme tokens brandColors snapshot should match 1`] = `
 {
-  "accent": "#BF3626",
-  "bgGrey": "#F5F3F7",
-  "primary": "#6200EE",
-  "primaryDark": "#BB86FC",
-  "secondary": "#8B5CF6",
-  "textDark": "#1E1B2E",
-  "textLight": "#FFFFFF",
+  "accent": "#C4451C",
+  "bgGrey": "#F4EBDD",
+  "primary": "#221913",
+  "primaryDark": "#F4EBDD",
+  "secondary": "#6B5A4E",
+  "textDark": "#221913",
+  "textLight": "#F4EBDD",
 }
 `;
