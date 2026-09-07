@@ -1,28 +1,20 @@
-import { useEffect, useState } from 'react'
+import { useState } from 'react'
 import { Dimensions, Pressable, TextInput } from 'react-native'
 
 import * as Clipboard from 'expo-clipboard'
+import { useLocalSearchParams } from 'expo-router'
 
 import { useLingui } from '@lingui/react/macro'
-import AsyncStorage from '@react-native-async-storage/async-storage'
 
-import {
-  ArrowFatLinesUpIcon,
-  ArrowFatLineUpIcon,
-  BackspaceIcon,
-  CaretDownIcon,
-  CaretUpIcon,
-  DotIcon,
-  KeyReturnIcon,
-} from '../components/icons'
-import { Button, ScreenTitle, Text, View } from '../components/ui'
+import { ArrowFatLinesUpIcon, ArrowFatLineUpIcon, BackspaceIcon, DotIcon, KeyReturnIcon } from '../components/icons'
+import { Button, Text, View } from '../components/ui'
 import { usePlaceholderColor } from '../hooks/use-theme-color'
 
 // Characters unique to Kabiyè (IPA-derived letters not in standard Latin)
-const KABIYE_SPECIFIC = new Set(['ɖ', 'ɛ', 'ɣ', 'ɩ', 'ŋ', 'ɔ', 'ʋ', 'ñ'])
+export const KABIYE_SPECIFIC = new Set(['ɖ', 'ɛ', 'ɣ', 'ɩ', 'ŋ', 'ɔ', 'ʋ', 'ñ'])
 
 // Static alphabet list for keyboard (no database calls needed)
-const ALPHABET_LIST = [
+export const ALPHABET_LIST = [
   { id: 'a', caps: 'A' },
   { id: 'b', caps: 'B' },
   { id: 'c', caps: 'C' },
@@ -104,83 +96,109 @@ const OTHER_CHARACTERS = [
   },
 ]
 
+/**
+ * Which character a key press produces.
+ *
+ * `capsLock` is the existing three-state shift (0 off, 1 once, 2 locked); `longPress` is
+ * the Laterite addition and wins outright, because it is an explicit request for this
+ * one capital. Extracted so it can be tested without mounting the screen.
+ */
+export function resolveKey(letter: { id: string; caps?: string }, capsLock: 0 | 1 | 2, longPress: boolean): string {
+  const wantsCapital = longPress || capsLock > 0
+  if (!wantsCapital) return letter.id
+  return letter.caps || letter.id
+}
+
 export default function KeyboardScreen() {
   const placeholderColor = usePlaceholderColor()
   const { t } = useLingui()
   const [capsLock, setCapsLock] = useState<0 | 1 | 2>(0)
-  const [content, setContent] = useState('')
-  const [showHint, setShowHint] = useState(true)
-
-  useEffect(() => {
-    AsyncStorage.getItem('keyboard_hint_count').then((val) => {
-      const count = parseInt(val || '0', 10)
-      if (count >= 3) setShowHint(false)
-      else AsyncStorage.setItem('keyboard_hint_count', String(count + 1))
-    })
-  }, [])
+  // The alphabet and entry screens both offer "Write it", which means arriving here with
+  // the letter or word already in the pad rather than typing it again.
+  const { text } = useLocalSearchParams<{ text?: string }>()
+  const [content, setContent] = useState(text ?? '')
 
   const changeText = (letter: Partial<(typeof ALPHABET_LIST)[0]>) => {
-    setContent((oldContent) => oldContent + (capsLock ? letter.caps || letter.id : letter.id))
+    setContent((oldContent) => oldContent + resolveKey(letter as { id: string; caps?: string }, capsLock, false))
     setCapsLock((capsLockOld) => (capsLockOld === 2 ? capsLockOld : 0))
   }
+
+  /**
+   * Long-press a key for its capital.
+   *
+   * Kabiyè capitalises where French does -- sentence openings and proper nouns -- so a
+   * writer needs a capital every sentence or two, not in runs. Shift and caps lock are a
+   * three-state machine (off / once / locked) serving a need that is almost always
+   * "this one letter". Long-press answers it in one gesture and leaves shift in place
+   * for anyone who prefers it, or who is writing a run of capitals.
+   */
+  const typeCapital = (letter: { id: string; caps: string }) => {
+    setContent((oldContent) => oldContent + resolveKey(letter, capsLock, true))
+  }
+  const handleCopy = async () => {
+    if (content.length > 0) await Clipboard.setStringAsync(content)
+  }
+
   const buttonWidth = (Dimensions.get('screen').width - 10) / 11 - 4
 
+  /**
+   * One key.
+   *
+   * A plain `Pressable`, not a `Button`: `Button` wraps its children in a `Text` of its
+   * own carrying the size variant's padding, and inside a key pinned to 35x31 that left
+   * no room for the glyph -- the whole tray rendered as blank tiles. A key is not a
+   * button in this design system anyway (`radius 6-8px`, no pill), and the Spell step's
+   * tray is built the same way.
+   */
   const renderButton = (letter: { id: string; caps: string }) => {
     const isKabiye = KABIYE_SPECIFIC.has(letter.id)
     return (
-      <Button
+      <Pressable
         key={letter.id}
-        variant="ghost"
-        size="sm"
-        className={`rounded-md !px-0 !py-0 ${isKabiye ? 'bg-primary/15' : 'bg-card'}`}
-        style={{ width: buttonWidth, minWidth: buttonWidth, height: 35 }}
+        accessibilityRole="button"
+        accessibilityLabel={capsLock > 0 ? letter.caps : letter.id}
+        accessibilityHint={t`Long-press for the capital`}
         onPress={() => changeText(letter)}
+        onLongPress={() => typeCapital(letter)}
+        delayLongPress={300}
         hitSlop={3}
+        className={`items-center justify-center rounded-md ${isKabiye ? 'bg-primary/15' : 'bg-card'}`}
+        style={{ width: buttonWidth, minWidth: buttonWidth, height: 35 }}
       >
-        <Text
-          kabiye
-          variant="lg"
-          weight="light"
-          className={`text-base ${isKabiye ? 'text-primary' : 'text-foreground'}`}
-        >
+        <Text kabiye className={isKabiye ? 'text-primary text-[17px]' : 'text-foreground text-[17px]'}>
           {capsLock > 0 ? letter.caps : letter.id}
         </Text>
-      </Button>
+      </Pressable>
     )
   }
 
   return (
-    <View flex className="bg-background">
-      <View className="px-2.5">
-        <ScreenTitle title={t`Keyboard`} />
-        {/* Collapsible hint */}
-        <Pressable onPress={() => setShowHint(!showHint)} className="mb-2 flex-row items-center">
-          <Text variant="caption" weight="medium" className="text-foreground-secondary">
-            {t`How to use`}
+    <View flex safeArea="top" className="bg-background">
+      <View className="px-6 pt-2">
+        <Text className="text-accent text-[13px] font-semibold uppercase tracking-[0.1em]">{t`Keyboard`}</Text>
+        <View className="mt-1 flex-row items-center justify-between">
+          <Text weight="semibold" className="text-foreground flex-1 text-[28px]">
+            {t`Write in Kabiyè`}
           </Text>
-          {showHint ? (
-            <CaretUpIcon size={14} className="text-foreground-secondary ml-1" />
-          ) : (
-            <CaretDownIcon size={14} className="text-foreground-secondary ml-1" />
-          )}
-        </Pressable>
-        {showHint && (
-          <View className="mb-2">
-            <Text variant="caption" className="text-foreground-secondary">
-              {t`Use this keyboard to write in Kabiyè.`} {t`The`} <ArrowFatLineUpIcon weight="regular" size={12} />{' '}
-              {t`key allows you to capitalize. Long press to lock CAPS mode.`}
-            </Text>
+          <View className="flex-row gap-2">
+            <Pressable
+              accessibilityRole="button"
+              onPress={() => setContent('')}
+              className="border-foreground rounded-full border-[1.5px] px-4 py-2"
+            >
+              <Text weight="semibold" className="text-foreground text-[15px]">{t`Clear`}</Text>
+            </Pressable>
+            <Pressable accessibilityRole="button" onPress={handleCopy} className="bg-foreground rounded-full px-4 py-2">
+              <Text weight="semibold" className="text-background text-[15px]">{t`Copy`}</Text>
+            </Pressable>
           </View>
-        )}
+        </View>
       </View>
       <View flex className="justify-end">
-        {/* Example prompt */}
-        <View className="mb-3 px-4">
-          <Text variant="caption" className="text-foreground-secondary text-center italic">
-            {t`Try typing:`} Ɛsɔɔlaa! Ŋsɛɛ wiɖe?
-          </Text>
-        </View>
-
+        {/* The example prompt here used to read "Ɛsɔɔlaa! Ŋsɛɛ wiɖe?". Neither word is
+            attested by any source in the merged lexicon, so the screen that teaches
+            writing was itself displaying invented Kabiyè. An empty pad says "write
+            here" without asserting anything. */}
         {/* TextInput directly above keyboard */}
         <View className="px-2.5">
           <TextInput
@@ -193,32 +211,14 @@ export default function KeyboardScreen() {
             placeholderTextColor={placeholderColor}
           />
         </View>
-        {/* Inline toolbar */}
-        <View className="mt-2 mb-2 flex-row justify-center gap-2 px-2.5">
-          <Button
-            variant="outline"
-            size="sm"
-            className="rounded-md"
-            style={{ width: 90, minWidth: 90, height: 35 }}
-            onPress={() => setContent('')}
-            hitSlop={3}
-          >
-            <Text variant="body" weight="medium" className="text-primary">
-              {t`Clear`}
-            </Text>
-          </Button>
-          <Button
-            variant="primary"
-            size="sm"
-            className="rounded-md"
-            style={{ width: 90, minWidth: 90, height: 35 }}
-            onPress={async () => await Clipboard.setStringAsync(content)}
-            hitSlop={3}
-          >
-            <Text variant="body" weight="medium" className="text-white">
-              {t`Copy`}
-            </Text>
-          </Button>
+        {/* Clear and Copy moved into the header; this row was a second set of the same
+            two buttons. The note is what replaces the collapsible "How to use" panel --
+            one line, always visible, saying the only thing that is not discoverable. */}
+        <View className="mb-2 mt-3 flex-row items-center justify-between px-6">
+          <Text className="text-foreground-secondary text-[13px]">{t`Long-press a letter for its capital`}</Text>
+          <Text className="text-foreground-secondary text-[13px]">
+            {content.length === 1 ? t`1 character` : t`${content.length} characters`}
+          </Text>
         </View>
 
         {/* <KeyboardAccessoryView
@@ -232,7 +232,7 @@ export default function KeyboardScreen() {
             <Button
               variant="ghost"
               size="sm"
-              className="bg-card rounded-md"
+              className="bg-card rounded-md px-0 py-0"
               style={{ width: 50, minWidth: 50, height: 35 }}
               accessibilityLabel={capsLock === 2 ? t`Caps lock on` : capsLock === 1 ? t`Shift on` : t`Shift`}
               onPress={() => setCapsLock((capsLockOld) => (capsLockOld > 0 ? 0 : 1))}
@@ -248,7 +248,7 @@ export default function KeyboardScreen() {
             <Button
               variant="ghost"
               size="sm"
-              className="bg-card rounded-md"
+              className="bg-card rounded-md px-0 py-0"
               style={{ width: 50, minWidth: 50, height: 35 }}
               accessibilityLabel={t`Period`}
               onPress={() => changeText({ id: '.' })}
@@ -259,7 +259,7 @@ export default function KeyboardScreen() {
             <Button
               variant="ghost"
               size="sm"
-              className="bg-card rounded-md"
+              className="bg-card rounded-md px-0 py-0"
               style={{ width: 90, minWidth: 90, height: 35 }}
               onPress={() => changeText({ id: ' ' })}
               hitSlop={3}
@@ -271,7 +271,7 @@ export default function KeyboardScreen() {
             <Button
               variant="ghost"
               size="sm"
-              className="bg-card rounded-md"
+              className="bg-card rounded-md px-0 py-0"
               style={{ width: 50, minWidth: 50, height: 35 }}
               accessibilityLabel={t`Backspace`}
               onPress={() => setContent((content) => content.substring(0, content.length - 1))}
@@ -282,7 +282,7 @@ export default function KeyboardScreen() {
             <Button
               variant="ghost"
               size="sm"
-              className="bg-card rounded-md"
+              className="bg-card rounded-md px-0 py-0"
               style={{ width: 50, minWidth: 50, height: 35 }}
               accessibilityLabel={t`New line`}
               onPress={() => {

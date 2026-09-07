@@ -54,6 +54,15 @@ export interface EntryData {
   }[]
   publishRoot?: string
   htmlContent?: string
+  /** Which corpora this entry came from, in prose: "SIL 1999 dictionary", "Webonary". */
+  sources?: string[]
+  /**
+   * Where each field came from, as `<corpus>:p<page>` tags.
+   *
+   * The page number is the only thing the entry screen takes from it: a learner who
+   * doubts a definition should be able to go and look it up.
+   */
+  provenance?: Record<string, string[][]>
 }
 
 export interface SearchResult extends Omit<DbSearchResult, 'entry_data'> {

@@ -1,17 +1,23 @@
 import React, { useState } from 'react'
-import { ActivityIndicator, Pressable, ScrollView, TextInput } from 'react-native'
+import { Pressable, ScrollView, TextInput } from 'react-native'
 
 import { Link, router } from 'expo-router'
 
 import { useLingui } from '@lingui/react/macro'
 
-import { MagnifyingGlassIcon, SparkleIcon } from '../../components/icons'
+import { MagnifyingGlassIcon } from '../../components/icons'
 import { LanguageTag } from '../../components/language-tag'
-import { Text, View } from '../../components/ui'
+import { Skeleton, Text, View } from '../../components/ui'
 import { WordOfTheDay } from '../../components/word-of-the-day'
 import { useDebounce } from '../../hooks/use-debounce'
-import { useAvailableLetters, useSearchDictionary, useWordOfTheDay } from '../../hooks/use-dictionary'
+import {
+  useAvailableLetters,
+  useDictionaryStats,
+  useSearchDictionary,
+  useWordOfTheDay,
+} from '../../hooks/use-dictionary'
 import { useLanguage } from '../../hooks/use-language'
+import { useMyWords } from '../../hooks/use-my-words'
 import { usePlaceholderColor } from '../../hooks/use-theme-color'
 
 const DictionaryScreen: React.FC = () => {
@@ -19,7 +25,10 @@ const DictionaryScreen: React.FC = () => {
   const { t } = useLingui()
   const { currentLanguage } = useLanguage()
   const [searchQuery, setSearchQuery] = useState('')
-  const [searchMode, setSearchMode] = useState<'kabiye' | 'translation'>('kabiye')
+  // One field searches all three languages. The old screen made the learner pick a
+  // direction first -- "Kabiyè" or "English" -- which is a question they can only answer
+  // if they already know which language the word they half-remember is in.
+  const searchMode = 'kabiye' as const
   const debouncedQuery = useDebounce(searchQuery, 300)
 
   // Fetch random base headwords with homographs for "Word of the Day"
@@ -27,6 +36,8 @@ const DictionaryScreen: React.FC = () => {
 
   // Fetch available letters for alphabet browsing
   const { data: letters, isLoading: isLoadingLetters } = useAvailableLetters()
+  const { data: stats } = useDictionaryStats()
+  const myWords = useMyWords()
 
   // Determine search language based on mode
   const searchLanguage: 'all' | 'fr' | 'en' = searchMode === 'kabiye' ? 'all' : currentLanguage
@@ -45,36 +56,39 @@ const DictionaryScreen: React.FC = () => {
     }
   }
 
-  const getPlaceholder = () => {
-    if (searchMode === 'kabiye') {
-      return t`Search Kabiyè words...`
-    }
-    return currentLanguage === 'fr' ? t`Find Kabiyè words in French...` : t`Find Kabiyè words in English...`
-  }
-
-  const _getHelperText = () => {
-    if (searchMode === 'kabiye') {
-      return t`Search for Kabiyè words and see their translations`
-    }
-    return currentLanguage === 'fr'
-      ? t`Search in French to find matching Kabiyè words`
-      : t`Search in English to find matching Kabiyè words`
-  }
-
   const showSearchResults = debouncedQuery.length >= 2 && searchResults
 
+  const entryCount = stats?.total_entries ?? null
+
   return (
-    <View flex className="bg-background">
-      <View className="px-2.5 py-2.5">
-        {/* Search Bar — primary interaction, no pre-decision required */}
-        <View className="border-border bg-card flex-row items-center rounded-lg border px-3 py-2">
-          <MagnifyingGlassIcon size={24} className="text-foreground-secondary mr-2.5" />
+    <View flex safeArea="top" className="bg-background">
+      <ScrollView
+        contentContainerClassName="px-6 pb-8 pt-2"
+        showsVerticalScrollIndicator={false}
+        keyboardShouldPersistTaps="handled"
+      >
+        <Text className="text-accent text-[13px] font-semibold uppercase tracking-[0.1em]">{t`Dictionary`}</Text>
+
+        {/* The count is the claim this product can make and no neighbouring app can: a
+            942-page printed dictionary, decoded rather than retyped. It is read live so
+            it cannot drift from what is actually loaded. */}
+        <Text weight="semibold" className="text-foreground mt-2 text-[40px] leading-[1.0]">
+          {entryCount ? t`${entryCount.toLocaleString()} entries` : t`Dictionary`}
+        </Text>
+        <Text className="text-foreground-secondary mt-3 text-[15px] leading-[1.4]">
+          {t`In Kabiyè, French and English. Browse by letter, or keep the words you meet.`}
+        </Text>
+
+        {/* Leaf on paper with an ink border -- the one place on the screen that invites
+            typing, so it is the one raised surface. */}
+        <View className="bg-background-secondary border-foreground mt-6 flex-row items-center rounded-[14px] border-[1.5px] px-4 py-3">
+          <MagnifyingGlassIcon size={22} className="text-foreground-secondary mr-3" />
           <TextInput
             value={searchQuery}
             onChangeText={setSearchQuery}
             onSubmitEditing={handleSearch}
-            placeholder={getPlaceholder()}
-            className="text-foreground flex-1 text-base"
+            placeholder={t`Kabiyè, français, English`}
+            className="text-foreground flex-1 text-[17px]"
             placeholderTextColor={placeholderColor}
             returnKeyType="search"
             // Kabiyè is not in any device dictionary, so autocorrect actively fights the
@@ -84,37 +98,47 @@ const DictionaryScreen: React.FC = () => {
             autoCapitalize="none"
             spellCheck={false}
           />
-          {(isSearching || isFetching) && <ActivityIndicator size="small" className="ml-2" />}
+          {isSearching || isFetching ? (
+            <Skeleton className="ml-2 h-5 w-5 rounded-full" />
+          ) : (
+            /* The letters a French keyboard cannot reach, one tap away from the field
+               that needs them most. */
+            <Pressable
+              accessibilityRole="button"
+              accessibilityLabel={t`Kabiyè letters`}
+              onPress={() => router.push('/(tabs)/keyboard')}
+              className="bg-background-tertiary ml-2 rounded-md px-2 py-1"
+            >
+              <Text kabiye className="text-foreground-secondary text-[15px]">
+                ɛɖɔ
+              </Text>
+            </Pressable>
+          )}
         </View>
 
-        {/* Search direction — secondary refinement below the input */}
-        <View className="mt-2 flex-row items-center gap-2">
-          <Text variant="caption" className="text-foreground-secondary">
-            {t`Search in:`}
-          </Text>
+        <View className="mt-4 flex-row flex-wrap gap-2">
           <Pressable
-            onPress={() => setSearchMode('kabiye')}
-            className={`rounded-full px-3 py-1 ${searchMode === 'kabiye' ? 'bg-primary' : 'border-border border bg-transparent'}`}
+            accessibilityRole="button"
+            onPress={() => router.push('/dictionary/letter/a')}
+            className="border-foreground rounded-full border-[1.5px] px-[18px] py-3"
           >
-            <Text
-              variant="caption"
-              weight="semibold"
-              className={searchMode === 'kabiye' ? 'text-primary-foreground' : 'text-foreground-secondary'}
-            >
-              {t`Kabiyè`}
+            <Text weight="semibold" className="text-foreground text-[15px]">{t`Browse A–Ɩ–Z`}</Text>
+          </Pressable>
+          <Pressable
+            accessibilityRole="button"
+            onPress={() => router.push('/dictionary/my-words')}
+            className="border-foreground rounded-full border-[1.5px] px-[18px] py-3"
+          >
+            <Text weight="semibold" className="text-foreground text-[15px]">
+              {myWords.readCount > 0 ? t`My words · ${myWords.readCount}` : t`My words`}
             </Text>
           </Pressable>
           <Pressable
-            onPress={() => setSearchMode('translation')}
-            className={`rounded-full px-3 py-1 ${searchMode === 'translation' ? 'bg-primary' : 'border-border border bg-transparent'}`}
+            accessibilityRole="button"
+            onPress={() => router.push('/dictionary/pdf')}
+            className="border-foreground rounded-full border-[1.5px] px-[18px] py-3"
           >
-            <Text
-              variant="caption"
-              weight="semibold"
-              className={searchMode === 'translation' ? 'text-primary-foreground' : 'text-foreground-secondary'}
-            >
-              {currentLanguage === 'fr' ? t`Français` : t`English`}
-            </Text>
+            <Text weight="semibold" className="text-foreground text-[15px]">{t`PDF`}</Text>
           </Pressable>
         </View>
 
@@ -163,37 +187,39 @@ const DictionaryScreen: React.FC = () => {
             )}
           </View>
         )}
-      </View>
-
-      <ScrollView className="flex-1" contentContainerStyle={{ paddingTop: 10 }}>
-        {/* Word of the Day */}
-        <View className="mt-2.5 px-2.5">
-          <View className="mb-2.5 flex-row items-center">
-            <SparkleIcon size={20} weight="duotone" className="text-primary mr-1.5" />
-            <Text variant="h5" weight="semibold" className="text-foreground">
-              {t`Word of the Day`}
+        {/* Word of the day, under a rule rather than in a card: it is the page's quiet
+            second thing, not a competing surface. */}
+        {wordOfTheDay && wordOfTheDay.length > 0 ? (
+          <View className="border-foreground mt-10 border-t-[1.5px] pt-5">
+            <Text className="text-accent text-[13px] font-semibold uppercase tracking-[0.1em]">
+              {t`Word of the day`}
             </Text>
+            <WordOfTheDay words={wordOfTheDay.slice(0, 1)} language={currentLanguage} isLoading={isLoadingRandom} />
           </View>
-          <WordOfTheDay words={wordOfTheDay ?? []} language={currentLanguage} isLoading={isLoadingRandom} />
-        </View>
+        ) : null}
 
-        {/* Browse by Letter */}
-        <View className="mt-5 px-2.5 pb-6">
-          <Text variant="h5" weight="semibold" className="text-foreground mb-2.5">
-            {t`Browse by Letter`}
+        <View className="mt-10">
+          <Text className="text-accent text-[13px] font-semibold uppercase tracking-[0.1em]">
+            {t`Browse by letter`}
           </Text>
           {isLoadingLetters ? (
-            <ActivityIndicator className="py-4" />
+            <View className="mt-3 flex-row flex-wrap gap-2">
+              {Array.from({ length: 10 }, (_, tile) => (
+                <Skeleton key={tile} className="h-11 w-11 rounded-xl" />
+              ))}
+            </View>
           ) : (
-            <View className="flex-row flex-wrap justify-center gap-2">
+            <View className="mt-3 flex-row flex-wrap gap-2">
               {letters?.map((letter) => (
                 <Link key={letter} href={`/dictionary/letter/${letter}`} asChild>
-                  <Pressable>
-                    <View className="border-border items-center justify-center rounded-xl border bg-transparent px-4 py-3">
-                      <Text variant="lg" weight="bold" className="text-primary">
-                        {letter}
-                      </Text>
-                    </View>
+                  <Pressable
+                    accessibilityRole="link"
+                    accessibilityLabel={letter}
+                    className="bg-background-tertiary min-w-[44px] items-center rounded-full px-4 py-3"
+                  >
+                    <Text kabiye weight="bold" className="text-foreground text-[18px]">
+                      {letter}
+                    </Text>
                   </Pressable>
                 </Link>
               ))}

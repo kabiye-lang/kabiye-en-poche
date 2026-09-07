@@ -1,141 +1,166 @@
 import { Pressable, ScrollView } from 'react-native'
+import Animated, { FadeInDown } from 'react-native-reanimated'
 
-import { Link } from 'expo-router'
+import { Link, router } from 'expo-router'
 
 import { useLingui } from '@lingui/react/macro'
 
-import { ArticleIcon, BookOpenTextIcon, CaretRightIcon, PlayIcon, SparkleIcon } from '../components/icons'
+import { CaretRightIcon, MagnifyingGlassIcon, PlayIcon } from '../components/icons'
 import { Text, View } from '../components/ui'
-import { WordOfTheDay } from '../components/word-of-the-day'
-import { useAppNextLesson } from '../hooks/use-app-data'
+import { useAppAlphabetLetters, useAppNextLesson } from '../hooks/use-app-data'
 import { useWordOfTheDay } from '../hooks/use-dictionary'
 import { useLanguage } from '../hooks/use-language'
+import { resolveTranslation } from '../utils/dictionary-helpers'
+
+/**
+ * The eight letters French cannot write, one per week.
+ *
+ * Home used to open on a "Continue Learning" card, which is a to-do list: it tells the
+ * learner what they have not finished. Laterite opens on a letter instead -- the thing
+ * the app is for, at 150px, in the language's own script. Resuming is still one tap, but
+ * it is no longer the first thing the screen says.
+ */
+const WEEKLY_LETTERS = ['ɖ', 'ɛ', 'ɣ', 'ɩ', 'ŋ', 'ɔ', 'ʋ', 'ñ'] as const
+
+/** Which letter this week's is. Rotates on a fixed cycle so it is the same for everyone. */
+export function letterOfTheWeek(now: Date = new Date()): string {
+  const week = Math.floor(now.getTime() / (7 * 24 * 60 * 60 * 1000))
+  return WEEKLY_LETTERS[week % WEEKLY_LETTERS.length]
+}
 
 const HomeScreen = () => {
   const { t } = useLingui()
   const { getValue, currentLanguage } = useLanguage()
-  const { data: nextLesson, isLoading: nextLessonLoading } = useAppNextLesson()
-  const { data: wordOfTheDay, isLoading: isLoadingWotD, isError: isWotDError } = useWordOfTheDay(1)
+  const { data: nextLesson } = useAppNextLesson()
+  const { data: letters } = useAppAlphabetLetters()
+  const { data: wordOfTheDay } = useWordOfTheDay(1)
 
-  const hasNextLesson = !nextLessonLoading && !!nextLesson
+  const letter = letterOfTheWeek()
+  const letterRow = letters?.find((l) => l.id === letter)
+  const explainer = letterRow ? getValue(letterRow, 'pronunciation') : null
+
+  // The hook groups homographs, so the word of the day is a group whose first entry
+  // carries the headword and senses.
+  const group = wordOfTheDay?.[0]
+  const entry = group?.entries[0]
+  const headword = entry?.entry_data.headword
+  const resolved = entry
+    ? resolveTranslation(
+        entry.entry_data.senses[0]?.definitions[0]?.translations,
+        currentLanguage === 'fr' ? 'fr' : 'en'
+      )
+    : null
+  const gloss = resolved?.text || null
+  const isFallback = Boolean(resolved?.isFallback)
 
   return (
     <View flex safeArea="top" className="bg-background">
-      <ScrollView className="px-4 pb-5">
-        <View flex>
-          {/* Hero Section */}
-          {hasNextLesson ? (
-            /* Returning user — flat primary card, no gradient clipping issues */
-            <View className="bg-primary mb-5 rounded-2xl p-5">
-              <Text variant="caption" weight="medium" className="text-primary-foreground/70 mb-1">
-                {t`Continue Learning`}
-              </Text>
-              <Text variant="h4" weight="bold" className="text-primary-foreground mb-3">
-                {getValue(nextLesson, 'title')}
-              </Text>
-              <Link href={`/lesson/${nextLesson.id}`} asChild>
-                <Pressable
-                  className="bg-primary-foreground/20 flex-row items-center self-start rounded-full px-5 py-3"
-                  style={{ minHeight: 44 }}
-                  accessibilityRole="button"
-                >
-                  <PlayIcon size={18} className="text-primary-foreground mr-2" />
-                  <Text variant="body" weight="semibold" className="text-primary-foreground">
-                    {t`Resume lesson`}
-                  </Text>
-                </Pressable>
-              </Link>
-            </View>
-          ) : nextLessonLoading ? (
-            /* Loading state — semantic skeleton surface, no gradient */
-            <View className="bg-card mb-5 rounded-2xl p-5">
-              <View className="bg-foreground/10 mb-2 h-4 w-24 rounded" />
-              <View className="bg-foreground/10 h-6 w-3/4 rounded" />
-            </View>
-          ) : (
-            /* New user — compact purposeful CTA, visible even if data is slow */
-            <View className="bg-primary mb-5 rounded-2xl p-5">
-              <Text variant="h5" weight="bold" className="text-primary-foreground mb-1">
-                {t`Ɛsɔɔlaa!`}
-              </Text>
-              <Text variant="body" className="text-primary-foreground/85 mb-4">
-                {t`Start your Kabiyè journey`}
-              </Text>
-              <Link href="/learn" asChild>
-                <Pressable
-                  className="bg-primary-foreground/20 self-start rounded-full px-5 py-3"
-                  style={{ minHeight: 44 }}
-                  accessibilityRole="button"
-                >
-                  <Text variant="body" weight="semibold" className="text-primary-foreground">
-                    {t`Start Learning`}
-                  </Text>
-                </Pressable>
-              </Link>
-            </View>
-          )}
+      {/* The same letter the page is about, oversized behind the content at 8%. It sits
+          below the wordmark rather than behind it -- at 13% over the header it read as a
+          smudge on the status bar rather than as the letterform. */}
+      <View
+        className="absolute -right-16 top-32 opacity-[0.08]"
+        pointerEvents="none"
+        accessibilityElementsHidden
+        importantForAccessibility="no-hide-descendants"
+      >
+        <Text kabiye weight="bold" className="text-accent text-[380px] leading-[1]">
+          {letter}
+        </Text>
+      </View>
 
-          {/* Word of the Day — promoted to hero position */}
-          <View className="mb-5">
-            <View className="mb-2.5 flex-row items-center">
-              <SparkleIcon size={20} weight="duotone" className="text-primary mr-1.5" />
-              <Text variant="h5" weight="semibold" className="text-foreground">
-                {t`Word of the Day`}
-              </Text>
-            </View>
-            <WordOfTheDay
-              words={wordOfTheDay ?? []}
-              language={currentLanguage}
-              isLoading={isLoadingWotD}
-              isError={isWotDError}
-            />
-          </View>
-
-          {/* Alphabet Section */}
-          <Link href="/alphabet" asChild>
-            <Pressable className="bg-card mb-5 flex-row items-center justify-between rounded-2xl p-4">
-              <View className="flex-1">
-                <Text variant="h6" weight="bold" className="text-primary">
-                  {t`Kabiyè Alphabet`}
-                </Text>
-                <Text variant="caption" className="text-foreground-secondary mt-1">
-                  {t`Learn the letters and sounds`}
-                </Text>
-              </View>
-              <CaretRightIcon size={20} weight="regular" className="text-primary" />
-            </Pressable>
-          </Link>
-
-          {/* Quick Links — compact navigation shortcuts (tabs always visible) */}
-          <View className="border-border mb-5 overflow-hidden rounded-2xl border">
-            <Link href="/learn" asChild>
-              <Pressable
-                className="border-border flex-row items-center border-b px-4 py-3.5"
-                style={{ minHeight: 44 }}
-                accessibilityRole="link"
-              >
-                <BookOpenTextIcon size={20} weight="duotone" className="text-primary mr-3" />
-                <Text variant="body" weight="medium" className="text-foreground flex-1">
-                  {t`Lessons`}
-                </Text>
-                <CaretRightIcon size={16} weight="regular" className="text-foreground-secondary" />
-              </Pressable>
-            </Link>
-            <Link href="/dictionary" asChild>
-              <Pressable
-                className="flex-row items-center px-4 py-3.5"
-                style={{ minHeight: 44 }}
-                accessibilityRole="link"
-              >
-                <ArticleIcon size={20} weight="duotone" className="text-primary mr-3" />
-                <Text variant="body" weight="medium" className="text-foreground flex-1">
-                  {t`Dictionary`}
-                </Text>
-                <CaretRightIcon size={16} weight="regular" className="text-foreground-secondary" />
-              </Pressable>
-            </Link>
-          </View>
+      <ScrollView contentContainerClassName="px-6 pb-8 pt-2" showsVerticalScrollIndicator={false}>
+        <View className="flex-row items-center justify-between">
+          <Text weight="semibold" className="text-foreground text-[14px]">
+            {t`Kabiyè en Poche`}
+          </Text>
+          <Pressable
+            accessibilityRole="button"
+            accessibilityLabel={t`Search the dictionary`}
+            onPress={() => router.push('/(tabs)/dictionary')}
+            className="border-foreground h-9 w-9 items-center justify-center rounded-full border-[1.5px]"
+          >
+            <MagnifyingGlassIcon size={16} className="text-foreground" />
+          </Pressable>
         </View>
+
+        <Text className="text-accent mt-10 text-[13px] font-semibold uppercase tracking-[0.1em]">
+          {t`Letter of the week`}
+        </Text>
+
+        {/* leading-[0.85] is the design's line-height, and at 150px it crops the capital's
+            top. The extra line box plus a negative margin buys the overhang back without
+            moving anything below. */}
+        <Animated.View entering={FadeInDown.duration(600)} className="mt-1 overflow-visible">
+          <Text
+            kabiye
+            weight="bold"
+            className="text-foreground text-[150px]"
+            style={{ lineHeight: 170, marginTop: -10, marginBottom: -14 }}
+          >
+            {letter.toUpperCase() === letter ? letter : `${letter.toUpperCase()}${letter}`}
+          </Text>
+        </Animated.View>
+
+        {explainer ? (
+          <Text className="text-foreground mt-4 max-w-[320px] text-[24px] leading-[1.2]">{explainer}</Text>
+        ) : null}
+
+        <View className="mt-7 flex-row flex-wrap gap-3">
+          {nextLesson ? (
+            <Link href={`/lesson/${nextLesson.id}`} asChild>
+              <Pressable
+                accessibilityRole="button"
+                className="bg-foreground flex-row items-center gap-2 rounded-full px-[18px] py-3"
+              >
+                <PlayIcon size={14} weight="fill" className="text-background" />
+                <Text weight="semibold" className="text-background text-[15px]">
+                  {getValue(nextLesson, 'title') ?? t`Continue`}
+                </Text>
+              </Pressable>
+            </Link>
+          ) : null}
+          <Pressable
+            accessibilityRole="button"
+            onPress={() => router.push('/(tabs)/(home)/alphabet')}
+            className="border-foreground flex-row items-center rounded-full border-[1.5px] px-[18px] py-3"
+          >
+            <Text weight="semibold" className="text-foreground text-[15px]">{t`Alphabet`}</Text>
+          </Pressable>
+        </View>
+
+        {headword ? (
+          <View className="border-foreground mt-12 border-t-[1.5px] pt-5">
+            <Text className="text-accent text-[13px] font-semibold uppercase tracking-[0.1em]">{t`Today`}</Text>
+            <Pressable
+              accessibilityRole="link"
+              accessibilityLabel={`${headword}${gloss ? `, ${gloss}` : ''}`}
+              onPress={() => router.push(`/word/${encodeURIComponent(headword)}`)}
+              className="mt-2 flex-row items-baseline justify-between"
+            >
+              <View className="flex-1">
+                <Text kabiye weight="bold" className="text-foreground text-[28px]">
+                  {headword}
+                </Text>
+                {gloss ? (
+                  <View className="mt-1 flex-row items-center gap-2">
+                    <Text className="text-foreground-secondary flex-1 text-[15px]">{gloss}</Text>
+                    {/* The dictionary is French-first; about a quarter of entries have no
+                        English gloss. Showing the French and saying so beats hiding the word. */}
+                    {isFallback ? (
+                      <View className="bg-background-tertiary rounded-[4px] px-2 py-[2px]">
+                        <Text weight="bold" className="text-foreground-secondary text-[11px]">
+                          {resolved?.language?.toUpperCase() ?? 'FR'}
+                        </Text>
+                      </View>
+                    ) : null}
+                  </View>
+                ) : null}
+              </View>
+              <CaretRightIcon size={16} className="text-foreground-secondary ml-3" />
+            </Pressable>
+          </View>
+        ) : null}
       </ScrollView>
     </View>
   )

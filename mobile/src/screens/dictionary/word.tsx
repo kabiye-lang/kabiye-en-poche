@@ -1,50 +1,72 @@
-import React from 'react'
-import { ActivityIndicator, Alert, Pressable, ScrollView } from 'react-native'
+import type { EntryData } from '../../types/dictionary'
 
-import { Link, useLocalSearchParams } from 'expo-router'
+import React from 'react'
+import { Alert, Linking, Pressable, ScrollView, Share } from 'react-native'
+
+import { Link, router, Stack, useLocalSearchParams } from 'expo-router'
 import { useHeaderHeight } from 'expo-router/react-navigation'
 
 import { useLingui } from '@lingui/react/macro'
 
-import { ArrowRightIcon, InfoIcon } from '../../components/icons'
+import { ArrowRightIcon, InfoIcon, ShareNetworkIcon } from '../../components/icons'
 import { Card, Text, View } from '../../components/ui'
 import { CrossReferences, SenseDefinitions, SubEntries } from '../../components/word/word-sections'
 import { useEntryByTerm } from '../../hooks/use-dictionary'
 import { useLanguage } from '../../hooks/use-language'
-import { isRedirectEntry } from '../../utils/dictionary-helpers'
+import { useMyWords } from '../../hooks/use-my-words'
+import { isRedirectEntry, translationFor } from '../../utils/dictionary-helpers'
 
 const WordDetailsScreen: React.FC = () => {
   const { id: term } = useLocalSearchParams<{ id: string }>()
   const { t } = useLingui()
   const { currentLanguage } = useLanguage()
+  const { addMet } = useMyWords()
   const { data: entry, isLoading, error } = useEntryByTerm(term || '')
   const headerHeight = useHeaderHeight()
   if (isLoading) {
+    // Bone blocks in the shape of the entry, never a spinner.
     return (
-      <View flex className="bg-background items-center justify-center">
-        <ActivityIndicator size="large" className="text-primary" />
-        <Text variant="body" className="text-foreground-secondary mt-4">
-          {t`Loading...`}
-        </Text>
+      <View flex className="bg-background px-6" style={{ paddingTop: headerHeight }}>
+        <View className="bg-background-tertiary h-11 w-3/5 rounded-lg" />
+        <View className="bg-background-tertiary mt-3 h-4 w-1/4 rounded-md" />
+        <View className="bg-background-tertiary mt-8 h-5 w-full rounded-md" />
+        <View className="bg-background-tertiary mt-3 h-5 w-5/6 rounded-md" />
       </View>
     )
   }
 
   if (error || !entry) {
     return (
-      <View flex className="bg-background items-center justify-center px-4">
-        <Text variant="h6" className="text-center text-red-500">
-          {t`Word not found`}
-        </Text>
-        <Text variant="body" className="text-foreground-secondary mt-2 text-center">
-          {t`The word you're looking for doesn't exist in our dictionary`}
-        </Text>
+      <View flex className="bg-background px-6" style={{ paddingTop: headerHeight }}>
+        <View className="border-foreground rounded-[18px] border-[1.5px] p-6">
+          <Text weight="semibold" className="text-foreground text-[20px]">
+            {t`Not in the dictionary`}
+          </Text>
+          <Text className="text-foreground-secondary mt-2 text-[15px] leading-[1.5]">
+            {t`We don't hold this word. Kabiyè writes ɩ where French writes i, and ʋ where French writes u — try those.`}
+          </Text>
+        </View>
       </View>
     )
   }
 
   const { entry_data } = entry
   const translation = currentLanguage === 'fr' ? 'fr' : 'en'
+
+  /**
+   * Hand the word to whatever the reader wants to send it with.
+   *
+   * The gloss travels with it: a Kabiyè word alone, in a script the recipient's phone
+   * may not draw, is not a message. The system sheet decides where it goes.
+   */
+  const shareWord = async () => {
+    const gloss = entry_data.senses[0]?.definitions[0]
+    const meaning = gloss ? translationFor(gloss.translations, translation, gloss.definition) : ''
+
+    await Share.share({
+      message: meaning ? `${entry_data.headword} — ${meaning}` : entry_data.headword,
+    })
+  }
 
   // Handle redirect entries
   if (isRedirectEntry(entry)) {
@@ -76,25 +98,43 @@ const WordDetailsScreen: React.FC = () => {
 
   return (
     <View flex className="bg-background" safeArea="vertical">
-      <ScrollView contentContainerStyle={{ paddingTop: headerHeight / 2, paddingHorizontal: 20, paddingBottom: 40 }}>
-        {/* Headword */}
-        <Text kabiye variant="h3" weight="bold" className="text-primary mb-2">
+      {/* The header lives in the root layout, but only this screen knows which word it
+          is showing, so the share action is set from here. */}
+      <Stack.Screen
+        options={{
+          headerRight: () => (
+            <Pressable
+              accessibilityRole="button"
+              accessibilityLabel={t`Share this word`}
+              hitSlop={8}
+              onPress={() => void shareWord()}
+              className="border-foreground h-9 w-9 items-center justify-center rounded-full border-[1.5px]"
+            >
+              <ShareNetworkIcon size={18} className="text-foreground" />
+            </Pressable>
+          ),
+        }}
+      />
+      <ScrollView
+        className="flex-1"
+        contentContainerStyle={{ paddingTop: headerHeight / 2, paddingHorizontal: 20, paddingBottom: 40 }}
+      >
+        {/* The headword is the page. At 44 it is the first and largest thing, in the
+            face that can actually draw it. */}
+        <Text kabiye weight="bold" className="text-foreground text-[44px] leading-[1.05]">
           {entry_data.headword}
         </Text>
 
-        {/* Pronunciations */}
         {entry_data.pronunciations && entry_data.pronunciations.length > 0 && (
-          <Text kabiye variant="lg" className="text-foreground-secondary mb-2">
+          <Text kabiye className="text-foreground-secondary mt-1 text-[18px]">
             [{entry_data.pronunciations.join(', ')}]
           </Text>
         )}
 
         {/* Grammatical Info */}
         {entry_data.grammaticalInfo && (
-          <View className="mb-4 flex-row items-center">
-            <Text variant="body" className="text-foreground-secondary italic">
-              {entry_data.grammaticalInfo}
-            </Text>
+          <View className="mt-2 flex-row items-center">
+            <Text className="text-foreground-secondary text-[16px] italic">{entry_data.grammaticalInfo}</Text>
             <Pressable
               className="ml-1.5"
               hitSlop={8}
@@ -145,10 +185,84 @@ const WordDetailsScreen: React.FC = () => {
           </View>
         )}
 
+        <View className="border-foreground my-5 border-t-[1.5px]" />
+
         <SenseDefinitions senses={entry_data.senses} translation={translation} />
         <SubEntries subEntries={entry_data.subEntries} translation={translation} />
         <CrossReferences crossRefs={entry_data.crossRefs} />
+        <SourceLine entry={entry_data} />
       </ScrollView>
+
+      {/* Two actions, both about writing rather than reading: the whole product for the
+          audience that already speaks Kabiyè. "Write it" opens the keyboard; "Practise"
+          adds the word to the list Profile counts. */}
+      <View className="flex-row gap-3 px-5 pb-4">
+        <Pressable
+          accessibilityRole="button"
+          onPress={() => router.push('/(tabs)/keyboard')}
+          className="border-foreground flex-1 items-center rounded-full border-[1.5px] py-4"
+        >
+          <Text weight="semibold" className="text-foreground text-[16px]">{t`Write it`}</Text>
+        </Pressable>
+        <Pressable
+          accessibilityRole="button"
+          // Await the write before navigating: My words reads storage on mount, so
+          // pushing first showed an empty list for the word just added.
+          onPress={async () => {
+            await addMet([{ headword: entry_data.headword }])
+            router.push('/dictionary/my-words')
+          }}
+          className="bg-foreground flex-[1.2] items-center rounded-full py-4"
+        >
+          <Text weight="semibold" className="text-background text-[17px]">{t`Practise`}</Text>
+        </Pressable>
+      </View>
+    </View>
+  )
+}
+
+/** The page a page number can be read off, if the provenance tags carry one. */
+function pageOf(entry: EntryData): number | undefined {
+  const tags = Object.values(entry.provenance ?? {}).flat(2)
+  for (const tag of tags) {
+    const match = /^sil1999_print:p(\d+)$/.exec(String(tag))
+    if (match) return Number(match[1])
+  }
+  return undefined
+}
+
+/**
+ * Where this entry came from, and how to say it is wrong.
+ *
+ * Every word in this app traces to a printed source, and that is the claim the whole
+ * project rests on; a learner who doubts a definition should be able to go and look it
+ * up, and to tell us when the book and the language disagree. One quiet line, no card.
+ */
+function SourceLine({ entry }: { entry: EntryData }) {
+  const { t } = useLingui()
+  const page = pageOf(entry)
+  const sources = entry.sources ?? []
+
+  if (sources.length === 0) return null
+
+  return (
+    <View className="border-border mt-8 border-t pt-4">
+      <Text className="text-foreground-secondary text-[13px] leading-[1.5]">
+        {t`Source`}
+        {' \u00B7 '}
+        {page ? t`Kabiyè–French dictionary, p. ${page}` : sources.join(', ')}
+        {' \u00B7 '}
+        <Text
+          className="text-foreground-secondary text-[13px] underline"
+          onPress={() =>
+            Linking.openURL(
+              `mailto:hello@kabiye-en-poche.org?subject=${encodeURIComponent(`Mistake in ${entry.headword}`)}`
+            )
+          }
+        >
+          {t`Report a mistake`}
+        </Text>
+      </Text>
     </View>
   )
 }

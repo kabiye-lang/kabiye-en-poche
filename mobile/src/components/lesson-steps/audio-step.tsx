@@ -112,7 +112,7 @@ const AudioStep = ({
                   {line.audioUrl && (
                     <Pressable
                       onPress={() => handleToggleAudio(line.audioUrl)}
-                      className={`ml-3 rounded-full p-2 ${isPlaying ? 'bg-green-500' : 'bg-primary'}`}
+                      className={`ml-3 rounded-full p-2 ${isPlaying ? 'bg-accent' : 'bg-foreground'}`}
                     >
                       {isPlaying ? (
                         <SpeakerHighIcon size={20} color="white" weight="fill" />

@@ -110,20 +110,20 @@ export default function KabiyeKeyboard({
             onClick={(e) => e.stopPropagation()}
           >
             <div className="flex justify-between items-center mb-4">
-              <h2 className="text-2xl font-bold text-[#6200EE]">{t.title}</h2>
+              <h2 className="text-2xl font-bold text-laterite">{t.title}</h2>
               <div className="flex items-center gap-4">
                 <a
                   href="https://www.lexilogos.com/clavier/kabiye.htm"
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="text-[#6200EE] hover:text-[#3700B3] flex items-center"
+                  className="text-laterite hover:text-ink flex items-center"
                 >
                   <LinkIcon size={18} className="mr-1" />
                   {t.externalKeyboard}
                 </a>
                 <button
                   onClick={onClose}
-                  className="text-[#757575] hover:text-[#6200EE] transition-colors"
+                  className="text-ink-quiet hover:text-laterite transition-colors"
                   aria-label={t.close}
                 >
                   <XIcon size={24} />
@@ -132,9 +132,9 @@ export default function KabiyeKeyboard({
             </div>
 
             <div className="space-y-2 mb-4">
-              <p className="text-[#757575]">{t.instruction}</p>
-              <p className="text-[#757575] text-sm">{t.examples}</p>
-              <div className="grid grid-cols-4 gap-x-4 gap-y-1 text-sm text-[#757575]">
+              <p className="text-ink-quiet">{t.instruction}</p>
+              <p className="text-ink-quiet text-sm">{t.examples}</p>
+              <div className="grid grid-cols-4 gap-x-4 gap-y-1 text-sm text-ink-quiet">
                 {Object.entries(letterMap)
                   .filter(([key]) => key.toLowerCase() === key)
                   .map(([key, value]) => (
@@ -153,7 +153,7 @@ export default function KabiyeKeyboard({
               value={text}
               onInput={handleInput}
               placeholder={t.placeholder}
-              className="w-full h-32 p-3 border border-gray-300 rounded-sm mb-4 focus:outline-hidden focus:ring-2 focus:ring-[#6200EE] font-mono"
+              className="w-full h-32 p-3 border border-line rounded-sm mb-4 focus:outline-hidden focus:ring-2 focus:ring-ink font-mono"
               aria-label={t.placeholder}
             />
 
@@ -165,7 +165,7 @@ export default function KabiyeKeyboard({
                     <motion.button
                       key={char}
                       onClick={() => setText((prev) => prev + char)}
-                      className="bg-[#6200EE] text-white px-3 py-1 rounded-sm"
+                      className="bg-ink text-white px-3 py-1 rounded-sm"
                       whileHover={{ scale: 1.05 }}
                       whileTap={{ scale: 0.95 }}
                     >
@@ -176,7 +176,7 @@ export default function KabiyeKeyboard({
               <div className="md:basis-1/3">
                 <motion.button
                   onClick={copyToClipboard}
-                  className="flex items-center bg-[#03DAC6] text-white px-4 py-2 rounded-sm ml-auto"
+                  className="flex items-center bg-ink text-white px-4 py-2 rounded-sm ml-auto"
                   whileHover={{ scale: 1.05 }}
                   whileTap={{ scale: 0.95 }}
                   disabled={copied}

@@ -7,7 +7,7 @@ import { Pressable, ScrollView } from 'react-native'
 import { useLingui } from '@lingui/react/macro'
 
 import { useLanguage } from '../../hooks/use-language'
-import { Button, Card, Text, View } from '../ui'
+import { Button, Text, View } from '../ui'
 
 interface MatchPairsStepProps {
   activity: LessonActivity
@@ -75,7 +75,6 @@ const MatchPairsStep = ({ activity, onAnswer }: MatchPairsStepProps) => {
   const [rightItems, setRightItems] = useState<string[]>(initialDeal.right)
   const [selected, setSelected] = useState<SelectedPair | null>(null)
   const [matched, setMatched] = useState<Set<string>>(new Set())
-  const [showFeedback, setShowFeedback] = useState(false)
 
   // Reset state when activity changes (render-time state adjustment — avoids useEffect)
   const [prevActivity, setPrevActivity] = useState(activity)
@@ -83,7 +82,6 @@ const MatchPairsStep = ({ activity, onAnswer }: MatchPairsStepProps) => {
     setPrevActivity(activity)
     setSelected(null)
     setMatched(new Set())
-    setShowFeedback(false)
     const deal = dealColumns(pairs)
     setLeftItems(deal.left)
     setRightItems(deal.right)
@@ -110,11 +108,6 @@ const MatchPairsStep = ({ activity, onAnswer }: MatchPairsStepProps) => {
         // Correct match!
         setMatched(new Set([...matched, selected.value, value]))
         setSelected(null)
-
-        // Check if all matched
-        if (matched.size + 2 === pairs.length * 2) {
-          setShowFeedback(true)
-        }
       } else {
         // Wrong match - deselect after a brief moment
         setTimeout(() => {
@@ -129,49 +122,47 @@ const MatchPairsStep = ({ activity, onAnswer }: MatchPairsStepProps) => {
     onAnswer(isCorrect, `Matched ${matched.size / 2} of ${pairs.length} pairs`)
   }
 
-  const getItemStyle = (value: string, side: 'left' | 'right') => {
-    const isMatched = matched.has(value)
-    const isSelected = selected?.value === value && selected?.side === side
-
-    if (isMatched) {
-      return 'border-green-500 bg-success-bg'
-    }
-    if (isSelected) {
-      return 'border-primary bg-primary/10'
-    }
-    return 'border-border bg-card'
+  // Ink, laterite, or a hairline outline. There is no green here and no red: a matched
+  // pair fills with ink because it is settled, not because it is "right", and a wrong
+  // tap simply clears the selection.
+  const tileClass = (value: string, side: 'left' | 'right') => {
+    if (matched.has(value)) return 'bg-foreground border-foreground rounded-[14px] border-[1.5px] px-3.5 py-[18px]'
+    if (selected?.value === value && selected?.side === side)
+      return 'border-accent rounded-[14px] border-2 px-3.5 py-[18px]'
+    return 'border-foreground rounded-[14px] border-[1.5px] px-3.5 py-[18px]'
   }
+
+  const allMatched = matched.size === pairs.length * 2
 
   return (
     <View className="flex-1">
       <ScrollView className="flex-1 px-6" showsVerticalScrollIndicator={false}>
-        {/* Question (optional; generic fallback when absent) */}
-        <Card className="mb-6 p-6">
-          <Text variant="h5" weight="semibold" className="text-foreground text-center">
-            {question ?? t`Match the pairs`}
-          </Text>
-        </Card>
-
-        <Text variant="body" className="text-foreground-secondary mb-4 text-center">
-          {instructions ?? t`Tap pairs to match them`}
+        <Text className="text-accent text-[13px] font-semibold uppercase tracking-[0.1em]">{t`Match`}</Text>
+        <Text weight="medium" className="text-foreground mt-2 text-[26px] leading-[1.25]">
+          {question ?? t`Match the pairs`}
         </Text>
+        <Text className="text-foreground-secondary mt-2 text-[15px]">{instructions ?? t`Tap pairs to match them`}</Text>
 
-        {/* Two columns for matching */}
-        <View className="mb-4 flex-row gap-3">
-          {/* Left column */}
-          <View className="flex-1 gap-3">
+        <View className="mt-7 flex-row gap-2.5">
+          <View className="flex-1 gap-2.5">
             {leftItems.map((item, index) => (
               <Pressable
                 key={`left-${index}`}
+                accessibilityRole="button"
+                accessibilityState={{ selected: matched.has(item) }}
                 onPress={() => handleSelect(item, 'left')}
                 disabled={matched.has(item)}
-                className={`rounded-xl border-2 p-4 ${getItemStyle(item, 'left')}`}
+                className={tileClass(item, 'left')}
+                style={{ minHeight: 72, justifyContent: 'center' }}
               >
                 <Text
                   kabiye
-                  variant="body"
                   weight="bold"
-                  className={`text-center ${matched.has(item) ? 'text-success-text' : 'text-foreground'}`}
+                  className={
+                    matched.has(item)
+                      ? 'text-background text-center text-[22px]'
+                      : 'text-foreground text-center text-[22px]'
+                  }
                 >
                   {item}
                 </Text>
@@ -179,18 +170,23 @@ const MatchPairsStep = ({ activity, onAnswer }: MatchPairsStepProps) => {
             ))}
           </View>
 
-          {/* Right column */}
-          <View className="flex-1 gap-3">
+          <View className="flex-1 gap-2.5">
             {rightItems.map((item, index) => (
               <Pressable
                 key={`right-${index}`}
+                accessibilityRole="button"
+                accessibilityState={{ selected: matched.has(item) }}
                 onPress={() => handleSelect(item, 'right')}
                 disabled={matched.has(item)}
-                className={`rounded-xl border-2 p-4 ${getItemStyle(item, 'right')}`}
+                className={tileClass(item, 'right')}
+                style={{ minHeight: 72, justifyContent: 'center' }}
               >
                 <Text
-                  variant="body"
-                  className={`text-center ${matched.has(item) ? 'text-success-text' : 'text-foreground'}`}
+                  className={
+                    matched.has(item)
+                      ? 'text-background text-center text-[17px]'
+                      : 'text-foreground text-center text-[17px]'
+                  }
                 >
                   {item}
                 </Text>
@@ -199,27 +195,18 @@ const MatchPairsStep = ({ activity, onAnswer }: MatchPairsStepProps) => {
           </View>
         </View>
 
-        {/* Progress indicator */}
-        <Text variant="caption" className="text-foreground-secondary mb-4 text-center">
+        <Text className="text-foreground-secondary mt-5 text-[14px]">
           {matched.size / 2} / {pairs.length} {t`matched`}
         </Text>
-
-        {/* Feedback */}
-        {showFeedback && (
-          <Card className="bg-success-bg mb-4 p-4">
-            <Text variant="h6" weight="bold" className="text-success-text text-center">
-              {t`Perfect! All pairs matched!`}
-            </Text>
-          </Card>
-        )}
 
         <View className="h-24" />
       </ScrollView>
 
-      {/* Bottom Button */}
-      <View className="border-border bg-card border-t px-6 py-4">
-        <Button variant="primary" onPress={handleContinue} disabled={!showFeedback} className="w-full">
-          <Text variant="body" weight="bold" className="text-white">
+      {/* The button is present from the start at low opacity rather than greyed: grey is
+          not in this palette, and a button that appears late moves the footer. */}
+      <View className="px-6 pb-4">
+        <Button variant="primary" onPress={handleContinue} disabled={!allMatched} className="w-full">
+          <Text weight="semibold" className="text-background text-[16px]">
             {t`Continue`}
           </Text>
         </Button>

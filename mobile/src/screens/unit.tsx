@@ -1,5 +1,5 @@
 import React from 'react'
-import { ActivityIndicator, Pressable, ScrollView } from 'react-native'
+import { Pressable, ScrollView } from 'react-native'
 import { useSafeAreaInsets } from 'react-native-safe-area-context'
 
 import { Link, useLocalSearchParams } from 'expo-router'
@@ -7,7 +7,7 @@ import { Link, useLocalSearchParams } from 'expo-router'
 import { useLingui } from '@lingui/react/macro'
 
 import { CheckCircleIcon, LockIcon } from '../components/icons'
-import { Card, Gradient, Text, View } from '../components/ui'
+import { Card, Gradient, Skeleton, SkeletonRows, Text, View } from '../components/ui'
 import { useAppLessonsWithProgress, useAppUnit } from '../hooks/use-app-data'
 import { useLanguage } from '../hooks/use-language'
 import { brandColors } from '../utils/design-system-nativewind'
@@ -29,11 +29,10 @@ const UnitScreen = () => {
 
   if (unitLoading) {
     return (
-      <View flex safeArea="top" className="bg-background">
-        <View className="flex-1 items-center justify-center">
-          <ActivityIndicator size="large" className="text-primary" />
-          <Text className="mt-4">{t`Loading unit...`}</Text>
-        </View>
+      <View flex safeArea="top" className="bg-background px-6 pt-10">
+        <Skeleton className="h-10 w-3/5" />
+        <Skeleton className="mt-3 h-4 w-1/3" />
+        <SkeletonRows rows={4} />
       </View>
     )
   }
@@ -103,7 +102,7 @@ const UnitScreen = () => {
           {lessonsLoading ? (
             <Card className="p-4">
               <View className="flex-row items-center">
-                <ActivityIndicator size="small" className="text-primary" />
+                <Skeleton className="h-5 w-5 rounded-full" />
                 <Text className="ml-2">{t`Loading lessons...`}</Text>
               </View>
             </Card>

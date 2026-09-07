@@ -96,3 +96,54 @@ export type ActivityData =
   | ListenTypeActivityData
   | MatchPairsActivityData
   | OrderWordsActivityData
+
+/**
+ * Spell it (`spell`).
+ *
+ * The learner writes the Kabiyè word for a gloss on the Kabiyè keyboard. `answer` is the
+ * attested headword; comparison is normalised (NFC, trimmed, case-insensitive) so a
+ * capital or a stray space is not counted as a spelling mistake -- the exercise is about
+ * the letters, not the shift key.
+ */
+export interface SpellActivityData {
+  /** What to write, keyed by language. */
+  gloss?: Record<string, string>
+  /** The attested Kabiyè spelling. */
+  answer?: string
+  /** Optional nudge, e.g. "the last sound is a d with the tongue curled back". */
+  hint?: Record<string, string>
+}
+
+/**
+ * Spot the letter (`spot_letter`).
+ *
+ * Three spellings, one right. Distractors are *derived* from `correct` by
+ * `utils/kabiye-variants`, never authored -- see that module for why. `distractors` is
+ * therefore optional: when a row omits it the step generates them, which is the
+ * preferred path. A row that does carry them is trusted, so legacy or hand-checked
+ * content still renders.
+ */
+export interface SpotLetterActivityData {
+  /** The attested spelling. */
+  correct?: string
+  /** Optional pre-computed misspellings. Generated when absent. */
+  distractors?: string[]
+  /** What the word means, keyed by language. */
+  gloss?: Record<string, string>
+  explanation?: Record<string, string>
+}
+
+/**
+ * Read and choose (`read_choose`).
+ *
+ * A Kabiyè sentence and three readings of it. Sentences come from lesson data or the
+ * corpus; nothing here is generated at render time.
+ */
+export interface ReadChooseActivityData {
+  /** The Kabiyè sentence. */
+  sentence?: string
+  /** Answer options in the interface language. */
+  options?: Record<string, string[]>
+  correct_answer?: string | Record<string, string>
+  explanation?: Record<string, string>
+}

@@ -94,8 +94,8 @@ const ListenTypeStep = ({ activity, onAnswer }: ListenTypeStepProps) => {
             <Pressable
               onPress={handleToggleAudio}
               disabled={!audioUrl || isLoading}
-              className={`h-20 w-20 items-center justify-center rounded-full shadow-lg ${
-                !audioUrl ? 'bg-gray-300' : isPlaying ? 'bg-green-500' : 'bg-primary'
+              className={`h-20 w-20 items-center justify-center rounded-full ${
+                !audioUrl ? 'bg-background-tertiary' : isPlaying ? 'bg-accent' : 'bg-foreground'
               }`}
             >
               {isLoading ? (
@@ -165,11 +165,7 @@ const ListenTypeStep = ({ activity, onAnswer }: ListenTypeStepProps) => {
             placeholderTextColor={placeholderColor}
             editable={!showFeedback}
             className={`min-h-[80px] rounded-lg border-2 p-4 text-lg ${
-              showFeedback
-                ? isCorrect
-                  ? 'bg-success-bg border-green-500'
-                  : 'bg-error-bg border-red-500'
-                : 'border-border bg-card'
+              showFeedback ? (isCorrect ? 'bg-foreground border-foreground' : 'border-accent') : 'border-border bg-card'
             } text-foreground`}
             multiline
             autoCapitalize="none"
@@ -179,11 +175,11 @@ const ListenTypeStep = ({ activity, onAnswer }: ListenTypeStepProps) => {
 
         {/* Feedback */}
         {showFeedback && (
-          <Card className={`mb-4 p-4 ${isCorrect ? 'bg-success-bg' : 'bg-error-bg'}`}>
+          <Card className={`mb-4 p-4 ${isCorrect ? 'bg-background-tertiary' : 'bg-background-tertiary'}`}>
             <Text
               variant="h6"
               weight="semibold"
-              className={`mb-2 ${isCorrect ? 'text-success-text' : 'text-error-text'}`}
+              className={`mb-2 ${isCorrect ? 'text-background' : 'text-foreground'}`}
             >
               {isCorrect ? t`Correct! ✓` : t`Not quite right ✗`}
             </Text>

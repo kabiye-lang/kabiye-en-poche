@@ -20,7 +20,11 @@ const activityTypeChoices = [
   { id: 'order_words', name: 'Order Words' },
   { id: 'fill_blank', name: 'Fill Blank' },
   { id: 'multiple_choice', name: 'Multiple Choice' },
-  { id: 'true_false', name: 'True/False' },
+  { id: 'spell', name: 'Spell it (Kabiyè keyboard)' },
+  { id: 'spot_letter', name: 'Spot the letter' },
+  { id: 'read_choose', name: 'Read & Choose' },
+  // Retired from new content, still editable so existing rows can be corrected.
+  { id: 'true_false', name: 'True/False (legacy)' },
 ]
 
 const DATA_HELPER = 'Fill the fields below according to the activity type. Data is stored as JSON.'

@@ -8,7 +8,7 @@ module.exports = {
   // ignoring the very packages the allowlist is meant to transform. `(?!.*/node_modules/)`
   // pins the match to the last node_modules segment, which is the real package name.
   transformIgnorePatterns: [
-    'node_modules/(?!.*/node_modules/)(?!((jest-)?react-native|@react-native(-community)?)|expo(nent)?|@expo(nent)?/.*|@expo-google-fonts/.*|react-navigation|@react-navigation/.*|@sentry/react-native|native-base|react-native-svg|phosphor-react-native|sonner-native|uniwind|tailwind-variants|tailwind-merge|@lingui|@messageformat)',
+    'node_modules/(?!.*/node_modules/)(?!((jest-)?react-native|@react-native(-community)?)|expo(nent)?|@expo(nent)?/.*|@expo-google-fonts/.*|react-navigation|@react-navigation/.*|standard-navigation|@sentry/react-native|native-base|react-native-svg|phosphor-react-native|sonner-native|uniwind|tailwind-variants|tailwind-merge|@lingui|@messageformat)',
   ],
   transform: {
     ...preset.transform,

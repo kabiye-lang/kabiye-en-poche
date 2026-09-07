@@ -1,10 +1,26 @@
-@import "@fontsource-variable/geist";
+@import "@fontsource-variable/bricolage-grotesque";
+@import "@fontsource/andika/400.css";
+@import "@fontsource/andika/700.css";
 @import 'tailwindcss';
 
+/* Laterite: red earth of Kara, bone paper, ink. Kept in step with
+   mobile/src/global.css -- the app and the site are one product. */
 @theme {
-  --font-sans: "Geist Variable", system-ui, sans-serif;
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
+  --font-sans: "Bricolage Grotesque Variable", system-ui, sans-serif;
+  /* Kabiyè is always Andika: Bricolage cannot draw ɖ ɛ ɣ ɩ ɔ ʋ and their capitals,
+     so a Kabiyè word set in it comes out half in the browser's fallback. */
+  --font-kabiye: "Andika", "Bricolage Grotesque Variable", system-ui, sans-serif;
+
+  --color-paper: #F4EBDD;
+  --color-paper-recessed: #EADFCD;
+  --color-line: #D9CDB9;
+  --color-ink: #221913;
+  --color-ink-quiet: #6B5A4E;
+  --color-laterite: #C4451C;
+  --color-leaf: #FFFFFF;
+
+  --color-background: #F4EBDD;
+  --color-foreground: #221913;
 }
 
 /*
@@ -26,13 +42,13 @@
 }
 
 :root {
-  --color-primary: #6200EE;
-  --color-secondary: #03DAC6;
-  --color-bg-grey: #F5F5F5;
-  --color-text-dark: #212121;
-  --color-accent: #FF5722;
-  --color-text-light: #FFFFFF;
-  --color-text-grey: #757575;
+  --color-primary: #221913;      /* ink: the filled button, not the accent */
+  --color-secondary: #6B5A4E;    /* ink-quiet */
+  --color-bg-grey: #F4EBDD;      /* paper */
+  --color-text-dark: #221913;
+  --color-accent: #C4451C;       /* laterite */
+  --color-text-light: #F4EBDD;
+  --color-text-grey: #6B5A4E;
 }
 
 html {
@@ -40,12 +56,27 @@ html {
 }
 
 body {
-  font-family: "Geist Variable", system-ui, sans-serif;
+  font-family: "Bricolage Grotesque Variable", system-ui, sans-serif;
   color: var(--color-text-dark);
   background: var(--color-bg-grey);
 }
 
-.text-shadow {
-  text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
+/* Kabiyè words, wherever they appear. */
+.kbp {
+  font-family: var(--font-kabiye);
+}
+
+/* Laterite has no shadows: depth is tonal or a border. The old .text-shadow existed to
+   keep white text legible over the AI hero photograph, which this direction removes. */
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  ::before,
+  ::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
 }
 

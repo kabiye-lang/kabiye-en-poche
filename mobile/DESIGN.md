@@ -2,63 +2,94 @@
 name: Kabiyè en Poche
 description: A pocket primer for reading, writing and learning Kabiyè.
 colors:
-  primary: "#6200EE"
-  primary-dark-theme: "#BB86FC"
-  primary-tint: "#EDE4F7"
-  secondary: "#8B5CF6"
-  paper: "#F5F3F7"
-  leaf: "#ffffff"
-  recessed: "#EDE9F0"
-  ink: "#1E1B2E"
-  ink-quiet: "#6E6B7B"
-  rule: "#E0DCE6"
-  night-paper: "#1A1A2E"
-  night-leaf: "#252538"
-  night-recessed: "#2F2F45"
-  night-ink: "#E8E4F0"
-  night-ink-quiet: "#9B97A8"
-  night-rule: "#3D3B50"
-  correct-bg: "#dcfce7"
-  correct-ink: "#15803d"
-  wrong-bg: "#fee2e2"
-  wrong-ink: "#b91c1c"
-  hint: "#d97706"
-  danger: "#BF3626"
+  # Laterite: red earth of Kara, bone paper, ink. Three colours and no more; depth is
+  # tonal (recessed -> paper -> leaf) or a border, never a shadow.
+  paper: "#F4EBDD"
+  paper-recessed: "#EADFCD"
+  leaf: "#FFFFFF"
+  line: "#D9CDB9"
+  ink: "#221913"
+  ink-quiet: "#6B5A4E"
+  # Passes 4.5:1 on paper only at >= 24px, or bold >= 19px. Hero glyphs, section labels,
+  # and the one primary action per screen. Never body text.
+  laterite: "#C4451C"
+  night-paper: "#221913"
+  night-recessed: "#2E241C"
+  night-tabbar: "#160F0B"
+  night-ink: "#F4EBDD"
+  night-ink-quiet: "rgba(244,235,221,0.7)"
+  night-line: "rgba(244,235,221,0.12)"
+  night-laterite: "#E07A55"
+  # There is no correct/wrong colour pair. Correct fills with ink; wrong is a laterite
+  # strikethrough plus an explanation. A learner should not need to know a colour code
+  # to read their own mistake.
 typography:
-  display:
-    fontFamily: "Figtree_700Bold, system-ui, sans-serif"
-    fontSize: "36px"
-    fontWeight: 700
-    lineHeight: 1.1
-  headline:
-    fontFamily: "Figtree_600SemiBold, system-ui, sans-serif"
-    fontSize: "24px"
+  # Bricolage Grotesque is the interface face. It misses the same twelve Kabiyè letters
+  # Figtree did (ɖ Ɖ ɛ Ɛ ɣ Ɣ ɩ Ɩ ɔ Ɔ ʋ Ʋ), so every Kabiyè word is routed to Andika --
+  # see utils/kabiye-script.ts, pinned by __tests__/kabiye-font-coverage.test.ts.
+  section-label:
+    fontFamily: "BricolageGrotesque_600SemiBold, system-ui, sans-serif"
+    fontSize: "13px"
     fontWeight: 600
-  title:
-    fontFamily: "Figtree_500Medium, system-ui, sans-serif"
-    fontSize: "20px"
+    letterSpacing: "0.10em"
+    textTransform: "uppercase"
+    color: laterite
+  screen-title:
+    fontFamily: "BricolageGrotesque_600SemiBold, system-ui, sans-serif"
+    fontSize: "40px"
+    fontWeight: 600
+    lineHeight: 1.0
+    letterSpacing: "-0.02em"
+  step-question:
+    fontFamily: "BricolageGrotesque_500Medium, system-ui, sans-serif"
+    fontSize: "26px"
     fontWeight: 500
+    lineHeight: 1.15
+  card-title:
+    fontFamily: "BricolageGrotesque_600SemiBold, system-ui, sans-serif"
+    fontSize: "22px"
+    fontWeight: 600
   body:
-    fontFamily: "Figtree_400Regular, system-ui, sans-serif"
-    fontSize: "16px"
+    fontFamily: "BricolageGrotesque_400Regular, system-ui, sans-serif"
+    fontSize: "17px"
     fontWeight: 400
-  label:
-    fontFamily: "Figtree_400Regular, system-ui, sans-serif"
-    fontSize: "14px"
-    fontWeight: 400
-  kabiye:
-    fontFamily: "Andika_400Regular, system-ui, sans-serif"
-    fontSize: "16px"
-    fontWeight: 400
-  kabiye-strong:
+    lineHeight: 1.5
+  body-small:
+    fontFamily: "BricolageGrotesque_400Regular, system-ui, sans-serif"
+    fontSize: "15px"
+    color: ink-quiet
+  kabiye-hero:
+    # Single letters only. A word never exceeds 44 and must be allowed to wrap.
     fontFamily: "Andika_700Bold, system-ui, sans-serif"
-    fontSize: "16px"
+    fontSize: "150px"
     fontWeight: 700
+    lineHeight: 0.85
+  kabiye-word:
+    fontFamily: "Andika_700Bold, system-ui, sans-serif"
+    fontSize: "44px"
+    fontWeight: 700
+    lineHeight: 1.05
+  kabiye-list:
+    fontFamily: "Andika_700Bold, system-ui, sans-serif"
+    fontSize: "24px"
+    fontWeight: 700
+  kabiye-sentence:
+    fontFamily: "Andika_700Bold, system-ui, sans-serif"
+    fontSize: "34px"
+    fontWeight: 700
+    lineHeight: 1.3
 rounded:
-  md: "8px"
-  lg: "12px"
-  xl: "16px"
+  key: "8px"
+  card: "14px"
+  card-lg: "20px"
+  state: "18px"
   pill: "9999px"
+borders:
+  # No shadows anywhere.
+  outlined: "1.5px solid ink"
+  divider: "1px solid line"
+  rule: "1.5px solid ink"
+  entry-underline: "2px solid ink"
 spacing:
   xs: "4px"
   sm: "8px"
@@ -115,8 +146,8 @@ components:
 **Creative North Star: "The Pocket Primer"**
 
 A well-made teaching book that happens to be a phone. The page is calm and the word is
-the hero: a soft lavender-grey ground, white leaves laid on it, and one confident purple
-reserved for the places where the reader acts. Nothing decorative competes with the
+the hero: bone paper, ink, and the red earth of Kara kept for the places where the reader
+acts and for the letters French cannot write. Nothing decorative competes with the
 language itself, because for a large part of this audience the letterforms *are* the
 lesson — they are learning to read `ɖ`, `ɛ`, `ɣ`, `ɩ`, `ɔ` and `ʋ` for the first time.
 
@@ -126,8 +157,9 @@ Kabiyè language speaks another, and that distinction does more identity work th
 decoration could. Density is generous rather than efficient — this is a primer to sit
 with, not a dashboard to scan.
 
-Dark mode is a genuine second theme, not an inversion. The ground deepens to a blue-black
-and the accent lifts to a lighter violet so it keeps its authority against it.
+Dark mode is a genuine second theme, not an inversion. Ink becomes the ground and laterite
+lifts to `#E07A55` so it keeps its authority against it. Learners choose it explicitly --
+System / Light / Dark in Profile -- rather than only inheriting the phone's setting.
 
 **Key Characteristics:**
 - One accent, used only where the reader acts
@@ -138,85 +170,70 @@ and the accent lifts to a lighter violet so it keeps its authority against it.
 
 ## Colors
 
-A cool, low-chroma lavender family with a single saturated violet doing all the work of
-signalling action, plus a conventional green/red pair reserved strictly for answer feedback.
+Three colours: the red earth of Kara, bone paper, and ink. Nothing else. Depth comes from
+tone (recessed → paper → leaf) or from a border; there are no shadows anywhere in the app.
 
-### Primary
-- **Electric Violet** (`#6200EE`): Actions and the language itself. Primary buttons,
-  active tab, links, progress fill, and — distinctively — Kabiyè headwords in the
-  dictionary and lesson examples. This is the one colour that says "this matters".
-- **Lifted Violet** (`#BB86FC`): The dark-theme substitute for Electric Violet. Same
-  role, raised in lightness so it holds against a near-black ground.
-- **Violet Wash** (`#EDE4F7`): A pale tint of the accent for selected and grouped states.
+### The three
+- **Paper** (`#F4EBDD`): the ground everything sits on. Bone rather than white, so the
+  ink reads as printed rather than displayed.
+- **Ink** (`#221913`): text, filled buttons, the tab bar, and every "done" fill. It is
+  also the primary button colour — the accent is spent elsewhere.
+- **Laterite** (`#C4451C`): the hero glyph, section labels, the one primary action per
+  screen, and the letters French cannot write. It passes 4.5:1 on paper only at ≥ 24px
+  or bold ≥ 19px, which is why body text is always ink and never laterite.
 
-### Secondary
-- **Soft Violet** (`#8B5CF6`): A quieter companion accent, used sparingly for secondary
-  emphasis. Not a second brand colour; it exists so the primary never has to be diluted.
+### The ink screen
+Two screens are ink from edge to edge: the onboarding question and Spot the letter. They
+use `surface-ink` / `on-surface-ink` rather than `bg-foreground` / `text-background`,
+because those swap with the theme — an ink screen built from them inverted into a bright
+paper screen the moment the app went dark. `surface-ink` is ink in light and the recessed
+ink of the dark palette in dark; its text is paper in both.
 
-### Neutral
-- **Paper** (`#F5F3F7`): The app ground in light theme. Slightly lavender, never white —
-  white is reserved for the cards laid on it.
-- **Leaf** (`#ffffff`): Card and sheet surfaces. The contrast between Leaf and Paper *is*
-  the elevation system.
-- **Recessed** (`#EDE9F0`): Inputs, filled cards, and anything that should read as set
-  into the page rather than laid on it.
-- **Ink** (`#1E1B2E`): Body and heading text. A near-black carrying a trace of the violet.
-- **Quiet Ink** (`#6E6B7B`): Secondary text, pronunciations, captions, placeholders.
-  Measured at 4.5:1 on Leaf; its dark-theme partner `#9B97A8` measures 5.27:1 on Night Leaf.
-- **Rule** (`#E0DCE6`): Hairline borders, dividers, and the unfilled progress track.
+### What does not get a colour
+Answer feedback. There is no green and no red: **correct fills with ink, wrong is a
+laterite strikethrough with the correct answer beneath and an explanation.** A learner
+should not have to know a colour code to read their own mistake, and a wrong answer in a
+language this under-documented is more often the app's gap than the learner's.
 
-Night-theme partners (`night-paper`, `night-leaf`, `night-recessed`, `night-ink`,
-`night-ink-quiet`, `night-rule`) mirror these roles exactly.
+Letter *type* also lost its colours. Four hues for grapheme/vowel/consonant/indication
+was a legend to memorise, coding a distinction the label under each tile already makes.
+The one accent goes to the distinction the app exists to teach: whether French can write
+the letter at all.
 
-### Tertiary
-- **Correct** (`#dcfce7` / `#15803d`) and **Wrong** (`#fee2e2` / `#b91c1c`): Answer
-  feedback only. **Hint** (`#d97706`): amber, for hints in exercises. **Danger**
-  (`#BF3626`): destructive actions such as resetting progress.
-
-### Named Rules
-
-**The One Accent Rule.** There is exactly one accent, and it means "act here" or "this is
-Kabiyè". If a new colour seems necessary, the answer is a tonal step, not a new hue.
-
-**The Feedback-Only Rule.** Green and red never appear outside answer feedback. They are
-not status colours, not decoration, and not a palette to draw from.
 
 ## Typography
 
-**Interface Font:** Figtree (with system-ui, sans-serif)
-**Language Font:** Andika (with system-ui, sans-serif)
+**Interface:** Bricolage Grotesque · **Kabiyè:** Andika
 
-**Character:** Figtree is a warm geometric sans — round, even, unfussy — and carries every
-word of interface copy in English and French. Andika is SIL's typeface for
-African-language literacy, and carries every word of Kabiyè. The pairing is close enough
-to sit on one line without friction (Andika's x-height is 0.508em against Figtree's
-0.500em) and different enough that the reader can feel which language they are looking at.
+Bricolage Grotesque carries every word of interface copy in English and French. Andika is
+SIL's typeface for African-language literacy and carries every word of Kabiyè.
 
-This is the system's defining decision, and it is not stylistic. Figtree draws only 4 of
-the 16 letters the Kabiyè alphabet needs; before Andika, every Kabiyè word was rendered
-half in Figtree and half in an OS fallback, splitting single graphemes like `aɣ` across
-two typefaces.
+This is the system's defining decision and it is not stylistic. **The interface face draws
+only 4 of the 16 letters the Kabiyè alphabet needs.** Without the split, every Kabiyè word
+is rendered half in the interface face and half in an OS fallback, splitting single
+graphemes like `aɣ` across two typefaces — on the alphabet card whose entire job is to
+show the learner what that letter looks like.
+
+Bricolage misses precisely the twelve Figtree missed (ɖ Ɖ ɛ Ɛ ɣ Ɣ ɩ Ɩ ɔ Ɔ ʋ Ʋ) and draws
+ŋ Ŋ ñ Ñ, so `utils/kabiye-script.ts` survived the typeface change unaltered. That is luck
+rather than a property of grotesques, so `__tests__/kabiye-font-coverage.test.ts` reads
+the shipped font binaries and fails if the next face moves the line.
 
 ### Hierarchy
-- **Display** (Figtree Bold 700, 36px, 1.1): Screen titles — "Learn Kabiyè", "Profile".
-- **Headline** (Figtree SemiBold 600, 24px): Section headings and lesson titles.
-- **Title** (Figtree Medium 500, 20px): Card headings, activity questions.
-- **Body** (Figtree Regular 400, 16px): Lesson prose, definitions, all running copy.
-- **Label** (Figtree Regular 400, 14px): Captions, pronunciations, difficulty chips,
-  secondary metadata.
-- **Kabiyè** (Andika Regular 400 / Bold 700): Every Kabiyè word at whatever size its
-  context calls for. Andika ships two weights only; the interface's eight collapse onto
-  them, with semibold and above reading as bold.
+- **Section label** (600, 13px, +0.10em, uppercase, laterite): names what a screen is
+  about, above its title.
+- **Screen title** (600, 40px, 1.0, −0.02em): "Your path", "9,738 entries", "Your Kabiyè".
+- **Step question** (500, 26px, 1.15): what a lesson step is asking.
+- **Card title** (600, 22px): unit titles, empty-state headings.
+- **Body** (400, 17px, 1.5): lesson prose, definitions, all running copy.
+- **Body small** (400, 15px, ink-quiet): captions, metadata, glosses.
+- **Kabiyè hero** (Andika Bold, 150px, 0.85): a single letter, never a word.
+- **Kabiyè word** (Andika Bold, 44px, 1.05): headwords and the word being taught. Words
+  never exceed 44 and must be allowed to wrap.
+- **Kabiyè list / sentence** (Andika Bold, 24px / 34px): rows, and sentences to read.
 
-### Named Rules
-
-**The Two Voices Rule.** Figtree is the interface. Andika is the language. No text is
-ever set in a face that cannot draw its own letters.
-
-**The Declared Kabiyè Rule.** Text picks its face from its content automatically, but any
-field the data model *guarantees* is Kabiyè must say so explicitly (`<Text kabiye>`).
-Detection alone leaves words built only from shared letters — `caa`, `afa`, `pili` — in the
-interface face, sitting visibly wrong beside their neighbours.
+Andika ships two weights; the interface's wider scale collapses onto them, with semibold
+and above reading as bold.
 
 ## Layout
 
@@ -251,27 +268,27 @@ and would read as a mistake.
 
 ## Shapes
 
-Soft, consistently rounded, never sharp and never fully circular except where a shape is
-genuinely a pill or a dot. Cards use 16px (`rounded-xl`); buttons and option rows 12px
-(`rounded-lg`); small controls 8px (`rounded-md`). Chips, badges, the language tag and the
-audio button are pills or circles (`rounded-full`).
+Radius is not a per-component decision: **every button, chip and pill is `rounded-full`**,
+cards are 14–20px, keyboard keys 6–8px, small tags 4px. A key is not a button, which is
+why the keyboard tray is built from `Pressable` rather than the shared `Button`.
 
-Borders are hairlines in Rule, used to define an edge rather than to decorate. Selected
-and answered states raise the border to 2px in the accent or a feedback colour — the
-border, not a shadow, is how this system shows state.
+Borders are hairlines in Line for dividers, and **1.5px ink** for outlined buttons, cards
+and the rule under a section label. Selected raises the border to 2px laterite; a settled
+answer fills with ink. The border, not a shadow, is how this system shows state — there
+are no shadows anywhere.
 
 ## Components
 
 ### Buttons
-- **Shape:** Gently rounded (12px), full-width in lesson and form contexts.
-- **Primary:** Electric Violet ground, white label, 12px × 16px padding. The only filled
-  button in the system.
-- **Outline / Ghost:** Transparent ground with an accent label; outline adds a 2px accent
-  border. For secondary and tertiary actions.
-- **States:** Disabled drops to 50% opacity; loading swaps the label for a translated
-  "Loading…" and reports `busy` to assistive technology. Every button carries
-  `accessibilityRole="button"` by default — this is set once on the shared component, and
-  new buttons should not need to think about it.
+- **Shape:** A pill, always. Full-width in lesson and form contexts.
+- **Primary (one per screen):** ink fill, paper label, 18px padding, 17/600. On a laterite
+  screen the primary is ink; on an **ink** screen it is paper — that is the `inverse`
+  variant, and it exists because an ink button on an ink ground is invisible.
+- **Secondary:** transparent, 1.5px ink border, 16px padding, 16/600.
+- **States:** Disabled is the same ink button at 40% opacity, never a grey fill — grey is
+  not in this palette, and a greyed button reads as broken rather than as not-yet. Loading
+  swaps the label for a translated "Loading…" and reports `busy` to assistive technology.
+  Every button carries `accessibilityRole="button"` by default.
 - **Gating:** A primary action that is not yet available renders at reduced opacity rather
   than disappearing, so the path forward stays visible.
 
@@ -307,9 +324,10 @@ border, not a shadow, is how this system shows state.
   Deliberately quiet: it is a footnote about the text, not part of it.
 
 ### The Kabiyè Keyboard
-- A full custom keyboard of the Kabiyè alphabet, keys on Leaf with the language-specific
-  letters tinted in Violet Wash so the letters that do not exist in French stand out.
-  Keys are set in Andika, as is the text they produce.
+- A full custom keyboard of the Kabiyè alphabet, keys on Leaf with the eight letters no
+  French keyboard has tinted so they stand out. Keys are set in Andika, as is the text
+  they produce. They are `Pressable`s, not `Button`s: a key is not a button in this
+  system, and routing them through one drew the whole tray as blank tiles.
 
 ## Do's and Don'ts
 
@@ -317,7 +335,8 @@ border, not a shadow, is how this system shows state.
 - **Do** set every Kabiyè string in Andika, and add `kabiye` to the `Text` explicitly
   wherever the field is known to be Kabiyè.
 - **Do** separate surfaces with the tonal steps (Recessed → Paper → Leaf).
-- **Do** reserve Electric Violet for actions and for the Kabiyè language.
+- **Do** reserve laterite for the one action per screen and for the letters French
+  cannot write. Body text is always ink.
 - **Do** define both theme values for any new colour, and check text at 4.5:1 in each.
 - **Do** show nothing where content does not exist. An absent speaker icon is correct;
   a speaker icon that plays the wrong sound is a defect.
@@ -326,8 +345,9 @@ border, not a shadow, is how this system shows state.
 ### Don't:
 - **Don't** add a `box-shadow`. There are none, and one would be conspicuous.
 - **Don't** introduce a second accent hue. Reach for a tonal step instead.
-- **Don't** use green or red for anything except answer feedback.
+- **Don't** use green or red at all. Answer feedback is ink for settled and a laterite
+  strikethrough for wrong, with the explanation beneath.
 - **Don't** hardcode a colour that differs between themes — take it from the theme hook.
-- **Don't** let Figtree render Kabiyè. It cannot draw `ɖ Ɖ ɛ Ɛ ɣ Ɣ ɩ Ɩ ɔ Ɔ ʋ Ʋ`, and the
+- **Don't** let the interface face render Kabiyè. It cannot draw `ɖ Ɖ ɛ Ɛ ɣ Ɣ ɩ Ɩ ɔ Ɔ ʋ Ʋ`, and the
   OS fallback splits words across two typefaces.
 - **Don't** enable autocorrect on any field that accepts Kabiyè.

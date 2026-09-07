@@ -17,9 +17,62 @@ type ActivityType =
   | 'order_words'
   | 'fill_blank'
   | 'multiple_choice'
+  | 'spell'
+  | 'spot_letter'
+  | 'read_choose'
   | 'true_false'
 
 type ActivityData = Record<string, unknown>
+
+/** The letters a French keyboard cannot reach — what `spot_letter` swaps out. */
+const KABIYE_ONLY = 'ɖƉɛƐɣƔɩƖŋŊɔƆʋƲñÑ'
+
+/** How many of those a word carries. */
+export function specialCount(word: string): number {
+  return [...word].filter((letter) => KABIYE_ONLY.includes(letter)).length
+}
+
+/**
+ * Read a localised field written either way.
+ *
+ * Two conventions coexist in `lesson_activities.data`: flat `gloss_en` / `gloss_fr`,
+ * which is what the importer writes and what every existing row uses, and nested
+ * `gloss: {en, fr}`, which is what the generator emits. A form that reads only the
+ * nested form shows a required field as empty and wipes it the moment anyone saves --
+ * which is exactly what this one did to every `spot_letter` gloss in the database.
+ */
+function readLocalised(data: ActivityData, field: string, lang: 'en' | 'fr'): string {
+  const flat = data[`${field}_${lang}`]
+  if (typeof flat === 'string') return flat
+
+  const nested = data[field]
+  if (nested && typeof nested === 'object') {
+    const value = (nested as Record<string, unknown>)[lang]
+    if (typeof value === 'string') return value
+  }
+  return ''
+}
+
+/**
+ * Write the nested form, and drop the flat one.
+ *
+ * Leaving `gloss_en` behind next to a new `gloss: {en}` would be worse than not editing
+ * at all: the app prefers whichever it finds first, so the edit would look saved and
+ * have no effect.
+ */
+function writeLocalised(data: ActivityData, field: string, lang: 'en' | 'fr', value: string): ActivityData {
+  const existing = (data[field] ?? {}) as Record<string, string>
+  const merged: ActivityData = {
+    ...data,
+    [field]: {
+      en: lang === 'en' ? value : (existing.en ?? readLocalised(data, field, 'en')),
+      fr: lang === 'fr' ? value : (existing.fr ?? readLocalised(data, field, 'fr')),
+    },
+  }
+  delete merged[`${field}_en`]
+  delete merged[`${field}_fr`]
+  return merged
+}
 
 /** Validates activity data based on type. Returns error message or undefined. */
 export function validateActivityData(value: unknown, values?: { activity_type?: string }): string | undefined {
@@ -63,6 +116,30 @@ export function validateActivityData(value: unknown, values?: { activity_type?: 
       if (!hasOpts) return 'At least one set of options is required'
       if (!correct || typeof correct !== 'object') return 'Correct answer is required'
       break
+    case 'spell':
+      if (!data.answer) return 'The Kabiyè spelling is required'
+      if (!readLocalised(data, 'gloss', 'en') && !readLocalised(data, 'gloss', 'fr'))
+        return 'A gloss (EN or FR) is required — it is the prompt the learner spells from'
+      break
+    case 'spot_letter': {
+      const correct = (data.correct ?? '') as string
+      if (!correct) return 'The correct spelling is required'
+      // The wrong spellings are derived by the app, never authored. One Kabiyè letter
+      // yields one distractor, which makes the question a two-option coin flip.
+      if (specialCount(correct) < 2)
+        return 'The word needs at least two of ɖ ɛ ɣ ɩ ŋ ɔ ʋ ñ, or there is only one wrong spelling to offer'
+      if (!readLocalised(data, 'gloss', 'en') && !readLocalised(data, 'gloss', 'fr'))
+        return 'A gloss (EN or FR) is required'
+      break
+    }
+    case 'read_choose': {
+      if (!data.sentence) return 'The Kabiyè sentence is required'
+      const readings = data.options as Record<string, string[]>
+      const hasReadings = (readings?.en?.length ?? 0) > 0 || (readings?.fr?.length ?? 0) > 0
+      if (!hasReadings) return 'At least one set of readings (EN or FR) is required'
+      if (!data.correct_answer) return 'Correct answer is required (must match a reading exactly)'
+      break
+    }
     case 'true_false':
       if (data.answer !== true && data.answer !== false) return 'Correct answer (true or false) is required'
       break
@@ -375,11 +452,9 @@ function FillBlankFields({ data, onChange }: { data: ActivityData; onChange: (d:
 function MultipleChoiceFields({ data, onChange }: { data: ActivityData; onChange: (d: ActivityData) => void }) {
   const opts = (data.options ?? {}) as Record<string, string[]>
   const correct = (data.correct_answer ?? {}) as Record<string, string>
-  const expl = (data.explanation ?? {}) as Record<string, string>
 
   const updOpts = (lang: string, v: string[]) => onChange({ ...data, options: { ...opts, [lang]: v } })
   const updCorrect = (lang: string, v: string) => onChange({ ...data, correct_answer: { ...correct, [lang]: v } })
-  const updExpl = (lang: string, v: string) => onChange({ ...data, explanation: { ...expl, [lang]: v } })
 
   return (
     <div className="space-y-4">
@@ -434,8 +509,8 @@ function MultipleChoiceFields({ data, onChange }: { data: ActivityData; onChange
       <div>
         <label className="text-sm font-medium">Explanation (EN)</label>
         <textarea
-          value={expl.en ?? ''}
-          onChange={(e) => updExpl('en', e.target.value)}
+          value={readLocalised(data, 'explanation', 'en')}
+          onChange={(e) => onChange(writeLocalised(data, 'explanation', 'en', e.target.value))}
           placeholder="Why this answer is correct"
           className="border-input w-full rounded-md border px-3 py-2"
           rows={2}
@@ -444,8 +519,8 @@ function MultipleChoiceFields({ data, onChange }: { data: ActivityData; onChange
       <div>
         <label className="text-sm font-medium">Explanation (FR)</label>
         <textarea
-          value={expl.fr ?? ''}
-          onChange={(e) => updExpl('fr', e.target.value)}
+          value={readLocalised(data, 'explanation', 'fr')}
+          onChange={(e) => onChange(writeLocalised(data, 'explanation', 'fr', e.target.value))}
           placeholder="Why this answer is correct"
           className="border-input w-full rounded-md border px-3 py-2"
           rows={2}
@@ -457,7 +532,6 @@ function MultipleChoiceFields({ data, onChange }: { data: ActivityData; onChange
 
 function TrueFalseFields({ data, onChange }: { data: ActivityData; onChange: (d: ActivityData) => void }) {
   const upd = (k: string, v: unknown) => onChange({ ...data, [k]: v })
-  const expl = (data.explanation ?? {}) as Record<string, string>
   return (
     <div className="space-y-4">
       <div>
@@ -475,8 +549,8 @@ function TrueFalseFields({ data, onChange }: { data: ActivityData; onChange: (d:
       <div>
         <label className="text-sm font-medium">Explanation (EN)</label>
         <textarea
-          value={expl.en ?? ''}
-          onChange={(e) => upd('explanation', { ...expl, en: e.target.value })}
+          value={readLocalised(data, 'explanation', 'en')}
+          onChange={(e) => onChange(writeLocalised(data, 'explanation', 'en', e.target.value))}
           className="border-input w-full rounded-md border px-3 py-2"
           rows={2}
         />
@@ -484,11 +558,189 @@ function TrueFalseFields({ data, onChange }: { data: ActivityData; onChange: (d:
       <div>
         <label className="text-sm font-medium">Explanation (FR)</label>
         <textarea
-          value={expl.fr ?? ''}
-          onChange={(e) => upd('explanation', { ...expl, fr: e.target.value })}
+          value={readLocalised(data, 'explanation', 'fr')}
+          onChange={(e) => onChange(writeLocalised(data, 'explanation', 'fr', e.target.value))}
           className="border-input w-full rounded-md border px-3 py-2"
           rows={2}
         />
+      </div>
+    </div>
+  )
+}
+
+function SpellFields({ data, onChange }: { data: ActivityData; onChange: (d: ActivityData) => void }) {
+  const upd = (k: string, v: unknown) => onChange({ ...data, [k]: v })
+  const updLocalised = (field: string, lang: 'en' | 'fr', v: string) =>
+    onChange(writeLocalised(data, field, lang, v))
+
+  return (
+    <div className="space-y-4">
+      <div>
+        <label className="text-sm font-medium">Kabiyè spelling *</label>
+        <Input
+          value={(data.answer ?? '') as string}
+          onChange={(e) => upd('answer', e.target.value)}
+          placeholder="The attested spelling the learner types"
+        />
+      </div>
+      <div className="grid gap-2 sm:grid-cols-2">
+        <div>
+          <label className="text-sm font-medium">Gloss (EN) *</label>
+          <Input value={readLocalised(data, 'gloss', 'en')} onChange={(e) => updLocalised('gloss', 'en', e.target.value)} />
+        </div>
+        <div>
+          <label className="text-sm font-medium">Gloss (FR) *</label>
+          <Input value={readLocalised(data, 'gloss', 'fr')} onChange={(e) => updLocalised('gloss', 'fr', e.target.value)} />
+        </div>
+      </div>
+      <div className="grid gap-2 sm:grid-cols-2">
+        <div>
+          <label className="text-sm font-medium">Hint (EN)</label>
+          <Input value={readLocalised(data, 'hint', 'en')} onChange={(e) => updLocalised('hint', 'en', e.target.value)} />
+        </div>
+        <div>
+          <label className="text-sm font-medium">Hint (FR)</label>
+          <Input value={readLocalised(data, 'hint', 'fr')} onChange={(e) => updLocalised('hint', 'fr', e.target.value)} />
+        </div>
+      </div>
+    </div>
+  )
+}
+
+function SpotLetterFields({ data, onChange }: { data: ActivityData; onChange: (d: ActivityData) => void }) {
+  const upd = (k: string, v: unknown) => onChange({ ...data, [k]: v })
+  const updLocalised = (field: string, lang: 'en' | 'fr', v: string) =>
+    onChange(writeLocalised(data, field, lang, v))
+  const correct = (data.correct ?? '') as string
+  const specials = specialCount(correct)
+
+  return (
+    <div className="space-y-4">
+      <div>
+        <label className="text-sm font-medium">Correct spelling *</label>
+        <Input
+          value={correct}
+          onChange={(e) => upd('correct', e.target.value)}
+          placeholder="e.g. Kabɩyɛ"
+        />
+        {/* The count is shown as you type because the rule is invisible otherwise: the
+            wrong spellings never appear in this form, so nothing else on screen says
+            why a one-special word is unusable. */}
+        <p className={specials >= 2 ? 'text-muted-foreground mt-1 text-sm' : 'mt-1 text-sm text-red-600'}>
+          {specials} of ɖ ɛ ɣ ɩ ŋ ɔ ʋ ñ. Two or more are needed — the wrong spellings are derived by swapping each
+          for the plain letter a French keyboard reaches for, so one letter means one distractor.
+        </p>
+      </div>
+      <div className="grid gap-2 sm:grid-cols-2">
+        <div>
+          <label className="text-sm font-medium">Gloss (EN) *</label>
+          <Input value={readLocalised(data, 'gloss', 'en')} onChange={(e) => updLocalised('gloss', 'en', e.target.value)} />
+        </div>
+        <div>
+          <label className="text-sm font-medium">Gloss (FR) *</label>
+          <Input value={readLocalised(data, 'gloss', 'fr')} onChange={(e) => updLocalised('gloss', 'fr', e.target.value)} />
+        </div>
+      </div>
+      <div className="grid gap-2 sm:grid-cols-2">
+        <div>
+          <label className="text-sm font-medium">Explanation (EN)</label>
+          <textarea
+            value={readLocalised(data, 'explanation', 'en')}
+            onChange={(e) => updLocalised('explanation', 'en', e.target.value)}
+            className="border-input w-full rounded-md border px-3 py-2"
+            rows={2}
+          />
+        </div>
+        <div>
+          <label className="text-sm font-medium">Explanation (FR)</label>
+          <textarea
+            value={readLocalised(data, 'explanation', 'fr')}
+            onChange={(e) => updLocalised('explanation', 'fr', e.target.value)}
+            className="border-input w-full rounded-md border px-3 py-2"
+            rows={2}
+          />
+        </div>
+      </div>
+    </div>
+  )
+}
+
+/**
+ * The correct answer as text, whichever way the row stores it.
+ *
+ * Older rows keep `{en, fr}`; the schema now says a plain string. An `<Input>` handed an
+ * object renders "[object Object]" and saves that literal string over the real answer,
+ * which is what this field was doing to every `read_choose` in the database. The app
+ * matches the answer by position across the language lists, so either shape works
+ * on the way out — but only a string is safe to edit here.
+ */
+function answerText(data: ActivityData): string {
+  const answer = data.correct_answer
+  if (typeof answer === 'string') return answer
+  if (answer && typeof answer === 'object') {
+    const byLanguage = answer as Record<string, unknown>
+    for (const key of ['en', 'fr', 'kbp']) {
+      if (typeof byLanguage[key] === 'string') return byLanguage[key] as string
+    }
+  }
+  return ''
+}
+
+function ReadChooseFields({ data, onChange }: { data: ActivityData; onChange: (d: ActivityData) => void }) {
+  const upd = (k: string, v: unknown) => onChange({ ...data, [k]: v })
+  const updLocalised = (field: string, lang: 'en' | 'fr', v: string) =>
+    onChange(writeLocalised(data, field, lang, v))
+  const options = (data.options ?? {}) as Record<string, string[]>
+
+  return (
+    <div className="space-y-4">
+      <div>
+        <label className="text-sm font-medium">Kabiyè sentence *</label>
+        <Input
+          value={(data.sentence ?? '') as string}
+          onChange={(e) => upd('sentence', e.target.value)}
+          placeholder="The sentence the learner reads"
+        />
+      </div>
+      <StringArrayField
+        value={options.en ?? []}
+        onChange={(v) => upd('options', { ...options, en: v })}
+        label="Readings (EN)"
+        placeholder="A possible reading"
+      />
+      <StringArrayField
+        value={options.fr ?? []}
+        onChange={(v) => upd('options', { ...options, fr: v })}
+        label="Readings (FR)"
+        placeholder="Une lecture possible"
+      />
+      <div>
+        <label className="text-sm font-medium">Correct answer *</label>
+        <Input
+          value={answerText(data)}
+          onChange={(e) => upd('correct_answer', e.target.value)}
+          placeholder="Must match one reading exactly, in either language"
+        />
+      </div>
+      <div className="grid gap-2 sm:grid-cols-2">
+        <div>
+          <label className="text-sm font-medium">Explanation (EN)</label>
+          <textarea
+            value={readLocalised(data, 'explanation', 'en')}
+            onChange={(e) => updLocalised('explanation', 'en', e.target.value)}
+            className="border-input w-full rounded-md border px-3 py-2"
+            rows={2}
+          />
+        </div>
+        <div>
+          <label className="text-sm font-medium">Explanation (FR)</label>
+          <textarea
+            value={readLocalised(data, 'explanation', 'fr')}
+            onChange={(e) => updLocalised('explanation', 'fr', e.target.value)}
+            className="border-input w-full rounded-md border px-3 py-2"
+            rows={2}
+          />
+        </div>
       </div>
     </div>
   )
@@ -549,6 +801,15 @@ export function ActivityDataFormInput(props: InputProps) {
       break
     case 'multiple_choice':
       content = <MultipleChoiceFields data={local} onChange={handleChange} />
+      break
+    case 'spell':
+      content = <SpellFields data={local} onChange={handleChange} />
+      break
+    case 'spot_letter':
+      content = <SpotLetterFields data={local} onChange={handleChange} />
+      break
+    case 'read_choose':
+      content = <ReadChooseFields data={local} onChange={handleChange} />
       break
     case 'true_false':
       content = <TrueFalseFields data={local} onChange={handleChange} />

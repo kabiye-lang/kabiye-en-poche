@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react'
 import { GestureHandlerRootView } from 'react-native-gesture-handler'
+import { ReducedMotionConfig, ReduceMotion } from 'react-native-reanimated'
 import { SafeAreaListener, SafeAreaProvider } from 'react-native-safe-area-context'
 
 import { Uniwind } from 'uniwind'
@@ -21,35 +22,19 @@ import {
   Andika_700Bold_Italic,
 } from '@expo-google-fonts/andika'
 import {
-  Figtree_300Light,
-  Figtree_300Light_Italic,
-  Figtree_400Regular,
-  Figtree_400Regular_Italic,
-  Figtree_500Medium,
-  Figtree_500Medium_Italic,
-  Figtree_600SemiBold,
-  Figtree_600SemiBold_Italic,
-  Figtree_700Bold,
-  Figtree_700Bold_Italic,
-  Figtree_800ExtraBold,
-  Figtree_800ExtraBold_Italic,
-  Figtree_900Black,
-  Figtree_900Black_Italic,
-} from '@expo-google-fonts/figtree'
-import {
-  IBMPlexSansHebrew_100Thin,
-  IBMPlexSansHebrew_200ExtraLight,
-  IBMPlexSansHebrew_300Light,
-  IBMPlexSansHebrew_400Regular,
-  IBMPlexSansHebrew_500Medium,
-  IBMPlexSansHebrew_600SemiBold,
-  IBMPlexSansHebrew_700Bold,
-} from '@expo-google-fonts/ibm-plex-sans-hebrew'
+  BricolageGrotesque_300Light,
+  BricolageGrotesque_400Regular,
+  BricolageGrotesque_500Medium,
+  BricolageGrotesque_600SemiBold,
+  BricolageGrotesque_700Bold,
+  BricolageGrotesque_800ExtraBold,
+} from '@expo-google-fonts/bricolage-grotesque'
 import { defineMessage as msg } from '@lingui/core/macro'
 import AsyncStorage from '@react-native-async-storage/async-storage'
 import { QueryClientProvider } from '@tanstack/react-query'
 import { Toaster } from 'sonner-native'
 
+import { useAppearance } from '../hooks/use-appearance'
 import i18n, { I18nProvider } from '../i18n'
 import { queryClient } from '../lib/query-client'
 import { AppDarkTheme, AppDefaultTheme } from '../utils/design-system-nativewind'
@@ -81,27 +66,15 @@ export default function RootLayout() {
           Andika_400Regular_Italic,
           Andika_700Bold,
           Andika_700Bold_Italic,
-          IBMPlexSansHebrew_100Thin,
-          IBMPlexSansHebrew_200ExtraLight,
-          IBMPlexSansHebrew_300Light,
-          IBMPlexSansHebrew_400Regular,
-          IBMPlexSansHebrew_500Medium,
-          IBMPlexSansHebrew_600SemiBold,
-          IBMPlexSansHebrew_700Bold,
-          Figtree_300Light,
-          Figtree_400Regular,
-          Figtree_500Medium,
-          Figtree_600SemiBold,
-          Figtree_700Bold,
-          Figtree_800ExtraBold,
-          Figtree_900Black,
-          Figtree_300Light_Italic,
-          Figtree_400Regular_Italic,
-          Figtree_500Medium_Italic,
-          Figtree_600SemiBold_Italic,
-          Figtree_700Bold_Italic,
-          Figtree_800ExtraBold_Italic,
-          Figtree_900Black_Italic,
+          // The interface face. Bricolage Grotesque ships no italic, so the
+          // `--font-*-italic` tokens in global.css point at the upright of the same
+          // weight rather than letting the OS synthesise a slant.
+          BricolageGrotesque_300Light,
+          BricolageGrotesque_400Regular,
+          BricolageGrotesque_500Medium,
+          BricolageGrotesque_600SemiBold,
+          BricolageGrotesque_700Bold,
+          BricolageGrotesque_800ExtraBold,
         }),
         AsyncStorage.getItem('@kabiye_onboarding_complete'),
       ])
@@ -152,7 +125,13 @@ export default function RootLayout() {
 const NotReady = () => <></>
 
 function RootLayoutNav() {
-  const colorScheme = useColorScheme()
+  const systemScheme = useColorScheme()
+  // The Appearance setting overrides the system. React Navigation's theme and the status
+  // bar are outside Uniwind's stylesheet, so they have to be told separately -- without
+  // this, choosing Dark left every pushed header and the clock light on a dark screen.
+  const { appearance } = useAppearance()
+  const isDark = appearance === 'system' ? systemScheme === 'dark' : appearance === 'dark'
+
   return (
     <SafeAreaProvider>
       <SafeAreaListener
@@ -161,9 +140,14 @@ function RootLayoutNav() {
         }}
       >
         <QueryClientProvider client={queryClient}>
-          <ThemeProvider value={colorScheme === 'dark' ? AppDarkTheme : AppDefaultTheme}>
+          <ThemeProvider value={isDark ? AppDarkTheme : AppDefaultTheme}>
             <I18nProvider i18n={i18n}>
-              <StatusBar style={'auto'} />
+              {/* Every animation in the app collapses to 0 when the system asks for
+                  reduced motion. The direction states it as a rule for each moment in
+                  its motion table; Reanimated can honour all of them at the root, so
+                  no individual animation has to remember. */}
+              <ReducedMotionConfig mode={ReduceMotion.System} />
+              <StatusBar style={isDark ? 'light' : 'dark'} />
               <GestureHandlerRootView style={{ flex: 1 }}>
                 <Stack>
                   <Stack.Screen name="(onboarding)" options={{ headerShown: false }} />

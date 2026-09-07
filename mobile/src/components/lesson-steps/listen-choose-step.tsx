@@ -141,9 +141,9 @@ const ListenChooseStep = ({ activity, onAnswer }: ListenChooseStepProps) => {
                 disabled={showFeedback}
                 className={`rounded-xl border-2 p-4 ${
                   showCorrect
-                    ? 'bg-success-bg border-green-500'
+                    ? 'bg-foreground border-foreground'
                     : showIncorrect
-                      ? 'bg-error-bg border-red-500'
+                      ? 'border-accent'
                       : isSelected
                         ? 'border-primary bg-primary/10'
                         : 'border-border bg-card'
@@ -154,9 +154,9 @@ const ListenChooseStep = ({ activity, onAnswer }: ListenChooseStepProps) => {
                   <View
                     className={`mr-3 h-6 w-6 items-center justify-center rounded-full border-2 ${
                       showCorrect
-                        ? 'border-green-500 bg-green-500'
+                        ? 'border-background bg-background'
                         : showIncorrect
-                          ? 'border-red-500 bg-red-500'
+                          ? 'border-accent'
                           : isSelected
                             ? 'border-primary bg-primary'
                             : 'border-border'
@@ -171,7 +171,7 @@ const ListenChooseStep = ({ activity, onAnswer }: ListenChooseStepProps) => {
                     variant="h6"
                     weight="bold"
                     className={`flex-1 ${
-                      showCorrect ? 'text-success-text' : showIncorrect ? 'text-error-text' : 'text-foreground'
+                      showCorrect ? 'text-background' : showIncorrect ? 'text-foreground' : 'text-foreground'
                     }`}
                   >
                     {option}
@@ -184,11 +184,13 @@ const ListenChooseStep = ({ activity, onAnswer }: ListenChooseStepProps) => {
 
         {/* Feedback */}
         {showFeedback && (
-          <Card className={`mb-4 p-4 ${options[selectedIndex!] === correctAnswer ? 'bg-success-bg' : 'bg-error-bg'}`}>
+          <Card
+            className={`mb-4 p-4 ${options[selectedIndex!] === correctAnswer ? 'bg-background-tertiary' : 'bg-background-tertiary'}`}
+          >
             <Text
               variant="h6"
               weight="bold"
-              className={`${options[selectedIndex!] === correctAnswer ? 'text-success-text' : 'text-error-text'}`}
+              className={`${options[selectedIndex!] === correctAnswer ? 'text-background' : 'text-foreground'}`}
             >
               {options[selectedIndex!] === correctAnswer ? t`Correct!` : t`Not quite right`}
             </Text>
