@@ -1,6 +1,7 @@
 import { ArrowFatLinesUpIcon as PhosphorArrowFatLinesUpIcon } from 'phosphor-react-native/src/icons/ArrowFatLinesUp'
 import { ArrowFatLineUpIcon as PhosphorArrowFatLineUpIcon } from 'phosphor-react-native/src/icons/ArrowFatLineUp'
 import { ArrowRightIcon as PhosphorArrowRightIcon } from 'phosphor-react-native/src/icons/ArrowRight'
+import { BookmarkSimpleIcon as PhosphorBookmarkSimpleIcon } from 'phosphor-react-native/src/icons/BookmarkSimple'
 import { ArrowsClockwiseIcon as PhosphorArrowsClockwiseIcon } from 'phosphor-react-native/src/icons/ArrowsClockwise'
 import { ArticleIcon as PhosphorArticleIcon } from 'phosphor-react-native/src/icons/Article'
 import { BackspaceIcon as PhosphorBackspaceIcon } from 'phosphor-react-native/src/icons/Backspace'
@@ -39,6 +40,7 @@ export const ArticleIcon = withUniwind(PhosphorArticleIcon)
 export const ArrowFatLinesUpIcon = withUniwind(PhosphorArrowFatLinesUpIcon)
 export const ArrowFatLineUpIcon = withUniwind(PhosphorArrowFatLineUpIcon)
 export const ArrowRightIcon = withUniwind(PhosphorArrowRightIcon)
+export const BookmarkSimpleIcon = withUniwind(PhosphorBookmarkSimpleIcon)
 export const ArrowsClockwiseIcon = withUniwind(PhosphorArrowsClockwiseIcon)
 export const BackspaceIcon = withUniwind(PhosphorBackspaceIcon)
 export const BookOpenTextIcon = withUniwind(PhosphorBookOpenTextIcon)

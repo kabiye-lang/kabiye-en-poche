@@ -24,7 +24,31 @@ export type StepType =
   | 'spell'
   | 'spot_letter'
   | 'read_choose'
+  // The Laterite lesson opens on a cover naming the words it will teach, and gives each
+  // word a screen of its own before asking anything about it.
+  | 'cover'
+  | 'teach'
   | 'completion'
+
+/**
+ * One word the lesson teaches.
+ *
+ * These come from `lesson_contents.examples`, which already carried everything except
+ * `note_*` -- the short per-word explanation the Teach card shows. The Laterite lesson is
+ * organised around this list: the cover promises it, each word gets a Teach card and a
+ * question, and the finish counts it.
+ */
+export interface LessonExample {
+  kbp: string
+  en?: string
+  fr?: string
+  pronunciation?: string
+  lexeme_id?: string
+  /** Two or three sentences about this word. Optional: older rows have none. */
+  note_en?: string
+  note_fr?: string
+  audio_url?: string
+}
 
 export interface BaseStep {
   id: string
@@ -109,6 +133,16 @@ export interface OrderWordsStep extends BaseStep {
   correctOrder: string[]
 }
 
+export interface CoverStep extends BaseStep {
+  type: 'cover'
+  words: LessonExample[]
+}
+
+export interface TeachStepData extends BaseStep {
+  type: 'teach'
+  example: LessonExample
+}
+
 export interface CompletionStep extends BaseStep {
   type: 'completion'
   score?: number
@@ -124,6 +158,8 @@ export type LessonStep =
   | MatchPairsStep
   | OrderWordsStep
   | ActivityStep
+  | CoverStep
+  | TeachStepData
   | CompletionStep
 
 export interface LessonProgress {

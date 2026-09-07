@@ -1,5 +1,5 @@
 import type { AudioActivityData } from '../types/activity-data'
-import type { ActivityStep, LessonStep } from '../types/lesson-steps'
+import type { ActivityStep, LessonExample, LessonStep } from '../types/lesson-steps'
 
 import { useMemo, useState } from 'react'
 import { ActivityIndicator } from 'react-native'
@@ -14,6 +14,8 @@ import {
   AudioStep,
   CompletionStep,
   ContentStep,
+  CoverStep,
+  FinishStep,
   FillBlankStep,
   ListenChooseStep,
   ListenTypeStep,
@@ -24,6 +26,7 @@ import {
   ReadChooseStep,
   SpellStep,
   SpotLetterStep,
+  TeachStep,
 } from '../components/lesson-steps'
 import { Text, View } from '../components/ui'
 import { useAppCompleteLesson, useAppLesson, useAppLessonActivities, useAppLessonContents } from '../hooks/use-app-data'
@@ -104,6 +107,19 @@ const INTERACTIVE_STEPS = new Set<LessonStep['type']>([
 
 const isInteractive = (step: LessonStep) => INTERACTIVE_STEPS.has(step.type)
 
+/**
+ * How many words a lesson teaches when the content does not say.
+ *
+ * A Laterite lesson is a handful of words the learner will remember, not an inventory:
+ * the cover promises them by name, each gets a screen, and the finish counts them. Eight
+ * is the top of what that shape carries.
+ *
+ * Content written for the old model has no opinion here -- it lists every word its prose
+ * mentions, which for the lessons shipping today is twenty-nine. Teaching all of them
+ * produced a forty-seven-step lesson and a cover that scrolled.
+ */
+const MAX_TAUGHT_WORDS = 8
+
 const LessonScreen = () => {
   const { t } = useLingui()
   const { id } = useLocalSearchParams()
@@ -129,52 +145,101 @@ const LessonScreen = () => {
   const [missed, setMissed] = useState<string[]>([])
   const [retriesQueued, setRetriesQueued] = useState(false)
 
-  // Build steps when data is loaded (derived from lesson data, no useEffect needed)
+  /**
+   * The words this lesson teaches, in the order it teaches them.
+   *
+   * The cover promises this list, each word gets a Teach card, and the finish counts it
+   * -- one source, so the three cannot disagree.
+   *
+   * A word is taught if it carries a `note`: the two or three sentences the Teach card
+   * shows. That is the right criterion rather than a flag, because a card with no note
+   * is just the word and its gloss again, which the cover already showed. Content
+   * generated before this change carries no notes at all, so it falls back to the first
+   * few single words -- readable, and visibly thinner than a lesson written for this
+   * shape, which is the honest signal that it should be regenerated.
+   */
+  const words = useMemo<LessonExample[]>(() => {
+    if (!contents) return []
+    const seen = new Set<string>()
+    const all: LessonExample[] = []
+    for (const content of contents) {
+      for (const raw of (content.examples as LessonExample[] | null) ?? []) {
+        const kbp = raw?.kbp?.trim()
+        // A phrase built from words taught earlier is an example, not a new word: it
+        // belongs in the prose, not on a card of its own.
+        if (!kbp || seen.has(kbp) || kbp.includes(' ')) continue
+        seen.add(kbp)
+        all.push(raw)
+      }
+    }
+    const authored = all.filter((word) => word.note_en || word.note_fr)
+    return authored.length > 0 ? authored : all.slice(0, MAX_TAUGHT_WORDS)
+  }, [contents])
+
+  /**
+   * Steps, in the Laterite order: cover, then each word taught and immediately practised,
+   * then whatever is left over.
+   *
+   * The old order was every content section, then every activity -- a learner met `sɛtʋ`
+   * in the middle of the second paragraph and was asked to spell it eleven screens later.
+   * Pairing them is the whole point of the change.
+   *
+   * Activities are matched to a word by `lexeme_id` when the row carries one, and
+   * otherwise by looking for the word in the activity's own data. Rows generated before
+   * this change carry neither, so anything unmatched runs after the paired steps rather
+   * than being dropped.
+   */
   const steps = useMemo<LessonStep[]>(() => {
     if (!lesson || !contents || contents.length === 0) return []
 
-    const builtSteps: LessonStep[] = []
-    let stepOrder = 0
+    const built: LessonStep[] = []
+    let order = 0
 
-    // Add all content sections (supports multiple contents per lesson)
-    contents.forEach((content, contentIndex) => {
-      // Content + Examples step
-      const contentText = getValue(content, 'content')
+    built.push({ id: 'cover', type: 'cover', order: order++, words })
 
-      if (contentText) {
-        builtSteps.push({
-          id: `content-${contentIndex}`,
-          type: 'content',
-          order: stepOrder++,
-          content: contentText,
-          title: getValue(content, 'title') || undefined,
-          examples: content.examples || undefined, // Pass raw examples, ContentStep will transform them
+    const answerable = (activities ?? []).filter(isAnswerable)
+    const claimed = new Set<string>()
+
+    const activityWord = (activity: { data: unknown }): string | undefined => {
+      const data = (activity.data ?? {}) as { lexeme_id?: string; answer?: unknown; correct?: string }
+      if (typeof data.lexeme_id === 'string') return data.lexeme_id
+      if (typeof data.correct === 'string') return data.correct
+      if (typeof data.answer === 'string') return data.answer
+      return undefined
+    }
+
+    for (const word of words) {
+      built.push({ id: `teach-${word.kbp}`, type: 'teach', order: order++, example: word })
+
+      const paired = answerable.find((activity) => {
+        if (claimed.has(activity.id)) return false
+        const ref = activityWord(activity)
+        return ref === word.kbp || ref === word.lexeme_id
+      })
+      if (paired) {
+        claimed.add(paired.id)
+        built.push({
+          id: `activity-${paired.id}`,
+          type: paired.activity_type as ActivityStep['type'],
+          order: order++,
+          activity: paired,
         })
       }
-    })
+    }
 
-    // Step 3+: Activities (quizzes and exercises)
-    // Each component will handle its own data transformation
-    if (activities && activities.length > 0) {
-      activities.filter(isAnswerable).forEach((activity) => {
-        builtSteps.push({
-          id: `activity-${activity.id}`,
-          type: activity.activity_type as ActivityStep['type'],
-          order: stepOrder++,
-          activity,
-        })
+    for (const activity of answerable) {
+      if (claimed.has(activity.id)) continue
+      built.push({
+        id: `activity-${activity.id}`,
+        type: activity.activity_type as ActivityStep['type'],
+        order: order++,
+        activity,
       })
     }
 
-    // Final Step: Completion
-    builtSteps.push({
-      id: 'completion',
-      type: 'completion',
-      order: stepOrder++,
-    })
-
-    return builtSteps
-  }, [lesson, contents, activities, getValue])
+    built.push({ id: 'completion', type: 'completion', order: order++ })
+    return built
+  }, [lesson, contents, activities, words])
 
   /**
    * The steps actually walked: the lesson, then the ones that were missed, then finish.
@@ -336,6 +401,23 @@ const LessonScreen = () => {
 
   const totalQuizQuestions = walkedSteps.filter(isInteractive).length
 
+  /**
+   * The words that were missed once and re-asked, for the finish screen to name.
+   *
+   * A missed step is matched back to its word through the teach step that precedes it,
+   * which is the only place the pairing is recorded.
+   */
+  const retriedWords = missed
+    .map((id) => {
+      const index = steps.findIndex((step) => step.id === id)
+      for (let i = index - 1; i >= 0; i--) {
+        const step = steps[i]
+        if (step.type === 'teach') return step.example.kbp
+      }
+      return undefined
+    })
+    .filter((word): word is string => word !== undefined)
+
   const totalContentSteps = walkedSteps.filter((s) => s.type === 'content').length
 
   // Render current step
@@ -350,6 +432,19 @@ const LessonScreen = () => {
         entering={currentStep.type === 'completion' ? FadeIn.duration(220) : FadeInRight.duration(260)}
         className="flex-1"
       >
+        {currentStep.type === 'cover' ? (
+          <CoverStep
+            title={getValue(lesson, 'title') || ''}
+            description={getValue(lesson, 'description') || undefined}
+            words={currentStep.words}
+            onBegin={handleStepComplete}
+          />
+        ) : null}
+
+        {currentStep.type === 'teach' ? (
+          <TeachStep example={currentStep.example} onContinue={handleStepComplete} />
+        ) : null}
+
         {currentStep.type === 'content' ? (
           <ContentStep
             // Only the opening slide carries the lesson title and difficulty. It used to
@@ -407,11 +502,11 @@ const LessonScreen = () => {
         )}
 
         {currentStep.type === 'completion' ? (
-          <CompletionStep
-            score={score}
-            totalQuestions={totalQuizQuestions}
-            contentSteps={totalContentSteps}
-            onComplete={handleLessonComplete}
+          <FinishStep
+            words={words}
+            retried={retriedWords}
+            onDone={handleLessonComplete}
+            isBusy={completeLessonMutation.isPending}
           />
         ) : null}
       </Animated.View>
