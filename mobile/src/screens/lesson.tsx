@@ -14,6 +14,7 @@ import {
   AudioStep,
   ContentStep,
   CoverStep,
+  DialogueStep,
   FillBlankStep,
   FinishStep,
   ListenChooseStep,
@@ -41,6 +42,7 @@ import { useMyWords } from '../hooks/use-my-words'
 import { hasActivity } from '../types/lesson-steps'
 import { usableAudioUrl } from '../utils/audio-source'
 import { spellingVariants } from '../utils/kabiye-variants'
+import { dialogueTurns, placeSections } from '../utils/section-kinds'
 
 /**
  * Whether an activity has enough data to be answered.
@@ -171,7 +173,9 @@ const LessonScreen = () => {
     if (!contents) return []
     const seen = new Set<string>()
     const all: LessonExample[] = []
-    for (const content of contents) {
+    // A dialogue's turns and a note's text are not words to teach; only prose sections
+    // carry the noted examples the cover promises.
+    for (const content of placeSections(contents).prose) {
       for (const raw of (content.examples as LessonExample[] | null) ?? []) {
         const kbp = raw?.kbp?.trim()
         // A phrase built from words taught earlier is an example, not a new word: it
@@ -205,6 +209,24 @@ const LessonScreen = () => {
     let order = 0
 
     built.push({ id: 'cover', type: 'cover', order: order++, words })
+
+    // The competency-shaped lessons open with a dialogue set in a situation: the words
+    // heard doing their job before any is held one at a time. Cultural notes sit before
+    // the finish, and the TDA -- go and do this, this week -- on the finish screen.
+    const placed = placeSections(contents)
+    if (placed.dialogue) {
+      const turns = dialogueTurns(placed.dialogue)
+      if (turns.length > 0) {
+        built.push({
+          id: 'dialogue',
+          type: 'dialogue',
+          order: order++,
+          title: getValue(placed.dialogue, 'title') || '',
+          scene: getValue(placed.dialogue, 'content') || undefined,
+          turns,
+        })
+      }
+    }
 
     const answerable = (activities ?? []).filter(isAnswerable)
     const claimed = new Set<string>()
@@ -246,9 +268,24 @@ const LessonScreen = () => {
       })
     }
 
-    built.push({ id: 'completion', type: 'completion', order: order++ })
+    if (placed.notes) {
+      built.push({
+        id: 'notes',
+        type: 'notes',
+        order: order++,
+        title: getValue(placed.notes, 'title') || '',
+        content: getValue(placed.notes, 'content') || '',
+      })
+    }
+
+    built.push({
+      id: 'completion',
+      type: 'completion',
+      order: order++,
+      tda: placed.tda ? getValue(placed.tda, 'content') || undefined : undefined,
+    })
     return built
-  }, [lesson, contents, activities, words])
+  }, [lesson, contents, activities, words, getValue])
 
   /**
    * The steps actually walked: the lesson, then the ones that were missed, then finish.
@@ -465,6 +502,19 @@ const LessonScreen = () => {
           <TeachStep example={currentStep.example} onContinue={handleStepComplete} />
         ) : null}
 
+        {currentStep.type === 'dialogue' ? (
+          <DialogueStep
+            title={currentStep.title}
+            scene={currentStep.scene}
+            turns={currentStep.turns}
+            onContinue={handleStepComplete}
+          />
+        ) : null}
+
+        {currentStep.type === 'notes' ? (
+          <ContentStep title={currentStep.title} content={currentStep.content} onContinue={handleStepComplete} />
+        ) : null}
+
         {currentStep.type === 'content' ? (
           <ContentStep
             // Only the opening slide carries the lesson title and difficulty. It used to
@@ -520,6 +570,7 @@ const LessonScreen = () => {
         {currentStep.type === 'completion' ? (
           <FinishStep
             words={words}
+            tda={currentStep.tda}
             retried={retriedWords}
             savedTotal={readCount > 0 ? readCount : undefined}
             onDone={handleLessonComplete}
