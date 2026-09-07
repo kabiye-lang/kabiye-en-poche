@@ -64,19 +64,22 @@ const FillBlankStep = ({ activity, onAnswer }: FillBlankStepProps) => {
   const renderSentenceWithBlank = () => {
     const parts = sentence?.split('___') || []
 
+    // The sentence carries the frame and the blank carries the Kabiyè, so they are not
+    // the same size: 36px is the direction's figure for a Kabiyè sentence, and applying
+    // it to an English one pushed the blank onto a line of its own.
     return (
       <View className="flex-row flex-wrap items-baseline">
-        <Text kabiye weight="bold" className="text-foreground text-[36px]" style={{ lineHeight: 49 }}>
+        <Text className="text-foreground text-[24px]" style={{ lineHeight: 36 }}>
           {parts[0]}
         </Text>
         {parts.slice(1).map((part: string, index: number) => (
           <View key={index} className="flex-row items-baseline">
-            <View className="border-foreground mx-2 min-w-[120px] border-b-[3px] pb-1">
-              <Text kabiye weight="bold" className="text-foreground text-center text-[36px]" style={{ lineHeight: 49 }}>
+            <View className="border-foreground mx-2 min-w-[120px] border-b-[3px] pb-0.5">
+              <Text kabiye weight="bold" className="text-foreground text-center text-[26px]" style={{ lineHeight: 34 }}>
                 {selectedAnswer || ' '}
               </Text>
             </View>
-            <Text kabiye weight="bold" className="text-foreground text-[36px]" style={{ lineHeight: 49 }}>
+            <Text className="text-foreground text-[24px]" style={{ lineHeight: 36 }}>
               {part}
             </Text>
           </View>
