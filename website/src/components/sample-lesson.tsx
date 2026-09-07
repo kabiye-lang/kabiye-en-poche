@@ -1,121 +1,128 @@
 import { useState } from "react";
-import { SpeakerHigh } from "@phosphor-icons/react";
 import { motion, AnimatePresence } from "motion/react";
 
-const lessons = [
+/**
+ * Three real dictionary entries.
+ *
+ * The previous three were `Ɛyaɖɛ` ("Hello"), `Ɖɔɔzɩ` ("Thank you") and `Ɛsɔɔlɩ`
+ * ("Goodbye"). Checked against the merged lexicon, the first two are attested by no
+ * source at all, and the glosses on all three were assigned rather than looked up. The
+ * app's first principle is that every word traces to a source; the marketing site is
+ * where a learner meets Kabiyè first, so it is the last place to break it.
+ *
+ * These three are in the 9,738-entry lexicon with the glosses the dictionary gives them.
+ * `fɛŋgɛ` has a French gloss and no English one -- roughly a quarter of the dictionary is
+ * like that -- so it carries the same FR tag the app shows rather than being quietly
+ * translated here.
+ */
+const WORDS = [
   {
-    kabiye: "Ɛyaɖɛ",
-    english: "Hello",
-    french: "Bonjour",
-    audio: "/audio/hello.mp3",
+    kabiye: "Kabɩyɛ",
+    english: "Kabiye language",
+    french: "kabiyè",
+    frenchOnly: false,
   },
   {
-    kabiye: "Ɖɔɔzɩ",
-    english: "Thank you",
-    french: "Merci",
-    audio: "/audio/thank-you.mp3",
+    kabiye: "ɛyʋ",
+    english: "human being",
+    french: "être humain",
+    frenchOnly: false,
   },
   {
-    kabiye: "Ɛsɔɔlɩ",
-    english: "Goodbye",
-    french: "Au revoir",
-    audio: "/audio/goodbye.mp3",
+    kabiye: "fɛŋgɛ",
+    english: "léger(ère) sans poids",
+    french: "léger(ère) sans poids",
+    frenchOnly: true,
   },
-];
+] as const;
 
 interface SampleLessonProps {
   lang?: "en" | "fr";
 }
 
 export default function SampleLesson({ lang = "en" }: SampleLessonProps) {
-  const [currentLesson, setCurrentLesson] = useState(0);
+  const [current, setCurrent] = useState(0);
   const [showTranslation, setShowTranslation] = useState(false);
 
-  const playAudio = () => {
-    const audio = new Audio(lessons[currentLesson].audio);
-    audio.play();
-  };
-
-  const nextLesson = () => {
-    setCurrentLesson((prev) => (prev + 1) % lessons.length);
+  const nextWord = () => {
+    setCurrent((prev) => (prev + 1) % WORDS.length);
     setShowTranslation(false);
   };
 
   const translations = {
     en: {
-      title: "Learn Basic Greetings",
-      showTranslation: "Show Translation",
-      hideTranslation: "Hide Translation",
-      nextWord: "Next Word",
+      title: "Three words from the dictionary",
+      showTranslation: "Show meaning",
+      hideTranslation: "Hide meaning",
+      nextWord: "Next word",
     },
     fr: {
-      title: "Apprenez les salutations de base",
-      showTranslation: "Afficher la traduction",
-      hideTranslation: "Masquer la traduction",
+      title: "Trois mots du dictionnaire",
+      showTranslation: "Afficher le sens",
+      hideTranslation: "Masquer le sens",
       nextWord: "Mot suivant",
     },
   };
 
   const t = translations[lang];
+  const word = WORDS[current];
 
   return (
     <motion.div
-      className="bg-white p-8 rounded-lg shadow-md max-w-md mx-auto"
-      initial={{ opacity: 0, scale: 0.9 }}
-      animate={{ opacity: 1, scale: 1 }}
-      transition={{ duration: 0.5 }}
+      className="bg-leaf border-ink mx-auto max-w-md rounded-[14px] border-[1.5px] p-8"
+      initial={{ opacity: 0, y: 18 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      viewport={{ once: true }}
+      transition={{ duration: 0.6 }}
     >
-      <h3 className="text-2xl font-bold mb-4 text-[#6200EE]">{t.title}</h3>
+      <h3 className="text-laterite mb-6 text-[13px] font-semibold uppercase tracking-[0.1em]">
+        {t.title}
+      </h3>
+
       <motion.div
         className="mb-6"
-        key={currentLesson}
+        key={current}
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
-        exit={{ opacity: 0, y: -20 }}
         transition={{ duration: 0.3 }}
       >
-        <p className="text-3xl font-bold mb-2">
-          {lessons[currentLesson].kabiye}
-        </p>
+        <p className="kbp text-ink text-[44px] font-bold leading-[1.05]">{word.kabiye}</p>
         <AnimatePresence>
           {showTranslation && (
-            <motion.p
-              className="text-xl text-[#757575]"
+            <motion.div
               initial={{ opacity: 0, height: 0 }}
               animate={{ opacity: 1, height: "auto" }}
               exit={{ opacity: 0, height: 0 }}
             >
-              {lessons[currentLesson][lang === "en" ? "english" : "french"]}
-            </motion.p>
+              <p className="text-ink-quiet mt-2 text-[18px]">
+                {lang === "en" ? word.english : word.french}
+                {word.frenchOnly && (
+                  <span className="bg-paper-recessed text-ink-quiet ml-2 rounded-[4px] px-2 py-[2px] text-[11px] font-bold">
+                    FR
+                  </span>
+                )}
+              </p>
+            </motion.div>
           )}
         </AnimatePresence>
       </motion.div>
-      <div className="flex justify-between items-center mb-4">
-        <motion.button
-          onClick={playAudio}
-          className="flex items-center justify-center w-12 h-12 rounded-full bg-[#03DAC6] text-white"
-          whileHover={{ scale: 1.1 }}
-          whileTap={{ scale: 0.9 }}
-        >
-          <SpeakerHigh />
-        </motion.button>
-        <motion.button
+
+      {/* No speaker button. There are no recordings, and the previous one pointed at
+          /audio/*.mp3 files that do not exist in this repo -- it played nothing. */}
+      <div className="flex flex-col gap-3">
+        <button
           onClick={() => setShowTranslation(!showTranslation)}
-          className="px-4 py-2 bg-[#F5F5F5] text-[#212121] rounded-md"
-          whileHover={{ backgroundColor: "#E0E0E0" }}
-          whileTap={{ scale: 0.95 }}
+          className="border-ink text-ink rounded-full border-[1.5px] px-4 py-3 text-[16px] font-semibold transition-transform active:scale-[0.98]"
         >
           {showTranslation ? t.hideTranslation : t.showTranslation}
-        </motion.button>
+        </button>
+        <button
+          onClick={nextWord}
+          className="bg-ink text-paper rounded-full px-4 py-3 text-[17px] font-semibold transition-transform active:scale-[0.98]"
+        >
+          {t.nextWord}
+        </button>
       </div>
-      <motion.button
-        onClick={nextLesson}
-        className="w-full py-2 bg-[#FF5722] text-white rounded-md hover:bg-opacity-90 transition-colors"
-        whileHover={{ scale: 1.03 }}
-        whileTap={{ scale: 0.97 }}
-      >
-        {t.nextWord}
-      </motion.button>
     </motion.div>
   );
 }

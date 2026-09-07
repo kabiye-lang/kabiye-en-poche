@@ -13,7 +13,7 @@ export default function LanguageSwitcher({
 }: LanguageSwitcherProps) {
   return (
     <motion.button
-      className="fixed top-4 right-4 bg-white text-[#6200EE] px-4 py-2 rounded-full shadow-md z-50"
+      className="fixed top-4 right-4 bg-white text-laterite px-4 py-2 rounded-full shadow-md z-50"
       onClick={onLanguageChange}
       whileHover={{ scale: 1.05 }}
       whileTap={{ scale: 0.95 }}

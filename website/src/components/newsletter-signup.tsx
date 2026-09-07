@@ -52,8 +52,8 @@ export default function NewsletterSignup({ lang }: NewsletterSignupProps) {
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.5 }}
     >
-      <h3 className="text-2xl font-bold mb-4 text-[#6200EE]">{t.title}</h3>
-      <p className="text-[#757575] mb-6">{t.description}</p>
+      <h3 className="text-2xl font-bold mb-4 text-laterite">{t.title}</h3>
+      <p className="text-ink-quiet mb-6">{t.description}</p>
       <form onSubmit={handleSubmit}>
         <div className="flex flex-col sm:flex-row gap-4">
           <input
@@ -61,13 +61,13 @@ export default function NewsletterSignup({ lang }: NewsletterSignupProps) {
             value={email}
             onChange={(e) => setEmail(e.target.value)}
             placeholder={t.placeholder}
-            className="grow px-4 py-2 border border-gray-300 rounded-md focus:outline-hidden focus:ring-2 focus:ring-[#6200EE]"
+            className="grow px-4 py-2 border border-line rounded-md focus:outline-hidden focus:ring-2 focus:ring-ink"
             required
             aria-label={t.placeholder}
           />
           <motion.button
             type="submit"
-            className="px-6 py-2 bg-[#FF5722] text-white rounded-md hover:bg-opacity-90 transition-colors"
+            className="px-6 py-2 bg-laterite text-white rounded-md hover:bg-opacity-90 transition-colors"
             whileHover={{ scale: 1.05 }}
             whileTap={{ scale: 0.95 }}
             disabled={status === "loading"}
