@@ -1,20 +1,20 @@
 import type { EntryData } from '../../types/dictionary'
 
 import React from 'react'
-import { Alert, Linking, Pressable, ScrollView } from 'react-native'
+import { Alert, Linking, Pressable, ScrollView, Share } from 'react-native'
 
-import { Link, router, useLocalSearchParams } from 'expo-router'
+import { Link, router, Stack, useLocalSearchParams } from 'expo-router'
 import { useHeaderHeight } from 'expo-router/react-navigation'
 
 import { useLingui } from '@lingui/react/macro'
 
-import { ArrowRightIcon, InfoIcon } from '../../components/icons'
+import { ArrowRightIcon, InfoIcon, ShareNetworkIcon } from '../../components/icons'
 import { Card, Text, View } from '../../components/ui'
 import { CrossReferences, SenseDefinitions, SubEntries } from '../../components/word/word-sections'
 import { useEntryByTerm } from '../../hooks/use-dictionary'
 import { useLanguage } from '../../hooks/use-language'
 import { useMyWords } from '../../hooks/use-my-words'
-import { isRedirectEntry } from '../../utils/dictionary-helpers'
+import { isRedirectEntry, translationFor } from '../../utils/dictionary-helpers'
 
 const WordDetailsScreen: React.FC = () => {
   const { id: term } = useLocalSearchParams<{ id: string }>()
@@ -53,6 +53,21 @@ const WordDetailsScreen: React.FC = () => {
   const { entry_data } = entry
   const translation = currentLanguage === 'fr' ? 'fr' : 'en'
 
+  /**
+   * Hand the word to whatever the reader wants to send it with.
+   *
+   * The gloss travels with it: a Kabiyè word alone, in a script the recipient's phone
+   * may not draw, is not a message. The system sheet decides where it goes.
+   */
+  const shareWord = async () => {
+    const gloss = entry_data.senses[0]?.definitions[0]
+    const meaning = gloss ? translationFor(gloss.translations, translation, gloss.definition) : ''
+
+    await Share.share({
+      message: meaning ? `${entry_data.headword} — ${meaning}` : entry_data.headword,
+    })
+  }
+
   // Handle redirect entries
   if (isRedirectEntry(entry)) {
     return (
@@ -83,6 +98,23 @@ const WordDetailsScreen: React.FC = () => {
 
   return (
     <View flex className="bg-background" safeArea="vertical">
+      {/* The header lives in the root layout, but only this screen knows which word it
+          is showing, so the share action is set from here. */}
+      <Stack.Screen
+        options={{
+          headerRight: () => (
+            <Pressable
+              accessibilityRole="button"
+              accessibilityLabel={t`Share this word`}
+              hitSlop={8}
+              onPress={() => void shareWord()}
+              className="border-foreground h-9 w-9 items-center justify-center rounded-full border-[1.5px]"
+            >
+              <ShareNetworkIcon size={18} className="text-foreground" />
+            </Pressable>
+          ),
+        }}
+      />
       <ScrollView
         className="flex-1"
         contentContainerStyle={{ paddingTop: headerHeight / 2, paddingHorizontal: 20, paddingBottom: 40 }}

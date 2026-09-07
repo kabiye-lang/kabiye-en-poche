@@ -26,6 +26,7 @@ import { LockIcon as PhosphorLockIcon } from 'phosphor-react-native/src/icons/Lo
 import { MagnifyingGlassIcon as PhosphorMagnifyingGlassIcon } from 'phosphor-react-native/src/icons/MagnifyingGlass'
 import { PencilSimpleIcon as PhosphorPencilSimpleIcon } from 'phosphor-react-native/src/icons/PencilSimple'
 import { PlayIcon as PhosphorPlayIcon } from 'phosphor-react-native/src/icons/Play'
+import { ShareNetworkIcon as PhosphorShareNetworkIcon } from 'phosphor-react-native/src/icons/ShareNetwork'
 import { SparkleIcon as PhosphorSparkleIcon } from 'phosphor-react-native/src/icons/Sparkle'
 import { SpeakerHighIcon as PhosphorSpeakerHighIcon } from 'phosphor-react-native/src/icons/SpeakerHigh'
 import { SpeakerSlashIcon as PhosphorSpeakerSlashIcon } from 'phosphor-react-native/src/icons/SpeakerSlash'
@@ -45,6 +46,7 @@ export const ArrowFatLineUpIcon = withUniwind(PhosphorArrowFatLineUpIcon)
 export const ArrowRightIcon = withUniwind(PhosphorArrowRightIcon)
 /** Marks a row that leaves the app, as the direction asks. */
 export const ArrowUpRightIcon = withUniwind(PhosphorArrowUpRightIcon)
+export const ShareNetworkIcon = withUniwind(PhosphorShareNetworkIcon)
 export const BookmarkSimpleIcon = withUniwind(PhosphorBookmarkSimpleIcon)
 export const ArrowsClockwiseIcon = withUniwind(PhosphorArrowsClockwiseIcon)
 export const BackspaceIcon = withUniwind(PhosphorBackspaceIcon)
