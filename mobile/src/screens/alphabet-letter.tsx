@@ -100,9 +100,8 @@ export default function AlphabetLetterScreen() {
 
   // Use the type from the database
   const letterType = letter.type
-  // Both come from the alphabet table in whichever language the interface is in.
+  // From the alphabet table, in whichever language the interface is in.
   const description = getValue(letter, 'description')
-  const pronunciation = getValue(letter, 'pronunciation')
 
   /** The letters French cannot write; the only ones that earn the filled pill. */
   const KABIYE_ONLY = 'ɖƉɛƐɣƔɩƖŋŊɔƆʋƲñÑ'
@@ -156,11 +155,9 @@ export default function AlphabetLetterScreen() {
             ) : null}
           </View>
 
-          {pronunciation ? (
-            <Text className="text-foreground mt-6 text-[18px] leading-[1.5]">{pronunciation}</Text>
-          ) : null}
-
-          <View className="border-foreground my-6 border-t-[1.5px]" />
+          {/* `description_*` opens with a "Pronunciation" section carrying this same
+              sentence, so printing `pronunciation_*` above it said everything twice. */}
+          <View className="border-foreground mt-8 mb-6 border-t-[1.5px]" />
         </View>
 
         <View className="px-6">

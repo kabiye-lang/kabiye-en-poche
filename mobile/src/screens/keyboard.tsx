@@ -216,7 +216,9 @@ export default function KeyboardScreen() {
             one line, always visible, saying the only thing that is not discoverable. */}
         <View className="mb-2 mt-3 flex-row items-center justify-between px-6">
           <Text className="text-foreground-secondary text-[13px]">{t`Long-press a letter for its capital`}</Text>
-          <Text className="text-foreground-secondary text-[13px]">{t`${content.length} characters`}</Text>
+          <Text className="text-foreground-secondary text-[13px]">
+            {content.length === 1 ? t`1 character` : t`${content.length} characters`}
+          </Text>
         </View>
 
         {/* <KeyboardAccessoryView

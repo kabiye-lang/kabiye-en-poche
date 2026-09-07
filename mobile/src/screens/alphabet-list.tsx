@@ -1,3 +1,4 @@
+import { useState } from 'react'
 import { FlatList, Pressable } from 'react-native'
 
 import { router } from 'expo-router'
@@ -7,8 +8,11 @@ import { useLingui } from '@lingui/react/macro'
 import { Skeleton, Text, View } from '../components/ui'
 import { useAppAlphabetLetters, useAppCmsPage } from '../hooks/use-app-data'
 
+type Filter = 'all' | 'vowels' | 'new'
+
 export default function AlphabetListScreen() {
   const { t } = useLingui()
+  const [filter, setFilter] = useState<Filter>('all')
   const { data: alphabetLetters, isLoading, error } = useAppAlphabetLetters()
   const { data: alphabetIntro } = useAppCmsPage('alphabet-introduction')
 
@@ -44,11 +48,17 @@ export default function AlphabetListScreen() {
   // distinction the app exists to teach, and the only thing on this screen worth an accent.
   const KABIYE_ONLY = 'ɖƉɛƐɣƔɩƖŋŊɔƆʋƲñÑ'
 
+  // "New to French" is the reason most of this screen exists: eight of the thirty-two
+  // are letters a French reader has never had to write.
+  const letters = (alphabetLetters || []).filter((letter) =>
+    filter === 'all' ? true : filter === 'vowels' ? letter.type === 'vowel' : KABIYE_ONLY.includes(letter.id)
+  )
+
   return (
     <View flex safeArea="top" className="bg-background">
       <FlatList
         numColumns={4}
-        data={alphabetLetters || []}
+        data={letters}
         contentContainerStyle={{ paddingHorizontal: 24, paddingBottom: 32, gap: 8 }}
         columnWrapperStyle={{ gap: 8 }}
         keyExtractor={(item) => item.id}
@@ -64,6 +74,35 @@ export default function AlphabetListScreen() {
             <Text className="text-foreground mt-4 text-[26px] leading-[1.2]">
               {t`32 letters. Eight of them are not on any French keyboard.`}
             </Text>
+
+            <View className="mt-6 flex-row flex-wrap gap-2">
+              {(
+                [
+                  ['all', t`All`],
+                  ['vowels', t`Vowels`],
+                  ['new', t`New to French`],
+                ] as const
+              ).map(([id, label]) => (
+                <Pressable
+                  key={id}
+                  accessibilityRole="button"
+                  accessibilityState={{ selected: filter === id }}
+                  onPress={() => setFilter(id)}
+                  className={
+                    filter === id
+                      ? 'bg-foreground rounded-full px-[18px] py-2'
+                      : 'border-foreground rounded-full border-[1.5px] px-[18px] py-2'
+                  }
+                >
+                  <Text
+                    weight="semibold"
+                    className={filter === id ? 'text-background text-[15px]' : 'text-foreground text-[15px]'}
+                  >
+                    {label}
+                  </Text>
+                </Pressable>
+              ))}
+            </View>
           </View>
         )}
         renderItem={({ item }) => {

@@ -16,7 +16,13 @@ const SearchResultsScreen: React.FC = () => {
   const { t } = useLingui()
 
   const searchLanguage = (lang as 'all' | 'fr' | 'en') || 'all'
-  const searchMode = (mode as 'kabiye' | 'translation') || 'kabiye'
+
+  // Three exclusive filters over two query dimensions. "All" is the absence of a mode,
+  // not `mode=kabiye`: without that distinction "All" and "Kabiyè" were both drawn
+  // selected, because the default search *is* a Kabiyè one.
+  const activeFilter: 'all' | 'kabiye' | 'translation' =
+    mode === 'translation' ? 'translation' : mode === 'kabiye' ? 'kabiye' : 'all'
+  const searchMode = activeFilter === 'translation' ? 'translation' : 'kabiye'
 
   const { data: searchResults, isLoading, error } = useSearchDictionary(query || '', searchLanguage, !!query)
 
@@ -127,7 +133,7 @@ const SearchResultsScreen: React.FC = () => {
               ['translation', searchLanguage === 'fr' ? t`French` : t`English`],
             ] as const
           ).map(([id, label]) => {
-            const selected = id === 'all' ? searchMode === 'kabiye' && searchLanguage === 'all' : searchMode === id
+            const selected = activeFilter === id
 
             return (
               <Pressable
@@ -137,7 +143,7 @@ const SearchResultsScreen: React.FC = () => {
                 onPress={() =>
                   router.setParams(
                     id === 'all'
-                      ? { mode: 'kabiye', lang: 'all' }
+                      ? { mode: '', lang: 'all' }
                       : { mode: id, lang: id === 'kabiye' ? 'all' : searchLanguage }
                   )
                 }
