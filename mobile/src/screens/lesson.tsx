@@ -21,28 +21,88 @@ import {
   OrderWordsStep,
   ProgressBar,
   QuizStep,
+  ReadChooseStep,
+  SpellStep,
+  SpotLetterStep,
 } from '../components/lesson-steps'
 import { Text, View } from '../components/ui'
 import { useAppCompleteLesson, useAppLesson, useAppLessonActivities, useAppLessonContents } from '../hooks/use-app-data'
 import { useLanguage } from '../hooks/use-language'
 import { hasActivity } from '../types/lesson-steps'
 import { usableAudioUrl } from '../utils/audio-source'
+import { spellingVariants } from '../utils/kabiye-variants'
 
 /**
- * "Listen and choose", "listen and type" and plain audio steps exist only to
- * deliver a recording. With no usable audio (see utils/audio-source) the first
- * two are unanswerable -- the learner is asked to identify a word they were
- * never played -- and the third has nothing to deliver. Drop them from the
- * lesson rather than showing a dead exercise; they reappear on their own once
- * real recordings are hosted.
+ * Whether an activity has enough data to be answered.
+ *
+ * A step component that renders nothing is worse than a missing step: the learner lands
+ * on a blank screen with the progress bar advanced and no control to move on. So the
+ * decision is made here, while the step list is being built, and an activity that cannot
+ * be answered is never added.
+ *
+ * Two reasons an activity fails:
+ *
+ * - **No recording.** "Listen and choose", "listen and type" and plain audio exist only
+ *   to deliver one. Without usable audio (see utils/audio-source) the first two ask the
+ *   learner to identify a word they were never played, and the third has nothing to
+ *   deliver. They reappear on their own once real recordings are hosted.
+ * - **Not enough to choose between.** `spot_letter` builds its wrong answers by
+ *   substituting the letters French cannot write, so a word with only one of them yields
+ *   one distractor and a two-option question -- a coin flip, which is why `true_false`
+ *   was retired. `read_choose` needs a sentence and at least two readings.
  */
 const isAnswerable = (activity: { activity_type: string; data: unknown }): boolean => {
-  if (!AUDIO_DEPENDENT_ACTIVITIES.has(activity.activity_type)) return true
-  const data = (activity.data ?? {}) as { audio_url?: string; audioUrl?: string }
-  return usableAudioUrl(data.audio_url ?? data.audioUrl) !== undefined
+  const data = (activity.data ?? {}) as {
+    audio_url?: string
+    audioUrl?: string
+    correct?: string
+    distractors?: string[]
+    sentence?: string
+    options?: Record<string, string[]>
+  }
+
+  if (AUDIO_DEPENDENT_ACTIVITIES.has(activity.activity_type)) {
+    return usableAudioUrl(data.audio_url ?? data.audioUrl) !== undefined
+  }
+
+  if (activity.activity_type === 'spot_letter') {
+    const correct = data.correct?.trim() ?? ''
+    if (!correct) return false
+    const supplied = (data.distractors ?? []).filter((d) => d && d !== correct)
+    return supplied.length >= 2 || spellingVariants(correct, 2).length >= 2
+  }
+
+  if (activity.activity_type === 'read_choose') {
+    const anyOptions = Object.values(data.options ?? {}).find((list) => (list?.length ?? 0) >= 2)
+    return Boolean(data.sentence?.trim()) && anyOptions !== undefined
+  }
+
+  return true
 }
 
 const AUDIO_DEPENDENT_ACTIVITIES = new Set(['audio', 'listen_choose', 'listen_type'])
+
+/**
+ * Step types the learner can get wrong.
+ *
+ * Content and completion are not answerable, so they are neither scored nor re-queued.
+ * The list was spelled out twice before -- once for scoring and once for the question
+ * count -- and the two had already drifted apart.
+ */
+const INTERACTIVE_STEPS = new Set<LessonStep['type']>([
+  'listen_choose',
+  'listen_type',
+  'match_pairs',
+  'order_words',
+  'fill_blank',
+  'multiple_choice',
+  'true_false',
+  'spell',
+  'spot_letter',
+  'read_choose',
+])
+
+const isInteractive = (step: LessonStep) => INTERACTIVE_STEPS.has(step.type)
 
 const LessonScreen = () => {
   const { t } = useLingui()
@@ -58,6 +118,16 @@ const LessonScreen = () => {
   const [currentStepIndex, setCurrentStepIndex] = useState(0)
   const [score, setScore] = useState(0)
   const [answers, setAnswers] = useState<Map<string, { answer: string; isCorrect: boolean }>>(new Map())
+
+  /**
+   * Steps the learner got wrong, re-asked before the lesson ends.
+   *
+   * A mistake that simply scrolls past teaches nothing; the handoff's flow is
+   * teach -> try -> and the ones you missed come back. Held as ids rather than indices
+   * because the queue is appended to the step list, so indices move.
+   */
+  const [missed, setMissed] = useState<string[]>([])
+  const [retriesQueued, setRetriesQueued] = useState(false)
 
   // Build steps when data is loaded (derived from lesson data, no useEffect needed)
   const steps = useMemo<LessonStep[]>(() => {
@@ -106,32 +176,60 @@ const LessonScreen = () => {
     return builtSteps
   }, [lesson, contents, activities, getValue])
 
+  /**
+   * The steps actually walked: the lesson, then the ones that were missed, then finish.
+   *
+   * Retries are copies with a `retry-` id so a second miss is not queued again and the
+   * answer map keeps both attempts.
+   */
+  const walkedSteps = useMemo<LessonStep[]>(() => {
+    if (!retriesQueued || missed.length === 0) return steps
+
+    const completion = steps[steps.length - 1]
+    const body = steps.slice(0, -1)
+    const retries = missed
+      .map((id) => body.find((step) => step.id === id))
+      .filter((step): step is LessonStep => step != null)
+      .map((step, i) => ({ ...step, id: `retry-${step.id}`, order: body.length + i }) as LessonStep)
+
+    return [...body, ...retries, { ...completion, order: body.length + retries.length }]
+  }, [steps, missed, retriesQueued])
+
+  /**
+   * Advance, re-asking missed steps before the lesson is allowed to finish.
+   *
+   * The retry queue is spliced in once, when the learner first reaches the completion
+   * step with misses outstanding. Doing it here rather than in the `steps` memo keeps
+   * the queue out of the progress denominator until it exists, so the bar does not
+   * lengthen behind the learner as they make mistakes.
+   */
   const handleStepComplete = () => {
-    setCurrentStepIndex((prev) => (prev < steps.length - 1 ? prev + 1 : prev))
+    const next = currentStepIndex + 1
+    const reachedEnd = next >= walkedSteps.length - 1
+
+    if (reachedEnd && missed.length > 0 && !retriesQueued) {
+      setRetriesQueued(true)
+      setCurrentStepIndex(next)
+      return
+    }
+    setCurrentStepIndex((prev) => (prev < walkedSteps.length - 1 ? prev + 1 : prev))
   }
 
   const handleQuizAnswer = (isCorrect: boolean, answer: string) => {
-    const currentStep = steps[currentStepIndex]
+    const currentStep = walkedSteps[currentStepIndex]
 
-    // Track all interactive activities
-    const isActivity =
-      currentStep.type === 'listen_choose' ||
-      currentStep.type === 'listen_type' ||
-      currentStep.type === 'match_pairs' ||
-      currentStep.type === 'order_words' ||
-      currentStep.type === 'fill_blank' ||
-      currentStep.type === 'multiple_choice' ||
-      currentStep.type === 'true_false'
-
-    if (isActivity) {
-      // Save answer
+    if (isInteractive(currentStep)) {
       const newAnswers = new Map(answers)
       newAnswers.set(currentStep.id, { answer, isCorrect })
       setAnswers(newAnswers)
 
-      // Update score
       if (isCorrect) {
         setScore(score + 1)
+      } else if (!currentStep.id.startsWith('retry-')) {
+        // Queue the miss once. A step re-asked and missed again is not queued a second
+        // time -- the lesson has to end, and drilling the same word forever is a
+        // different product than this one.
+        setMissed((prev) => (prev.includes(currentStep.id) ? prev : [...prev, currentStep.id]))
       }
     }
 
@@ -207,7 +305,7 @@ const LessonScreen = () => {
   }
 
   // No steps available
-  if (steps.length === 0) {
+  if (walkedSteps.length === 0) {
     return (
       <View className="bg-background flex-1 items-center justify-center px-4">
         <Text variant="h6" className="text-primary text-center">
@@ -217,7 +315,7 @@ const LessonScreen = () => {
     )
   }
 
-  const currentStep = steps[currentStepIndex]
+  const currentStep = walkedSteps[currentStepIndex]
 
   // Audio step props (extracted for type narrowing)
   const audioStepContent =
@@ -236,25 +334,15 @@ const LessonScreen = () => {
         })()
       : null
 
-  // Count all interactive activity steps
-  const totalQuizQuestions = steps.filter(
-    (s) =>
-      s.type === 'listen_choose' ||
-      s.type === 'listen_type' ||
-      s.type === 'match_pairs' ||
-      s.type === 'order_words' ||
-      s.type === 'fill_blank' ||
-      s.type === 'multiple_choice' ||
-      s.type === 'true_false'
-  ).length
+  const totalQuizQuestions = walkedSteps.filter(isInteractive).length
 
-  const totalContentSteps = steps.filter((s) => s.type === 'content').length
+  const totalContentSteps = walkedSteps.filter((s) => s.type === 'content').length
 
   // Render current step
   return (
     <View className="bg-background flex-1">
       {/* Progress Bar */}
-      <ProgressBar currentStep={currentStepIndex + 1} totalSteps={steps.length} />
+      <ProgressBar currentStep={currentStepIndex + 1} totalSteps={walkedSteps.length} />
 
       {/* Step Content — keyed so each new step triggers the entering animation */}
       <Animated.View
@@ -282,7 +370,7 @@ const LessonScreen = () => {
           <QuizStep
             activity={currentStep.activity}
             onAnswer={handleQuizAnswer}
-            progressPercent={Math.round((currentStepIndex / Math.max(steps.length - 1, 1)) * 100)}
+            progressPercent={Math.round((currentStepIndex / Math.max(walkedSteps.length - 1, 1)) * 100)}
           />
         ) : null}
 
@@ -304,6 +392,18 @@ const LessonScreen = () => {
 
         {currentStep.type === 'order_words' && 'activity' in currentStep && (
           <OrderWordsStep activity={currentStep.activity} onAnswer={handleQuizAnswer} />
+        )}
+
+        {currentStep.type === 'spell' && 'activity' in currentStep && (
+          <SpellStep activity={currentStep.activity} onAnswer={handleQuizAnswer} />
+        )}
+
+        {currentStep.type === 'spot_letter' && 'activity' in currentStep && (
+          <SpotLetterStep activity={currentStep.activity} onAnswer={handleQuizAnswer} />
+        )}
+
+        {currentStep.type === 'read_choose' && 'activity' in currentStep && (
+          <ReadChooseStep activity={currentStep.activity} onAnswer={handleQuizAnswer} />
         )}
 
         {currentStep.type === 'completion' ? (

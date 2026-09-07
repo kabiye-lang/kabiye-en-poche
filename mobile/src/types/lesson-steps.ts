@@ -19,6 +19,11 @@ export type StepType =
   | 'fill_blank'
   | 'multiple_choice'
   | 'true_false'
+  // Laterite added three. `spell` and `spot_letter` teach the orthography itself, which
+  // is the whole product for one of the three audiences; `read_choose` is comprehension.
+  | 'spell'
+  | 'spot_letter'
+  | 'read_choose'
   | 'completion'
 
 export interface BaseStep {
@@ -37,6 +42,9 @@ export interface ActivityStep extends BaseStep {
     | 'fill_blank'
     | 'multiple_choice'
     | 'true_false'
+    | 'spell'
+    | 'spot_letter'
+    | 'read_choose'
   activity: LessonActivity
 }
 
