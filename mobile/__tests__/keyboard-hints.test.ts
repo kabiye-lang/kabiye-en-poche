@@ -11,6 +11,9 @@
  * two rather than in runs. Long-press produces one directly; shift remains for runs.
  */
 
+import { readFileSync } from 'node:fs'
+import { join } from 'node:path'
+
 import { ALPHABET_LIST, KABIYE_SPECIFIC, resolveKey } from '../src/screens/keyboard'
 
 describe('resolveKey', () => {
@@ -62,5 +65,23 @@ describe('the alphabet the keyboard offers', () => {
     // that they do not.
     const caps = ALPHABET_LIST.filter((k) => KABIYE_SPECIFIC.has(k.id)).map((k) => k.caps)
     expect(new Set(caps).size).toBe(caps.length)
+  })
+})
+
+describe('the key tray', () => {
+  /**
+   * The whole tray once rendered as blank tiles.
+   *
+   * The keys were `Button`s, which wrap their children in a `Text` of their own carrying
+   * the size variant's padding. Pinned to 31x35 there was no room left for the glyph, so
+   * every letter on the Kabiyè keyboard was invisible while the accessibility tree still
+   * reported them -- the failure was silent to every check except looking at it.
+   */
+  it('builds keys from Pressable, not Button', () => {
+    const source = readFileSync(join(__dirname, '../src/screens/keyboard.tsx'), 'utf8')
+    const renderButton = source.slice(source.indexOf('const renderButton'), source.indexOf('return (\n    <View flex'))
+
+    expect(renderButton).toContain('<Pressable')
+    expect(renderButton).not.toContain('<Button')
   })
 })

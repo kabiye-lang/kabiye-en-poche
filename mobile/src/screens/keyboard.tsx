@@ -141,31 +141,34 @@ export default function KeyboardScreen() {
 
   const buttonWidth = (Dimensions.get('screen').width - 10) / 11 - 4
 
+  /**
+   * One key.
+   *
+   * A plain `Pressable`, not a `Button`: `Button` wraps its children in a `Text` of its
+   * own carrying the size variant's padding, and inside a key pinned to 35x31 that left
+   * no room for the glyph -- the whole tray rendered as blank tiles. A key is not a
+   * button in this design system anyway (`radius 6-8px`, no pill), and the Spell step's
+   * tray is built the same way.
+   */
   const renderButton = (letter: { id: string; caps: string }) => {
     const isKabiye = KABIYE_SPECIFIC.has(letter.id)
     return (
-      <Button
+      <Pressable
         key={letter.id}
-        variant="ghost"
-        size="sm"
-        className={`rounded-md !px-0 !py-0 ${isKabiye ? 'bg-primary/15' : 'bg-card'}`}
-        style={{ width: buttonWidth, minWidth: buttonWidth, height: 35 }}
+        accessibilityRole="button"
+        accessibilityLabel={capsLock > 0 ? letter.caps : letter.id}
+        accessibilityHint={t`Long-press for the capital`}
         onPress={() => changeText(letter)}
         onLongPress={() => typeCapital(letter)}
         delayLongPress={300}
-        accessibilityLabel={capsLock > 0 ? letter.caps : letter.id}
-        accessibilityHint={t`Long-press for the capital`}
         hitSlop={3}
+        className={`items-center justify-center rounded-md ${isKabiye ? 'bg-primary/15' : 'bg-card'}`}
+        style={{ width: buttonWidth, minWidth: buttonWidth, height: 35 }}
       >
-        <Text
-          kabiye
-          variant="lg"
-          weight="light"
-          className={`text-base ${isKabiye ? 'text-primary' : 'text-foreground'}`}
-        >
+        <Text kabiye className={isKabiye ? 'text-primary text-[17px]' : 'text-foreground text-[17px]'}>
           {capsLock > 0 ? letter.caps : letter.id}
         </Text>
-      </Button>
+      </Pressable>
     )
   }
 
@@ -227,7 +230,7 @@ export default function KeyboardScreen() {
             <Button
               variant="ghost"
               size="sm"
-              className="bg-card rounded-md"
+              className="bg-card rounded-md px-0 py-0"
               style={{ width: 50, minWidth: 50, height: 35 }}
               accessibilityLabel={capsLock === 2 ? t`Caps lock on` : capsLock === 1 ? t`Shift on` : t`Shift`}
               onPress={() => setCapsLock((capsLockOld) => (capsLockOld > 0 ? 0 : 1))}
@@ -243,7 +246,7 @@ export default function KeyboardScreen() {
             <Button
               variant="ghost"
               size="sm"
-              className="bg-card rounded-md"
+              className="bg-card rounded-md px-0 py-0"
               style={{ width: 50, minWidth: 50, height: 35 }}
               accessibilityLabel={t`Period`}
               onPress={() => changeText({ id: '.' })}
@@ -254,7 +257,7 @@ export default function KeyboardScreen() {
             <Button
               variant="ghost"
               size="sm"
-              className="bg-card rounded-md"
+              className="bg-card rounded-md px-0 py-0"
               style={{ width: 90, minWidth: 90, height: 35 }}
               onPress={() => changeText({ id: ' ' })}
               hitSlop={3}
@@ -266,7 +269,7 @@ export default function KeyboardScreen() {
             <Button
               variant="ghost"
               size="sm"
-              className="bg-card rounded-md"
+              className="bg-card rounded-md px-0 py-0"
               style={{ width: 50, minWidth: 50, height: 35 }}
               accessibilityLabel={t`Backspace`}
               onPress={() => setContent((content) => content.substring(0, content.length - 1))}
@@ -277,7 +280,7 @@ export default function KeyboardScreen() {
             <Button
               variant="ghost"
               size="sm"
-              className="bg-card rounded-md"
+              className="bg-card rounded-md px-0 py-0"
               style={{ width: 50, minWidth: 50, height: 35 }}
               accessibilityLabel={t`New line`}
               onPress={() => {

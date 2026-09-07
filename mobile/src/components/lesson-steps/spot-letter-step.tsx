@@ -141,7 +141,7 @@ const SpotLetterStep = ({ activity, onAnswer }: SpotLetterStepProps) => {
 
       {selected ? (
         <View className="px-6 pb-8">
-          <Button variant="primary" fullWidth onPress={() => onAnswer(selected === correct, selected)}>
+          <Button variant="inverse" fullWidth onPress={() => onAnswer(selected === correct, selected)}>
             {t`Continue`}
           </Button>
         </View>

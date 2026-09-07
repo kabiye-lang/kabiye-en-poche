@@ -16,6 +16,10 @@ const buttonVariants = tv({
       primary: 'bg-primary active:bg-primary/90',
       secondary: 'bg-secondary active:bg-secondary/90',
       accent: 'bg-accent active:bg-accent/90',
+      // The primary button on an ink screen. "One primary per screen, ink fill" holds
+      // everywhere except on ink itself, where an ink button is invisible -- the Spot
+      // the letter step's Continue was bare text on the dark ground.
+      inverse: 'bg-background active:bg-background/90',
       outline: 'border-primary active:bg-primary/10 border-[1.5px] bg-transparent',
       ghost: 'active:bg-background-tertiary bg-transparent',
       link: 'bg-transparent active:bg-transparent',
@@ -23,7 +27,7 @@ const buttonVariants = tv({
     // Every button in this system is a pill. Radius is not a per-button decision here:
     // pills are buttons, chips and the tab pill; 14-20px is for cards; 6-8px for keys.
     size: {
-      sm: 'rounded-full px-[18px] py-3',
+      sm: 'rounded-full px-[18px] py-2',
       md: 'rounded-full px-6 py-4',
       lg: 'rounded-full px-6 py-[18px]',
       xl: 'rounded-full px-8 py-5',
@@ -54,6 +58,7 @@ const textVariants = tv({
       primary: 'text-white',
       secondary: 'text-white',
       accent: 'text-white',
+      inverse: 'text-foreground',
       outline: 'text-primary',
       ghost: 'text-primary',
       link: 'text-primary',
