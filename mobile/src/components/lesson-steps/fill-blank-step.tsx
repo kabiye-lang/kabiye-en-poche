@@ -77,7 +77,9 @@ const FillBlankStep = ({ activity, onAnswer }: FillBlankStepProps) => {
               className="text-foreground text-[24px]"
               style={{ textDecorationLine: 'underline' }}
             >
-              {selectedAnswer || '\u2007\u2007\u2007\u2007\u2007\u2007'}
+              {/* No-break spaces: a figure space still breaks, and a sentence ending in
+                  the blank dropped its full stop onto a line of its own. */}
+              {selectedAnswer || '\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0'}
             </Text>
             {part}
           </Text>
