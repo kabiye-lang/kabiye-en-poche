@@ -146,8 +146,8 @@ components:
 **Creative North Star: "The Pocket Primer"**
 
 A well-made teaching book that happens to be a phone. The page is calm and the word is
-the hero: a soft lavender-grey ground, white leaves laid on it, and one confident purple
-reserved for the places where the reader acts. Nothing decorative competes with the
+the hero: bone paper, ink, and the red earth of Kara kept for the places where the reader
+acts and for the letters French cannot write. Nothing decorative competes with the
 language itself, because for a large part of this audience the letterforms *are* the
 lesson — they are learning to read `ɖ`, `ɛ`, `ɣ`, `ɩ`, `ɔ` and `ʋ` for the first time.
 
@@ -157,8 +157,9 @@ Kabiyè language speaks another, and that distinction does more identity work th
 decoration could. Density is generous rather than efficient — this is a primer to sit
 with, not a dashboard to scan.
 
-Dark mode is a genuine second theme, not an inversion. The ground deepens to a blue-black
-and the accent lifts to a lighter violet so it keeps its authority against it.
+Dark mode is a genuine second theme, not an inversion. Ink becomes the ground and laterite
+lifts to `#E07A55` so it keeps its authority against it. Learners choose it explicitly --
+System / Light / Dark in Profile -- rather than only inheriting the phone's setting.
 
 **Key Characteristics:**
 - One accent, used only where the reader acts
@@ -180,6 +181,13 @@ tone (recessed → paper → leaf) or from a border; there are no shadows anywhe
 - **Laterite** (`#C4451C`): the hero glyph, section labels, the one primary action per
   screen, and the letters French cannot write. It passes 4.5:1 on paper only at ≥ 24px
   or bold ≥ 19px, which is why body text is always ink and never laterite.
+
+### The ink screen
+Two screens are ink from edge to edge: the onboarding question and Spot the letter. They
+use `surface-ink` / `on-surface-ink` rather than `bg-foreground` / `text-background`,
+because those swap with the theme — an ink screen built from them inverted into a bright
+paper screen the moment the app went dark. `surface-ink` is ink in light and the recessed
+ink of the dark palette in dark; its text is paper in both.
 
 ### What does not get a colour
 Answer feedback. There is no green and no red: **correct fills with ink, wrong is a
@@ -260,27 +268,27 @@ and would read as a mistake.
 
 ## Shapes
 
-Soft, consistently rounded, never sharp and never fully circular except where a shape is
-genuinely a pill or a dot. Cards use 16px (`rounded-xl`); buttons and option rows 12px
-(`rounded-lg`); small controls 8px (`rounded-md`). Chips, badges, the language tag and the
-audio button are pills or circles (`rounded-full`).
+Radius is not a per-component decision: **every button, chip and pill is `rounded-full`**,
+cards are 14–20px, keyboard keys 6–8px, small tags 4px. A key is not a button, which is
+why the keyboard tray is built from `Pressable` rather than the shared `Button`.
 
-Borders are hairlines in Rule, used to define an edge rather than to decorate. Selected
-and answered states raise the border to 2px in the accent or a feedback colour — the
-border, not a shadow, is how this system shows state.
+Borders are hairlines in Line for dividers, and **1.5px ink** for outlined buttons, cards
+and the rule under a section label. Selected raises the border to 2px laterite; a settled
+answer fills with ink. The border, not a shadow, is how this system shows state — there
+are no shadows anywhere.
 
 ## Components
 
 ### Buttons
-- **Shape:** Gently rounded (12px), full-width in lesson and form contexts.
-- **Primary:** Electric Violet ground, white label, 12px × 16px padding. The only filled
-  button in the system.
-- **Outline / Ghost:** Transparent ground with an accent label; outline adds a 2px accent
-  border. For secondary and tertiary actions.
-- **States:** Disabled drops to 50% opacity; loading swaps the label for a translated
-  "Loading…" and reports `busy` to assistive technology. Every button carries
-  `accessibilityRole="button"` by default — this is set once on the shared component, and
-  new buttons should not need to think about it.
+- **Shape:** A pill, always. Full-width in lesson and form contexts.
+- **Primary (one per screen):** ink fill, paper label, 18px padding, 17/600. On a laterite
+  screen the primary is ink; on an **ink** screen it is paper — that is the `inverse`
+  variant, and it exists because an ink button on an ink ground is invisible.
+- **Secondary:** transparent, 1.5px ink border, 16px padding, 16/600.
+- **States:** Disabled is the same ink button at 40% opacity, never a grey fill — grey is
+  not in this palette, and a greyed button reads as broken rather than as not-yet. Loading
+  swaps the label for a translated "Loading…" and reports `busy` to assistive technology.
+  Every button carries `accessibilityRole="button"` by default.
 - **Gating:** A primary action that is not yet available renders at reduced opacity rather
   than disappearing, so the path forward stays visible.
 
@@ -316,9 +324,10 @@ border, not a shadow, is how this system shows state.
   Deliberately quiet: it is a footnote about the text, not part of it.
 
 ### The Kabiyè Keyboard
-- A full custom keyboard of the Kabiyè alphabet, keys on Leaf with the language-specific
-  letters tinted in Violet Wash so the letters that do not exist in French stand out.
-  Keys are set in Andika, as is the text they produce.
+- A full custom keyboard of the Kabiyè alphabet, keys on Leaf with the eight letters no
+  French keyboard has tinted so they stand out. Keys are set in Andika, as is the text
+  they produce. They are `Pressable`s, not `Button`s: a key is not a button in this
+  system, and routing them through one drew the whole tray as blank tiles.
 
 ## Do's and Don'ts
 
@@ -326,7 +335,8 @@ border, not a shadow, is how this system shows state.
 - **Do** set every Kabiyè string in Andika, and add `kabiye` to the `Text` explicitly
   wherever the field is known to be Kabiyè.
 - **Do** separate surfaces with the tonal steps (Recessed → Paper → Leaf).
-- **Do** reserve Electric Violet for actions and for the Kabiyè language.
+- **Do** reserve laterite for the one action per screen and for the letters French
+  cannot write. Body text is always ink.
 - **Do** define both theme values for any new colour, and check text at 4.5:1 in each.
 - **Do** show nothing where content does not exist. An absent speaker icon is correct;
   a speaker icon that plays the wrong sound is a defect.
@@ -335,7 +345,8 @@ border, not a shadow, is how this system shows state.
 ### Don't:
 - **Don't** add a `box-shadow`. There are none, and one would be conspicuous.
 - **Don't** introduce a second accent hue. Reach for a tonal step instead.
-- **Don't** use green or red for anything except answer feedback.
+- **Don't** use green or red at all. Answer feedback is ink for settled and a laterite
+  strikethrough for wrong, with the explanation beneath.
 - **Don't** hardcode a colour that differs between themes — take it from the theme hook.
 - **Don't** let the interface face render Kabiyè. It cannot draw `ɖ Ɖ ɛ Ɛ ɣ Ɣ ɩ Ɩ ɔ Ɔ ʋ Ʋ`, and the
   OS fallback splits words across two typefaces.
