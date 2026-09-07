@@ -1,5 +1,7 @@
+import type { EntryData } from '../../types/dictionary'
+
 import React from 'react'
-import { Alert, Pressable, ScrollView } from 'react-native'
+import { Alert, Linking, Pressable, ScrollView } from 'react-native'
 
 import { Link, router, useLocalSearchParams } from 'expo-router'
 import { useHeaderHeight } from 'expo-router/react-navigation'
@@ -156,6 +158,7 @@ const WordDetailsScreen: React.FC = () => {
         <SenseDefinitions senses={entry_data.senses} translation={translation} />
         <SubEntries subEntries={entry_data.subEntries} translation={translation} />
         <CrossReferences crossRefs={entry_data.crossRefs} />
+        <SourceLine entry={entry_data} />
       </ScrollView>
 
       {/* Two actions, both about writing rather than reading: the whole product for the
@@ -182,6 +185,52 @@ const WordDetailsScreen: React.FC = () => {
           <Text weight="semibold" className="text-background text-[17px]">{t`Practise`}</Text>
         </Pressable>
       </View>
+    </View>
+  )
+}
+
+/** The page a page number can be read off, if the provenance tags carry one. */
+function pageOf(entry: EntryData): number | undefined {
+  const tags = Object.values(entry.provenance ?? {}).flat(2)
+  for (const tag of tags) {
+    const match = /^sil1999_print:p(\d+)$/.exec(String(tag))
+    if (match) return Number(match[1])
+  }
+  return undefined
+}
+
+/**
+ * Where this entry came from, and how to say it is wrong.
+ *
+ * Every word in this app traces to a printed source, and that is the claim the whole
+ * project rests on; a learner who doubts a definition should be able to go and look it
+ * up, and to tell us when the book and the language disagree. One quiet line, no card.
+ */
+function SourceLine({ entry }: { entry: EntryData }) {
+  const { t } = useLingui()
+  const page = pageOf(entry)
+  const sources = entry.sources ?? []
+
+  if (sources.length === 0) return null
+
+  return (
+    <View className="border-border mt-8 border-t pt-4">
+      <Text className="text-foreground-secondary text-[13px] leading-[1.5]">
+        {t`Source`}
+        {' \u00B7 '}
+        {page ? t`Kabiyè–French dictionary, p. ${page}` : sources.join(', ')}
+        {' \u00B7 '}
+        <Text
+          className="text-foreground-secondary text-[13px] underline"
+          onPress={() =>
+            Linking.openURL(
+              `mailto:hello@kabiye-en-poche.org?subject=${encodeURIComponent(`Mistake in ${entry.headword}`)}`
+            )
+          }
+        >
+          {t`Report a mistake`}
+        </Text>
+      </Text>
     </View>
   )
 }

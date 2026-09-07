@@ -8,13 +8,10 @@ import { toast } from 'sonner-native'
 
 import { ArrowUpRightIcon, CaretRightIcon } from '../components/icons'
 import { Text, View } from '../components/ui'
-import { useAppProgressSummary, useAppResetProgress } from '../hooks/use-app-data'
+import { PLANNED_LESSONS, useAppProgressSummary, useAppResetProgress } from '../hooks/use-app-data'
 import { nextAppearance, useAppearance } from '../hooks/use-appearance'
 import { useMyWords } from '../hooks/use-my-words'
 import { usePath } from '../hooks/use-path'
-
-/** Lessons planned in the curriculum. 78 plans exist; only some have content. */
-const PLANNED_LESSONS = 78
 
 const ProfileScreen = () => {
   const { t, i18n } = useLingui()

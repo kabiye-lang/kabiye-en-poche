@@ -9,6 +9,7 @@ import { router, useLocalSearchParams } from 'expo-router'
 import { useLingui } from '@lingui/react/macro'
 import { toast } from 'sonner-native'
 
+import { EmptyState } from '../components/empty-state'
 import {
   AudioStep,
   ContentStep,
@@ -27,7 +28,14 @@ import {
   TeachStep,
 } from '../components/lesson-steps'
 import { Skeleton, SkeletonRows, Text, View } from '../components/ui'
-import { useAppCompleteLesson, useAppLesson, useAppLessonActivities, useAppLessonContents } from '../hooks/use-app-data'
+import {
+  PLANNED_LESSONS,
+  useAppCompleteLesson,
+  useAppLesson,
+  useAppLessonActivities,
+  useAppLessonContents,
+  useAppProgressSummary,
+} from '../hooks/use-app-data'
 import { useLanguage } from '../hooks/use-language'
 import { useMyWords } from '../hooks/use-my-words'
 import { hasActivity } from '../types/lesson-steps'
@@ -126,6 +134,7 @@ const LessonScreen = () => {
   const { getValue, getJsonValue } = useLanguage()
 
   const { data: lesson, isLoading: lessonLoading, error: lessonError } = useAppLesson(lessonId)
+  const { data: progressSummary } = useAppProgressSummary()
   const { data: contents, isLoading: contentsLoading } = useAppLessonContents(lessonId)
   const { data: activities, isLoading: activitiesLoading } = useAppLessonActivities(lessonId)
   const completeLessonMutation = useAppCompleteLesson()
@@ -343,26 +352,29 @@ const LessonScreen = () => {
     )
   }
 
-  // Block access when lesson is not available
+  // Not written yet, rather than broken. The direction's rule for an empty state is that
+  // it names what still works: seven of seventy-eight lessons are written, and that is a
+  // fact about the curriculum a learner is entitled to before they plan around it.
   const isLessonAvailable = lesson?.status === 'available' || lesson?.status === null
   if (lesson && !isLessonAvailable) {
-    const statusMessage =
-      lesson.status === 'coming_soon'
-        ? t`This lesson is coming soon!`
-        : lesson.status === 'maintenance'
-          ? t`This lesson is under maintenance`
-          : lesson.status === 'disabled'
-            ? t`This lesson is temporarily unavailable`
-            : t`This lesson is not available`
+    const written = progressSummary?.totalLessons ?? 0
+    const isPending = lesson.status === 'coming_soon'
 
     return (
-      <View className="bg-background flex-1 items-center justify-center px-4">
-        <Text variant="h6" className="text-primary text-center">
-          {statusMessage}
-        </Text>
-        <Text variant="caption" className="text-foreground-secondary mt-2 text-center">
-          {t`Please check back later`}
-        </Text>
+      <View className="bg-background flex-1 px-6 pt-16">
+        <EmptyState
+          glyph="ŋ"
+          pending={isPending}
+          title={
+            isPending ? t`Not written yet.` : lesson.status === 'maintenance' ? t`Being corrected.` : t`Not available.`
+          }
+          body={
+            written > 0
+              ? t`${written} of ${PLANNED_LESSONS} planned lessons have content. This one is on the list.`
+              : t`This one is on the list.`
+          }
+          actions={[{ label: t`Back to path`, onPress: () => router.back(), primary: true }]}
+        />
       </View>
     )
   }
