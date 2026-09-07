@@ -1,7 +1,6 @@
 import { useState, useEffect } from "react";
 import { GithubLogo } from "@phosphor-icons/react";
 import { motion } from "motion/react";
-import LanguageSwitcher from "@/components/language-switcher";
 import NewsletterSignup from "@/components/newsletter-signup";
 import KabiyeKeyboard from "@/components/kabiye-keyboard";
 
@@ -58,6 +57,10 @@ const translations = {
     padClear: "Clear",
     padCopy: "Copy",
     padCopied: "Copied",
+    navDictionary: "Dictionary",
+    navAlphabet: "Alphabet",
+    navLessons: "Lessons",
+    navContribute: "Contribute",
     audienceTitle: "Who it's for",
     audienceLead: "Three ways to arrive at the same word.",
     audienceSpeaker: "I speak it. I want to write it.",
@@ -145,6 +148,10 @@ const translations = {
     padClear: "Effacer",
     padCopy: "Copier",
     padCopied: "Copié",
+    navDictionary: "Dictionnaire",
+    navAlphabet: "Alphabet",
+    navLessons: "Leçons",
+    navContribute: "Contribuer",
     audienceTitle: "À qui s'adresse-t-elle",
     audienceLead: "Trois façons d'arriver au même mot.",
     audienceSpeaker: "Je le parle. Je veux l'écrire.",
@@ -227,7 +234,44 @@ export default function Home() {
 
   return (
     <div className="mx-auto">
-      <LanguageSwitcher lang={lang} onLanguageChange={toggleLanguage} />
+      {/* Sticky rather than floating: the old EN|FR button hovered over the hero with
+          nothing around it, and the direction asks for a nav that names the four things
+          the site is about. Anchors, because this is one page. */}
+      <nav className="border-line bg-paper/90 sticky top-0 z-50 border-b backdrop-blur">
+        <div className="mx-auto flex max-w-[1200px] items-center gap-6 px-8 py-4">
+          <a href="#top" className="text-ink text-[17px] font-semibold">
+            {t.title}
+          </a>
+          <div className="hidden flex-1 items-center gap-6 md:flex">
+            {(
+              [
+                ['#dictionary', t.navDictionary],
+                ['#alphabet', t.navAlphabet],
+                ['#lessons', t.navLessons],
+                ['#contribute', t.navContribute],
+              ] as const
+            ).map(([href, label]) => (
+              <a key={href} href={href} className="text-ink-quiet hover:text-ink text-[15px]">
+                {label}
+              </a>
+            ))}
+          </div>
+          <button
+            type="button"
+            onClick={toggleLanguage}
+            className="border-ink text-ink ml-auto rounded-full border-[1.5px] px-4 py-2 text-[14px] font-semibold md:ml-0"
+            aria-label={lang === "en" ? "Switch to French" : "Switch to English"}
+          >
+            {lang === "en" ? "FR" : "EN"}
+          </button>
+          <a
+            href="#get-the-app"
+            className="bg-ink rounded-full px-5 py-2 text-[14px] font-semibold text-white"
+          >
+            {t.readyToStart}
+          </a>
+        </div>
+      </nav>
       <KabiyeKeyboard
         isOpen={isKeyboardOpen}
         onClose={() => setIsKeyboardOpen(false)}
@@ -237,7 +281,7 @@ export default function Home() {
       {/* Paper, not a photograph. The previous hero was an AI-generated image with a
           black scrim over it and white text on top -- its own alt text said so. Laterite
           has no illustration and no AI imagery: the hero is the letterform. */}
-      <header className="bg-paper px-8 pt-28 pb-20">
+      <header id="top" className="bg-paper px-8 pt-20 pb-20">
         <div className="mx-auto grid max-w-[1200px] items-center gap-12 md:grid-cols-[1.1fr_0.9fr]">
           <div>
             <motion.p
@@ -323,7 +367,7 @@ export default function Home() {
       {/* The alphabet, playable. Tapping a tile appends the letter to the pad, so a
           visitor can produce a Kabiyè letter before installing anything -- which is the
           single most convincing thing this site can do. */}
-      <section className="bg-paper px-8 py-20">
+      <section id="dictionary" className="bg-paper px-8 py-20">
         <div className="mx-auto max-w-[1200px]">
           <h2
             className="text-ink font-semibold leading-[1.02] tracking-[-0.02em]"
@@ -382,7 +426,7 @@ export default function Home() {
       {/* The same three audiences onboarding asks about, so the site and the app agree
           about who this is for. Each card is headed by a letter from that audience's
           first lesson. */}
-      <section className="bg-paper px-8 pb-20">
+      <section id="alphabet" className="bg-paper px-8 pb-20">
         <div className="mx-auto max-w-[1200px]">
           <h2
             className="text-ink font-semibold leading-[1.02] tracking-[-0.02em]"
@@ -456,7 +500,7 @@ export default function Home() {
       {/* How a lesson works. The two shots are the app's own Teach and Spell steps —
           the provenance note under them is the project's first principle, so it is on
           the page rather than only in the repo. */}
-      <section className="bg-paper-recessed px-8 py-20">
+      <section id="lessons" className="bg-paper-recessed px-8 py-20">
         <div className="mx-auto grid max-w-[1200px] items-center gap-12 md:grid-cols-2">
           <div>
             <h2
@@ -541,7 +585,7 @@ export default function Home() {
       </motion.section>
       {/* Contribute. Laterite ground — the one place the accent carries a whole
           section, and the only ask on the page. */}
-      <section className="bg-laterite px-8 py-20 text-white">
+      <section id="contribute" className="bg-laterite px-8 py-20 text-white">
         <div className="mx-auto grid max-w-[1200px] gap-12 md:grid-cols-2">
           <div>
             <p className="text-[13px] font-semibold tracking-[0.14em] text-white/70 uppercase">
@@ -590,7 +634,7 @@ export default function Home() {
         <NewsletterSignup lang={lang} />
       </section>
 
-      <footer className="bg-ink text-paper px-8 py-16">
+      <footer id="get-the-app" className="bg-ink text-paper px-8 py-16">
         <div className="mx-auto max-w-[1200px]">
           <div className="grid gap-10 md:grid-cols-[2fr_1fr_1fr]">
             <div>
