@@ -56,7 +56,7 @@ const OnboardingScreen = () => {
   }
 
   return (
-    <View className="bg-foreground flex-1">
+    <View className="bg-surface-ink flex-1">
       {/* A 380px laterite Ɛ bleeding off the top-left, behind everything. The screen is
           otherwise a form, and the letterform is what says which language this is. */}
       <View className="absolute -left-16 -top-24 opacity-[0.35]" pointerEvents="none">
@@ -68,13 +68,13 @@ const OnboardingScreen = () => {
       <ScrollView contentContainerClassName="px-6 pb-8 pt-16" showsVerticalScrollIndicator={false}>
         <View className="flex-row justify-end">
           <Pressable accessibilityRole="button" onPress={() => finish(null)}>
-            <Text className="text-background/70 text-[15px]">{t`Skip`}</Text>
+            <Text className="text-on-surface-ink/70 text-[15px]">{t`Skip`}</Text>
           </Pressable>
         </View>
 
         <Animated.View entering={FadeInDown.duration(600)} className="mt-10">
           <Text className="text-accent text-[13px] font-semibold uppercase tracking-[0.1em]">{t`Before we start`}</Text>
-          <Text className="text-background mt-3 text-[32px] leading-[1.1]">
+          <Text className="text-on-surface-ink mt-3 text-[32px] leading-[1.1]">
             {t`Where does Kabiyè sit in your life?`}
           </Text>
         </Animated.View>
@@ -91,17 +91,17 @@ const OnboardingScreen = () => {
                 onPress={() => setSelected(option.id)}
                 className={
                   isSelected
-                    ? 'bg-background flex-row items-start gap-3 rounded-[14px] px-[18px] py-4'
+                    ? 'bg-on-surface-ink flex-row items-start gap-3 rounded-[14px] px-[18px] py-4'
                     : 'flex-row items-start gap-3 rounded-[14px] border-[1.5px] border-[rgba(244,235,221,0.35)] px-[18px] py-4'
                 }
               >
                 <View className="flex-1">
-                  <Text className={isSelected ? 'text-foreground text-[18px]' : 'text-background text-[18px]'}>
+                  <Text className={isSelected ? 'text-surface-ink text-[18px]' : 'text-on-surface-ink text-[18px]'}>
                     {option.title}
                   </Text>
                   <Text
                     className={
-                      isSelected ? 'text-foreground-secondary mt-1 text-[14px]' : 'text-background/70 mt-1 text-[14px]'
+                      isSelected ? 'text-surface-ink/70 mt-1 text-[14px]' : 'text-on-surface-ink/70 mt-1 text-[14px]'
                     }
                   >
                     {option.sub}

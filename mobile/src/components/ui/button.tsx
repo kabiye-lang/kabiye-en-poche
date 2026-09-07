@@ -19,7 +19,7 @@ const buttonVariants = tv({
       // The primary button on an ink screen. "One primary per screen, ink fill" holds
       // everywhere except on ink itself, where an ink button is invisible -- the Spot
       // the letter step's Continue was bare text on the dark ground.
-      inverse: 'bg-background active:bg-background/90',
+      inverse: 'bg-on-surface-ink active:bg-on-surface-ink/90',
       outline: 'border-primary active:bg-primary/10 border-[1.5px] bg-transparent',
       ghost: 'active:bg-background-tertiary bg-transparent',
       link: 'bg-transparent active:bg-transparent',
@@ -58,7 +58,7 @@ const textVariants = tv({
       primary: 'text-white',
       secondary: 'text-white',
       accent: 'text-white',
-      inverse: 'text-foreground',
+      inverse: 'text-surface-ink',
       outline: 'text-primary',
       ghost: 'text-primary',
       link: 'text-primary',

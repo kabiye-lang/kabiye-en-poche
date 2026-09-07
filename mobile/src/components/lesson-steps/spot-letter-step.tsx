@@ -73,12 +73,12 @@ const SpotLetterStep = ({ activity, onAnswer }: SpotLetterStepProps) => {
   }
 
   return (
-    <View className="bg-foreground flex-1">
+    <View className="bg-surface-ink flex-1">
       <ScrollView contentContainerClassName="px-6 pb-10 pt-8" showsVerticalScrollIndicator={false}>
         <Text className="text-accent text-[13px] font-semibold uppercase tracking-[0.1em]">{t`Spot the letter`}</Text>
 
         <Animated.View entering={FadeInDown.duration(600)}>
-          <Text className="text-background mt-3 text-[26px] leading-[1.15]">
+          <Text className="text-on-surface-ink mt-3 text-[26px] leading-[1.15]">
             {gloss ? t`Which spelling is right for “${gloss}”?` : t`Which spelling is right?`}
           </Text>
         </Animated.View>
@@ -96,13 +96,13 @@ const SpotLetterStep = ({ activity, onAnswer }: SpotLetterStepProps) => {
                 onPress={() => handleSelect(option)}
                 className={
                   isChosen
-                    ? 'bg-background flex-row items-center justify-between rounded-[14px] px-5 py-5'
+                    ? 'bg-on-surface-ink flex-row items-center justify-between rounded-[14px] px-5 py-5'
                     : 'flex-row items-center justify-between rounded-[14px] border-[1.5px] border-[rgba(244,235,221,0.35)] px-5 py-5'
                 }
               >
                 <Text
                   kabiye
-                  className={isChosen ? 'text-foreground text-[44px]' : 'text-background text-[44px]'}
+                  className={isChosen ? 'text-surface-ink text-[44px]' : 'text-on-surface-ink text-[44px]'}
                   weight="bold"
                 >
                   {[...option].map((ch, i) => (
@@ -114,8 +114,8 @@ const SpotLetterStep = ({ activity, onAnswer }: SpotLetterStepProps) => {
                         wrongLetters.includes(i)
                           ? 'text-accent text-[44px]'
                           : isChosen
-                            ? 'text-foreground text-[44px]'
-                            : 'text-background text-[44px]'
+                            ? 'text-surface-ink text-[44px]'
+                            : 'text-on-surface-ink text-[44px]'
                       }
                     >
                       {ch}
@@ -130,7 +130,7 @@ const SpotLetterStep = ({ activity, onAnswer }: SpotLetterStepProps) => {
 
         {selected ? (
           <Animated.View entering={FadeIn.duration(220)} className="mt-7">
-            <Text className="text-background/70 text-[15px] leading-[1.5]">
+            <Text className="text-on-surface-ink/70 text-[15px] leading-[1.5]">
               {selected === correct
                 ? (explanation ?? t`That is the attested spelling.`)
                 : t`The right spelling is ${correct}. We'll ask this one again at the end.`}

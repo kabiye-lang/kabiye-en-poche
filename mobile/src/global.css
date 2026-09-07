@@ -70,6 +70,14 @@
       --color-card: #FFFFFF;
       --color-tabbar: #221913;
 
+      /* A full-bleed ink screen -- the onboarding question, Spot the letter. `bg-foreground`
+         cannot express this: in dark mode foreground *is* paper, so an ink screen inverted
+         into a bright one in the middle of a dark app. Here it is ink; in dark it is the
+         recessed ink the rest of the dark palette raises cards to. Its text is paper in
+         both, hence a token of its own rather than `text-background`. */
+      --color-surface-ink: #221913;
+      --color-on-surface-ink: #F4EBDD;
+
       /* Text */
       --color-foreground: #221913;            /* ink */
       --color-foreground-secondary: #6B5A4E;  /* ink-quiet, 4.5:1 on paper */
@@ -131,6 +139,8 @@
       --color-background-tertiary: #2E241C;
       --color-card: #2E241C;
       --color-tabbar: #160F0B;
+      --color-surface-ink: #2E241C;
+      --color-on-surface-ink: #F4EBDD;
 
       /* Text */
       --color-foreground: #F4EBDD;
