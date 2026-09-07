@@ -8,6 +8,7 @@ import Animated, { FadeInDown } from 'react-native-reanimated'
 import { useLingui } from '@lingui/react/macro'
 
 import { useLanguage } from '../../hooks/use-language'
+import { correctIndex } from '../../utils/activity-answer'
 import { Button, Text, View } from '../ui'
 
 interface QuizStepProps {
@@ -35,13 +36,11 @@ const QuizStep = ({ activity, onAnswer }: QuizStepProps) => {
   const useKbp = !optionsUi?.length && optionsKbp?.length
   const options: string[] = isTrueFalse ? [t`True`, t`False`] : useKbp ? (optionsKbp ?? []) : (optionsUi ?? [])
 
-  const correctAnswer: string | boolean = isTrueFalse
-    ? (activityData?.answer ?? false)
-    : typeof activityData?.correct_answer === 'object'
-      ? useKbp
-        ? (activityData.correct_answer?.kbp ?? activityData.correct_answer?.en ?? '')
-        : (activityData.correct_answer?.[currentLanguage] ?? activityData.correct_answer?.en ?? '')
-      : (activityData?.correct_answer ?? '')
+  // Matched by position, not by string: when the options are a list per language and
+  // `correct_answer` is one string, comparing values marks every French answer wrong.
+  // See `utils/activity-answer.ts`.
+  const answerIndex = isTrueFalse ? -1 : correctIndex(activityData, useKbp ? 'kbp' : currentLanguage)
+  const correctAnswer: string | boolean = isTrueFalse ? (activityData?.answer ?? false) : (options[answerIndex] ?? '')
 
   const explanationData = activityData?.explanation
   const explanation = explanationData?.[currentLanguage] ?? explanationData?.en ?? undefined

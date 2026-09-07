@@ -8,6 +8,7 @@ import Animated, { FadeIn, FadeInDown } from 'react-native-reanimated'
 import { useLingui } from '@lingui/react/macro'
 
 import { useLanguage } from '../../hooks/use-language'
+import { correctIndex } from '../../utils/activity-answer'
 import { Button, Text, View } from '../ui'
 
 interface ReadChooseStepProps {
@@ -36,8 +37,12 @@ const ReadChooseStep = ({ activity, onAnswer }: ReadChooseStepProps) => {
     ((data as Record<string, unknown> | undefined)?.[`options_${currentLanguage}`] as string[] | undefined) ??
     ((data as Record<string, unknown> | undefined)?.options_en as string[] | undefined) ??
     []
-  const rawCorrect = data?.correct_answer
-  const correct = typeof rawCorrect === 'string' ? rawCorrect : (rawCorrect?.[currentLanguage] ?? rawCorrect?.en ?? '')
+  // The readings are two lists, one per language, but `correct_answer` is a single
+  // string -- so comparing them as strings marks every French answer wrong, because the
+  // stored answer is in English. It is matched by *position* instead: find which list
+  // holds it, take the index, and the right option is the one at that index in the list
+  // being shown. That also covers the older `{en, fr}` rows without migrating them.
+  const correct = options[correctIndex(data, currentLanguage)] ?? ''
   const explanation = getLocalised(data as Record<string, unknown>, 'explanation')
 
   const [selected, setSelected] = useState<string | null>(null)
