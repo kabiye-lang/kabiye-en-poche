@@ -1,48 +1,17 @@
-import { Pressable } from 'react-native'
-
-import { Link, Stack } from 'expo-router'
+import { Stack } from 'expo-router'
 
 import { useLingui } from '@lingui/react/macro'
-
-import { FilePdfIcon } from '../../../components/icons'
-import { Text } from '../../../components/ui'
 
 export default function TabDictionaryLayout() {
   const { t } = useLingui()
 
   return (
     <Stack>
-      <Stack.Screen
-        name="index"
-        options={{
-          headerShown: true,
-          title: t`Dictionary`,
-          headerRight: () => (
-            <Link href="/dictionary/pdf" asChild>
-              <Pressable className="flex flex-row items-center justify-center gap-1 !px-0 !py-0">
-                {({ pressed }) => (
-                  <>
-                    <FilePdfIcon
-                      size={20}
-                      weight="light"
-                      className="text-primary"
-                      style={{ opacity: pressed ? 0.5 : 1 }}
-                    />
-                    <Text
-                      variant="caption"
-                      weight="medium"
-                      className="text-primary"
-                      style={{ opacity: pressed ? 0.5 : 1 }}
-                    >
-                      PDF
-                    </Text>
-                  </>
-                )}
-              </Pressable>
-            </Link>
-          ),
-        }}
-      />
+      {/* No native header. The screen states its own title at 40px with a laterite
+          label above it, so a second "Dictionary" in the nav bar said the same thing
+          twice and stole the top 44px from the count that is the point of the page.
+          The PDF link lives in the pill row instead. */}
+      <Stack.Screen name="index" options={{ headerShown: false }} />
       <Stack.Screen
         name="search"
         options={{

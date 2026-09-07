@@ -1,13 +1,11 @@
-import { ActivityIndicator, FlatList } from 'react-native'
+import { ActivityIndicator, FlatList, Pressable } from 'react-native'
 
 import { router } from 'expo-router'
 
 import { useLingui } from '@lingui/react/macro'
 
-import { AppMarkdown } from '../components/markdown'
-import { Card, ScreenTitle, Text, View } from '../components/ui'
+import { Text, View } from '../components/ui'
 import { useAppAlphabetLetters, useAppCmsPage } from '../hooks/use-app-data'
-import { LETTER_TYPE_COLORS, MARKDOWN_STYLE } from '../utils/design-system-nativewind'
 
 export default function AlphabetListScreen() {
   const { t } = useLingui()
@@ -40,50 +38,69 @@ export default function AlphabetListScreen() {
     )
   }
 
-  return (
-    <View flex className="bg-background">
-      <FlatList
-        numColumns={3}
-        data={alphabetLetters || []}
-        contentContainerStyle={{ paddingHorizontal: 15, gap: 5, paddingBottom: 20 }}
-        columnWrapperStyle={{ width: '100%', gap: 5, height: 100 }}
-        keyExtractor={(item) => item.id}
-        ListHeaderComponent={() => (
-          <>
-            <ScreenTitle title={alphabetIntro?.title_en || t`I learn the Kabiyè Alphabet`} />
-            {alphabetIntro && (
-              <View>
-                <AppMarkdown style={MARKDOWN_STYLE}>{alphabetIntro.content_en}</AppMarkdown>
-              </View>
-            )}
-          </>
-        )}
-        renderItem={({ item }) => (
-          <Card
-            className="w-full flex-1 items-center justify-center"
-            onPress={() =>
-              router.push({
-                pathname: '/alphabet/[letter]',
-                params: { letter: item.id },
-              })
-            }
-          >
-            <View center>
-              <Card
-                className="mb-2 rounded-full px-2 py-1"
-                backgroundColor={LETTER_TYPE_COLORS[item.type as keyof typeof LETTER_TYPE_COLORS]}
-              >
-                <Text variant="small" weight="medium" className="text-white">
-                  {item.type === 'vowel' ? t`Vowel` : item.type === 'consonant' ? t`Consonant` : t`Grapheme`}
-                </Text>
-              </Card>
+  // The letters French cannot write. These are the tiles that carry laterite -- the one
+  // distinction the app exists to teach, and the only thing on this screen worth an accent.
+  const KABIYE_ONLY = 'ɖƉɛƐɣƔɩƖŋŊɔƆʋƲñÑ'
 
-              <Text kabiye variant="h2" weight="medium" className="text-center">
+  return (
+    <View flex safeArea="top" className="bg-background">
+      <FlatList
+        numColumns={4}
+        data={alphabetLetters || []}
+        contentContainerStyle={{ paddingHorizontal: 24, paddingBottom: 32, gap: 8 }}
+        columnWrapperStyle={{ gap: 8 }}
+        keyExtractor={(item) => item.id}
+        showsVerticalScrollIndicator={false}
+        // pt-14: the stack header is transparent here, so its back button floats over
+        // the content and would otherwise sit on the title.
+        ListHeaderComponent={() => (
+          <View className="pb-6 pt-14">
+            <Text className="text-accent text-[13px] font-semibold uppercase tracking-[0.1em]">{t`Alphabet`}</Text>
+            <Text weight="semibold" className="text-foreground mt-2 text-[40px] leading-[1.0]">
+              {alphabetIntro?.title_en || t`The Kabiyè alphabet`}
+            </Text>
+            <Text className="text-foreground mt-4 text-[26px] leading-[1.2]">
+              {t`32 letters. Eight of them are not on any French keyboard.`}
+            </Text>
+          </View>
+        )}
+        renderItem={({ item }) => {
+          const isKabiyeOnly = KABIYE_ONLY.includes(item.id)
+          return (
+            <Pressable
+              accessibilityRole="link"
+              accessibilityLabel={item.id}
+              onPress={() =>
+                router.push({
+                  pathname: '/alphabet/[letter]',
+                  params: { letter: item.id },
+                })
+              }
+              className={
+                isKabiyeOnly
+                  ? 'bg-accent aspect-square flex-1 items-center justify-center rounded-xl'
+                  : 'bg-background-secondary border-border aspect-square flex-1 items-center justify-center rounded-xl border'
+              }
+            >
+              <Text
+                kabiye
+                weight="bold"
+                className={isKabiyeOnly ? 'text-[34px] text-white' : 'text-foreground text-[34px]'}
+              >
                 {item.id}
               </Text>
-            </View>
-          </Card>
-        )}
+              <Text
+                className={
+                  isKabiyeOnly
+                    ? 'absolute bottom-2 text-[9px] uppercase tracking-[0.08em] text-white/60'
+                    : 'text-foreground-secondary/60 absolute bottom-2 text-[9px] uppercase tracking-[0.08em]'
+                }
+              >
+                {item.type === 'vowel' ? t`Vowel` : item.type === 'consonant' ? t`Consonant` : t`Grapheme`}
+              </Text>
+            </Pressable>
+          )
+        }}
       />
     </View>
   )
