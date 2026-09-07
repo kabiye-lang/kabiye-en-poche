@@ -28,7 +28,7 @@ const CoverStep = ({ title, description, unitLabel, words, onBegin }: CoverStepP
 
   return (
     <View className="bg-accent flex-1">
-      <ScrollView contentContainerClassName="px-6 pb-8 pt-4" showsVerticalScrollIndicator={false}>
+      <ScrollView className="flex-1" contentContainerClassName="px-6 pb-8 pt-4" showsVerticalScrollIndicator={false}>
         {unitLabel ? (
           <Text className="text-right text-[13px] font-semibold uppercase tracking-[0.1em] text-white/80">
             {unitLabel}

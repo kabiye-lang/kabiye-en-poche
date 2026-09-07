@@ -52,7 +52,7 @@ const ReadChooseStep = ({ activity, onAnswer }: ReadChooseStepProps) => {
 
   return (
     <View className="bg-background flex-1">
-      <ScrollView contentContainerClassName="px-6 pb-10 pt-8" showsVerticalScrollIndicator={false}>
+      <ScrollView className="flex-1" contentContainerClassName="px-6 pb-10 pt-8" showsVerticalScrollIndicator={false}>
         <Text className="text-accent text-[13px] font-semibold uppercase tracking-[0.1em]">{t`Read and choose`}</Text>
 
         <Animated.View entering={FadeInDown.duration(600)}>

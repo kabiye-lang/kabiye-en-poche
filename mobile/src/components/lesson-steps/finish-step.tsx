@@ -37,7 +37,7 @@ const FinishStep = ({ words, retried, savedTotal, onDone, isBusy }: FinishStepPr
 
   return (
     <View className="bg-accent flex-1">
-      <ScrollView contentContainerClassName="px-6 pb-8 pt-6" showsVerticalScrollIndicator={false}>
+      <ScrollView className="flex-1" contentContainerClassName="px-6 pb-8 pt-6" showsVerticalScrollIndicator={false}>
         <Text className="text-[13px] font-semibold uppercase tracking-[0.1em] text-white/80">{t`Done`}</Text>
 
         <Text weight="semibold" className="mt-4 text-[40px] leading-[1.0] text-white">

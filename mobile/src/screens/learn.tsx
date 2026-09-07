@@ -1,7 +1,6 @@
 import type { LearnerPath } from '../hooks/use-path'
 
 import { Pressable, ScrollView } from 'react-native'
-import Animated, { FadeInDown } from 'react-native-reanimated'
 
 import { router } from 'expo-router'
 
@@ -69,8 +68,8 @@ const LearnScreen = () => {
       </View>
 
       <View className="mt-8">
-        {ordered.map((unit, index) => (
-          <UnitChapter key={unit.id} unit={unit} index={index} currentLessonId={nextLesson?.id} />
+        {ordered.map((unit) => (
+          <UnitChapter key={unit.id} unit={unit} currentLessonId={nextLesson?.id} />
         ))}
       </View>
     </ScrollView>
@@ -85,12 +84,11 @@ interface UnitChapterProps {
     title_fr: string
     status: 'available' | 'coming_soon' | 'maintenance' | 'disabled' | null
   }
-  index: number
   /** The one lesson to resume, across the whole path. */
   currentLessonId?: string
 }
 
-const UnitChapter = ({ unit, index, currentLessonId }: UnitChapterProps) => {
+const UnitChapter = ({ unit, currentLessonId }: UnitChapterProps) => {
   const { t } = useLingui()
   const { getValue } = useLanguage()
   const { data: lessons } = useAppLessonsWithProgress(unit.id)
@@ -105,8 +103,12 @@ const UnitChapter = ({ unit, index, currentLessonId }: UnitChapterProps) => {
   // path, which is three answers to a question that has one. `useAppNextLesson` already
   // knows the globally next lesson, so the unit only asks whether it holds it.
 
+  // No entering animation on this block. Each chapter fetches its own lessons, so it
+  // mounts short and grows when they arrive; Reanimated snapshots the layout at mount
+  // and the siblings never catch up -- two units drew on top of each other with a gap
+  // above them. A stagger is not worth a path a learner cannot read.
   return (
-    <Animated.View entering={FadeInDown.duration(240).delay(Math.min(index, 4) * 60)} className="mb-9">
+    <View className="mb-9">
       <View className="border-foreground flex-row items-baseline border-b-[1.5px] pb-2">
         <Text className="text-accent text-[13px] font-semibold uppercase tracking-[0.1em]">
           {unit.code ? unit.code.replace(/^U0*/, t`Unit ` + '') : t`Unit`}
@@ -129,7 +131,7 @@ const UnitChapter = ({ unit, index, currentLessonId }: UnitChapterProps) => {
             <LessonRow key={lesson.id} lesson={lesson} index={i} isCurrent={lesson.id === currentLessonId} />
           ))
         : null}
-    </Animated.View>
+    </View>
   )
 }
 

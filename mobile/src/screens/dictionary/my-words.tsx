@@ -40,7 +40,9 @@ const MyWordsScreen = () => {
 
   return (
     <View flex safeArea="top" className="bg-background">
-      <ScrollView contentContainerClassName="px-6 pb-8 pt-14" showsVerticalScrollIndicator={false}>
+      {/* `flex-1`, or the ScrollView grows to its content and the footer button
+          below it draws over the last rows instead of under them. */}
+      <ScrollView className="flex-1" contentContainerClassName="px-6 pb-8 pt-14" showsVerticalScrollIndicator={false}>
         <Text className="text-accent text-[13px] font-semibold uppercase tracking-[0.1em]">{t`My words`}</Text>
         <Text weight="semibold" className="text-foreground mt-2 text-[40px] leading-[1.0]">
           {words.length === 1 ? t`1 word` : t`${words.length} words`}

@@ -81,7 +81,10 @@ const WordDetailsScreen: React.FC = () => {
 
   return (
     <View flex className="bg-background" safeArea="vertical">
-      <ScrollView contentContainerStyle={{ paddingTop: headerHeight / 2, paddingHorizontal: 20, paddingBottom: 40 }}>
+      <ScrollView
+        className="flex-1"
+        contentContainerStyle={{ paddingTop: headerHeight / 2, paddingHorizontal: 20, paddingBottom: 40 }}
+      >
         {/* The headword is the page. At 44 it is the first and largest thing, in the
             face that can actually draw it. */}
         <Text kabiye weight="bold" className="text-foreground text-[44px] leading-[1.05]">
