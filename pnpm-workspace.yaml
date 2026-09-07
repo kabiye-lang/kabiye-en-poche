@@ -125,7 +125,7 @@ overrides:
   # instance from the other copy and every bundle failed with "Cannot read properties of
   # undefined (reading 'transformFile')" — the app could not start at all. They are
   # patch-compatible; 0.84.5 is the version uniwind, the styling layer, actually requires.
-  metro: 0.84.5
+  metro: 0.87.0
   metro-babel-transformer: 0.84.5
   metro-cache: 0.84.5
   metro-cache-key: 0.84.5
