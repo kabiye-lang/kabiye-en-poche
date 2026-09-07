@@ -128,7 +128,7 @@ overrides:
   metro: 0.84.5
   metro-babel-transformer: 0.84.5
   metro-cache: 0.84.5
-  metro-cache-key: 0.84.5
+  metro-cache-key: 0.87.0
   metro-config: 0.84.5
   metro-core: 0.84.5
   metro-file-map: 0.84.5
