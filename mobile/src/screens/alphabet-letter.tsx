@@ -1,4 +1,4 @@
-import { ActivityIndicator } from 'react-native'
+import { Pressable } from 'react-native'
 import Animated, {
   interpolate,
   interpolateColor,
@@ -15,8 +15,10 @@ import { useLingui } from '@lingui/react/macro'
 import { CaretLeftIcon } from '../components/icons'
 import { AppMarkdown } from '../components/markdown'
 import { Button, Text, View } from '../components/ui'
-import { useAppAlphabetLetter } from '../hooks/use-app-data'
+import { useAppAlphabetLetter, useAppAlphabetLetters } from '../hooks/use-app-data'
+import { useEntriesByLetter } from '../hooks/use-dictionary'
 import { useLanguage } from '../hooks/use-language'
+import { useMyWords } from '../hooks/use-my-words'
 import { brandColors, MARKDOWN_STYLE } from '../utils/design-system-nativewind'
 
 // import { useRefreshOnFocus } from '@/hooks/useRefreshOnFocus'
@@ -29,6 +31,20 @@ export default function AlphabetLetterScreen() {
 
   const letterId = letterParam ? decodeURI(letterParam as string) : ''
   const { data: letter, isLoading, error } = useAppAlphabetLetter(letterId)
+  const { data: alphabet } = useAppAlphabetLetters()
+  const { words: myWords } = useMyWords()
+  const { data: entriesByLetter } = useEntriesByLetter(letterId)
+
+  // "In words you know" means exactly that where it can: the learner's own list, filtered
+  // to the words this letter appears in. It falls back to the dictionary so the section
+  // is never empty on a first run -- both sources are attested, neither is invented.
+  const known = myWords.filter((word) => word.headword.toLowerCase().includes(letterId.toLowerCase())).slice(0, 4)
+  const examples = known.length
+    ? known.map((word) => word.headword)
+    : (entriesByLetter?.pages[0] || []).slice(0, 4).map((entry) => entry.headword)
+
+  const position = alphabet?.findIndex((entry) => entry.id === letterId) ?? -1
+  const next = position >= 0 && alphabet ? alphabet[position + 1] : undefined
 
   const sv = useSharedValue<number>(0)
   const scrollHandler = useAnimatedScrollHandler({
@@ -49,12 +65,19 @@ export default function AlphabetLetterScreen() {
     }
   })
 
+  // Bone blocks in the shape of what is coming, never a spinner: the page is one huge
+  // letter and a paragraph, and the skeleton can say exactly that.
   if (isLoading) {
     return (
-      <View flex className="bg-background">
-        <View className="flex-1 items-center justify-center">
-          <ActivityIndicator size="large" className="text-primary" />
-          <Text className="mt-4">{t`Loading letter...`}</Text>
+      <View flex className="bg-background" style={{ paddingTop: safeAreaInsets.top + 70 }}>
+        <View className="px-6">
+          <View className="bg-background-tertiary h-[150px] w-[220px] rounded-xl" />
+          <View className="mt-6 flex-row gap-2">
+            <View className="bg-background-tertiary h-10 w-28 rounded-full" />
+            <View className="bg-background-tertiary h-10 w-32 rounded-full" />
+          </View>
+          <View className="bg-background-tertiary mt-8 h-5 w-full rounded-md" />
+          <View className="bg-background-tertiary mt-3 h-5 w-4/5 rounded-md" />
         </View>
       </View>
     )
@@ -145,8 +168,71 @@ export default function AlphabetLetterScreen() {
               reader got French prose on the screen teaching them to read. */}
           <AppMarkdown style={MARKDOWN_STYLE}>{description ?? ''}</AppMarkdown>
         </View>
+
+        {examples.length > 0 ? (
+          <View className="mt-8 px-6">
+            <Text className="text-accent text-[13px] font-semibold uppercase tracking-[0.1em]">
+              {known.length ? t`In words you know` : t`In words`}
+            </Text>
+            <View className="mt-3">
+              {examples.map((headword) => (
+                <Pressable
+                  key={headword}
+                  accessibilityRole="button"
+                  onPress={() => router.push(`/word/${headword}`)}
+                  className="border-border border-b py-4"
+                >
+                  <HighlightedWord word={headword} letter={letterId} />
+                </Pressable>
+              ))}
+            </View>
+          </View>
+        ) : null}
+
+        {/* Write it, or move on. Both are the actions this screen leads to; neither is
+            a decoration, so they sit at the end of the page rather than in a bar. */}
+        <View className="mt-8 flex-row gap-3 px-6">
+          <Button
+            variant="outline"
+            className="flex-1"
+            onPress={() => router.push(`/keyboard?text=${encodeURIComponent(letterId)}`)}
+          >
+            <Text weight="semibold" className="text-foreground text-[16px]">{t`Write it`}</Text>
+          </Button>
+          {next ? (
+            <Button className="flex-1" onPress={() => router.replace(`/alphabet/${encodeURIComponent(next.id)}`)}>
+              <Text kabiye weight="semibold" className="text-background text-[16px]">
+                {t`Next`} {next.id.toUpperCase()} {next.id}
+              </Text>
+            </Button>
+          ) : null}
+        </View>
         <View className="h-[70px]" />
       </Animated.ScrollView>
     </View>
+  )
+}
+
+/**
+ * The word with this letter picked out in laterite.
+ *
+ * A learner scanning for `ɩ` inside `Kabɩyɛ` is doing the exact discrimination the
+ * screen teaches, so the letter is coloured rather than left for them to find.
+ */
+function HighlightedWord({ word, letter }: { word: string; letter: string }) {
+  const parts = word.split(new RegExp(`(${letter.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')})`, 'gi'))
+
+  return (
+    <Text kabiye weight="bold" className="text-foreground text-[24px] leading-[1.15]">
+      {parts.map((part, index) =>
+        part.toLowerCase() === letter.toLowerCase() ? (
+          <Text key={index} kabiye weight="bold" className="text-accent text-[24px]">
+            {part}
+          </Text>
+        ) : (
+          part
+        )
+      )}
+    </Text>
   )
 }

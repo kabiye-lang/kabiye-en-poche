@@ -2,6 +2,7 @@ import { useState } from 'react'
 import { Dimensions, Pressable, TextInput } from 'react-native'
 
 import * as Clipboard from 'expo-clipboard'
+import { useLocalSearchParams } from 'expo-router'
 
 import { useLingui } from '@lingui/react/macro'
 
@@ -112,7 +113,10 @@ export default function KeyboardScreen() {
   const placeholderColor = usePlaceholderColor()
   const { t } = useLingui()
   const [capsLock, setCapsLock] = useState<0 | 1 | 2>(0)
-  const [content, setContent] = useState('')
+  // The alphabet and entry screens both offer "Write it", which means arriving here with
+  // the letter or word already in the pad rather than typing it again.
+  const { text } = useLocalSearchParams<{ text?: string }>()
+  const [content, setContent] = useState(text ?? '')
 
   const changeText = (letter: Partial<(typeof ALPHABET_LIST)[0]>) => {
     setContent((oldContent) => oldContent + resolveKey(letter as { id: string; caps?: string }, capsLock, false))

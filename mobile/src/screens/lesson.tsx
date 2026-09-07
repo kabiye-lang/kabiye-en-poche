@@ -2,7 +2,6 @@ import type { AudioActivityData } from '../types/activity-data'
 import type { ActivityStep, LessonExample, LessonStep } from '../types/lesson-steps'
 
 import { useMemo, useState } from 'react'
-import { ActivityIndicator } from 'react-native'
 import Animated, { FadeIn, FadeInRight } from 'react-native-reanimated'
 
 import { router, useLocalSearchParams } from 'expo-router'
@@ -27,7 +26,7 @@ import {
   SpotLetterStep,
   TeachStep,
 } from '../components/lesson-steps'
-import { Text, View } from '../components/ui'
+import { Skeleton, SkeletonRows, Text, View } from '../components/ui'
 import { useAppCompleteLesson, useAppLesson, useAppLessonActivities, useAppLessonContents } from '../hooks/use-app-data'
 import { useLanguage } from '../hooks/use-language'
 import { useMyWords } from '../hooks/use-my-words'
@@ -335,9 +334,11 @@ const LessonScreen = () => {
   // Loading state
   if (lessonLoading || contentsLoading || activitiesLoading) {
     return (
-      <View className="bg-background flex-1 items-center justify-center">
-        <ActivityIndicator size="large" className="text-primary" />
-        <Text className="mt-4">{t`Loading lesson...`}</Text>
+      <View className="bg-background flex-1 px-6 pt-20">
+        <Skeleton className="h-3 w-full rounded-full" />
+        <Skeleton className="mt-10 h-12 w-4/5" />
+        <Skeleton className="mt-4 h-6 w-2/3" />
+        <SkeletonRows rows={3} />
       </View>
     )
   }
@@ -469,11 +470,7 @@ const LessonScreen = () => {
         {audioStepContent}
 
         {currentStep.type === 'multiple_choice' || currentStep.type === 'true_false' ? (
-          <QuizStep
-            activity={currentStep.activity}
-            onAnswer={handleQuizAnswer}
-            progressPercent={Math.round((currentStepIndex / Math.max(walkedSteps.length - 1, 1)) * 100)}
-          />
+          <QuizStep activity={currentStep.activity} onAnswer={handleQuizAnswer} />
         ) : null}
 
         {currentStep.type === 'fill_blank' ? (

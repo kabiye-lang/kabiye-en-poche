@@ -9,7 +9,7 @@ import { useLingui } from '@lingui/react/macro'
 
 import { useLanguage } from '../../hooks/use-language'
 import { ArrowsClockwiseIcon } from '../icons'
-import { Button, Card, Text, View } from '../ui'
+import { Button, Text, View } from '../ui'
 
 interface OrderWordsStepProps {
   activity: LessonActivity
@@ -65,110 +65,97 @@ const OrderWordsStep = ({ activity, onAnswer }: OrderWordsStepProps) => {
     onAnswer(isCorrect, orderedWords.join(' '))
   }
 
+  const ready = orderedWords.length === words.length
+
   return (
     <View className="flex-1">
       <ScrollView className="flex-1 px-6" showsVerticalScrollIndicator={false}>
-        {/* Question (optional; generic fallback when absent) */}
-        <Card className="mb-6 p-6">
-          <Text variant="h5" weight="semibold" className="text-foreground text-center">
-            {question ?? t`Put the words in the correct order`}
-          </Text>
-        </Card>
-
-        <Text variant="body" className="text-foreground mb-4 text-center">
+        <Text className="text-accent text-[13px] font-semibold uppercase tracking-[0.1em]">{t`Order the words`}</Text>
+        <Text weight="medium" className="text-foreground mt-2 text-[26px] leading-[1.25]">
+          {question ?? t`Put the words in the correct order`}
+        </Text>
+        <Text className="text-foreground-secondary mt-2 text-[15px]">
           {instructions ?? t`Tap words in the correct order`}
         </Text>
 
-        {/* Ordered Words Area */}
-        <Card className="mb-4 min-h-[100px] p-4">
+        {/* The drop zone is a rule, not a box: the sentence being assembled sits on a
+            line the way handwriting does. */}
+        <View className="border-foreground mt-8 min-h-[120px] justify-end border-b-2 pb-3">
           <View className="flex-row flex-wrap gap-2">
-            {orderedWords.length === 0 ? (
-              <Text variant="body" className="text-foreground w-full text-center">
-                {t`Your answer will appear here`}
-              </Text>
-            ) : (
-              orderedWords.map((word, index) => (
-                <Animated.View key={`ordered-${index}`} entering={FadeIn.duration(160)}>
-                  <Pressable
-                    onPress={() => !showFeedback && handleRemoveWord(word, index)}
-                    disabled={showFeedback}
-                    className="border-primary bg-primary/10 rounded-lg border-2 px-4 py-2"
-                  >
-                    <Text kabiye variant="body" weight="bold" className="text-primary">
-                      {word}
-                    </Text>
-                  </Pressable>
-                </Animated.View>
-              ))
-            )}
-          </View>
-        </Card>
-
-        {/* Available Words */}
-        {availableWords.length > 0 && (
-          <View className="mb-4">
-            <Text variant="caption" weight="bold" className="text-foreground mb-2">
-              {t`Available words:`}
-            </Text>
-            <View className="flex-row flex-wrap gap-2">
-              {availableWords.map((word, index) => (
+            {orderedWords.map((word, index) => (
+              <Animated.View key={`ordered-${index}`} entering={FadeIn.duration(160)}>
                 <Pressable
-                  key={`available-${index}`}
-                  onPress={() => handleSelectWord(word)}
+                  accessibilityRole="button"
+                  onPress={() => !showFeedback && handleRemoveWord(word, index)}
                   disabled={showFeedback}
-                  className="border-border bg-card rounded-lg border-2 px-4 py-2"
+                  className="bg-foreground rounded-full px-4 py-2"
                 >
-                  <Text kabiye variant="body" weight="bold" className="text-foreground">
+                  <Text kabiye weight="bold" className="text-background text-[22px]">
                     {word}
                   </Text>
                 </Pressable>
-              ))}
-            </View>
+              </Animated.View>
+            ))}
           </View>
-        )}
+        </View>
 
-        {/* Reset Button - shown when words are arranged (pre-check) or after wrong answer */}
+        <View className="mt-6 flex-row flex-wrap gap-2">
+          {words.map((word, index) => {
+            const used = !availableWords.includes(word)
+
+            return (
+              <Pressable
+                key={`bank-${index}`}
+                accessibilityRole="button"
+                accessibilityState={{ disabled: used }}
+                onPress={() => !used && handleSelectWord(word)}
+                disabled={used || showFeedback}
+                className="border-foreground rounded-full border-[1.5px] px-4 py-2"
+              >
+                <Text kabiye weight="bold" className="text-foreground text-[22px]">
+                  {word}
+                </Text>
+              </Pressable>
+            )
+          })}
+        </View>
+
         {(!showFeedback && orderedWords.length > 0) || (showFeedback && !isCorrect) ? (
-          <Pressable onPress={handleReset} className="mb-4 flex-row items-center justify-center">
-            <ArrowsClockwiseIcon size={20} className="text-primary" />
-            <Text variant="body" className="text-primary ml-2">
-              {t`Reset`}
-            </Text>
+          <Pressable accessibilityRole="button" onPress={handleReset} className="mt-6 flex-row items-center self-start">
+            <ArrowsClockwiseIcon size={18} className="text-foreground-secondary" />
+            <Text className="text-foreground-secondary ml-2 text-[14px]">{t`Reset`}</Text>
           </Pressable>
         ) : null}
 
-        {/* Feedback */}
-        {showFeedback && (
-          <Animated.View entering={FadeInDown.duration(220)}>
-            <Card className={`mb-4 p-4 ${isCorrect ? 'bg-success-bg' : 'bg-error-bg'}`}>
-              <Text
-                variant="h6"
-                weight="bold"
-                className={`text-center ${isCorrect ? 'text-success-text' : 'text-error-text'}`}
-              >
-                {isCorrect ? t`Perfect! Correct order!` : t`Not quite — tap Reset and try again`}
-              </Text>
-              {!isCorrect && (
-                <Text variant="body" className="text-foreground mt-2 text-center">
-                  {t`Correct order:`} {correctOrder.join(' ')}
+        {showFeedback ? (
+          <Animated.View entering={FadeInDown.duration(220)} className="border-foreground mt-7 border-l-[3px] pl-4">
+            <Text weight="semibold" className="text-foreground text-[17px]">
+              {isCorrect ? t`Yes` : t`Not this time`}
+            </Text>
+            {!isCorrect ? (
+              <>
+                <Text kabiye weight="bold" className="text-foreground mt-2 text-[20px] leading-[1.35]">
+                  {correctOrder.join(' ')}
                 </Text>
-              )}
-            </Card>
+                <Text className="text-foreground-secondary mt-2 text-[15px] leading-[1.5]">
+                  {t`We'll ask this one again at the end.`}
+                </Text>
+              </>
+            ) : null}
           </Animated.View>
-        )}
+        ) : null}
 
         <View className="h-24" />
       </ScrollView>
 
-      {/* Bottom Button */}
-      <View className="border-border bg-card border-t px-6 py-4">
+      <View className="px-6 pb-4">
         <Button
           variant="primary"
           onPress={showFeedback ? handleContinue : handleCheck}
-          disabled={(!showFeedback && !(orderedWords.length === words.length)) || (showFeedback && !isCorrect)}
+          disabled={!showFeedback && !ready}
           className="w-full"
         >
-          <Text variant="body" weight="bold" className="text-white">
+          <Text weight="semibold" className="text-background text-[16px]">
             {showFeedback ? t`Continue` : t`Check`}
           </Text>
         </Button>

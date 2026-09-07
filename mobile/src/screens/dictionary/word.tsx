@@ -1,5 +1,5 @@
 import React from 'react'
-import { ActivityIndicator, Alert, Pressable, ScrollView } from 'react-native'
+import { Alert, Pressable, ScrollView } from 'react-native'
 
 import { Link, router, useLocalSearchParams } from 'expo-router'
 import { useHeaderHeight } from 'expo-router/react-navigation'
@@ -22,25 +22,28 @@ const WordDetailsScreen: React.FC = () => {
   const { data: entry, isLoading, error } = useEntryByTerm(term || '')
   const headerHeight = useHeaderHeight()
   if (isLoading) {
+    // Bone blocks in the shape of the entry, never a spinner.
     return (
-      <View flex className="bg-background items-center justify-center">
-        <ActivityIndicator size="large" className="text-primary" />
-        <Text variant="body" className="text-foreground-secondary mt-4">
-          {t`Loading...`}
-        </Text>
+      <View flex className="bg-background px-6" style={{ paddingTop: headerHeight }}>
+        <View className="bg-background-tertiary h-11 w-3/5 rounded-lg" />
+        <View className="bg-background-tertiary mt-3 h-4 w-1/4 rounded-md" />
+        <View className="bg-background-tertiary mt-8 h-5 w-full rounded-md" />
+        <View className="bg-background-tertiary mt-3 h-5 w-5/6 rounded-md" />
       </View>
     )
   }
 
   if (error || !entry) {
     return (
-      <View flex className="bg-background items-center justify-center px-4">
-        <Text variant="h6" className="text-center text-red-500">
-          {t`Word not found`}
-        </Text>
-        <Text variant="body" className="text-foreground-secondary mt-2 text-center">
-          {t`The word you're looking for doesn't exist in our dictionary`}
-        </Text>
+      <View flex className="bg-background px-6" style={{ paddingTop: headerHeight }}>
+        <View className="border-foreground rounded-[18px] border-[1.5px] p-6">
+          <Text weight="semibold" className="text-foreground text-[20px]">
+            {t`Not in the dictionary`}
+          </Text>
+          <Text className="text-foreground-secondary mt-2 text-[15px] leading-[1.5]">
+            {t`We don't hold this word. Kabiyè writes ɩ where French writes i, and ʋ where French writes u — try those.`}
+          </Text>
+        </View>
       </View>
     )
   }

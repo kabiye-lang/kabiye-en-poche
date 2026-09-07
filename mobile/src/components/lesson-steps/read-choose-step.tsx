@@ -23,17 +23,22 @@ interface ReadChooseStepProps {
  */
 const ReadChooseStep = ({ activity, onAnswer }: ReadChooseStepProps) => {
   const { t } = useLingui()
-  const { currentLanguage } = useLanguage()
+  const { currentLanguage, getLocalised } = useLanguage()
   const data = activity.data as ReadChooseActivityData | null | undefined
 
   const sentence = data?.sentence?.trim() ?? ''
   // Options are keyed by interface language -- `{ en: [...], fr: [...] }` -- the same
   // shape quiz-step reads. `getJsonValue` would look for `options_en` instead, which is
   // the other convention in this codebase and not the one the schema emits.
-  const options = data?.options?.[currentLanguage] ?? data?.options?.en ?? []
+  const options =
+    data?.options?.[currentLanguage] ??
+    data?.options?.en ??
+    ((data as Record<string, unknown> | undefined)?.[`options_${currentLanguage}`] as string[] | undefined) ??
+    ((data as Record<string, unknown> | undefined)?.options_en as string[] | undefined) ??
+    []
   const rawCorrect = data?.correct_answer
   const correct = typeof rawCorrect === 'string' ? rawCorrect : (rawCorrect?.[currentLanguage] ?? rawCorrect?.en ?? '')
-  const explanation = data?.explanation?.[currentLanguage] ?? data?.explanation?.en ?? undefined
+  const explanation = getLocalised(data as Record<string, unknown>, 'explanation')
 
   const [selected, setSelected] = useState<string | null>(null)
 

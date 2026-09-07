@@ -1,10 +1,10 @@
-import { ActivityIndicator, FlatList, Pressable } from 'react-native'
+import { FlatList, Pressable } from 'react-native'
 
 import { router } from 'expo-router'
 
 import { useLingui } from '@lingui/react/macro'
 
-import { Text, View } from '../components/ui'
+import { Skeleton, Text, View } from '../components/ui'
 import { useAppAlphabetLetters, useAppCmsPage } from '../hooks/use-app-data'
 
 export default function AlphabetListScreen() {
@@ -14,10 +14,12 @@ export default function AlphabetListScreen() {
 
   if (isLoading) {
     return (
-      <View flex className="bg-background">
-        <View className="flex-1 items-center justify-center">
-          <ActivityIndicator size="large" className="text-primary" />
-          <Text className="mt-4">{t`Loading alphabet...`}</Text>
+      <View flex className="bg-background px-6 pt-16">
+        <Skeleton className="h-11 w-1/2" />
+        <View className="mt-8 flex-row flex-wrap gap-2">
+          {Array.from({ length: 12 }, (_, tile) => (
+            <Skeleton key={tile} className="h-[86px] w-[86px] rounded-xl" />
+          ))}
         </View>
       </View>
     )

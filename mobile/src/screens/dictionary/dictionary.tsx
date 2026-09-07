@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import { ActivityIndicator, Pressable, ScrollView, TextInput } from 'react-native'
+import { Pressable, ScrollView, TextInput } from 'react-native'
 
 import { Link, router } from 'expo-router'
 
@@ -7,7 +7,7 @@ import { useLingui } from '@lingui/react/macro'
 
 import { MagnifyingGlassIcon } from '../../components/icons'
 import { LanguageTag } from '../../components/language-tag'
-import { Text, View } from '../../components/ui'
+import { Skeleton, Text, View } from '../../components/ui'
 import { WordOfTheDay } from '../../components/word-of-the-day'
 import { useDebounce } from '../../hooks/use-debounce'
 import {
@@ -99,7 +99,7 @@ const DictionaryScreen: React.FC = () => {
             spellCheck={false}
           />
           {isSearching || isFetching ? (
-            <ActivityIndicator size="small" className="ml-2" />
+            <Skeleton className="ml-2 h-5 w-5 rounded-full" />
           ) : (
             /* The letters a French keyboard cannot reach, one tap away from the field
                that needs them most. */
@@ -203,7 +203,11 @@ const DictionaryScreen: React.FC = () => {
             {t`Browse by letter`}
           </Text>
           {isLoadingLetters ? (
-            <ActivityIndicator className="py-4" />
+            <View className="mt-3 flex-row flex-wrap gap-2">
+              {Array.from({ length: 10 }, (_, tile) => (
+                <Skeleton key={tile} className="h-11 w-11 rounded-xl" />
+              ))}
+            </View>
           ) : (
             <View className="mt-3 flex-row flex-wrap gap-2">
               {letters?.map((letter) => (

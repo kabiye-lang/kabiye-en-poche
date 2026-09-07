@@ -1,5 +1,4 @@
 export { default as AudioStep } from './audio-step'
-export { default as CompletionStep } from './completion-step'
 export { default as ContentStep } from './content-step'
 export { default as CoverStep } from './cover-step'
 export { default as FinishStep } from './finish-step'

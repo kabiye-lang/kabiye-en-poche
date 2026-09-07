@@ -17,9 +17,20 @@ type ActivityType =
   | 'order_words'
   | 'fill_blank'
   | 'multiple_choice'
+  | 'spell'
+  | 'spot_letter'
+  | 'read_choose'
   | 'true_false'
 
 type ActivityData = Record<string, unknown>
+
+/** The letters a French keyboard cannot reach — what `spot_letter` swaps out. */
+const KABIYE_ONLY = 'ɖƉɛƐɣƔɩƖŋŊɔƆʋƲñÑ'
+
+/** How many of those a word carries. */
+export function specialCount(word: string): number {
+  return [...word].filter((letter) => KABIYE_ONLY.includes(letter)).length
+}
 
 /** Validates activity data based on type. Returns error message or undefined. */
 export function validateActivityData(value: unknown, values?: { activity_type?: string }): string | undefined {
@@ -63,6 +74,30 @@ export function validateActivityData(value: unknown, values?: { activity_type?: 
       if (!hasOpts) return 'At least one set of options is required'
       if (!correct || typeof correct !== 'object') return 'Correct answer is required'
       break
+    case 'spell':
+      if (!data.answer) return 'The Kabiyè spelling is required'
+      if (!(data.gloss as Record<string, string>)?.en && !(data.gloss as Record<string, string>)?.fr)
+        return 'A gloss (EN or FR) is required — it is the prompt the learner spells from'
+      break
+    case 'spot_letter': {
+      const correct = (data.correct ?? '') as string
+      if (!correct) return 'The correct spelling is required'
+      // The wrong spellings are derived by the app, never authored. One Kabiyè letter
+      // yields one distractor, which makes the question a two-option coin flip.
+      if (specialCount(correct) < 2)
+        return 'The word needs at least two of ɖ ɛ ɣ ɩ ŋ ɔ ʋ ñ, or there is only one wrong spelling to offer'
+      if (!(data.gloss as Record<string, string>)?.en && !(data.gloss as Record<string, string>)?.fr)
+        return 'A gloss (EN or FR) is required'
+      break
+    }
+    case 'read_choose': {
+      if (!data.sentence) return 'The Kabiyè sentence is required'
+      const readings = data.options as Record<string, string[]>
+      const hasReadings = (readings?.en?.length ?? 0) > 0 || (readings?.fr?.length ?? 0) > 0
+      if (!hasReadings) return 'At least one set of readings (EN or FR) is required'
+      if (!data.correct_answer) return 'Correct answer is required (must match a reading exactly)'
+      break
+    }
     case 'true_false':
       if (data.answer !== true && data.answer !== false) return 'Correct answer (true or false) is required'
       break
@@ -494,6 +529,162 @@ function TrueFalseFields({ data, onChange }: { data: ActivityData; onChange: (d:
   )
 }
 
+function SpellFields({ data, onChange }: { data: ActivityData; onChange: (d: ActivityData) => void }) {
+  const upd = (k: string, v: unknown) => onChange({ ...data, [k]: v })
+  const gloss = (data.gloss ?? {}) as Record<string, string>
+  const hint = (data.hint ?? {}) as Record<string, string>
+
+  return (
+    <div className="space-y-4">
+      <div>
+        <label className="text-sm font-medium">Kabiyè spelling *</label>
+        <Input
+          value={(data.answer ?? '') as string}
+          onChange={(e) => upd('answer', e.target.value)}
+          placeholder="The attested spelling the learner types"
+        />
+      </div>
+      <div className="grid gap-2 sm:grid-cols-2">
+        <div>
+          <label className="text-sm font-medium">Gloss (EN) *</label>
+          <Input value={gloss.en ?? ''} onChange={(e) => upd('gloss', { ...gloss, en: e.target.value })} />
+        </div>
+        <div>
+          <label className="text-sm font-medium">Gloss (FR) *</label>
+          <Input value={gloss.fr ?? ''} onChange={(e) => upd('gloss', { ...gloss, fr: e.target.value })} />
+        </div>
+      </div>
+      <div className="grid gap-2 sm:grid-cols-2">
+        <div>
+          <label className="text-sm font-medium">Hint (EN)</label>
+          <Input value={hint.en ?? ''} onChange={(e) => upd('hint', { ...hint, en: e.target.value })} />
+        </div>
+        <div>
+          <label className="text-sm font-medium">Hint (FR)</label>
+          <Input value={hint.fr ?? ''} onChange={(e) => upd('hint', { ...hint, fr: e.target.value })} />
+        </div>
+      </div>
+    </div>
+  )
+}
+
+function SpotLetterFields({ data, onChange }: { data: ActivityData; onChange: (d: ActivityData) => void }) {
+  const upd = (k: string, v: unknown) => onChange({ ...data, [k]: v })
+  const gloss = (data.gloss ?? {}) as Record<string, string>
+  const expl = (data.explanation ?? {}) as Record<string, string>
+  const correct = (data.correct ?? '') as string
+  const specials = specialCount(correct)
+
+  return (
+    <div className="space-y-4">
+      <div>
+        <label className="text-sm font-medium">Correct spelling *</label>
+        <Input
+          value={correct}
+          onChange={(e) => upd('correct', e.target.value)}
+          placeholder="e.g. Kabɩyɛ"
+        />
+        {/* The count is shown as you type because the rule is invisible otherwise: the
+            wrong spellings never appear in this form, so nothing else on screen says
+            why a one-special word is unusable. */}
+        <p className={specials >= 2 ? 'text-muted-foreground mt-1 text-sm' : 'mt-1 text-sm text-red-600'}>
+          {specials} of ɖ ɛ ɣ ɩ ŋ ɔ ʋ ñ. Two or more are needed — the wrong spellings are derived by swapping each
+          for the plain letter a French keyboard reaches for, so one letter means one distractor.
+        </p>
+      </div>
+      <div className="grid gap-2 sm:grid-cols-2">
+        <div>
+          <label className="text-sm font-medium">Gloss (EN) *</label>
+          <Input value={gloss.en ?? ''} onChange={(e) => upd('gloss', { ...gloss, en: e.target.value })} />
+        </div>
+        <div>
+          <label className="text-sm font-medium">Gloss (FR) *</label>
+          <Input value={gloss.fr ?? ''} onChange={(e) => upd('gloss', { ...gloss, fr: e.target.value })} />
+        </div>
+      </div>
+      <div className="grid gap-2 sm:grid-cols-2">
+        <div>
+          <label className="text-sm font-medium">Explanation (EN)</label>
+          <textarea
+            value={expl.en ?? ''}
+            onChange={(e) => upd('explanation', { ...expl, en: e.target.value })}
+            className="border-input w-full rounded-md border px-3 py-2"
+            rows={2}
+          />
+        </div>
+        <div>
+          <label className="text-sm font-medium">Explanation (FR)</label>
+          <textarea
+            value={expl.fr ?? ''}
+            onChange={(e) => upd('explanation', { ...expl, fr: e.target.value })}
+            className="border-input w-full rounded-md border px-3 py-2"
+            rows={2}
+          />
+        </div>
+      </div>
+    </div>
+  )
+}
+
+function ReadChooseFields({ data, onChange }: { data: ActivityData; onChange: (d: ActivityData) => void }) {
+  const upd = (k: string, v: unknown) => onChange({ ...data, [k]: v })
+  const options = (data.options ?? {}) as Record<string, string[]>
+  const expl = (data.explanation ?? {}) as Record<string, string>
+
+  return (
+    <div className="space-y-4">
+      <div>
+        <label className="text-sm font-medium">Kabiyè sentence *</label>
+        <Input
+          value={(data.sentence ?? '') as string}
+          onChange={(e) => upd('sentence', e.target.value)}
+          placeholder="The sentence the learner reads"
+        />
+      </div>
+      <StringArrayField
+        value={options.en ?? []}
+        onChange={(v) => upd('options', { ...options, en: v })}
+        label="Readings (EN)"
+        placeholder="A possible reading"
+      />
+      <StringArrayField
+        value={options.fr ?? []}
+        onChange={(v) => upd('options', { ...options, fr: v })}
+        label="Readings (FR)"
+        placeholder="Une lecture possible"
+      />
+      <div>
+        <label className="text-sm font-medium">Correct answer *</label>
+        <Input
+          value={(data.correct_answer ?? '') as string}
+          onChange={(e) => upd('correct_answer', e.target.value)}
+          placeholder="Must match one reading exactly"
+        />
+      </div>
+      <div className="grid gap-2 sm:grid-cols-2">
+        <div>
+          <label className="text-sm font-medium">Explanation (EN)</label>
+          <textarea
+            value={expl.en ?? ''}
+            onChange={(e) => upd('explanation', { ...expl, en: e.target.value })}
+            className="border-input w-full rounded-md border px-3 py-2"
+            rows={2}
+          />
+        </div>
+        <div>
+          <label className="text-sm font-medium">Explanation (FR)</label>
+          <textarea
+            value={expl.fr ?? ''}
+            onChange={(e) => upd('explanation', { ...expl, fr: e.target.value })}
+            className="border-input w-full rounded-md border px-3 py-2"
+            rows={2}
+          />
+        </div>
+      </div>
+    </div>
+  )
+}
+
 export function ActivityDataFormInput(props: InputProps) {
   const { field, fieldState } = useInput(props)
   const { watch } = useFormContext()
@@ -549,6 +740,15 @@ export function ActivityDataFormInput(props: InputProps) {
       break
     case 'multiple_choice':
       content = <MultipleChoiceFields data={local} onChange={handleChange} />
+      break
+    case 'spell':
+      content = <SpellFields data={local} onChange={handleChange} />
+      break
+    case 'spot_letter':
+      content = <SpotLetterFields data={local} onChange={handleChange} />
+      break
+    case 'read_choose':
+      content = <ReadChooseFields data={local} onChange={handleChange} />
       break
     case 'true_false':
       content = <TrueFalseFields data={local} onChange={handleChange} />

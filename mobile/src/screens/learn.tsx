@@ -1,6 +1,6 @@
 import type { LearnerPath } from '../hooks/use-path'
 
-import { ActivityIndicator, Pressable, ScrollView } from 'react-native'
+import { Pressable, ScrollView } from 'react-native'
 import Animated, { FadeInDown } from 'react-native-reanimated'
 
 import { router } from 'expo-router'
@@ -8,7 +8,7 @@ import { router } from 'expo-router'
 import { useLingui } from '@lingui/react/macro'
 
 import { CaretRightIcon, CheckIcon, LockIcon, PlayIcon } from '../components/icons'
-import { Text, View } from '../components/ui'
+import { Skeleton, SkeletonRows, Text, View } from '../components/ui'
 import { useAppLessonsWithProgress, useAppNextLesson, useAppUnits } from '../hooks/use-app-data'
 import { useLanguage } from '../hooks/use-language'
 import { orderUnitsForPath, usePath } from '../hooks/use-path'
@@ -38,8 +38,10 @@ const LearnScreen = () => {
 
   if (isLoading) {
     return (
-      <View className="bg-background flex-1 items-center justify-center">
-        <ActivityIndicator size="large" className="text-foreground" />
+      <View className="bg-background flex-1 px-6 pt-16">
+        <Skeleton className="h-11 w-3/5" />
+        <Skeleton className="mt-3 h-4 w-1/3" />
+        <SkeletonRows rows={5} />
       </View>
     )
   }

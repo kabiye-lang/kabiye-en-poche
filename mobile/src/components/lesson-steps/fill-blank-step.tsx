@@ -7,13 +7,22 @@ import { Pressable, ScrollView } from 'react-native'
 import { useLingui } from '@lingui/react/macro'
 
 import { useLanguage } from '../../hooks/use-language'
-import { Button, Card, Text, View } from '../ui'
+import { CheckIcon } from '../icons'
+import { Button, Text, View } from '../ui'
 
 interface FillBlankStepProps {
   activity: LessonActivity
   onAnswer: (isCorrect: boolean, answer: string) => void
 }
 
+/**
+ * A sentence with a word taken out of it, and the word to put back.
+ *
+ * Right and wrong are told in ink and laterite, never green and red. A correct option
+ * fills with ink because it is settled; a wrong one keeps its outline in laterite and is
+ * struck through, and the right answer fills beside it. Colour-blind readers get the
+ * same information as everyone else, and the screen stays in the palette.
+ */
 const FillBlankStep = ({ activity, onAnswer }: FillBlankStepProps) => {
   const { t } = useLingui()
   const { getValue } = useLanguage()
@@ -22,7 +31,6 @@ const FillBlankStep = ({ activity, onAnswer }: FillBlankStepProps) => {
   const question = getValue(activity, 'question') || undefined
   const instructions = getValue(activity, 'instructions') || undefined
 
-  // Data is now directly in activityData, not nested in questions array
   const sentence = getValue(activityData, 'sentence') || ''
   const correctAnswer = activityData?.answer || ''
   const options = activityData?.options || []
@@ -46,55 +54,29 @@ const FillBlankStep = ({ activity, onAnswer }: FillBlankStepProps) => {
     setShowFeedback(true)
   }
 
-  const handleContinue = () => {
-    onAnswer(isCorrect, selectedAnswer || '')
-  }
-
-  // Split sentence by ___ to insert the blank
+  /**
+   * The sentence, with the blank as a rule the answer drops onto.
+   *
+   * Each blank is grouped with the text that FOLLOWS it, not the text before it.
+   * Grouping it with the text before left the tail of the sentence as its own flex item,
+   * so a sentence ending in a blank dropped its final full stop onto a line of its own.
+   */
   const renderSentenceWithBlank = () => {
     const parts = sentence?.split('___') || []
 
-    // Each blank is grouped with the text that FOLLOWS it, not the text before it.
-    // Grouping it with the text before left the tail of the sentence as its own flex
-    // item, so a sentence ending in a blank dropped its final full stop onto a line of
-    // its own, centred and orphaned.
     return (
-      <View className="flex-row flex-wrap items-baseline justify-center">
-        <Text variant="h6" className="text-foreground">
+      <View className="flex-row flex-wrap items-baseline">
+        <Text kabiye weight="bold" className="text-foreground text-[36px]" style={{ lineHeight: 49 }}>
           {parts[0]}
         </Text>
         {parts.slice(1).map((part: string, index: number) => (
           <View key={index} className="flex-row items-baseline">
-            {
-              <View
-                className={`mx-2 min-w-[100px] rounded-lg border-2 border-dashed px-4 py-2 ${
-                  selectedAnswer
-                    ? showFeedback && isCorrect
-                      ? 'bg-success-bg border-green-500'
-                      : showFeedback && !isCorrect
-                        ? 'bg-error-bg border-red-500'
-                        : 'border-primary bg-primary/10'
-                    : 'border-input-border bg-input-bg'
-                }`}
-              >
-                <Text
-                  variant="h6"
-                  weight="bold"
-                  className={`text-center ${
-                    selectedAnswer
-                      ? showFeedback && isCorrect
-                        ? 'text-success-text'
-                        : showFeedback && !isCorrect
-                          ? 'text-error-text'
-                          : 'text-primary'
-                      : 'text-gray-400'
-                  }`}
-                >
-                  {selectedAnswer || '___'}
-                </Text>
-              </View>
-            }
-            <Text variant="h6" className="text-foreground">
+            <View className="border-foreground mx-2 min-w-[120px] border-b-[3px] pb-1">
+              <Text kabiye weight="bold" className="text-foreground text-center text-[36px]" style={{ lineHeight: 49 }}>
+                {selectedAnswer || ' '}
+              </Text>
+            </View>
+            <Text kabiye weight="bold" className="text-foreground text-[36px]" style={{ lineHeight: 49 }}>
               {part}
             </Text>
           </View>
@@ -106,86 +88,76 @@ const FillBlankStep = ({ activity, onAnswer }: FillBlankStepProps) => {
   return (
     <View className="flex-1">
       <ScrollView className="flex-1 px-6" showsVerticalScrollIndicator={false}>
-        {/* Question (optional; generic fallback when absent) */}
-        <Card className="mb-6 p-6">
-          <Text variant="h5" weight="semibold" className="text-foreground text-center">
-            {question ?? t`Fill in the blank`}
-          </Text>
-        </Card>
-
-        {/* Instructions (optional; generic fallback when absent) */}
-        <Text variant="body" className="text-foreground mb-4 text-center">
-          {instructions ?? t`Choose the correct word to complete the sentence`}
+        <Text className="text-accent text-[13px] font-semibold uppercase tracking-[0.1em]">{t`Fill the blank`}</Text>
+        <Text weight="medium" className="text-foreground mt-2 text-[26px] leading-[1.25]">
+          {question ?? t`Fill in the blank`}
+        </Text>
+        <Text className="text-foreground-secondary mt-2 text-[15px]">
+          {instructions ?? t`Choose the word that completes the sentence`}
         </Text>
 
-        {/* Sentence with Blank */}
-        <Card className="mb-6 p-6">{renderSentenceWithBlank()}</Card>
+        <View className="mt-8">{renderSentenceWithBlank()}</View>
 
-        {/* Options */}
-        <View className="mb-4 gap-3">
+        <View className="mt-8 gap-3">
           {options.map((option: string, index: number) => {
             const isSelected = selectedAnswer === option
             const isCorrectOption = option === correctAnswer
-            const showCorrect = showFeedback && isCorrectOption
-            const showIncorrect = showFeedback && isSelected && !isCorrectOption
+            const fillsIn = showFeedback && isCorrectOption
+            const struckThrough = showFeedback && isSelected && !isCorrectOption
 
             return (
               <Pressable
                 key={index}
+                accessibilityRole="button"
+                accessibilityState={{ selected: isSelected }}
                 onPress={() => handleSelectOption(option)}
                 disabled={showFeedback}
-                className={`rounded-xl border-2 p-4 ${
-                  showCorrect
-                    ? 'bg-success-bg border-green-500'
-                    : showIncorrect
-                      ? 'bg-error-bg border-red-500'
-                      : isSelected
-                        ? 'border-primary bg-primary/10'
-                        : 'border-border bg-card'
-                }`}
+                className={
+                  fillsIn
+                    ? 'bg-foreground border-foreground flex-row items-center justify-center gap-2 rounded-full border-[1.5px] px-5 py-3.5'
+                    : struckThrough
+                      ? 'border-accent flex-row items-center justify-center rounded-full border-[1.5px] px-5 py-3.5'
+                      : 'border-foreground flex-row items-center justify-center rounded-full border-[1.5px] px-5 py-3.5'
+                }
               >
                 <Text
                   kabiye
-                  variant="body"
-                  weight={isSelected ? 'semibold' : 'regular'}
-                  className={`text-center ${
-                    showCorrect
-                      ? 'text-success-text'
-                      : showIncorrect
-                        ? 'text-error-text'
-                        : isSelected
-                          ? 'text-primary'
-                          : 'text-foreground'
-                  }`}
+                  weight="bold"
+                  className={fillsIn ? 'text-background text-[20px]' : 'text-foreground text-[20px]'}
+                  style={struckThrough ? { textDecorationLine: 'line-through' } : undefined}
                 >
                   {option}
                 </Text>
+                {fillsIn ? <CheckIcon size={18} weight="bold" className="text-background" /> : null}
               </Pressable>
             )
           })}
         </View>
 
-        {/* Feedback */}
-        {showFeedback && (
-          <Card className={`mb-4 p-4 ${isCorrect ? 'bg-success-bg' : 'bg-error-bg'}`}>
-            <Text
-              variant="h6"
-              weight="semibold"
-              className={`text-center ${isCorrect ? 'text-success-text' : 'text-error-text'}`}
-            >
-              {isCorrect ? t`Correct! ✓` : t`Not quite right ✗`}
+        {showFeedback ? (
+          <View className="border-foreground mt-7 border-l-[3px] pl-4">
+            <Text weight="semibold" className="text-foreground text-[17px]">
+              {isCorrect ? t`Yes` : t`Not this time`}
             </Text>
-          </Card>
-        )}
+            {!isCorrect ? (
+              <Text className="text-foreground-secondary mt-2 text-[15px] leading-[1.5]">
+                {t`We'll ask this one again at the end.`}
+              </Text>
+            ) : null}
+          </View>
+        ) : null}
 
-        {/* Add some bottom padding */}
         <View className="h-24" />
       </ScrollView>
 
-      {/* Bottom Action Button */}
-      <View className="border-border bg-card border-t px-6 py-4">
-        <Button variant="primary" onPress={handleContinue} disabled={!showFeedback} className="w-full">
-          <Text variant="body" weight="bold" className="text-white">
+      <View className="px-6 pb-4">
+        <Button
+          variant="primary"
+          onPress={() => onAnswer(isCorrect, selectedAnswer || '')}
+          disabled={!showFeedback}
+          className="w-full"
+        >
+          <Text weight="semibold" className="text-background text-[16px]">
             {t`Continue`}
           </Text>
         </Button>

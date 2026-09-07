@@ -47,11 +47,38 @@ export function useLanguage() {
     return ((obj as Record<string, unknown>)[fieldName] as R | undefined) ?? null
   }
 
+  /**
+   * Read a localised field written either way.
+   *
+   * Two conventions coexist inside `lesson_activities.data`: flat `gloss_en` /
+   * `gloss_fr`, which is what the importer wrote and what every row already in the
+   * database uses, and nested `gloss: {en, fr}`, which is what the generator emits now.
+   * Migrating the old rows would buy nothing; reading both is a few lines, and a step
+   * that reads only one silently loses its question -- the Spell step showed "Write the
+   * word in Kabiyè" with no word in it.
+   */
+  const getLocalised = (obj: Record<string, unknown> | null | undefined, field: string): string | undefined => {
+    if (!obj) return undefined
+
+    const flat = obj[`${field}_${currentLanguage}`] ?? obj[`${field}_en`] ?? obj[`${field}_fr`]
+    if (typeof flat === 'string' && flat) return flat
+
+    const nested = obj[field]
+    if (typeof nested === 'string') return nested || undefined
+    if (nested && typeof nested === 'object') {
+      const byLanguage = nested as Record<string, unknown>
+      const value = byLanguage[currentLanguage] ?? byLanguage.en ?? byLanguage.fr
+      return typeof value === 'string' && value ? value : undefined
+    }
+    return undefined
+  }
+
   return {
     currentLanguage,
     getField,
     getValue,
     getArrayValue,
     getJsonValue,
+    getLocalised,
   }
 }

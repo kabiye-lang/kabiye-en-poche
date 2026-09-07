@@ -46,12 +46,12 @@ export function matchesSpelling(written: string, answer: string): boolean {
 /** "Write X in Kabiyè" — the step that asks the learner to produce, not recognise. */
 const SpellStep = ({ activity, onAnswer }: SpellStepProps) => {
   const { t } = useLingui()
-  const { currentLanguage } = useLanguage()
+  const { getLocalised } = useLanguage()
   const data = activity.data as SpellActivityData | null | undefined
 
   const answer = data?.answer?.trim() ?? ''
-  const gloss = data?.gloss?.[currentLanguage] ?? data?.gloss?.en
-  const hint = data?.hint?.[currentLanguage] ?? data?.hint?.en
+  const gloss = getLocalised(data as Record<string, unknown>, 'gloss')
+  const hint = getLocalised(data as Record<string, unknown>, 'hint')
 
   const [written, setWritten] = useState('')
   const [checked, setChecked] = useState<boolean | null>(null)
@@ -95,15 +95,25 @@ const SpellStep = ({ activity, onAnswer }: SpellStepProps) => {
           </Text>
         </View>
 
-        {checked === false ? (
-          <Animated.View entering={FadeIn.duration(220)} className="mt-4">
-            <Text className="text-foreground-secondary text-[15px]">{t`The spelling is`}</Text>
-            <Text kabiye weight="bold" className="text-foreground mt-1 text-[28px]">
-              {answer}
+        {/* Every other step answers with the same ink left-rule block, so this one does
+            too. Getting it right used to say nothing at all: the keyboard vanished and a
+            Continue button appeared, which is a state change, not an answer. */}
+        {checked !== null ? (
+          <Animated.View entering={FadeIn.duration(220)} className="border-foreground mt-6 border-l-[3px] pl-4">
+            <Text weight="semibold" className="text-foreground text-[17px]">
+              {checked ? t`Yes` : t`Not this time`}
             </Text>
-            <Text className="text-foreground-secondary mt-2 text-[15px]">
-              {t`We'll ask this one again at the end.`}
-            </Text>
+            {checked === false ? (
+              <>
+                <Text className="text-foreground-secondary mt-2 text-[15px]">{t`The spelling is`}</Text>
+                <Text kabiye weight="bold" className="text-foreground mt-1 text-[28px]">
+                  {answer}
+                </Text>
+                <Text className="text-foreground-secondary mt-2 text-[15px]">
+                  {t`We'll ask this one again at the end.`}
+                </Text>
+              </>
+            ) : null}
           </Animated.View>
         ) : null}
 

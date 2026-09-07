@@ -7,21 +7,23 @@ interface NewsletterSignupProps {
 
 const translations = {
   en: {
-    title: "Stay Updated",
+    label: "Newsletter",
+    title: "A word a week, and what's new.",
     description:
-      "Subscribe to our newsletter for the latest Kabiyè en poche updates and Kabiyè learning tips.",
-    placeholder: "Enter your email",
+      "One email. Word of the week with its entry, plus new lessons as they land. Unsubscribe any time.",
+    placeholder: "you@example.com",
     button: "Subscribe",
-    success: "Thank you for subscribing!",
-    error: "An error occurred. Please try again.",
+    success: "Thank you for subscribing.",
+    error: "Something went wrong. Please try again.",
   },
   fr: {
-    title: "Restez Informé",
+    label: "Infolettre",
+    title: "Un mot par semaine, et les nouveautés.",
     description:
-      "Abonnez-vous à notre newsletter pour les dernières mises à jour de Kabiyè en poche et des conseils d'apprentissage du Kabiyè.",
-    placeholder: "Entrez votre email",
+      "Un seul courriel. Le mot de la semaine avec son entrée, et les nouvelles leçons dès leur sortie. Désabonnement à tout moment.",
+    placeholder: "vous@exemple.com",
     button: "S'abonner",
-    success: "Merci de vous être abonné !",
+    success: "Merci de votre abonnement.",
     error: "Une erreur s'est produite. Veuillez réessayer.",
   },
 };
@@ -47,39 +49,55 @@ export default function NewsletterSignup({ lang }: NewsletterSignupProps) {
 
   return (
     <motion.div
-      className="bg-white p-8 rounded-lg shadow-md max-w-md mx-auto"
+      className="mx-auto grid max-w-[1200px] items-center gap-10 md:grid-cols-2"
       initial={{ opacity: 0, y: 20 }}
-      animate={{ opacity: 1, y: 0 }}
+      whileInView={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.5 }}
+      viewport={{ once: true }}
     >
-      <h3 className="text-2xl font-bold mb-4 text-laterite">{t.title}</h3>
-      <p className="text-ink-quiet mb-6">{t.description}</p>
+      <div>
+        <p className="text-ink-quiet text-[13px] font-semibold tracking-[0.14em] uppercase">
+          {t.label}
+        </p>
+        <h2
+          className="text-ink mt-4 font-semibold leading-[1.02] tracking-[-0.02em]"
+          style={{ fontSize: "clamp(28px, 3.4vw, 44px)" }}
+        >
+          {t.title}
+        </h2>
+        <p className="text-ink-quiet mt-4 max-w-[46ch] text-[17px] leading-[1.6]">
+          {t.description}
+        </p>
+      </div>
       <form onSubmit={handleSubmit}>
-        <div className="flex flex-col sm:flex-row gap-4">
+        <div className="flex flex-col gap-3 sm:flex-row">
           <input
             type="email"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
             placeholder={t.placeholder}
-            className="grow px-4 py-2 border border-line rounded-md focus:outline-hidden focus:ring-2 focus:ring-ink"
+            className="border-ink text-ink placeholder:text-ink-quiet grow rounded-full border-[1.5px] bg-transparent px-6 py-3 text-[16px] focus:outline-hidden"
             required
             aria-label={t.placeholder}
           />
           <motion.button
             type="submit"
-            className="px-6 py-2 bg-laterite text-white rounded-md hover:bg-opacity-90 transition-colors"
-            whileHover={{ scale: 1.05 }}
-            whileTap={{ scale: 0.95 }}
+            className="bg-ink rounded-full px-7 py-3 text-[16px] font-semibold text-white"
+            whileTap={{ scale: 0.96 }}
             disabled={status === "loading"}
           >
-            {status === "loading" ? "..." : t.button}
+            {status === "loading" ? "…" : t.button}
           </motion.button>
         </div>
+        {/* No green tick, no red banner — feedback is ink and laterite, as everywhere
+            else in this system. */}
+        {status === "success" && (
+          <p className="text-ink mt-4 text-[15px]">{t.success}</p>
+        )}
+        {status === "error" && (
+          <p className="text-laterite mt-4 text-[15px]">{t.error}</p>
+        )}
       </form>
-      {status === "success" && (
-        <p className="mt-4 text-green-600">{t.success}</p>
-      )}
-      {status === "error" && <p className="mt-4 text-red-600">{t.error}</p>}
     </motion.div>
   );
 }

@@ -1,7 +1,6 @@
 import { useState, useEffect } from "react";
-import { BookOpen, Globe, GithubLogo, Keyboard } from "@phosphor-icons/react";
+import { GithubLogo } from "@phosphor-icons/react";
 import { motion } from "motion/react";
-import SampleLesson from "@/components/sample-lesson";
 import LanguageSwitcher from "@/components/language-switcher";
 import NewsletterSignup from "@/components/newsletter-signup";
 import KabiyeKeyboard from "@/components/kabiye-keyboard";
@@ -59,6 +58,48 @@ const translations = {
     padClear: "Clear",
     padCopy: "Copy",
     padCopied: "Copied",
+    audienceTitle: "Who it's for",
+    audienceLead: "Three ways to arrive at the same word.",
+    audienceSpeaker: "I speak it. I want to write it.",
+    audienceSpeakerBody:
+      "The path starts with the alphabet and spelling — ɩ against i, ʋ against u. The dictionary is your spell-checker.",
+    audienceHeritage: "I grew up hearing it.",
+    audienceHeritageBody:
+      "Words you half-know, made whole. Short private lessons, each ending with the words you met, saved to your own list.",
+    audienceNew: "I'm new to it.",
+    audienceNewBody:
+      "Greetings and everyday words first — practical Kabiyè for living and working in the Kara region.",
+    // The mock says "five words"; the generator asks for four to eight, so the site
+    // says what the app does rather than what the mock guessed.
+    howBody:
+      "Every lesson teaches a handful of words. Each is shown, explained letter by letter, and then you spell it with the Kabiyè keyboard. Mistakes come back at the end. There is no score — just the words you can now read and write, each linking to its dictionary entry.",
+    howProvenance:
+      "Every word, example and sentence in a lesson traces to a source. Nothing is generated. Where we have no recording, you hear nothing — a wrong voice teaches a wrong word.",
+    shotTeach: "Teach — the word, letter by letter",
+    shotSpell: "Spell it — on the Kabiyè keyboard",
+    contributeRoles: [
+      {
+        title: "Speakers",
+        body: "Lend your voice to the words and phrases in the lessons.",
+      },
+      {
+        title: "Teachers",
+        body: "Read new lessons before they ship and tell us what a learner would stumble on.",
+      },
+      {
+        title: "Developers",
+        body: "The app is open source. Pick an issue, or bring your own.",
+      },
+      {
+        title: "Everyone",
+        body: "Spotted a word that is wrong or missing? Tell us from inside the app.",
+      },
+    ],
+    footerTagline: "sɔɔlɩm — love.",
+    footerProject: "Project",
+    footerLinks: ["Dictionary", "Alphabet", "Lessons", "Contribute"],
+    footerMore: "More",
+    footerMoreLinks: ["GitHub", "Sources & licences", "Privacy", "Terms"],
   },
   fr: {
     title: "Kabiyè en poche",
@@ -104,6 +145,46 @@ const translations = {
     padClear: "Effacer",
     padCopy: "Copier",
     padCopied: "Copié",
+    audienceTitle: "À qui s'adresse-t-elle",
+    audienceLead: "Trois façons d'arriver au même mot.",
+    audienceSpeaker: "Je le parle. Je veux l'écrire.",
+    audienceSpeakerBody:
+      "Le parcours commence par l'alphabet et l'orthographe — ɩ face à i, ʋ face à u. Le dictionnaire fait office de correcteur.",
+    audienceHeritage: "J'ai grandi en l'entendant.",
+    audienceHeritageBody:
+      "Les mots à moitié connus, rendus entiers. De courtes leçons privées, chacune se terminant par les mots rencontrés, gardés dans votre liste.",
+    audienceNew: "Je le découvre.",
+    audienceNewBody:
+      "D'abord les salutations et les mots de tous les jours — du kabiyè utile pour vivre et travailler dans la région de la Kara.",
+    howBody:
+      "Chaque leçon enseigne une poignée de mots. Chacun est montré, expliqué lettre par lettre, puis vous l'écrivez avec le clavier kabiyè. Les erreurs reviennent à la fin. Il n'y a pas de score — seulement les mots que vous savez désormais lire et écrire, chacun renvoyant à son entrée du dictionnaire.",
+    howProvenance:
+      "Chaque mot, exemple et phrase d'une leçon remonte à une source. Rien n'est inventé. Là où nous n'avons pas d'enregistrement, vous n'entendez rien — une mauvaise voix enseigne un mauvais mot.",
+    shotTeach: "Apprendre — le mot, lettre par lettre",
+    shotSpell: "L'écrire — sur le clavier kabiyè",
+    contributeRoles: [
+      {
+        title: "Locuteurs",
+        body: "Prêtez votre voix aux mots et aux phrases des leçons.",
+      },
+      {
+        title: "Enseignants",
+        body: "Relisez les nouvelles leçons avant leur sortie et dites-nous où un apprenant trébucherait.",
+      },
+      {
+        title: "Développeurs",
+        body: "L'application est libre. Prenez un ticket, ou apportez le vôtre.",
+      },
+      {
+        title: "Tout le monde",
+        body: "Un mot faux ou manquant ? Signalez-le depuis l'application.",
+      },
+    ],
+    footerTagline: "sɔɔlɩm — l'amour.",
+    footerProject: "Le projet",
+    footerLinks: ["Dictionnaire", "Alphabet", "Leçons", "Contribuer"],
+    footerMore: "Plus",
+    footerMoreLinks: ["GitHub", "Sources et licences", "Confidentialité", "Conditions"],
   },
 };
 
@@ -298,6 +379,122 @@ export default function Home() {
         </div>
       </section>
 
+      {/* The same three audiences onboarding asks about, so the site and the app agree
+          about who this is for. Each card is headed by a letter from that audience's
+          first lesson. */}
+      <section className="bg-paper px-8 pb-20">
+        <div className="mx-auto max-w-[1200px]">
+          <h2
+            className="text-ink font-semibold leading-[1.02] tracking-[-0.02em]"
+            style={{ fontSize: "clamp(32px, 4vw, 52px)" }}
+          >
+            {t.audienceTitle}
+          </h2>
+          <p className="text-ink-quiet mt-3 text-[18px]">{t.audienceLead}</p>
+          <div className="mt-10 grid gap-4 md:grid-cols-3">
+            {[
+              {
+                glyph: "ɩ",
+                title: t.audienceSpeaker,
+                body: t.audienceSpeakerBody,
+                ink: false,
+              },
+              {
+                glyph: "Ɛ",
+                title: t.audienceHeritage,
+                body: t.audienceHeritageBody,
+                ink: true,
+              },
+              {
+                glyph: "Ŋ",
+                title: t.audienceNew,
+                body: t.audienceNewBody,
+                ink: false,
+              },
+            ].map((card) => (
+              <div
+                key={card.title}
+                className={
+                  card.ink
+                    ? "bg-ink rounded-[18px] p-7"
+                    : "border-ink rounded-[18px] border-[1.5px] p-7"
+                }
+              >
+                <div
+                  className={
+                    card.ink
+                      ? "kbp text-paper/60 text-[56px] font-bold leading-[1]"
+                      : "kbp text-laterite text-[56px] font-bold leading-[1]"
+                  }
+                >
+                  {card.glyph}
+                </div>
+                <p
+                  className={
+                    card.ink
+                      ? "text-paper mt-5 text-[20px] leading-[1.3]"
+                      : "text-ink mt-5 text-[20px] leading-[1.3]"
+                  }
+                >
+                  {card.title}
+                </p>
+                <p
+                  className={
+                    card.ink
+                      ? "text-paper/70 mt-3 text-[15px] leading-[1.5]"
+                      : "text-ink-quiet mt-3 text-[15px] leading-[1.5]"
+                  }
+                >
+                  {card.body}
+                </p>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* How a lesson works. The two shots are the app's own Teach and Spell steps —
+          the provenance note under them is the project's first principle, so it is on
+          the page rather than only in the repo. */}
+      <section className="bg-paper-recessed px-8 py-20">
+        <div className="mx-auto grid max-w-[1200px] items-center gap-12 md:grid-cols-2">
+          <div>
+            <h2
+              className="text-ink font-semibold leading-[1.02] tracking-[-0.02em]"
+              style={{ fontSize: "clamp(32px, 4vw, 52px)" }}
+            >
+              {t.sampleLesson}
+            </h2>
+            <p className="text-ink mt-4 text-[22px] leading-[1.3]">
+              {t.sampleLessonLead}
+            </p>
+            <p className="text-ink-quiet mt-5 text-[17px] leading-[1.6]">
+              {t.howBody}
+            </p>
+            <p className="border-line text-ink-quiet mt-6 border-l-[3px] pl-4 text-[15px] leading-[1.6]">
+              {t.howProvenance}
+            </p>
+          </div>
+          <div className="grid grid-cols-2 gap-5">
+            {[
+              { src: "/app-teach.png", caption: t.shotTeach },
+              { src: "/app-spell.png", caption: t.shotSpell },
+            ].map((shot) => (
+              <figure key={shot.src}>
+                <img
+                  src={shot.src}
+                  alt={shot.caption}
+                  className="border-line w-full rounded-[22px] border"
+                />
+                <figcaption className="text-ink-quiet mt-3 text-[13px] leading-[1.4]">
+                  {shot.caption}
+                </figcaption>
+              </figure>
+            ))}
+          </div>
+        </div>
+      </section>
+
       <motion.section
         className="bg-white px-4"
         initial={{ opacity: 0 }}
@@ -329,7 +526,7 @@ export default function Home() {
           </div>
 
           <motion.div
-            className="relative h-80 rounded-lg overflow-hidden shadow-lg"
+            className="border-line relative h-80 overflow-hidden rounded-[18px] border"
             whileHover={{ scale: 1.05 }}
             transition={{ type: "spring", stiffness: 300 }}
           >
@@ -342,174 +539,107 @@ export default function Home() {
           </motion.div>
         </div>
       </motion.section>
-      <motion.section
-        className="py-16 bg-paper px-4"
-        initial={{ opacity: 0, y: 50 }}
-        whileInView={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.8 }}
-        viewport={{ once: true }}
-      >
-        <div className="container mx-auto">
-          <h2 className="text-3xl font-bold mb-12 text-center text-ink">
-            {t.whyChoose}
-          </h2>
-          <div className="grid md:grid-cols-3 gap-8">
-            {[
-              {
-                icon: (
-                  <BookOpen
-                    className="w-12 h-12 text-laterite"
-                    weight="thin"
-                  />
-                ),
-                title:
-                  lang === "en"
-                    ? "Learn Anytime, Anywhere"
-                    : "Apprenez n'importe quand, n'importe où",
-                description:
-                  lang === "en"
-                    ? "Our mobile app lets you learn Kabiyè at your own pace, wherever you are."
-                    : "Notre application mobile vous permet d'apprendre le Kabiyè à votre rythme, où que vous soyez.",
-              },
-              {
-                // Was "Connect with Native Speakers", promising audio from native
-                // speakers. No recording exists yet, so the claim was untrue and it was
-                // the first thing a learner would have caught us on. The keyboard is
-                // the real differentiator and it actually ships.
-                icon: (
-                  <Keyboard className="w-12 h-12 text-laterite" weight="thin" />
-                ),
-                title:
-                  lang === "en"
-                    ? "Letters your keyboard doesn't have"
-                    : "Les lettres que votre clavier n'a pas",
-                description:
-                  lang === "en"
-                    ? "ɖ ɛ ɣ ɩ ŋ ɔ ʋ ñ — eight of the 32 Kabiyè letters are on no French keyboard. This one has them."
-                    : "ɖ ɛ ɣ ɩ ŋ ɔ ʋ ñ — huit des 32 lettres kabiyè ne figurent sur aucun clavier français. Celui-ci les porte.",
-              },
-              {
-                icon: (
-                  <Globe className="w-12 h-12 text-laterite" weight="thin" />
-                ),
-                title:
-                  lang === "en"
-                    ? "Immerse in Culture"
-                    : "Immergez-vous dans la culture",
-                description:
-                  lang === "en"
-                    ? "Go beyond language—dive into the rich cultural heritage of the Kabiyè people."
-                    : "Allez au-delà de la langue - plongez dans le riche patrimoine culturel du peuple Kabiyè.",
-              },
-            ].map((feature, index) => (
-              <motion.div
-                key={index}
-                className="text-center bg-white p-6 rounded-lg shadow-md"
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                transition={{ delay: index * 0.2 }}
-                viewport={{ once: true }}
+      {/* Contribute. Laterite ground — the one place the accent carries a whole
+          section, and the only ask on the page. */}
+      <section className="bg-laterite px-8 py-20 text-white">
+        <div className="mx-auto grid max-w-[1200px] gap-12 md:grid-cols-2">
+          <div>
+            <p className="text-[13px] font-semibold tracking-[0.14em] text-white/70 uppercase">
+              {t.communityLabel}
+            </p>
+            <h2
+              className="mt-4 font-semibold leading-[1.02] tracking-[-0.02em]"
+              style={{ fontSize: "clamp(32px, 4vw, 52px)" }}
+            >
+              {t.joinCommunity}
+            </h2>
+            <p className="mt-5 max-w-[46ch] text-[17px] leading-[1.6] text-white/85">
+              {t.communityText}
+            </p>
+            <div className="mt-8 flex flex-wrap gap-3">
+              <a
+                href="mailto:hello@kabiye-en-poche.org?subject=Record%20with%20us"
+                className="bg-ink rounded-full px-6 py-3 text-[16px] font-semibold text-white"
               >
-                <motion.div
-                  className="flex justify-center mb-4"
-                  whileHover={{ scale: 1.1, rotate: 5 }}
-                >
-                  {feature.icon}
-                </motion.div>
-                <h3 className="text-xl font-semibold mb-2">{feature.title}</h3>
-                <p className="text-ink-quiet">{feature.description}</p>
-              </motion.div>
+                {t.joinUs}
+              </a>
+              <a
+                href="https://github.com/kabiye-lang/kabiye-en-poche"
+                target="_blank"
+                rel="noreferrer"
+                className="flex items-center gap-2 rounded-full border-[1.5px] border-white/70 px-6 py-3 text-[16px] font-semibold"
+              >
+                <GithubLogo weight="bold" /> {t.viewGithub}
+              </a>
+            </div>
+          </div>
+          <ul className="divide-y divide-white/25 border-y border-white/25">
+            {t.contributeRoles.map((role) => (
+              <li key={role.title} className="py-5">
+                <p className="text-[18px] font-semibold">{role.title}</p>
+                <p className="mt-1 text-[15px] leading-[1.5] text-white/80">
+                  {role.body}
+                </p>
+              </li>
+            ))}
+          </ul>
+        </div>
+      </section>
+
+      <section className="bg-paper px-8 py-20">
+        <NewsletterSignup lang={lang} />
+      </section>
+
+      <footer className="bg-ink text-paper px-8 py-16">
+        <div className="mx-auto max-w-[1200px]">
+          <div className="grid gap-10 md:grid-cols-[2fr_1fr_1fr]">
+            <div>
+              <p className="text-[22px] font-semibold">{t.title}</p>
+              <p className="kbp text-paper/60 mt-2 text-[18px]">
+                {t.footerTagline}
+              </p>
+              <div className="mt-6 flex items-center gap-3">
+                <a href="#" className="w-36">
+                  <img
+                    src="/app-store-badge.png"
+                    alt="Download on the App Store"
+                    className="h-auto w-full"
+                  />
+                </a>
+                <a href="#" className="w-36">
+                  <img
+                    src="/google-play-badge.png"
+                    alt="Get it on Google Play"
+                    className="h-auto w-full"
+                  />
+                </a>
+              </div>
+            </div>
+            {[
+              { heading: t.footerProject, links: t.footerLinks },
+              { heading: t.footerMore, links: t.footerMoreLinks },
+            ].map((column) => (
+              <div key={column.heading}>
+                <p className="text-paper/60 text-[13px] font-semibold tracking-[0.14em] uppercase">
+                  {column.heading}
+                </p>
+                <ul className="mt-4 space-y-2">
+                  {column.links.map((link) => (
+                    <li key={link}>
+                      <a href="#" className="text-paper/85 text-[15px]">
+                        {link}
+                      </a>
+                    </li>
+                  ))}
+                </ul>
+              </div>
             ))}
           </div>
+          <p className="text-paper/55 mt-12 border-t border-white/15 pt-8 text-[14px]">
+            {t.downloadNow}
+          </p>
         </div>
-      </motion.section>
-      <motion.section
-        className="py-16 bg-white px-4"
-        initial={{ opacity: 0 }}
-        whileInView={{ opacity: 1 }}
-        transition={{ duration: 0.8 }}
-        viewport={{ once: true }}
-      >
-        <h2 className="text-3xl font-bold mb-8 text-center text-ink">
-          {t.sampleLesson}
-        </h2>
-        <SampleLesson lang={lang} />
-      </motion.section>
-      <motion.section
-        className="py-16 bg-paper px-4"
-        initial={{ opacity: 0, y: 50 }}
-        whileInView={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.8 }}
-        viewport={{ once: true }}
-      >
-        <h2 className="text-3xl font-bold mb-6 text-center text-ink">
-          {t.joinCommunity}
-        </h2>
-        <p className="text-xl mb-8 text-ink-quiet max-w-2xl mx-auto text-center">
-          {t.communityText}
-        </p>
-        <div className="flex flex-col md:flex-row justify-center items-center space-y-4 md:space-y-0 md:space-x-6">
-          <motion.a
-            href="https://github.com/kabiye-lang/kabiye-en-poche"
-            className="flex items-center justify-center px-6 py-3 bg-ink text-white rounded-full hover:bg-opacity-90 transition-colors text-lg font-semibold"
-            whileHover={{ scale: 1.05 }}
-            whileTap={{ scale: 0.95 }}
-            target="_blank"
-          >
-            <GithubLogo className="mr-2" /> {t.viewGithub}
-          </motion.a>
-          <motion.a
-            href="#"
-            className="flex items-center justify-center px-6 py-3 bg-ink text-white rounded-full hover:bg-opacity-90 transition-colors text-lg font-semibold"
-            whileHover={{ scale: 1.05 }}
-            whileTap={{ scale: 0.95 }}
-          >
-            {t.joinUs}
-          </motion.a>
-        </div>
-      </motion.section>
-      <motion.section
-        className="py-16 bg-white px-4"
-        initial={{ opacity: 0, y: 50 }}
-        whileInView={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.8 }}
-        viewport={{ once: true }}
-      >
-        <NewsletterSignup lang={lang} />
-      </motion.section>
-      <motion.section
-        className="py-16 text-center bg-ink text-white px-4"
-        initial={{ opacity: 0, y: 50 }}
-        whileInView={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.8 }}
-        viewport={{ once: true }}
-      >
-        <h2 className="text-3xl font-bold mb-6">{t.readyToStart}</h2>
-        <p className="text-xl mb-8 max-w-2xl mx-auto opacity-90">
-          {t.downloadNow}
-        </p>
-        <motion.div
-          className="flex justify-center space-x-4 items-center"
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.2, duration: 0.5 }}
-        >
-          <a href="#" className="w-48">
-            <img
-              src="/google-play-badge.png"
-              alt="Get it on Google Play"
-              className="w-full h-auto"
-            />
-          </a>
-          <a href="#" className="w-48">
-            <img
-              src="/app-store-badge.png"
-              alt="Download on the App Store"
-              className="w-full h-auto"
-            />
-          </a>
-        </motion.div>
-      </motion.section>
+      </footer>
     </div>
   );
 }

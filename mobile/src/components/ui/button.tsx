@@ -16,22 +16,27 @@ const buttonVariants = tv({
       primary: 'bg-primary active:bg-primary/90',
       secondary: 'bg-secondary active:bg-secondary/90',
       accent: 'bg-accent active:bg-accent/90',
-      outline: 'border-primary active:bg-primary/10 border-2 bg-transparent',
+      outline: 'border-primary active:bg-primary/10 border-[1.5px] bg-transparent',
       ghost: 'active:bg-background-tertiary bg-transparent',
       link: 'bg-transparent active:bg-transparent',
     },
+    // Every button in this system is a pill. Radius is not a per-button decision here:
+    // pills are buttons, chips and the tab pill; 14-20px is for cards; 6-8px for keys.
     size: {
-      sm: 'rounded-md px-3 py-2',
-      md: 'rounded-lg px-4 py-3',
-      lg: 'rounded-lg px-6 py-4',
-      xl: 'rounded-xl px-8 py-5',
+      sm: 'rounded-full px-[18px] py-3',
+      md: 'rounded-full px-6 py-4',
+      lg: 'rounded-full px-6 py-[18px]',
+      xl: 'rounded-full px-8 py-5',
     },
     fullWidth: {
       true: 'w-full',
       false: '',
     },
     disabled: {
-      true: 'opacity-50',
+      // The direction's disabled state: the same ink button, held back. No grey fill --
+      // grey is not in this palette, and a button that greys out reads as broken rather
+      // than as not-yet.
+      true: 'opacity-40',
       false: '',
     },
   },

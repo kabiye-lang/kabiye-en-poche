@@ -114,6 +114,30 @@ export function useEntriesByLetter(letter: string) {
 }
 
 /**
+ * How many entries start with a letter.
+ *
+ * `useEntriesByLetter` pages fifty at a time and so can only ever say "50+", but the
+ * browse screen leads with the count -- it is the one number that tells a learner
+ * whether a letter is a corner of the dictionary or a third of it. A head request
+ * carries no rows, so this costs a count and nothing else.
+ */
+export function useLetterCount(letter: string) {
+  return useQuery({
+    queryKey: ['dictionary', 'letter-count', letter],
+    queryFn: async () => {
+      const { count, error } = await supabase
+        .from('dictionary_entries')
+        .select('id', { count: 'exact', head: true })
+        .eq('letter', letter)
+      if (error) throw error
+      return count ?? 0
+    },
+    enabled: !!letter,
+    staleTime: Infinity,
+  })
+}
+
+/**
  * Get random entries (for Word of the Day, etc.)
  * Prefer useWordOfTheDay for homograph-aware "one word" display.
  * @param count - Number of random entries to fetch
