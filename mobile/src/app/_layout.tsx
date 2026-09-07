@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react'
 import { GestureHandlerRootView } from 'react-native-gesture-handler'
+import { ReducedMotionConfig, ReduceMotion } from 'react-native-reanimated'
 import { SafeAreaListener, SafeAreaProvider } from 'react-native-safe-area-context'
 
 import { Uniwind } from 'uniwind'
@@ -141,6 +142,11 @@ function RootLayoutNav() {
         <QueryClientProvider client={queryClient}>
           <ThemeProvider value={isDark ? AppDarkTheme : AppDefaultTheme}>
             <I18nProvider i18n={i18n}>
+              {/* Every animation in the app collapses to 0 when the system asks for
+                  reduced motion. The direction states it as a rule for each moment in
+                  its motion table; Reanimated can honour all of them at the root, so
+                  no individual animation has to remember. */}
+              <ReducedMotionConfig mode={ReduceMotion.System} />
               <StatusBar style={isDark ? 'light' : 'dark'} />
               <GestureHandlerRootView style={{ flex: 1 }}>
                 <Stack>

@@ -70,4 +70,8 @@ module.exports = {
   runOnJS: (fn) => fn,
   interpolate: (value) => value,
   cancelAnimation: () => {},
+  // The root layout renders this. A missing export here is `undefined`, and rendering
+  // `<undefined />` throws with an error that says nothing about the mock.
+  ReducedMotionConfig: () => null,
+  ReduceMotion: { System: 'system', Always: 'always', Never: 'never' },
 }
