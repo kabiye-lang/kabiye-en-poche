@@ -71,7 +71,10 @@ const TeachStep = ({ example, onContinue }: TeachStepProps) => {
 
         {example.pronunciation ? (
           <Text className="text-foreground-secondary mt-3 text-[15px]">
-            {t`Said`} <Text kabiye className="text-foreground-secondary text-[15px]">{example.pronunciation}</Text>
+            {t`Said`}{' '}
+            <Text kabiye className="text-foreground-secondary text-[15px]">
+              {example.pronunciation}
+            </Text>
           </Text>
         ) : null}
 

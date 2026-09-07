@@ -1,4 +1,11 @@
 /**
+ * A step that renders nothing is worse than a missing step: the learner lands on a blank
+ * screen with the progress bar advanced and no way forward. `isAnswerable` in
+ * screens/lesson.tsx is what keeps those out of the list, so it is pinned here.
+ */
+import { spellingVariants } from '../src/utils/kabiye-variants'
+
+/**
  * The Laterite flow says a missed step comes back before the lesson can finish.
  *
  * The queue is built in `screens/lesson.tsx` from `missed` + `retriesQueued`. This pins
@@ -78,13 +85,6 @@ describe('retry queue', () => {
     expect(walked.map((s) => s.id)).toEqual(LESSON.map((s) => s.id))
   })
 })
-
-/**
- * A step that renders nothing is worse than a missing step: the learner lands on a blank
- * screen with the progress bar advanced and no way forward. `isAnswerable` in
- * screens/lesson.tsx is what keeps those out of the list, so it is pinned here.
- */
-import { spellingVariants } from '../src/utils/kabiye-variants'
 
 const AUDIO_DEPENDENT = new Set(['audio', 'listen_choose', 'listen_type'])
 

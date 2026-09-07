@@ -43,8 +43,7 @@ function codepoints(file: string): Set<number> {
     const platform = readU16(d, rec)
     const encoding = readU16(d, rec + 2)
     const unicode =
-      (platform === 3 && (encoding === 1 || encoding === 10)) ||
-      (platform === 0 && [3, 4, 6].includes(encoding))
+      (platform === 3 && (encoding === 1 || encoding === 10)) || (platform === 0 && [3, 4, 6].includes(encoding))
     if (unicode) sub = cmapOffset + d.readUInt32BE(rec + 4)
   }
   if (sub < 0) throw new Error(`no Unicode cmap subtable in ${file}`)

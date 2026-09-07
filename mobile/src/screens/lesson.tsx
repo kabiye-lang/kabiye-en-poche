@@ -12,11 +12,10 @@ import { toast } from 'sonner-native'
 
 import {
   AudioStep,
-  CompletionStep,
   ContentStep,
   CoverStep,
-  FinishStep,
   FillBlankStep,
+  FinishStep,
   ListenChooseStep,
   ListenTypeStep,
   MatchPairsStep,
@@ -31,6 +30,7 @@ import {
 import { Text, View } from '../components/ui'
 import { useAppCompleteLesson, useAppLesson, useAppLessonActivities, useAppLessonContents } from '../hooks/use-app-data'
 import { useLanguage } from '../hooks/use-language'
+import { useMyWords } from '../hooks/use-my-words'
 import { hasActivity } from '../types/lesson-steps'
 import { usableAudioUrl } from '../utils/audio-source'
 import { spellingVariants } from '../utils/kabiye-variants'
@@ -130,6 +130,7 @@ const LessonScreen = () => {
   const { data: contents, isLoading: contentsLoading } = useAppLessonContents(lessonId)
   const { data: activities, isLoading: activitiesLoading } = useAppLessonActivities(lessonId)
   const completeLessonMutation = useAppCompleteLesson()
+  const { addMet, markWritten, readCount } = useMyWords()
 
   const [currentStepIndex, setCurrentStepIndex] = useState(0)
   const [score, setScore] = useState(0)
@@ -272,6 +273,12 @@ const LessonScreen = () => {
     const next = currentStepIndex + 1
     const reachedEnd = next >= walkedSteps.length - 1
 
+    // Reaching the end means these words have been met, whether or not the learner
+    // taps through the finish screen -- closing the lesson there should not lose them.
+    if (next >= walkedSteps.length - 1 && words.length > 0) {
+      void addMet(words.map((word) => ({ headword: word.kbp, lexemeId: word.lexeme_id })))
+    }
+
     if (reachedEnd && missed.length > 0 && !retriesQueued) {
       setRetriesQueued(true)
       setCurrentStepIndex(next)
@@ -290,6 +297,10 @@ const LessonScreen = () => {
 
       if (isCorrect) {
         setScore(score + 1)
+        // Spelling a word correctly is the only evidence the app has that someone can
+        // write it, so it is what Profile counts. Recognising it in a multiple choice
+        // is not the same claim.
+        if (currentStep.type === 'spell') void markWritten(answer.normalize('NFC').trim())
       } else if (!currentStep.id.startsWith('retry-')) {
         // Queue the miss once. A step re-asked and missed again is not queued a second
         // time -- the lesson has to end, and drilling the same word forever is a
@@ -399,8 +410,6 @@ const LessonScreen = () => {
         })()
       : null
 
-  const totalQuizQuestions = walkedSteps.filter(isInteractive).length
-
   /**
    * The words that were missed once and re-asked, for the finish screen to name.
    *
@@ -417,8 +426,6 @@ const LessonScreen = () => {
       return undefined
     })
     .filter((word): word is string => word !== undefined)
-
-  const totalContentSteps = walkedSteps.filter((s) => s.type === 'content').length
 
   // Render current step
   return (
@@ -505,6 +512,7 @@ const LessonScreen = () => {
           <FinishStep
             words={words}
             retried={retriedWords}
+            savedTotal={readCount > 0 ? readCount : undefined}
             onDone={handleLessonComplete}
             isBusy={completeLessonMutation.isPending}
           />

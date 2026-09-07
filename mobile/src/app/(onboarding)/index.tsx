@@ -1,3 +1,5 @@
+import type { LearnerPath } from '../../hooks/use-path'
+
 import { useState } from 'react'
 import { Pressable, ScrollView } from 'react-native'
 import Animated, { FadeInDown } from 'react-native-reanimated'
@@ -9,7 +11,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage'
 
 import { CheckCircleIcon } from '../../components/icons'
 import { Button, Text, View } from '../../components/ui'
-import { usePath, type LearnerPath } from '../../hooks/use-path'
+import { usePath } from '../../hooks/use-path'
 
 const ONBOARDING_KEY = '@kabiye_onboarding_complete'
 
@@ -71,9 +73,7 @@ const OnboardingScreen = () => {
         </View>
 
         <Animated.View entering={FadeInDown.duration(600)} className="mt-10">
-          <Text className="text-accent text-[13px] font-semibold uppercase tracking-[0.1em]">
-            {t`Before we start`}
-          </Text>
+          <Text className="text-accent text-[13px] font-semibold uppercase tracking-[0.1em]">{t`Before we start`}</Text>
           <Text className="text-background mt-3 text-[32px] leading-[1.1]">
             {t`Where does Kabiyè sit in your life?`}
           </Text>

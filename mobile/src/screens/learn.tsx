@@ -1,3 +1,5 @@
+import type { LearnerPath } from '../hooks/use-path'
+
 import { ActivityIndicator, Pressable, ScrollView } from 'react-native'
 import Animated, { FadeInDown } from 'react-native-reanimated'
 
@@ -9,7 +11,7 @@ import { CaretRightIcon, CheckIcon, LockIcon, PlayIcon } from '../components/ico
 import { Text, View } from '../components/ui'
 import { useAppLessonsWithProgress, useAppNextLesson, useAppUnits } from '../hooks/use-app-data'
 import { useLanguage } from '../hooks/use-language'
-import { orderUnitsForPath, usePath, type LearnerPath } from '../hooks/use-path'
+import { orderUnitsForPath, usePath } from '../hooks/use-path'
 
 /**
  * The whole path on one screen.
@@ -58,9 +60,7 @@ const LearnScreen = () => {
       </Text>
 
       <View className="mt-3 flex-row flex-wrap items-baseline gap-2">
-        <Text className="text-foreground-secondary text-[15px]">
-          {path ? PATH_DESCRIPTION[path] : t`Not set yet.`}
-        </Text>
+        <Text className="text-foreground-secondary text-[15px]">{path ? PATH_DESCRIPTION[path] : t`Not set yet.`}</Text>
         <Pressable accessibilityRole="button" onPress={() => router.push('/(onboarding)')}>
           <Text className="text-foreground text-[15px] underline">{t`Change`}</Text>
         </Pressable>

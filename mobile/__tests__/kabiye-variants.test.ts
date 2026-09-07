@@ -4,12 +4,7 @@
  * input, and nothing invents a letter sequence of its own.
  */
 
-import {
-  differingIndices,
-  PLAIN_FOR_KABIYE,
-  spellingVariants,
-  specialPositions,
-} from '../src/utils/kabiye-variants'
+import { differingIndices, PLAIN_FOR_KABIYE, specialPositions, spellingVariants } from '../src/utils/kabiye-variants'
 
 describe('spellingVariants', () => {
   it('produces the handoff example for Kabɩyɛ, near misses first', () => {

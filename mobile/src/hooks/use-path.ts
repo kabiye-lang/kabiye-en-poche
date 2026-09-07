@@ -32,10 +32,7 @@ export const PATH_UNIT_ORDER: Record<LearnerPath, string[]> = {
 }
 
 /** Sort units for a path, leaving unlisted ones in their existing order behind. */
-export function orderUnitsForPath<T extends { code?: string | null }>(
-  units: T[],
-  path: LearnerPath | null
-): T[] {
+export function orderUnitsForPath<T extends { code?: string | null }>(units: T[], path: LearnerPath | null): T[] {
   if (!path) return units
   const preferred = PATH_UNIT_ORDER[path]
   if (preferred.length === 0) return units

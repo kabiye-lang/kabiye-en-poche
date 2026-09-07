@@ -8,9 +8,9 @@
  */
 import React from 'react'
 
+import AsyncStorage from '@react-native-async-storage/async-storage'
 import { fireEvent, render, screen, waitFor } from '@testing-library/react-native'
 
-import AsyncStorage from '@react-native-async-storage/async-storage'
 import OnboardingScreen from '../src/app/(onboarding)/index'
 import { PATH_STORAGE_KEY } from '../src/hooks/use-path'
 
@@ -83,9 +83,7 @@ describe('OnboardingScreen', () => {
     // selection flush before pressing Continue -- rendering is async here, so pressing
     // both in the same tick reads a Continue that is still disabled.
     fireEvent.press(screen.getByLabelText(/I speak it/))
-    await waitFor(() =>
-      expect(screen.getByLabelText(/I speak it/).props.accessibilityState.selected).toBe(true)
-    )
+    await waitFor(() => expect(screen.getByLabelText(/I speak it/).props.accessibilityState.selected).toBe(true))
 
     fireEvent.press(screen.getByText('Continue'))
     await waitFor(() => expect(AsyncStorage.setItem).toHaveBeenCalledWith(PATH_STORAGE_KEY, 'speaker'))
@@ -100,8 +98,6 @@ describe('OnboardingScreen', () => {
   it('marks onboarding done either way, so it is asked once', async () => {
     await render(<OnboardingScreen />)
     fireEvent.press(screen.getByText('Skip'))
-    await waitFor(() =>
-      expect(AsyncStorage.setItem).toHaveBeenCalledWith('@kabiye_onboarding_complete', 'true')
-    )
+    await waitFor(() => expect(AsyncStorage.setItem).toHaveBeenCalledWith('@kabiye_onboarding_complete', 'true'))
   })
 })

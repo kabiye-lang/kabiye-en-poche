@@ -23,7 +23,7 @@ interface ReadChooseStepProps {
  */
 const ReadChooseStep = ({ activity, onAnswer }: ReadChooseStepProps) => {
   const { t } = useLingui()
-  const { currentLanguage, getValue } = useLanguage()
+  const { currentLanguage } = useLanguage()
   const data = activity.data as ReadChooseActivityData | null | undefined
 
   const sentence = data?.sentence?.trim() ?? ''
@@ -32,10 +32,7 @@ const ReadChooseStep = ({ activity, onAnswer }: ReadChooseStepProps) => {
   // the other convention in this codebase and not the one the schema emits.
   const options = data?.options?.[currentLanguage] ?? data?.options?.en ?? []
   const rawCorrect = data?.correct_answer
-  const correct =
-    typeof rawCorrect === 'string'
-      ? rawCorrect
-      : (rawCorrect?.[currentLanguage] ?? rawCorrect?.en ?? '')
+  const correct = typeof rawCorrect === 'string' ? rawCorrect : (rawCorrect?.[currentLanguage] ?? rawCorrect?.en ?? '')
   const explanation = data?.explanation?.[currentLanguage] ?? data?.explanation?.en ?? undefined
 
   const [selected, setSelected] = useState<string | null>(null)
@@ -51,9 +48,7 @@ const ReadChooseStep = ({ activity, onAnswer }: ReadChooseStepProps) => {
   return (
     <View className="bg-background flex-1">
       <ScrollView contentContainerClassName="px-6 pb-10 pt-8" showsVerticalScrollIndicator={false}>
-        <Text className="text-accent text-[13px] font-semibold uppercase tracking-[0.1em]">
-          {t`Read and choose`}
-        </Text>
+        <Text className="text-accent text-[13px] font-semibold uppercase tracking-[0.1em]">{t`Read and choose`}</Text>
 
         <Animated.View entering={FadeInDown.duration(600)}>
           <View className="border-foreground mt-5 border-l-[3px] pl-4">
@@ -88,7 +83,9 @@ const ReadChooseStep = ({ activity, onAnswer }: ReadChooseStepProps) => {
                       : 'border-foreground h-[20px] w-[20px] rounded-full border-2'
                   }
                 />
-                <Text className={isChosen ? 'text-background flex-1 text-[18px]' : 'text-foreground flex-1 text-[18px]'}>
+                <Text
+                  className={isChosen ? 'text-background flex-1 text-[18px]' : 'text-foreground flex-1 text-[18px]'}
+                >
                   {option}
                 </Text>
               </Pressable>

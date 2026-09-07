@@ -41,9 +41,7 @@ const CoverStep = ({ title, description, unitLabel, words, onBegin }: CoverStepP
           </Text>
         </Animated.View>
 
-        {description ? (
-          <Text className="mt-4 text-[17px] leading-[1.5] text-white/90">{description}</Text>
-        ) : null}
+        {description ? <Text className="mt-4 text-[17px] leading-[1.5] text-white/90">{description}</Text> : null}
 
         {words.length > 0 ? (
           <>

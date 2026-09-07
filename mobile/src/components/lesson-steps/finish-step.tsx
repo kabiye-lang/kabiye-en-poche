@@ -41,9 +41,7 @@ const FinishStep = ({ words, retried, savedTotal, onDone, isBusy }: FinishStepPr
         <Text className="text-[13px] font-semibold uppercase tracking-[0.1em] text-white/80">{t`Done`}</Text>
 
         <Text weight="semibold" className="mt-4 text-[40px] leading-[1.0] text-white">
-          {count === 1
-            ? t`One word you can now read and write.`
-            : t`${count} words you can now read and write.`}
+          {count === 1 ? t`One word you can now read and write.` : t`${count} words you can now read and write.`}
         </Text>
 
         {retried.length > 0 ? (
