@@ -28,6 +28,10 @@ export type StepType =
   // word a screen of its own before asking anything about it.
   | 'cover'
   | 'teach'
+  // The competency shape adds a dialogue set in a situation (after the cover) and
+  // cultural notes (before the finish); the TDA rides on the finish screen.
+  | 'dialogue'
+  | 'notes'
   | 'completion'
 
 /**
@@ -143,10 +147,25 @@ export interface TeachStepData extends BaseStep {
   example: LessonExample
 }
 
+export interface DialogueStep extends BaseStep {
+  type: 'dialogue'
+  title: string
+  scene?: string
+  turns: LessonExample[]
+}
+
+export interface NotesStep extends BaseStep {
+  type: 'notes'
+  title: string
+  content: string
+}
+
 export interface CompletionStep extends BaseStep {
   type: 'completion'
   score?: number
   totalQuestions?: number
+  /** One sentence to go and do in a Kabiyè-speaking community this week. */
+  tda?: string
 }
 
 export type LessonStep =
@@ -160,6 +179,8 @@ export type LessonStep =
   | ActivityStep
   | CoverStep
   | TeachStepData
+  | DialogueStep
+  | NotesStep
   | CompletionStep
 
 export interface LessonProgress {

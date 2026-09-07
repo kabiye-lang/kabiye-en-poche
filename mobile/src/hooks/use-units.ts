@@ -1,3 +1,4 @@
+import { lockStates } from '../utils/lesson-locks'
 import type {
   AlphabetLetter,
   CmsPage,
@@ -145,15 +146,15 @@ export function useLessonsWithProgress(unitId: string) {
       const localProgress = await localProgressStorage.getAll()
       const progressMap = new Map(localProgress.map((p) => [p.lessonId, p]))
 
-      // Combine lessons with progress and determine if locked
+      // Combine lessons with progress and determine if locked. An unbuilt lesson
+      // cannot gate the built one after it -- see lesson-locks.ts.
+      const completed = new Set(localProgress.filter((p) => p.completedAt).map((p) => p.lessonId))
+      const locks = lockStates(lessons ?? [], completed)
       return (
         lessons?.map((lesson, index) => {
           const userProgress = progressMap.get(lesson.id)
           const isCompleted = !!userProgress?.completedAt
-
-          // A lesson is locked if the previous lesson is not completed
-          // First lesson is never locked
-          const isLocked = index > 0 && !progressMap.get(lessons[index - 1].id)?.completedAt
+          const isLocked = locks[index]
 
           return {
             ...lesson,

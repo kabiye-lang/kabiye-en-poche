@@ -244,6 +244,7 @@ export type Database = {
           created_at: string | null
           examples: Json | null
           id: string
+          kind: string | null
           lesson_id: string
           position: number | null
           title_en: string
@@ -255,6 +256,7 @@ export type Database = {
           created_at?: string | null
           examples?: Json | null
           id?: string
+          kind?: string | null
           lesson_id: string
           position?: number | null
           title_en: string
@@ -266,6 +268,7 @@ export type Database = {
           created_at?: string | null
           examples?: Json | null
           id?: string
+          kind?: string | null
           lesson_id?: string
           position?: number | null
           title_en?: string

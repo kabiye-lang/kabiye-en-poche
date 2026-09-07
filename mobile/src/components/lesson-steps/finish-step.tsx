@@ -16,6 +16,9 @@ interface FinishStepProps {
   /** Words that were missed once and came back. Named, not counted against the learner. */
   retried: string[]
   savedTotal?: number
+  /** One sentence to go and do in a Kabiyè-speaking community this week -- the lesson
+   *  leaving the phone. Learned from the Peace Corps workbook's TDA. */
+  tda?: string
   onDone: () => void
   isBusy?: boolean
 }
@@ -29,7 +32,7 @@ interface FinishStepProps {
  * counts words instead, and treats a retry as a thing that happened rather than a
  * deduction -- "One came back for a second try. You got it."
  */
-const FinishStep = ({ words, retried, savedTotal, onDone, isBusy }: FinishStepProps) => {
+const FinishStep = ({ words, retried, savedTotal, tda, onDone, isBusy }: FinishStepProps) => {
   const { t } = useLingui()
   const { currentLanguage } = useLanguage()
 
@@ -76,6 +79,14 @@ const FinishStep = ({ words, retried, savedTotal, onDone, isBusy }: FinishStepPr
             </Animated.View>
           ))}
         </View>
+
+        {tda ? (
+          // The lesson leaving the phone: one thing to go and do with a Kabiyè speaker.
+          <View className="mt-8 border-l-[3px] border-white/60 pl-4">
+            <Text className="text-[12px] font-semibold uppercase tracking-[0.1em] text-white/70">{t`This week`}</Text>
+            <Text className="mt-1.5 text-[16px] leading-[1.5] text-white">{tda}</Text>
+          </View>
+        ) : null}
 
         {savedTotal !== undefined ? (
           <View className="mt-6 flex-row items-center gap-2">
