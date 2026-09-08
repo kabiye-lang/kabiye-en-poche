@@ -1,0 +1,694 @@
+<title>Kabiyè Curriculum Rebuild</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400;12..96,600;12..96,800&family=IBM+Plex+Sans:wght@400;500;600&family=Andika:wght@400;700&display=swap">
+<style>
+  /* Laterite — the project's own system (mobile/src/global.css):
+     "red earth of Kara, bone paper, ink. Three colours, no more.
+      Depth is tonal (recessed -> paper -> leaf) or a border -- never a shadow." */
+  :root {
+    --paper:      #F4EBDD;
+    --leaf:       #FFFFFF;
+    --recessed:   #EADFCD;
+    --ink:        #221913;
+    --ink-quiet:  #6B5A4E;
+    --line:       #D9CDB9;
+    --laterite:   #C4451C;
+    --rule-strong: #221913;
+
+    --display: 'Bricolage Grotesque', 'Trebuchet MS', sans-serif;
+    --body: 'IBM Plex Sans', system-ui, -apple-system, sans-serif;
+    --kbp: 'Andika', 'Gentium Plus', 'Charis SIL', serif;
+
+    --measure: 68ch;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --paper: #221913; --leaf: #2E241C; --recessed: #2E241C;
+      --ink: #F4EBDD; --ink-quiet: rgba(244,235,221,0.68);
+      --line: #4A3C31; --laterite: #E0663D; --rule-strong: #F4EBDD;
+    }
+  }
+  :root[data-theme="dark"] {
+    --paper: #221913; --leaf: #2E241C; --recessed: #2E241C;
+    --ink: #F4EBDD; --ink-quiet: rgba(244,235,221,0.68);
+    --line: #4A3C31; --laterite: #E0663D; --rule-strong: #F4EBDD;
+  }
+
+  * { box-sizing: border-box; }
+  body {
+    background: var(--paper); color: var(--ink);
+    font-family: var(--body); font-size: 16.5px; line-height: 1.6;
+    margin: 0; padding: 0 1.25rem 6rem; -webkit-font-smoothing: antialiased;
+  }
+  .wrap { max-width: 1080px; margin: 0 auto; }
+  .col  { max-width: var(--measure); }
+
+  h1, h2, h3 { font-family: var(--display); text-wrap: balance; margin: 0; }
+  h1 { font-size: clamp(2.4rem, 6vw, 3.9rem); font-weight: 800; line-height: 1.02; letter-spacing: -0.022em; }
+  h2 { font-size: clamp(1.5rem, 3vw, 2rem); font-weight: 600; line-height: 1.12; letter-spacing: -0.012em; }
+  h3 { font-size: 1.06rem; font-weight: 600; }
+  p  { margin: 0 0 1rem; }
+  a  { color: var(--laterite); }
+  .eyebrow { font-size: 0.72rem; font-weight: 600; text-transform: uppercase;
+             letter-spacing: 0.13em; color: var(--laterite); margin: 0 0 0.7rem; }
+  .lede { font-size: 1.14rem; color: var(--ink-quiet); }
+  .kbp { font-family: var(--kbp); }
+  .num { font-variant-numeric: tabular-nums; }
+
+  header { padding: 4.5rem 0 2.5rem; border-bottom: 1.5px solid var(--rule-strong); }
+  .meta { display: flex; flex-wrap: wrap; gap: 0.5rem 1.6rem; margin-top: 2rem;
+          font-size: 0.82rem; color: var(--ink-quiet); }
+  .meta b { color: var(--ink); font-weight: 600; }
+
+  section { padding: 3.25rem 0 0; }
+  section > .col > h2 { margin-bottom: 0.9rem; }
+
+  .answer {
+    border-left: 3px solid var(--laterite); padding: 0.15rem 0 0.15rem 1.5rem; margin: 1.8rem 0 0;
+  }
+  .answer .big {
+    font-family: var(--display); font-weight: 800; font-size: clamp(1.9rem, 4.4vw, 2.7rem);
+    line-height: 1.05; letter-spacing: -0.02em; margin: 0 0 0.6rem;
+  }
+
+  /* ---- level ladder ---- */
+  .ladder { margin-top: 1.9rem; border-top: 1.5px solid var(--rule-strong); }
+  .lvl { border-bottom: 1px solid var(--line); padding: 1.2rem 0; display: grid;
+         grid-template-columns: 8.5rem 1fr; gap: 0.4rem 1.5rem; align-items: start; }
+  @media (max-width: 620px) { .lvl { grid-template-columns: 1fr; } }
+  .lvl-name { font-family: var(--display); font-weight: 600; font-size: 1.1rem; }
+  .lvl-name span { display: block; font-family: var(--body); font-weight: 500; font-size: 0.75rem;
+                   letter-spacing: 0.07em; text-transform: uppercase; color: var(--laterite); margin-top: 0.2rem; }
+  .lvl-body p { margin: 0 0 0.55rem; font-size: 0.95rem; }
+  .lvl-stats { display: flex; flex-wrap: wrap; gap: 0.35rem 1.3rem; font-size: 0.8rem;
+               color: var(--ink-quiet); font-variant-numeric: tabular-nums; margin-top: 0.55rem; }
+  .lvl-stats b { color: var(--ink); font-weight: 600; }
+  .bar { height: 6px; background: var(--recessed); margin-top: 0.7rem; position: relative; }
+  .bar i { position: absolute; inset: 0 auto 0 0; background: var(--ink); display: block; }
+  .bar em { position: absolute; inset: 0 auto 0 0; background: var(--laterite); display: block; }
+
+  /* ---- spine words ---- */
+  .spine { display: grid; gap: 1px; grid-template-columns: repeat(auto-fill, minmax(142px, 1fr));
+           background: var(--line); border: 1px solid var(--line); margin: 1.7rem 0 0.8rem; }
+  .spine div { background: var(--paper); padding: 0.8rem 0.9rem; }
+  .spine .w { font-family: var(--kbp); font-size: 1.45rem; line-height: 1.2; display: block; }
+  .spine .g { font-size: 0.82rem; color: var(--ink-quiet); display: block; }
+  .spine .c { font-size: 0.71rem; color: var(--laterite); font-weight: 600;
+              font-variant-numeric: tabular-nums; }
+
+  /* ---- chart ---- */
+  figure { margin: 1.7rem 0 0; }
+  figcaption { font-size: 0.83rem; color: var(--ink-quiet); margin-top: 0.8rem; max-width: 62ch; }
+  .chartbox { overflow-x: auto; }
+  svg { display: block; width: 100%; height: auto; min-width: 500px; }
+  .grid-line { stroke: var(--line); stroke-width: 1; }
+  .axis-text { font-family: var(--body); font-size: 11.5px; fill: var(--ink-quiet); }
+  .curve { fill: none; stroke: var(--ink); stroke-width: 2; }
+  .dot { fill: var(--paper); stroke: var(--ink); stroke-width: 2; }
+  .dot-key { fill: var(--laterite); stroke: var(--laterite); }
+  .key-text { font-family: var(--body); font-size: 11.5px; fill: var(--laterite); font-weight: 600; }
+
+  /* ---- the full map ---- */
+  .level-head { display:flex; align-items:baseline; gap:0.9rem; flex-wrap:wrap; margin:2.6rem 0 0.4rem;
+                padding-bottom:0.5rem; border-bottom:1.5px solid var(--rule-strong); }
+  .level-code { font-family:var(--display); font-weight:800; font-size:1.6rem; color:var(--laterite); letter-spacing:-0.02em; }
+  .level-name { font-family:var(--display); font-weight:600; font-size:1.25rem; }
+  .level-stat { font-size:0.8rem; color:var(--ink-quiet); margin-left:auto; font-variant-numeric:tabular-nums; }
+  .unit { padding:0.95rem 0; border-bottom:1px solid var(--line); }
+  .unit-head { display:flex; align-items:baseline; gap:0.8rem; flex-wrap:wrap; margin-bottom:0.5rem; }
+  .unit-n { font-family:var(--display); font-weight:600; font-size:0.74rem; letter-spacing:0.08em; color:var(--laterite); min-width:3.6rem; }
+  .unit-title { font-family:var(--display); font-weight:600; font-size:1.08rem; flex:1 1 auto; }
+  .unit-count { font-size:0.78rem; color:var(--ink-quiet); font-variant-numeric:tabular-nums; }
+  ul.lessons { list-style:none; margin:0; padding:0 0 0 4.4rem; display:grid; gap:0.28rem; }
+  @media (max-width:600px) { ul.lessons { padding-left:0; } }
+  ul.lessons li { display:grid; grid-template-columns: 1fr 5.2rem minmax(9rem, 16rem); gap:0.8rem; align-items:baseline; font-size:0.9rem; }
+  @media (max-width:600px) { ul.lessons li { grid-template-columns: 1fr 5rem; } ul.lessons li .src { display:none; } }
+  .kind { font-size:0.66rem; letter-spacing:0.06em; text-transform:uppercase; color:var(--ink-quiet); }
+  .kind.grammar, .kind.tone { color:var(--laterite); }
+  .src { font-size:0.74rem; color:var(--ink-quiet); text-align:right; }
+  .flag { font-size:0.62rem; font-weight:600; text-transform:uppercase; letter-spacing:0.06em; color:var(--laterite);
+          border:1px solid var(--laterite); padding:0.05rem 0.35rem; margin-left:0.4rem; vertical-align:0.1em; }
+
+  /* ---- source ledger ---- */
+  .sources { margin-top: 1.7rem; border-top: 1px solid var(--line); }
+  .src { display: grid; grid-template-columns: 1fr 8.5rem; gap: 0.3rem 1rem;
+         padding: 0.85rem 0; border-bottom: 1px solid var(--line); align-items: baseline; }
+  @media (max-width: 560px) { .src { grid-template-columns: 1fr; } }
+  .src-t { font-weight: 500; }
+  .src-t small { display: block; font-weight: 400; font-size: 0.85rem; color: var(--ink-quiet); margin-top: 0.15rem; }
+  .tag { font-size: 0.68rem; font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase;
+         padding: 0.16rem 0.45rem; border: 1px solid var(--line); white-space: nowrap; justify-self: start; }
+  .tag.free { color: var(--ink); border-color: var(--ink); }
+  .tag.blocked { color: var(--laterite); border-color: var(--laterite); }
+
+  .note { background: var(--recessed); border-left: 3px solid var(--ink-quiet);
+          padding: 1rem 1.2rem; margin: 1.6rem 0 0; font-size: 0.94rem; }
+  .note strong { font-weight: 600; }
+
+  ul.plain { padding-left: 1.1rem; margin: 0.4rem 0 1rem; }
+  ul.plain li { margin-bottom: 0.5rem; }
+
+  footer { margin-top: 3.5rem; padding-top: 1.4rem; border-top: 1px solid var(--line);
+           font-size: 0.82rem; color: var(--ink-quiet); }
+  @media (prefers-reduced-motion: reduce) { * { animation: none !important; transition: none !important; } }
+</style>
+
+<div class="wrap">
+<header class="col">
+  <p class="eyebrow">Curriculum proposal · revised 7 September 2026</p>
+  <h1>Zero to fluent in Kabiyè</h1>
+  <p class="lede">A five-level course of 235 lessons in 39 units, built from every source we hold and ordered by how often words actually occur. Each lesson names where it was learned from; every one was checked against the lexicon before it went on the map.</p>
+  <div class="meta">
+    <span><b>Now</b> 18 units · 78 lessons · one flat tier</span>
+    <span><b>Proposed</b> 5 levels · 39 units · 235 lessons · ~2,040 words</span>
+    <span><b>Sources</b> every document we hold — 4 courses, 1 dictionary, 9 texts, 3 studies</span>
+  </div>
+</header>
+
+<section>
+  <div class="col">
+    <p class="eyebrow">The question that reframed this</p>
+    <h2>After 51 lessons, can they speak?</h2>
+    <div class="answer">
+      <p class="big">No. They can survive.</p>
+      <p style="margin:0">Fifty-one lessons at six words each is about 300 words — <b>59% of running text</b>. Enough to greet, count, buy something, ask the way, and say where it hurts. Not enough to follow a story, argue a point, or read a poem. That is a solid A2, and it is a foundation, not a destination.</p>
+    </div>
+    <p style="margin-top:1.6rem">The grammar makes the gap plainer than the vocabulary does. The SIL sketch documents <b>ten noun classes</b> with ten matching determiner forms, <b>eight singular/plural genders</b>, <b>nine categories of pronoun</b>, and <b>six conjugation schemas</b> covering some twenty verb sub-classes across the descriptive, progressive, past, simple, accomplished and consecutive aspects. My 51 lessons allocated nine slots to all of that. Mastery needs closer to forty.</p>
+  </div>
+</section>
+
+<section>
+  <div class="col">
+    <p class="eyebrow">The shape</p>
+    <h2>Five levels, each a real threshold</h2>
+    <p>Levels are set by what share of ordinary Kabiyè a learner can follow at that point — a measurable line, not a feeling. The specialist lessons cut from the first draft are not gone; they move to B1, where a learner has the grammar to use them.</p>
+  </div>
+
+  <div class="ladder">
+    <div class="lvl">
+      <div class="lvl-name">Foundation<span>A1 · A2</span></div>
+      <div class="lvl-body">
+        <p>Writing and sound, the sentence spine, greetings, numbers and time, everyday verbs, home, food, the body, work, travel, shopping, nature, and a first taste of culture. Eight units: sound, the sentence spine, people, numbers, first verbs, home and market, out and about, culture — then eight more that add noun classes, pronouns, the first verb forms, conversation skills and a first folktale.</p>
+        <div class="lvl-stats"><span><b>92</b> lessons</span><span><b>~550</b> words</span><span><b>71%</b> of running text</span><span>6 words / lesson</span></div>
+        <div class="bar"><i style="width:71%"></i></div>
+      </div>
+    </div>
+    <div class="lvl">
+      <div class="lvl-name">Independent<span>B1</span></div>
+      <div class="lvl-body">
+        <p>Where the specialist domains return and earn their place — the clinic in depth, the workplace, trades, markets and money, travel problems. Grammar carries this level: all ten noun classes, the full pronoun system, and the six conjugation schemas one at a time.</p>
+        <div class="lvl-stats"><span><b>60</b> lessons</span><span><b>~1,030</b> words</span><span><b>80%</b> of running text</span><span>8 words / lesson</span></div>
+        <div class="bar"><i style="width:80%"></i></div>
+      </div>
+    </div>
+    <div class="lvl">
+      <div class="lvl-name">Fluent<span>B2</span></div>
+      <div class="lvl-body">
+        <p>Reading real Kabiyè rather than sentences written for learners: the folktale, the poetry collections, the funeral-rites study. Register, idiom, narrative tense, reported speech, and the difference between how people write and how they talk.</p>
+        <div class="lvl-stats"><span><b>44</b> lessons</span><span><b>~1,560</b> words</span><span><b>88%</b> of running text</span><span>12 words / lesson</span></div>
+        <div class="bar"><i style="width:88%"></i></div>
+      </div>
+    </div>
+    <div class="lvl">
+      <div class="lvl-name">Mastery<span>C1</span></div>
+      <div class="lvl-body">
+        <p>Proverbs and oral literature at depth, dialect variation, translation both ways, and writing Kabiyè rather than only reading it. This is the level that produces contributors — people who can add to the dictionary rather than only consume it.</p>
+        <div class="lvl-stats"><span><b>39</b> lessons</span><span><b>~2,040</b> words</span><span><b>91%</b> of running text</span><span>12 words / lesson</span></div>
+        <div class="bar"><i style="width:91%"></i></div>
+      </div>
+    </div>
+  </div>
+
+  <figure>
+    <div class="chartbox">
+      <svg viewBox="0 0 760 300" role="img" aria-label="Vocabulary size against share of running Kabiyè text: 300 words covers 59 percent, 630 words covers 71 percent, 1230 words covers 80 percent, 2070 covers 88 percent, 2670 covers 91 percent.">
+        <line class="grid-line" x1="58" y1="240" x2="740" y2="240"></line>
+        <line class="grid-line" x1="58" y1="188" x2="740" y2="188"></line>
+        <line class="grid-line" x1="58" y1="136" x2="740" y2="136"></line>
+        <line class="grid-line" x1="58" y1="84" x2="740" y2="84"></line>
+        <line class="grid-line" x1="58" y1="32" x2="740" y2="32"></line>
+        <text class="axis-text" x="50" y="244" text-anchor="end">0%</text>
+        <text class="axis-text" x="50" y="192" text-anchor="end">20%</text>
+        <text class="axis-text" x="50" y="140" text-anchor="end">40%</text>
+        <text class="axis-text" x="50" y="88" text-anchor="end">60%</text>
+        <text class="axis-text" x="50" y="36" text-anchor="end">80%</text>
+
+        <path class="curve" d="M 58 148 L 143 128 L 228 86 L 313 55 L 483 32 L 653 12 L 740 5"></path>
+
+        <circle class="dot" cx="58"  cy="148" r="4"></circle>
+        <circle class="dot" cx="143" cy="128" r="4"></circle>
+        <circle class="dot dot-key" cx="228" cy="86" r="6"></circle>
+        <circle class="dot dot-key" cx="313" cy="55" r="6"></circle>
+        <circle class="dot dot-key" cx="483" cy="32" r="6"></circle>
+        <circle class="dot dot-key" cx="653" cy="12" r="6"></circle>
+
+        <text class="key-text" x="228" y="76" text-anchor="middle">A2 · 59%</text>
+        <text class="key-text" x="313" y="45" text-anchor="middle">B1 · 71%</text>
+        <text class="key-text" x="483" y="24" text-anchor="middle">B2 · 80%</text>
+        <text class="key-text" x="653" y="26" text-anchor="middle">C1 · 88–91%</text>
+
+        <text class="axis-text" x="58"  y="264" text-anchor="middle">50</text>
+        <text class="axis-text" x="143" y="264" text-anchor="middle">100</text>
+        <text class="axis-text" x="228" y="264" text-anchor="middle">300</text>
+        <text class="axis-text" x="313" y="264" text-anchor="middle">630</text>
+        <text class="axis-text" x="483" y="264" text-anchor="middle">1230</text>
+        <text class="axis-text" x="653" y="264" text-anchor="middle">2070</text>
+        <text class="axis-text" x="740" y="264" text-anchor="middle">2670</text>
+        <text class="axis-text" x="399" y="288" text-anchor="middle">words known, ordered by frequency</text>
+      </svg>
+    </div>
+    <figcaption>Each level is a share of running text, not a lesson count. The curve flattens hard after B2 — the last 9% would cost another 1,700 words, which is why C1 ends where it does rather than chasing 100%.</figcaption>
+  </figure>
+</section>
+
+<section>
+  <div class="col">
+    <p class="eyebrow">The map</p>
+    <h2>39 units, 235 lessons, every one sourced</h2>
+    <p>The right-hand column names where each lesson was learned from. <b>Parlons Kabiyè</b> supplies the grammar backbone (125 lessons cite it), the <b>SIL dictionary</b> the words and the noun classes, <b>J'apprends</b> the order, the <b>Peace Corps workbook</b> the competency shape, the <b>conjugation index</b> the 27 verb classes, and eight texts the reading. A lesson is on this map only if it can be built from what we hold: 234 pass; one waits for its text to be extracted.</p>
+  </div>
+  <div class="map">
+<div class="level-head"><span class="level-code">A1</span><span class="level-name">Foundation</span><span class="level-stat">46 lessons · reaches 59% of running text</span></div>
+<div class="unit"><div class="unit-head"><span class="unit-n">A1-01</span><span class="unit-title">Writing &amp; Sound</span><span class="unit-count">5 lessons</span></div><ul class="lessons">
+<li><span class="lt">Alphabet and Sounds</span><span class="kind vocab">vocab</span><span class="src">Parlons Kabiyè · Peace Corps · SIL</span></li>
+<li><span class="lt">The Eight Letters French Does Not Have</span><span class="kind vocab">vocab</span><span class="src">Parlons Kabiyè · SIL</span></li>
+<li><span class="lt">Vowel Harmony</span><span class="kind tone">tone</span><span class="src">Parlons Kabiyè · SIL</span></li>
+<li><span class="lt">Vowel Length</span><span class="kind tone">tone</span><span class="src">Parlons Kabiyè</span></li>
+<li><span class="lt">Tones and Meaning</span><span class="kind tone">tone</span><span class="src">Parlons Kabiyè · Roberts · SIL</span></li>
+</ul></div>
+<div class="unit"><div class="unit-head"><span class="unit-n">A1-02</span><span class="unit-title">The Sentence Spine</span><span class="unit-count">7 lessons</span></div><ul class="lessons">
+<li><span class="lt">Joining Words: nɛ, yaa, ɛlɛ</span><span class="kind grammar">grammar</span><span class="src">Parlons Kabiyè · corpus</span></li>
+<li><span class="lt">Where Things Are: taa, yɔɔ, tɛɛ, wayɩ</span><span class="kind grammar">grammar</span><span class="src">Parlons Kabiyè · SIL · corpus</span></li>
+<li><span class="lt">Being and Having</span><span class="kind grammar">grammar</span><span class="src">Parlons Kabiyè · Peace Corps · corpus</span></li>
+<li><span class="lt">Asking: who, what, where, how many</span><span class="kind vocab">vocab</span><span class="src">J&#x27;apprends · Parlons Kabiyè · corpus</span></li>
+<li><span class="lt">This, That, and Who: noun classes</span><span class="kind grammar">grammar</span><span class="src">Parlons Kabiyè · SIL</span></li>
+<li><span class="lt">The Words You Meet Everywhere</span><span class="kind vocab">vocab</span><span class="src">corpus</span></li>
+<li><span class="lt">Sesame Questions and Answers</span><span class="kind skill">skill</span><span class="src">J&#x27;apprends · Parlons Kabiyè</span></li>
+</ul></div>
+<div class="unit"><div class="unit-head"><span class="unit-n">A1-03</span><span class="unit-title">Greetings &amp; People</span><span class="unit-count">7 lessons</span></div><ul class="lessons">
+<li><span class="lt">Greetings at the Four Times of Day</span><span class="kind skill">skill</span><span class="src">J&#x27;apprends · Parlons Kabiyè · Peace Corps</span></li>
+<li><span class="lt">Introduce Yourself and Someone Else</span><span class="kind skill">skill</span><span class="src">J&#x27;apprends · Parlons Kabiyè · Peace Corps</span></li>
+<li><span class="lt">Politeness &amp; Thanks</span><span class="kind vocab">vocab</span><span class="src">J&#x27;apprends</span></li>
+<li><span class="lt">Asking Someone to Repeat or Rephrase</span><span class="kind skill">skill</span><span class="src">Parlons Kabiyè</span></li>
+<li><span class="lt">Present Your Family</span><span class="kind vocab">vocab</span><span class="src">Peace Corps</span></li>
+<li><span class="lt">Talking About Yourself</span><span class="kind vocab">vocab</span><span class="src">J&#x27;apprends</span></li>
+<li><span class="lt">Expressions of Emotion and Sympathy</span><span class="kind skill">skill</span><span class="src">Peace Corps</span></li>
+</ul></div>
+<div class="unit"><div class="unit-head"><span class="unit-n">A1-04</span><span class="unit-title">Numbers, Time &amp; Days</span><span class="unit-count">5 lessons</span></div><ul class="lessons">
+<li><span class="lt">Numbers 1–20</span><span class="kind vocab">vocab</span><span class="src">BON LA · corpus</span></li>
+<li><span class="lt">Numbers up to 100</span><span class="kind vocab">vocab</span><span class="src">BON LA</span></li>
+<li><span class="lt">Counting Beings, Objects and Money</span><span class="kind grammar">grammar</span><span class="src">Parlons Kabiyè</span></li>
+<li><span class="lt">Telling Time</span><span class="kind vocab">vocab</span><span class="src">Peace Corps</span></li>
+<li><span class="lt">Dates &amp; Calendar</span><span class="kind vocab">vocab</span><span class="src">Parlons Kabiyè · text</span></li>
+</ul></div>
+<div class="unit"><div class="unit-head"><span class="unit-n">A1-05</span><span class="unit-title">First Verbs</span><span class="unit-count">7 lessons</span></div><ul class="lessons">
+<li><span class="lt">Essential Verbs: go, come, give, take</span><span class="kind vocab">vocab</span><span class="src">corpus</span></li>
+<li><span class="lt">Subject Pronouns on the Verb</span><span class="kind grammar">grammar</span><span class="src">Parlons Kabiyè · Peace Corps · SIL</span></li>
+<li><span class="lt">Asking Someone To: the Imperative</span><span class="kind grammar">grammar</span><span class="src">J&#x27;apprends · Parlons Kabiyè</span></li>
+<li><span class="lt">What People Are Doing: the Present</span><span class="kind grammar">grammar</span><span class="src">Parlons Kabiyè · Peace Corps</span></li>
+<li><span class="lt">Saying No: Don&#x27;t and Not</span><span class="kind grammar">grammar</span><span class="src">Parlons Kabiyè</span></li>
+<li><span class="lt">Want, Need &amp; Like</span><span class="kind vocab">vocab</span><span class="src">J&#x27;apprends</span></li>
+<li><span class="lt">Daily Activities</span><span class="kind vocab">vocab</span><span class="src">J&#x27;apprends · Peace Corps</span></li>
+</ul></div>
+<div class="unit"><div class="unit-head"><span class="unit-n">A1-06</span><span class="unit-title">Home, Food &amp; Market</span><span class="unit-count">6 lessons</span></div><ul class="lessons">
+<li><span class="lt">Home &amp; Rooms</span><span class="kind vocab">vocab</span><span class="src">J&#x27;apprends</span></li>
+<li><span class="lt">Household Chores &amp; Tasks</span><span class="kind vocab">vocab</span><span class="src">—</span></li>
+<li><span class="lt">Food Basics</span><span class="kind vocab">vocab</span><span class="src">J&#x27;apprends · Peace Corps</span></li>
+<li><span class="lt">At Table</span><span class="kind skill">skill</span><span class="src">Parlons Kabiyè</span></li>
+<li><span class="lt">Buying Essential Items</span><span class="kind skill">skill</span><span class="src">J&#x27;apprends · Peace Corps</span></li>
+<li><span class="lt">Market Interaction &amp; Bargaining</span><span class="kind skill">skill</span><span class="src">J&#x27;apprends · Parlons Kabiyè</span></li>
+</ul></div>
+<div class="unit"><div class="unit-head"><span class="unit-n">A1-07</span><span class="unit-title">Out and About</span><span class="unit-count">5 lessons</span></div><ul class="lessons">
+<li><span class="lt">Asking for and Giving Directions</span><span class="kind skill">skill</span><span class="src">J&#x27;apprends · Peace Corps</span></li>
+<li><span class="lt">Getting Around: Transport</span><span class="kind vocab">vocab</span><span class="src">J&#x27;apprends · Peace Corps</span></li>
+<li><span class="lt">Weather &amp; Seasons</span><span class="kind vocab">vocab</span><span class="src">J&#x27;apprends</span></li>
+<li><span class="lt">Body Parts &amp; Basic Health</span><span class="kind vocab">vocab</span><span class="src">Peace Corps</span></li>
+<li><span class="lt">Animals Around the House</span><span class="kind vocab">vocab</span><span class="src">—</span></li>
+</ul></div>
+<div class="unit"><div class="unit-head"><span class="unit-n">A1-08</span><span class="unit-title">Culture I</span><span class="unit-count">4 lessons</span></div><ul class="lessons">
+<li><span class="lt">Values and Qualities</span><span class="kind culture">culture</span><span class="src">Parlons Kabiyè</span></li>
+<li><span class="lt">Everyday Life</span><span class="kind culture">culture</span><span class="src">Parlons Kabiyè</span></li>
+<li><span class="lt">Proverbs I</span><span class="kind culture">culture</span><span class="src">J&#x27;apprends · Parlons Kabiyè</span></li>
+<li><span class="lt">The Kabiyè Calendar and Festivals</span><span class="kind culture">culture</span><span class="src">Parlons Kabiyè · text</span></li>
+</ul></div>
+<div class="level-head"><span class="level-code">A2</span><span class="level-name">Everyday</span><span class="level-stat">46 lessons · reaches 71% of running text</span></div>
+<div class="unit"><div class="unit-head"><span class="unit-n">A2-01</span><span class="unit-title">Noun Classes</span><span class="unit-count">6 lessons</span></div><ul class="lessons">
+<li><span class="lt">People: the E / pA class</span><span class="kind grammar">grammar</span><span class="src">Parlons Kabiyè · SIL</span></li>
+<li><span class="lt">The kI / I class</span><span class="kind grammar">grammar</span><span class="src">Parlons Kabiyè · SIL</span></li>
+<li><span class="lt">The kA / sI class</span><span class="kind grammar">grammar</span><span class="src">Parlons Kabiyè · SIL</span></li>
+<li><span class="lt">The ɖI / a class</span><span class="kind grammar">grammar</span><span class="src">Parlons Kabiyè · SIL</span></li>
+<li><span class="lt">Uncountables: tI and pI</span><span class="kind grammar">grammar</span><span class="src">Parlons Kabiyè · SIL</span></li>
+<li><span class="lt">Agreement Across the Sentence</span><span class="kind grammar">grammar</span><span class="src">Parlons Kabiyè · SIL</span></li>
+</ul></div>
+<div class="unit"><div class="unit-head"><span class="unit-n">A2-02</span><span class="unit-title">Pronouns</span><span class="unit-count">7 lessons</span></div><ul class="lessons">
+<li><span class="lt">Possessive Prefixes: my, your, our</span><span class="kind grammar">grammar</span><span class="src">SIL</span></li>
+<li><span class="lt">Object Pronouns</span><span class="kind grammar">grammar</span><span class="src">Parlons Kabiyè</span></li>
+<li><span class="lt">Absolute Pronouns: as for me</span><span class="kind grammar">grammar</span><span class="src">Parlons Kabiyè</span></li>
+<li><span class="lt">Relative Pronouns by Class</span><span class="kind grammar">grammar</span><span class="src">Parlons Kabiyè</span></li>
+<li><span class="lt">Focus Pronouns</span><span class="kind grammar">grammar</span><span class="src">Parlons Kabiyè</span></li>
+<li><span class="lt">Possessive Determiners and Determined</span><span class="kind grammar">grammar</span><span class="src">Parlons Kabiyè</span></li>
+<li><span class="lt">Indefinite and Indeterminate Pronouns</span><span class="kind grammar">grammar</span><span class="src">SIL</span></li>
+</ul></div>
+<div class="unit"><div class="unit-head"><span class="unit-n">A2-03</span><span class="unit-title">Pointing and Describing</span><span class="unit-count">4 lessons</span></div><ul class="lessons">
+<li><span class="lt">Near, Far and Already Mentioned</span><span class="kind grammar">grammar</span><span class="src">Parlons Kabiyè</span></li>
+<li><span class="lt">A Certain: the Indefinite by Class</span><span class="kind grammar">grammar</span><span class="src">SIL</span></li>
+<li><span class="lt">Which One? Interrogative Determiners</span><span class="kind grammar">grammar</span><span class="src">Parlons Kabiyè</span></li>
+<li><span class="lt">Basic Adjectives &amp; Descriptions</span><span class="kind grammar">grammar</span><span class="src">Parlons Kabiyè</span></li>
+</ul></div>
+<div class="unit"><div class="unit-head"><span class="unit-n">A2-04</span><span class="unit-title">Verb Forms I</span><span class="unit-count">7 lessons</span></div><ul class="lessons">
+<li><span class="lt">The Aorist: what simply happened</span><span class="kind grammar">grammar</span><span class="src">Parlons Kabiyè</span></li>
+<li><span class="lt">The Past Imperfective: what was going on</span><span class="kind grammar">grammar</span><span class="src">Parlons Kabiyè</span></li>
+<li><span class="lt">The Accomplished, Unbound</span><span class="kind grammar">grammar</span><span class="src">Parlons Kabiyè</span></li>
+<li><span class="lt">The Accomplished, Bound</span><span class="kind grammar">grammar</span><span class="src">Parlons Kabiyè</span></li>
+<li><span class="lt">The Infinitive and Naming an Action</span><span class="kind grammar">grammar</span><span class="src">Parlons Kabiyè</span></li>
+<li><span class="lt">Negative Accomplished</span><span class="kind grammar">grammar</span><span class="src">Parlons Kabiyè</span></li>
+<li><span class="lt">Negative Past Imperfective</span><span class="kind grammar">grammar</span><span class="src">Parlons Kabiyè</span></li>
+</ul></div>
+<div class="unit"><div class="unit-head"><span class="unit-n">A2-05</span><span class="unit-title">Everyday Life II</span><span class="unit-count">8 lessons</span></div><ul class="lessons">
+<li><span class="lt">At the Clinic</span><span class="kind skill">skill</span><span class="src">Parlons Kabiyè · Peace Corps</span></li>
+<li><span class="lt">Asking for Help in an Emergency</span><span class="kind skill">skill</span><span class="src">Peace Corps</span></li>
+<li><span class="lt">Talking About Your Work</span><span class="kind skill">skill</span><span class="src">J&#x27;apprends · Peace Corps</span></li>
+<li><span class="lt">School &amp; Education</span><span class="kind vocab">vocab</span><span class="src">—</span></li>
+<li><span class="lt">Clothing &amp; Textiles</span><span class="kind vocab">vocab</span><span class="src">—</span></li>
+<li><span class="lt">Furniture &amp; Home Goods</span><span class="kind vocab">vocab</span><span class="src">—</span></li>
+<li><span class="lt">Money &amp; Banking</span><span class="kind vocab">vocab</span><span class="src">Parlons Kabiyè</span></li>
+<li><span class="lt">On the Phone</span><span class="kind skill">skill</span><span class="src">J&#x27;apprends</span></li>
+</ul></div>
+<div class="unit"><div class="unit-head"><span class="unit-n">A2-06</span><span class="unit-title">Conversation</span><span class="unit-count">6 lessons</span></div><ul class="lessons">
+<li><span class="lt">Welcoming a Guest</span><span class="kind skill">skill</span><span class="src">Parlons Kabiyè</span></li>
+<li><span class="lt">Inviting, Accepting, Declining</span><span class="kind skill">skill</span><span class="src">Peace Corps</span></li>
+<li><span class="lt">Teasing and Banter</span><span class="kind skill">skill</span><span class="src">Parlons Kabiyè</span></li>
+<li><span class="lt">Sympathy in Happy and Sad Events</span><span class="kind skill">skill</span><span class="src">Peace Corps</span></li>
+<li><span class="lt">Making Plans</span><span class="kind skill">skill</span><span class="src">J&#x27;apprends</span></li>
+<li><span class="lt">Greetings Revisited: Leaving and Blessing</span><span class="kind skill">skill</span><span class="src">J&#x27;apprends</span></li>
+</ul></div>
+<div class="unit"><div class="unit-head"><span class="unit-n">A2-07</span><span class="unit-title">Culture II</span><span class="unit-count">5 lessons</span></div><ul class="lessons">
+<li><span class="lt">Roles in the Community</span><span class="kind culture">culture</span><span class="src">Parlons Kabiyè</span></li>
+<li><span class="lt">The Life Cycle</span><span class="kind culture">culture</span><span class="src">Parlons Kabiyè</span></li>
+<li><span class="lt">Dances and Festivals</span><span class="kind culture">culture</span><span class="src">Parlons Kabiyè</span></li>
+<li><span class="lt">Ceremonies, Rites &amp; Naming</span><span class="kind culture">culture</span><span class="src">BON LA · Parlons Kabiyè</span></li>
+<li><span class="lt">Proverbs II</span><span class="kind culture">culture</span><span class="src">J&#x27;apprends</span></li>
+</ul></div>
+<div class="unit"><div class="unit-head"><span class="unit-n">A2-08</span><span class="unit-title">Reading I</span><span class="unit-count">3 lessons</span></div><ul class="lessons">
+<li><span class="lt">Reading the Calendar</span><span class="kind reading">reading</span><span class="src">text</span></li>
+<li><span class="lt">Short Dialogues</span><span class="kind skill">skill</span><span class="src">Peace Corps</span></li>
+<li><span class="lt">A First Folktale, Guided</span><span class="kind reading">reading</span><span class="src">text</span></li>
+</ul></div>
+<div class="level-head"><span class="level-code">B1</span><span class="level-name">Independent</span><span class="level-stat">60 lessons · reaches 80% of running text</span></div>
+<div class="unit"><div class="unit-head"><span class="unit-n">B1-01</span><span class="unit-title">Verb Classes I</span><span class="unit-count">9 lessons</span></div><ul class="lessons">
+<li><span class="lt">Verbs That Conjugate Like Class 19</span><span class="kind grammar">grammar</span><span class="src">SIL · conjugation index</span></li>
+<li><span class="lt">Verbs That Conjugate Like Class 9</span><span class="kind grammar">grammar</span><span class="src">SIL · conjugation index</span></li>
+<li><span class="lt">Verbs That Conjugate Like Class 1</span><span class="kind grammar">grammar</span><span class="src">SIL · conjugation index</span></li>
+<li><span class="lt">Verbs That Conjugate Like Class 22</span><span class="kind grammar">grammar</span><span class="src">SIL · conjugation index</span></li>
+<li><span class="lt">Verbs That Conjugate Like Class 10</span><span class="kind grammar">grammar</span><span class="src">SIL · conjugation index</span></li>
+<li><span class="lt">Verbs That Conjugate Like Class 20</span><span class="kind grammar">grammar</span><span class="src">SIL · conjugation index</span></li>
+<li><span class="lt">Verbs That Conjugate Like Class 17</span><span class="kind grammar">grammar</span><span class="src">SIL · conjugation index</span></li>
+<li><span class="lt">Verbs That Conjugate Like Class 13</span><span class="kind grammar">grammar</span><span class="src">SIL · conjugation index</span></li>
+<li><span class="lt">Verbs That Conjugate Like Class 18</span><span class="kind grammar">grammar</span><span class="src">SIL · conjugation index</span></li>
+</ul></div>
+<div class="unit"><div class="unit-head"><span class="unit-n">B1-02</span><span class="unit-title">Verb Forms II: Expansions</span><span class="unit-count">7 lessons</span></div><ul class="lessons">
+<li><span class="lt">The Habitual: what one always does</span><span class="kind grammar">grammar</span><span class="src">Parlons Kabiyè</span></li>
+<li><span class="lt">The Expectative: about to</span><span class="kind grammar">grammar</span><span class="src">Parlons Kabiyè</span></li>
+<li><span class="lt">The Immediate</span><span class="kind grammar">grammar</span><span class="src">Parlons Kabiyè</span></li>
+<li><span class="lt">The Distant Past</span><span class="kind grammar">grammar</span><span class="src">Parlons Kabiyè</span></li>
+<li><span class="lt">The Future</span><span class="kind grammar">grammar</span><span class="src">Parlons Kabiyè</span></li>
+<li><span class="lt">The Adversative</span><span class="kind grammar">grammar</span><span class="src">Parlons Kabiyè</span></li>
+<li><span class="lt">The Past Irrealis: would have</span><span class="kind grammar">grammar</span><span class="src">Parlons Kabiyè</span></li>
+</ul></div>
+<div class="unit"><div class="unit-head"><span class="unit-n">B1-03</span><span class="unit-title">Negation in Depth</span><span class="unit-count">5 lessons</span></div><ul class="lessons">
+<li><span class="lt">Distant Negative</span><span class="kind grammar">grammar</span><span class="src">Parlons Kabiyè</span></li>
+<li><span class="lt">Habitual Negative</span><span class="kind grammar">grammar</span><span class="src">Parlons Kabiyè</span></li>
+<li><span class="lt">Categorical Negative</span><span class="kind grammar">grammar</span><span class="src">Parlons Kabiyè</span></li>
+<li><span class="lt">Provisional Negative: not yet</span><span class="kind grammar">grammar</span><span class="src">Parlons Kabiyè</span></li>
+<li><span class="lt">Negation: the Whole Map</span><span class="kind grammar">grammar</span><span class="src">Parlons Kabiyè</span></li>
+</ul></div>
+<div class="unit"><div class="unit-head"><span class="unit-n">B1-04</span><span class="unit-title">Questions in Depth</span><span class="unit-count">5 lessons</span></div><ul class="lessons">
+<li><span class="lt">Interrogative Pronouns</span><span class="kind grammar">grammar</span><span class="src">J&#x27;apprends · Parlons Kabiyè</span></li>
+<li><span class="lt">Interrogative Adverbs</span><span class="kind grammar">grammar</span><span class="src">J&#x27;apprends · Parlons Kabiyè</span></li>
+<li><span class="lt">The Particle na</span><span class="kind grammar">grammar</span><span class="src">J&#x27;apprends · Parlons Kabiyè</span></li>
+<li><span class="lt">yáá wé and Other Ways to Ask</span><span class="kind grammar">grammar</span><span class="src">J&#x27;apprends · Parlons Kabiyè</span></li>
+<li><span class="lt">Reported and Indirect Questions</span><span class="kind grammar">grammar</span><span class="src">J&#x27;apprends · Parlons Kabiyè</span></li>
+</ul></div>
+<div class="unit"><div class="unit-head"><span class="unit-n">B1-05</span><span class="unit-title">Building Longer Sentences</span><span class="unit-count">5 lessons</span></div><ul class="lessons">
+<li><span class="lt">Relative Clauses</span><span class="kind grammar">grammar</span><span class="src">Parlons Kabiyè</span></li>
+<li><span class="lt">If: Conditional Clauses</span><span class="kind grammar">grammar</span><span class="src">Parlons Kabiyè</span></li>
+<li><span class="lt">When: Temporal Clauses</span><span class="kind grammar">grammar</span><span class="src">Parlons Kabiyè</span></li>
+<li><span class="lt">Where: Locative Clauses</span><span class="kind grammar">grammar</span><span class="src">Parlons Kabiyè</span></li>
+<li><span class="lt">Because and So: Cause and Consequence</span><span class="kind grammar">grammar</span><span class="src">Parlons Kabiyè</span></li>
+</ul></div>
+<div class="unit"><div class="unit-head"><span class="unit-n">B1-06</span><span class="unit-title">Comparing and Describing</span><span class="unit-count">4 lessons</span></div><ul class="lessons">
+<li><span class="lt">Comparing: more than, the most</span><span class="kind grammar">grammar</span><span class="src">Parlons Kabiyè</span></li>
+<li><span class="lt">Qualifying Adjectives</span><span class="kind grammar">grammar</span><span class="src">Parlons Kabiyè</span></li>
+<li><span class="lt">Adverbs and Onomatopoeia</span><span class="kind grammar">grammar</span><span class="src">SIL</span></li>
+<li><span class="lt">Making Words: Derivation</span><span class="kind grammar">grammar</span><span class="src">Parlons Kabiyè</span></li>
+</ul></div>
+<div class="unit"><div class="unit-head"><span class="unit-n">B1-07</span><span class="unit-title">Domains in Depth</span><span class="unit-count">13 lessons</span></div><ul class="lessons">
+<li><span class="lt">At the Hospital</span><span class="kind skill">skill</span><span class="src">Parlons Kabiyè</span></li>
+<li><span class="lt">Pharmacy &amp; Medications</span><span class="kind vocab">vocab</span><span class="src">—</span></li>
+<li><span class="lt">Dentist &amp; Oral Health</span><span class="kind vocab">vocab</span><span class="src">—</span></li>
+<li><span class="lt">Women&#x27;s and Children&#x27;s Health</span><span class="kind vocab">vocab</span><span class="src">—</span></li>
+<li><span class="lt">Trades and Crafts</span><span class="kind vocab">vocab</span><span class="src">J&#x27;apprends</span></li>
+<li><span class="lt">Office &amp; Workplace</span><span class="kind vocab">vocab</span><span class="src">vocab booklet</span></li>
+<li><span class="lt">Farming and the Field</span><span class="kind vocab">vocab</span><span class="src">—</span></li>
+<li><span class="lt">Hunting &amp; Fishing</span><span class="kind vocab">vocab</span><span class="src">J&#x27;apprends</span></li>
+<li><span class="lt">Travel Problems</span><span class="kind skill">skill</span><span class="src">Peace Corps</span></li>
+<li><span class="lt">Butcher, Grocer and Small Shops</span><span class="kind vocab">vocab</span><span class="src">J&#x27;apprends</span></li>
+<li><span class="lt">Sports &amp; Physical Activities</span><span class="kind vocab">vocab</span><span class="src">vocab booklet</span></li>
+<li><span class="lt">Plants, Trees &amp; Landscape</span><span class="kind vocab">vocab</span><span class="src">—</span></li>
+<li><span class="lt">Wild Animals</span><span class="kind vocab">vocab</span><span class="src">—</span></li>
+</ul></div>
+<div class="unit"><div class="unit-head"><span class="unit-n">B1-08</span><span class="unit-title">Tone</span><span class="unit-count">4 lessons</span></div><ul class="lessons">
+<li><span class="lt">Tonal Schemes of Nouns I</span><span class="kind tone">tone</span><span class="src">Parlons Kabiyè</span></li>
+<li><span class="lt">Tonal Schemes of Nouns II</span><span class="kind tone">tone</span><span class="src">Parlons Kabiyè</span></li>
+<li><span class="lt">Tone in the Verb</span><span class="kind tone">tone</span><span class="src">Parlons Kabiyè</span></li>
+<li><span class="lt">Tone Minimal Pairs II</span><span class="kind tone">tone</span><span class="src">Parlons Kabiyè · SIL</span></li>
+</ul></div>
+<div class="unit"><div class="unit-head"><span class="unit-n">B1-09</span><span class="unit-title">Culture III</span><span class="unit-count">4 lessons</span></div><ul class="lessons">
+<li><span class="lt">Spirituality</span><span class="kind culture">culture</span><span class="src">Parlons Kabiyè</span></li>
+<li><span class="lt">Tradition and Diaspora</span><span class="kind culture">culture</span><span class="src">Parlons Kabiyè</span></li>
+<li><span class="lt">Community &amp; Village Life</span><span class="kind culture">culture</span><span class="src">Parlons Kabiyè</span></li>
+<li><span class="lt">Funeral Rites</span><span class="kind culture">culture</span><span class="src">SIL ethnography</span></li>
+</ul></div>
+<div class="unit"><div class="unit-head"><span class="unit-n">B1-10</span><span class="unit-title">Reading II</span><span class="unit-count">4 lessons</span></div><ul class="lessons">
+<li><span class="lt">The Folktale in Full</span><span class="kind reading">reading</span><span class="src">text</span></li>
+<li><span class="lt">Calendar Texts</span><span class="kind reading">reading</span><span class="src">text</span></li>
+<li><span class="lt">Passages from JM-Kabiyé I</span><span class="kind reading">reading</span><span class="src">text</span></li>
+<li><span class="lt">Poetry I: Haɖʋ payaɣ Caa</span><span class="kind reading">reading</span><span class="src">text</span></li>
+</ul></div>
+<div class="level-head"><span class="level-code">B2</span><span class="level-name">Fluent</span><span class="level-stat">44 lessons · reaches 88% of running text</span></div>
+<div class="unit"><div class="unit-head"><span class="unit-n">B2-01</span><span class="unit-title">Verb Classes II</span><span class="unit-count">8 lessons</span></div><ul class="lessons">
+<li><span class="lt">Verb Classes 2</span><span class="kind grammar">grammar</span><span class="src">conjugation index</span></li>
+<li><span class="lt">Verb Classes 3, 4, 5</span><span class="kind grammar">grammar</span><span class="src">conjugation index</span></li>
+<li><span class="lt">Verb Classes 6, 7</span><span class="kind grammar">grammar</span><span class="src">conjugation index</span></li>
+<li><span class="lt">Verb Classes 8, 11, 12</span><span class="kind grammar">grammar</span><span class="src">conjugation index</span></li>
+<li><span class="lt">Verb Classes 14, 15</span><span class="kind grammar">grammar</span><span class="src">conjugation index</span></li>
+<li><span class="lt">Verb Classes 16</span><span class="kind grammar">grammar</span><span class="src">conjugation index</span></li>
+<li><span class="lt">Verb Classes 21, 23</span><span class="kind grammar">grammar</span><span class="src">conjugation index</span></li>
+<li><span class="lt">Verb Classes 24, 25, 26, 27</span><span class="kind grammar">grammar</span><span class="src">conjugation index</span></li>
+</ul></div>
+<div class="unit"><div class="unit-head"><span class="unit-n">B2-02</span><span class="unit-title">Discourse</span><span class="unit-count">6 lessons</span></div><ul class="lessons">
+<li><span class="lt">Reported Speech</span><span class="kind grammar">grammar</span><span class="src">Parlons Kabiyè · corpus</span></li>
+<li><span class="lt">Telling a Story: Tense in Narrative</span><span class="kind grammar">grammar</span><span class="src">Parlons Kabiyè · text</span></li>
+<li><span class="lt">Connectives and Flow</span><span class="kind grammar">grammar</span><span class="src">Parlons Kabiyè</span></li>
+<li><span class="lt">Focus and Emphasis</span><span class="kind grammar">grammar</span><span class="src">Parlons Kabiyè</span></li>
+<li><span class="lt">How People Write and How They Talk</span><span class="kind skill">skill</span><span class="src">Parlons Kabiyè · text</span></li>
+<li><span class="lt">Dialect Variants</span><span class="kind grammar">grammar</span><span class="src">Parlons Kabiyè · SIL</span></li>
+</ul></div>
+<div class="unit"><div class="unit-head"><span class="unit-n">B2-03</span><span class="unit-title">Idiom and Wisdom</span><span class="unit-count">6 lessons</span></div><ul class="lessons">
+<li><span class="lt">Proverbs III</span><span class="kind culture">culture</span><span class="src">J&#x27;apprends</span></li>
+<li><span class="lt">Proverbs IV: Using Them Well</span><span class="kind skill">skill</span><span class="src">J&#x27;apprends</span></li>
+<li><span class="lt">Idioms and Set Phrases</span><span class="kind vocab">vocab</span><span class="src">J&#x27;apprends</span></li>
+<li><span class="lt">Riddles &amp; Playful Language</span><span class="kind culture">culture</span><span class="src">—</span></li>
+<li><span class="lt">Praise, Insult and Blessing</span><span class="kind culture">culture</span><span class="src">Parlons Kabiyè</span></li>
+<li><span class="lt">Teasing II: the Joking Relationship</span><span class="kind culture">culture</span><span class="src">Parlons Kabiyè</span></li>
+</ul></div>
+<div class="unit"><div class="unit-head"><span class="unit-n">B2-04</span><span class="unit-title">Reading III</span><span class="unit-count">7 lessons</span></div><ul class="lessons">
+<li><span class="lt">Passages from JM-Kabiyé II</span><span class="kind reading">reading</span><span class="src">text</span></li>
+<li><span class="lt">Passages from JM-Kabiyé III</span><span class="kind reading">reading</span><span class="src">text</span></li>
+<li><span class="lt">AZOTI I</span><span class="kind reading">reading</span><span class="src">text</span></li>
+<li><span class="lt">AZOTI II</span><span class="kind reading">reading</span><span class="src">text</span></li>
+<li><span class="lt">Poetry II: Halaawan</span><span class="kind reading">reading</span><span class="src">text</span></li>
+<li><span class="lt">Poetry III: Haɖʋ payaɣ Caa</span><span class="kind reading">reading</span><span class="src">text</span></li>
+<li><span class="lt">Poetry IV: Tɔɔnasɩ pɩwa</span><span class="kind reading">reading</span><span class="src">text</span></li>
+</ul></div>
+<div class="unit"><div class="unit-head"><span class="unit-n">B2-05</span><span class="unit-title">Oral Performance</span><span class="unit-count">5 lessons</span></div><ul class="lessons">
+<li><span class="lt">Songs</span><span class="kind culture">culture</span><span class="src">Parlons Kabiyè</span></li>
+<li><span class="lt">Storytelling Technique</span><span class="kind skill">skill</span><span class="src">text</span></li>
+<li><span class="lt">The Griot and the Praise Song</span><span class="kind culture">culture</span><span class="src">SIL</span></li>
+<li><span class="lt">Ceremonial Speech</span><span class="kind culture">culture</span><span class="src">Parlons Kabiyè · SIL ethnography</span></li>
+<li><span class="lt">Kabiyè on the Radio</span><span class="kind skill">skill</span><span class="src">Parlons Kabiyè</span></li>
+</ul></div>
+<div class="unit"><div class="unit-head"><span class="unit-n">B2-06</span><span class="unit-title">Modern Domains</span><span class="unit-count">7 lessons</span></div><ul class="lessons">
+<li><span class="lt">Law and Justice</span><span class="kind vocab">vocab</span><span class="src">vocab booklet</span></li>
+<li><span class="lt">Administration and Decentralisation</span><span class="kind vocab">vocab</span><span class="src">vocab booklet</span></li>
+<li><span class="lt">Economy and Finance</span><span class="kind vocab">vocab</span><span class="src">vocab booklet</span></li>
+<li><span class="lt">Media</span><span class="kind vocab">vocab</span><span class="src">Parlons Kabiyè · vocab booklet</span></li>
+<li><span class="lt">Health System</span><span class="kind vocab">vocab</span><span class="src">—</span></li>
+<li><span class="lt">Technology &amp; Modern Usage</span><span class="kind vocab">vocab</span><span class="src">Parlons Kabiyè</span></li>
+<li><span class="lt">Politics and Civic Life</span><span class="kind vocab">vocab</span><span class="src">vocab booklet</span></li>
+</ul></div>
+<div class="unit"><div class="unit-head"><span class="unit-n">B2-07</span><span class="unit-title">Writing I</span><span class="unit-count">5 lessons</span></div><ul class="lessons">
+<li><span class="lt">Writing Kabiyè Correctly: the Hyphen</span><span class="kind grammar">grammar</span><span class="src">Parlons Kabiyè</span></li>
+<li><span class="lt">Why Tone Is Not Written</span><span class="kind tone">tone</span><span class="src">Roberts</span></li>
+<li><span class="lt">Letters and Messages</span><span class="kind skill">skill</span><span class="src">J&#x27;apprends</span></li>
+<li><span class="lt">Describing and Narrating in Writing</span><span class="kind skill">skill</span><span class="src">text</span></li>
+<li><span class="lt">Dictation</span><span class="kind grammar">grammar</span><span class="src">Parlons Kabiyè · SIL</span></li>
+</ul></div>
+<div class="level-head"><span class="level-code">C1</span><span class="level-name">Mastery</span><span class="level-stat">39 lessons · reaches 91% of running text</span></div>
+<div class="unit"><div class="unit-head"><span class="unit-n">C1-01</span><span class="unit-title">Literature</span><span class="unit-count">8 lessons</span></div><ul class="lessons">
+<li><span class="lt">AZOTI III</span><span class="kind reading">reading</span><span class="src">text</span></li>
+<li><span class="lt">AZOTI IV</span><span class="kind reading">reading</span><span class="src">text</span></li>
+<li><span class="lt">Poetry V: Sɔnzɩ nɛ mʋsɩ</span><span class="kind reading">reading</span><span class="src">text</span></li>
+<li><span class="lt">Reading a Poem Closely</span><span class="kind skill">skill</span><span class="src">text</span></li>
+<li><span class="lt">Genres of Oral Literature</span><span class="kind culture">culture</span><span class="src">Parlons Kabiyè · SIL</span></li>
+<li><span class="lt">Modern Kabiyè Writing</span><span class="kind culture">culture</span><span class="src">Parlons Kabiyè</span></li>
+<li><span class="lt">Kabiyè Wikipedia</span><span class="kind skill">skill</span><span class="src">Roberts</span></li>
+<li><span class="lt">Tales Retold: Writing Your Own</span><span class="kind skill">skill</span><span class="src">Parlons Kabiyè · text</span></li>
+</ul></div>
+<div class="unit"><div class="unit-head"><span class="unit-n">C1-02</span><span class="unit-title">Translation</span><span class="unit-count">6 lessons</span></div><ul class="lessons">
+<li><span class="lt">French into Kabiyè</span><span class="kind skill">skill</span><span class="src">SIL</span></li>
+<li><span class="lt">Kabiyè into French</span><span class="kind skill">skill</span><span class="src">SIL</span></li>
+<li><span class="lt">English into Kabiyè</span><span class="kind skill">skill</span><span class="src">Peace Corps</span></li>
+<li><span class="lt">Translating Proverbs</span><span class="kind skill">skill</span><span class="src">J&#x27;apprends</span></li>
+<li><span class="lt">Glossing a Sentence</span><span class="kind skill">skill</span><span class="src">Parlons Kabiyè</span></li>
+<li><span class="lt">Translating for the Dictionary</span><span class="kind skill">skill</span><span class="src">SIL</span></li>
+</ul></div>
+<div class="unit"><div class="unit-head"><span class="unit-n">C1-03</span><span class="unit-title">The Linguistics of Kabiyè</span><span class="unit-count">8 lessons</span></div><ul class="lessons">
+<li><span class="lt">Phonotactics</span><span class="kind grammar">grammar</span><span class="src">Parlons Kabiyè</span></li>
+<li><span class="lt">Vowel Harmony in Depth</span><span class="kind tone">tone</span><span class="src">Parlons Kabiyè</span></li>
+<li><span class="lt">The Tone Orthography Debate</span><span class="kind tone">tone</span><span class="src">Roberts</span></li>
+<li><span class="lt">Where Noun Classes Came From</span><span class="kind grammar">grammar</span><span class="src">Parlons Kabiyè · SIL</span></li>
+<li><span class="lt">Dialectology</span><span class="kind grammar">grammar</span><span class="src">Parlons Kabiyè</span></li>
+<li><span class="lt">Loanwords and Where They Came From</span><span class="kind vocab">vocab</span><span class="src">webonary</span></li>
+<li><span class="lt">Proper Nouns and Number</span><span class="kind grammar">grammar</span><span class="src">BON LA</span></li>
+<li><span class="lt">Kabiyè Among the Gur Languages</span><span class="kind culture">culture</span><span class="src">Parlons Kabiyè</span></li>
+</ul></div>
+<div class="unit"><div class="unit-head"><span class="unit-n">C1-04</span><span class="unit-title">Contributing</span><span class="unit-count">6 lessons</span></div><ul class="lessons">
+<li><span class="lt">Reporting a Dictionary Error</span><span class="kind skill">skill</span><span class="src">SIL</span></li>
+<li><span class="lt">Writing an Example Sentence</span><span class="kind skill">skill</span><span class="src">SIL</span></li>
+<li><span class="lt">Recording a Word</span><span class="kind skill">skill</span><span class="src">Roberts</span></li>
+<li><span class="lt">Adding a Variant or a Dialect Form</span><span class="kind skill">skill</span><span class="src">SIL</span></li>
+<li><span class="lt">Reviewing Others&#x27; Contributions</span><span class="kind skill">skill</span><span class="src">SIL</span></li>
+<li><span class="lt">Teaching Kabiyè</span><span class="kind skill">skill</span><span class="src">J&#x27;apprends · Peace Corps</span></li>
+</ul></div>
+<div class="unit"><div class="unit-head"><span class="unit-n">C1-05</span><span class="unit-title">Culture IV</span><span class="unit-count">6 lessons</span></div><ul class="lessons">
+<li><span class="lt">Funeral Rites in Depth</span><span class="kind culture">culture</span><span class="src">SIL ethnography</span></li>
+<li><span class="lt">The Initiation Cycle</span><span class="kind culture">culture</span><span class="src">Parlons Kabiyè · SIL ethnography</span></li>
+<li><span class="lt">History of the Kabiyè</span><span class="kind culture">culture</span><span class="src">Parlons Kabiyè</span></li>
+<li><span class="lt">Diaspora Communities</span><span class="kind culture">culture</span><span class="src">Parlons Kabiyè</span></li>
+<li><span class="lt">Kabiyè in National Life</span><span class="kind culture">culture</span><span class="src">Parlons Kabiyè</span></li>
+<li><span class="lt">The Festival Year</span><span class="kind culture">culture</span><span class="src">Parlons Kabiyè</span></li>
+</ul></div>
+<div class="unit"><div class="unit-head"><span class="unit-n">C1-06</span><span class="unit-title">Writing II</span><span class="unit-count">5 lessons</span></div><ul class="lessons">
+<li><span class="lt">Writing an Essay</span><span class="kind skill">skill</span><span class="src">—</span></li>
+<li><span class="lt">Writing a Story</span><span class="kind skill">skill</span><span class="src">text</span></li>
+<li><span class="lt">Writing a Poem</span><span class="kind skill">skill</span><span class="src">text</span></li>
+<li><span class="lt">Writing a Speech</span><span class="kind skill">skill</span><span class="src">Parlons Kabiyè</span></li>
+<li><span class="lt">A Translation Project</span><span class="kind skill">skill</span><span class="src">SIL</span></li>
+</ul></div>
+  </div>
+</section>
+
+<section>
+  <div class="col">
+    <p class="eyebrow">The ordering principle, unchanged</p>
+    <h2>Frequency decides the sequence at every level</h2>
+    <p>The current curriculum teaches <b>four of the hundred most frequent words</b>. These are the ones a learner meets in every sentence they will ever read, and none of them appears in any lesson today. They open the course.</p>
+  </div>
+
+  <div class="spine">
+    <div><span class="w">nɛ</span><span class="g">and, with</span><span class="c">1030 ×</span></div>
+    <div><span class="w">se</span><span class="g">that</span><span class="c">546 ×</span></div>
+    <div><span class="w">taa</span><span class="g">inside</span><span class="c">477 ×</span></div>
+    <div><span class="w">lɛ</span><span class="g">when</span><span class="c">356 ×</span></div>
+    <div><span class="w">mbʋ</span><span class="g">as much</span><span class="c">268 ×</span></div>
+    <div><span class="w">yɔɔ</span><span class="g">on, over</span><span class="c">247 ×</span></div>
+    <div><span class="w">mba</span><span class="g">who, whom</span><span class="c">99 ×</span></div>
+    <div><span class="w">paa</span><span class="g">whatever</span><span class="c">72 ×</span></div>
+    <div><span class="w">ndʋ</span><span class="g">this, that</span><span class="c">68 ×</span></div>
+    <div><span class="w">yaa</span><span class="g">or</span><span class="c">66 ×</span></div>
+    <div><span class="w">weyi</span><span class="g">who, which</span><span class="c">55 ×</span></div>
+    <div><span class="w">ŋgʋ</span><span class="g">which</span><span class="c">52 ×</span></div>
+  </div>
+  <div class="col">
+    <p style="font-size:0.86rem;color:var(--ink-quiet)">Occurrences in the corpus. Every one is attested in the dictionary — a sequencing gap, not a coverage gap.</p>
+    <div class="note"><strong>Corpus caveat.</strong> 18,668 tokens, skewed toward religious texts: <span class="kbp">ɛsɔ</span> “God” and <span class="kbp">yesu</span> sit in the top 100 for that reason and should not drive design. Function words are the frequency-robust part — <span class="kbp">nɛ</span>, <span class="kbp">taa</span>, <span class="kbp">yɔɔ</span> would top any Kabiyè corpus.</div>
+  </div>
+</section>
+
+<section>
+  <div class="col">
+    <p class="eyebrow">What the sources can carry</p>
+    <h2>What each source contributes</h2>
+    <p>Every document we hold is in the process now. The free Peace Corps workbook is used in full — its sentences attest, its glossary added 180 words the dictionary lacked, its lessons give ours their shape. The three L'Harmattan books are learned from: their grammar rules ground the generator, their paradigms let the validator accept conjugated verbs, their sequence and vocabulary order ours.</p>
+    <p>Its thirteen lessons are named as <b>things a learner can do</b>, not topics: <i>Ask for and give direction and time</i>. <i>Express one's sympathy in a happy or sad event</i>. <i>Ask for help in an emergency case</i>. That naming is better than ours, and free to adopt.</p>
+  </div>
+
+  <div class="sources">
+    <div class="src">
+      <div class="src-t">Peace Corps OPL workbook<small>13 competency lessons, 47 can-do statements, 23 situations, 65 cultural notes; 171 sentences in the corpus; 180 new glossed words in the dictionary</small></div>
+      <span class="tag free">in use, fully</span>
+    </div>
+    <div class="src">
+      <div class="src-t">Parlons Kabiyè (Roberts)<small>72 grammar rules and 50 culture notes ground the generator; 86 nouns by tonal scheme. Rules and facts; no sentences.</small></div>
+      <span class="tag free">learned from</span>
+    </div>
+    <div class="src">
+      <div class="src-t">La conjugaison des verbes en kabiyè<small>27 verb classes for 736 attested verbs; 157 model tables — 610 inflected forms the validator now accepts</small></div>
+      <span class="tag free">learned from</span>
+    </div>
+    <div class="src">
+      <div class="src-t">J'apprends le kabiyè<small>The 26-lesson sequence, and the 2,162 attested words its lessons exercise, which lead our selection</small></div>
+      <span class="tag free">learned from</span>
+    </div>
+    <div class="src">
+      <div class="src-t">SIL Kabiyè–French dictionary<small>9,885 lexemes, tone, noun classes, grammar sketch — the backbone</small></div>
+      <span class="tag free">in use</span>
+    </div>
+    <div class="src">
+      <div class="src-t">Four poetry books, one folktale, AZOTI, JM-Kabiyé, the calendar<small>Running Kabiyè — reading material at every level, and attestation</small></div>
+      <span class="tag free">in use</span>
+    </div>
+    <div class="src">
+      <div class="src-t">SIL funeral-rites study · BON LA · Roberts PhD<small>Culture, proper nouns and number, tone orthography</small></div>
+      <span class="tag free">reference</span>
+    </div>
+  </div>
+  <div class="col">
+    <div class="note"><strong>Learned from, never reproduced.</strong> The three L'Harmattan books are personally licensed to the project. We take their structure and their facts about the language — sequence, rules, paradigms, tone schemes, which words a lesson exercises — and write every lesson ourselves from the attested lexicon. Their sentences are dropped at extraction, so the generator never sees them. The corpus gate enforces the same line: their text is not mined.</div>
+  </div>
+</section>
+
+<section>
+  <div class="col">
+    <p class="eyebrow">Why the community is not a later feature</p>
+    <h2>Two problems only speakers can solve</h2>
+    <p>A forum reads like a growth idea. For this project it is closer to infrastructure, because it is the only realistic answer to the two things that cap the course.</p>
+    <ul class="plain">
+      <li><b>Audio.</b> No lesson has any. Teaching a tone language silently is the largest unmanaged risk in the project, and roughly 1,100 recordings are needed. That is not a budget problem, it is a people problem — and a community of speakers is the supply.</li>
+      <li><b>The long tail.</b> Past about 2,300 words the dictionary thins out: only 2,294 lexemes carry an example sentence, so B2 and C1 content degrades exactly where it needs to be richest. Native speakers supply examples, dialect variants and corrections at a rate no pipeline can.</li>
+    </ul>
+    <p>Both argue for shipping a <b>contribution path before the advanced levels</b> — report a word, add an example, record a reading — so that by the time C1 is being written, the material to write it from exists. C1 then produces the contributors who feed it, which is the only version of this that compounds.</p>
+  </div>
+</section>
+
+<section>
+  <div class="col">
+    <p class="eyebrow">Before you commit</p>
+    <h2>What I'd want argued with</h2>
+    <ul class="plain">
+      <li><b>300 lessons is a five-year artefact, not a sprint.</b> A1–A2 is 105 lessons and reachable now. B1 upward depends on rights, audio and community. Sequencing the <i>build</i> matters as much as sequencing the course.</li>
+      <li><b>“Exhaustive” has a ceiling worth naming.</b> 6,418 words in the dictionary are teachable at all; one lesson per six of them is 1,069 lessons, which is a dictionary with a progress bar. ~2,700 words at 91% coverage is where I would stop.</li>
+      <li><b>Verified, not assumed.</b> An earlier draft of this page said the dictionary lacked <span class="kbp">wɛʋ</span>, the existential “to be”. It does not — the entry is there from both sources, “être / exister” — and the first generated <i>Being and Having</i> teaches it. The claim came from a truncated listing; the lesson corrected it.</li>
+      <li><b>The workbook's encoding is broken</b> — it writes <span class="kbp">ʋ</span> as Greek upsilon and mislabels its own alphabet page “the lama alphabet”. Usable, but it needs normalising, not trusting.</li>
+      <li><b>Level boundaries are mine, not a standard.</b> CEFR was not written for a Gur language with ten noun classes. The percentages are real; the labels are a convenience.</li>
+    </ul>
+    <div class="note"><strong>Timing still holds.</strong> 67 of the current 78 lessons have never been generated. Restructuring first costs nothing; restructuring after a full run means paying for it twice.</div>
+  </div>
+</section>
+
+<footer class="col">
+  Scored offline against <span class="num">9,738</span> lexemes, an <span class="num">18,668</span>-token corpus and the SIL grammar sketch — no generation, no API calls. Kabiyè set in Andika, the face that draws ɖ ɛ ɩ ŋ ɔ ʋ ɣ ñ correctly. Palette is the project's own Laterite system.
+</footer>
+</div>
