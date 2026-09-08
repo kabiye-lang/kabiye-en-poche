@@ -1,7 +1,6 @@
-@import "@fontsource-variable/bricolage-grotesque";
-@import "@fontsource/andika/400.css";
-@import "@fontsource/andika/700.css";
 @import 'tailwindcss';
+
+/* The Andika and Bricolage faces are imported from main.tsx -- see the note there. */
 
 /* Laterite: red earth of Kara, bone paper, ink. Kept in step with
    mobile/src/global.css -- the app and the site are one product. */
