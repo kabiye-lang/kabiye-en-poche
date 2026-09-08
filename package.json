@@ -5,6 +5,7 @@
   "scripts": {
     "prepare": "husky",
     "commitlint": "commitlint --edit",
+    "check-duplicates": "node ./scripts/check-duplicates.mjs",
     "//refresh": "./scripts/install-all.sh && cd mobile && pnpm run prebuild",
     "refresh": "./scripts/install-all.sh",
     "renovate": "node ./scripts/renovate.js && ./scripts/update-all.sh",

@@ -105,23 +105,6 @@ settings:
   autoInstallPeers: true
   excludeLinksFromLockfile: false
 
-overrides:
-  '@supabase/supabase-js': 2.115.0
-  metro: 0.84.5
-  metro-babel-transformer: 0.84.5
-  metro-cache: 0.84.5
-  metro-cache-key: 0.84.5
-  metro-config: 0.84.5
-  metro-core: 0.84.5
-  metro-file-map: 0.84.5
-  metro-minify-terser: 0.84.5
-  metro-resolver: 0.84.5
-  metro-runtime: 0.84.5
-  metro-source-map: 0.84.5
-  metro-symbolicate: 0.84.5
-  metro-transform-plugins: 0.84.5
-  metro-transform-worker: 0.84.5
-
 importers:
 
   .:
@@ -154,7 +137,7 @@ importers:
         specifier: ^2.1.10
         version: 2.1.10(react-dom@19.2.8(react@19.2.8))(react@19.2.8)
       '@supabase/supabase-js':
-        specifier: 2.115.0
+        specifier: ^2.115.0
         version: 2.115.0
       '@tanstack/react-query':
         specifier: ^5.102.8
@@ -173,7 +156,7 @@ importers:
         version: 2.1.1
       lucide-react:
         specifier: ^1.41.0
-        version: 1.41.0(react@19.2.8)
+        version: 1.42.0(react@19.2.8)
       ra-core:
         specifier: ^5.15.3
         version: 5.15.3(@tanstack/react-query@5.102.8(react@19.2.8))(react-dom@19.2.8(react@19.2.8))(react-hook-form@7.87.0(react@19.2.8))(react-router-dom@7.18.3(react-dom@19.2.8(react@19.2.8))(react@19.2.8))(react-router@7.18.3(react-dom@19.2.8(react@19.2.8))(react@19.2.8))(react@19.2.8)
@@ -326,7 +309,7 @@ importers:
         specifier: ^26.0.0
         version: 26.0.0(@react-native-firebase/app@26.0.0(@react-native-async-storage/async-storage@2.2.0(react-native@0.86.3(@babel/core@7.29.7(supports-color@10.2.2))(@react-native/jest-preset@0.86.3(@babel/core@7.29.7(supports-color@10.2.2))(react@19.2.3)(supports-color@10.2.2))(@react-native/metro-config@0.86.3(@babel/core@7.29.7(supports-color@10.2.2))(supports-color@10.2.2))(@types/react@19.2.18)(react@19.2.3)(supports-color@10.2.2)))(expo@57.0.20)(react-native@0.86.3(@babel/core@7.29.7(supports-color@10.2.2))(@react-native/jest-preset@0.86.3(@babel/core@7.29.7(supports-color@10.2.2))(react@19.2.3)(supports-color@10.2.2))(@react-native/metro-config@0.86.3(@babel/core@7.29.7(supports-color@10.2.2))(supports-color@10.2.2))(@types/react@19.2.18)(react@19.2.3)(supports-color@10.2.2))(react@19.2.3))(expo@57.0.20)
       '@supabase/supabase-js':
-        specifier: 2.115.0
+        specifier: ^2.106.2
         version: 2.115.0
       '@tanstack/react-query':
         specifier: ^5.100.14
@@ -587,19 +570,19 @@ importers:
     devDependencies:
       '@cloudflare/vite-plugin':
         specifier: ^1.54.4
-        version: 1.54.4(vite@8.2.2(@types/node@26.1.1)(esbuild@0.28.1)(jiti@2.7.0)(terser@5.48.0)(yaml@2.9.0))(wrangler@4.129.0)
+        version: 1.54.4(vite@8.2.2(@types/node@26.4.1)(esbuild@0.28.1)(jiti@2.7.0)(terser@5.48.0)(yaml@2.9.0))(wrangler@4.129.0)
       '@eslint/js':
         specifier: ^10.0.1
         version: 10.0.1(eslint@10.10.0(jiti@2.7.0)(supports-color@10.2.2))
       '@rolldown/plugin-babel':
         specifier: ^0.2.3
-        version: 0.2.3(@babel/core@7.29.7(supports-color@10.2.2))(@babel/plugin-transform-runtime@7.29.7(@babel/core@7.29.7(supports-color@10.2.2))(supports-color@10.2.2))(@babel/runtime@7.29.7)(rolldown@1.2.6)(vite@8.2.2(@types/node@26.1.1)(esbuild@0.28.1)(jiti@2.7.0)(terser@5.48.0)(yaml@2.9.0))
+        version: 0.2.4(@babel/core@7.29.7(supports-color@10.2.2))(@babel/plugin-transform-runtime@7.29.7(@babel/core@7.29.7(supports-color@10.2.2))(supports-color@10.2.2))(@babel/runtime@7.29.7)(rolldown@1.2.6)(vite@8.2.2(@types/node@26.4.1)(esbuild@0.28.1)(jiti@2.7.0)(terser@5.48.0)(yaml@2.9.0))
       '@tailwindcss/postcss':
         specifier: ^4.3.3
         version: 4.3.3
       '@types/node':
         specifier: ^26
-        version: 26.1.1
+        version: 26.4.1
       '@types/react':
         specifier: ^19.2.18
         version: 19.2.18
@@ -608,10 +591,10 @@ importers:
         version: 19.2.7(@types/react@19.2.18)
       '@vitejs/plugin-basic-ssl':
         specifier: ^2.3.0
-        version: 2.3.0(vite@8.2.2(@types/node@26.1.1)(esbuild@0.28.1)(jiti@2.7.0)(terser@5.48.0)(yaml@2.9.0))
+        version: 2.3.0(vite@8.2.2(@types/node@26.4.1)(esbuild@0.28.1)(jiti@2.7.0)(terser@5.48.0)(yaml@2.9.0))
       '@vitejs/plugin-react':
         specifier: ^6.1.1
-        version: 6.1.1(@rolldown/plugin-babel@0.2.3(@babel/core@7.29.7(supports-color@10.2.2))(@babel/plugin-transform-runtime@7.29.7(@babel/core@7.29.7(supports-color@10.2.2))(supports-color@10.2.2))(@babel/runtime@7.29.7)(rolldown@1.2.6)(vite@8.2.2(@types/node@26.1.1)(esbuild@0.28.1)(jiti@2.7.0)(terser@5.48.0)(yaml@2.9.0)))(babel-plugin-react-compiler@1.0.0)(vite@8.2.2(@types/node@26.1.1)(esbuild@0.28.1)(jiti@2.7.0)(terser@5.48.0)(yaml@2.9.0))
+        version: 6.1.1(@rolldown/plugin-babel@0.2.4(@babel/core@7.29.7(supports-color@10.2.2))(@babel/plugin-transform-runtime@7.29.7(@babel/core@7.29.7(supports-color@10.2.2))(supports-color@10.2.2))(@babel/runtime@7.29.7)(rolldown@1.2.6)(vite@8.2.2(@types/node@26.4.1)(esbuild@0.28.1)(jiti@2.7.0)(terser@5.48.0)(yaml@2.9.0)))(babel-plugin-react-compiler@1.0.0)(vite@8.2.2(@types/node@26.4.1)(esbuild@0.28.1)(jiti@2.7.0)(terser@5.48.0)(yaml@2.9.0))
       eslint:
         specifier: ^10
         version: 10.10.0(jiti@2.7.0)(supports-color@10.2.2)
@@ -638,7 +621,7 @@ importers:
         version: 8.69.0(eslint@10.10.0(jiti@2.7.0)(supports-color@10.2.2))(supports-color@10.2.2)(typescript@7.0.2)
       vite:
         specifier: ^8.2.2
-        version: 8.2.2(@types/node@26.1.1)(esbuild@0.28.1)(jiti@2.7.0)(terser@5.48.0)(yaml@2.9.0)
+        version: 8.2.2(@types/node@26.4.1)(esbuild@0.28.1)(jiti@2.7.0)(terser@5.48.0)(yaml@2.9.0)
       wrangler:
         specifier: ^4.129.0
         version: 4.129.0
@@ -3241,6 +3224,23 @@ packages:
 
   '@rolldown/plugin-babel@0.2.3':
     resolution: {integrity: sha512-+zEk16yGlz1F9STiRr6uG9hmIXb6nprjLczV/htGptYuLoCuxb+itZ03RKCEeOhBpDDd1NU7qF6x1VLMUp62bw==}
+    engines: {node: '>=22.12.0 || ^24.0.0'}
+    peerDependencies:
+      '@babel/core': ^7.29.0 || ^8.0.0-rc.1
+      '@babel/plugin-transform-runtime': ^7.29.0 || ^8.0.0-rc.1
+      '@babel/runtime': ^7.27.0 || ^8.0.0-rc.1
+      rolldown: ^1.0.0-rc.5
+      vite: ^8.0.0
+    peerDependenciesMeta:
+      '@babel/plugin-transform-runtime':
+        optional: true
+      '@babel/runtime':
+        optional: true
+      vite:
+        optional: true
+
+  '@rolldown/plugin-babel@0.2.4':
+    resolution: {integrity: sha512-ygmm2j/mN+aCvstHo0x3IOu4uc6LqXT9SJ3q4kpfG/+Yhfz0B+E47FITcC0FljZADwUFARP6E2kiE+Lc26D8wg==}
     engines: {node: '>=22.12.0 || ^24.0.0'}
     peerDependencies:
       '@babel/core': ^7.29.0 || ^8.0.0-rc.1
@@ -6801,8 +6801,8 @@ packages:
   lru-cache@5.1.1:
     resolution: {integrity: sha512-KpNARQA3Iwv+jTA0utUVVbrh+Jlrr1Fv0e56GGzAFOXN7dk/FviaDW8LHmK52DlcH4WP2n6gI8vN1aesBFgo9w==}
 
-  lucide-react@1.41.0:
-    resolution: {integrity: sha512-6lksP35l6KszDKUeRTi4LV7i6DEe0Yzl2ALJm9j4c5xEYN91GdW1xGsawGMOg2mgjF5GHBVX8pKX9kP+cWsP3Q==}
+  lucide-react@1.42.0:
+    resolution: {integrity: sha512-b3jprplnoLS8n5etw1z8xODe3hF/yjKATrTitsrKrnjUhCef5BdDct6Ppv3zVvzFwmtfWgLO6XNM3C9fAD93ug==}
     peerDependencies:
       react: ^16.5.1 || ^17.0.0 || ^18.0.0 || ^19.0.0
 
@@ -7627,7 +7627,7 @@ packages:
     peerDependencies:
       '@mui/icons-material': ^5.16.12 || ^6.0.0 || ^7.0.0
       '@mui/material': ^5.16.12 || ^6.0.0 || ^7.0.0
-      '@supabase/supabase-js': 2.115.0
+      '@supabase/supabase-js': ^2.48.1
       ra-core: ^5.8.0
       ra-ui-materialui: ^5.8.0
       react: ^18.0.0 || ^19.0.0
@@ -8715,9 +8715,9 @@ packages:
     hasBin: true
     peerDependencies:
       '@expo/metro-config': '*'
-      metro: 0.84.5
-      metro-cache: 0.84.5
-      metro-transform-worker: 0.84.5
+      metro: '*'
+      metro-cache: '*'
+      metro-transform-worker: '*'
       react: '>=19.0.0'
       react-native: '>=0.81.0'
       tailwindcss: '>=4'
@@ -9731,12 +9731,12 @@ snapshots:
     optionalDependencies:
       workerd: 1.20260903.1
 
-  '@cloudflare/vite-plugin@1.54.4(vite@8.2.2(@types/node@26.1.1)(esbuild@0.28.1)(jiti@2.7.0)(terser@5.48.0)(yaml@2.9.0))(wrangler@4.129.0)':
+  '@cloudflare/vite-plugin@1.54.4(vite@8.2.2(@types/node@26.4.1)(esbuild@0.28.1)(jiti@2.7.0)(terser@5.48.0)(yaml@2.9.0))(wrangler@4.129.0)':
     dependencies:
       '@cloudflare/unenv-preset': 2.16.1(unenv@2.0.0-rc.24)(workerd@1.20260903.1)
       miniflare: 5.20260903.0-alpha
       unenv: 2.0.0-rc.24
-      vite: 8.2.2(@types/node@26.1.1)(esbuild@0.28.1)(jiti@2.7.0)(terser@5.48.0)(yaml@2.9.0)
+      vite: 8.2.2(@types/node@26.4.1)(esbuild@0.28.1)(jiti@2.7.0)(terser@5.48.0)(yaml@2.9.0)
       workerd: 1.20260903.1
       wrangler: 4.129.0
       ws: 8.21.0
@@ -11296,7 +11296,7 @@ snapshots:
       '@jest/schemas': 29.6.3
       '@types/istanbul-lib-coverage': 2.0.6
       '@types/istanbul-reports': 3.0.4
-      '@types/node': 26.1.1
+      '@types/node': 26.4.1
       '@types/yargs': 17.0.35
       chalk: 4.1.2
 
@@ -12116,12 +12116,23 @@ snapshots:
   '@rolldown/plugin-babel@0.2.3(@babel/core@7.29.7(supports-color@10.2.2))(@babel/plugin-transform-runtime@7.29.7(@babel/core@7.29.7(supports-color@10.2.2))(supports-color@10.2.2))(@babel/runtime@7.29.7)(rolldown@1.2.6)(vite@8.2.2(@types/node@26.1.1)(esbuild@0.28.1)(jiti@2.7.0)(terser@5.48.0)(yaml@2.9.0))':
     dependencies:
       '@babel/core': 7.29.7(supports-color@10.2.2)
-      picomatch: 4.0.5
+      picomatch: 4.0.7
       rolldown: 1.2.6
     optionalDependencies:
       '@babel/plugin-transform-runtime': 7.29.7(@babel/core@7.29.7(supports-color@10.2.2))(supports-color@10.2.2)
       '@babel/runtime': 7.29.7
       vite: 8.2.2(@types/node@26.1.1)(esbuild@0.28.1)(jiti@2.7.0)(terser@5.48.0)(yaml@2.9.0)
+    optional: true
+
+  '@rolldown/plugin-babel@0.2.4(@babel/core@7.29.7(supports-color@10.2.2))(@babel/plugin-transform-runtime@7.29.7(@babel/core@7.29.7(supports-color@10.2.2))(supports-color@10.2.2))(@babel/runtime@7.29.7)(rolldown@1.2.6)(vite@8.2.2(@types/node@26.4.1)(esbuild@0.28.1)(jiti@2.7.0)(terser@5.48.0)(yaml@2.9.0))':
+    dependencies:
+      '@babel/core': 7.29.7(supports-color@10.2.2)
+      picomatch: 4.0.7
+      rolldown: 1.2.6
+    optionalDependencies:
+      '@babel/plugin-transform-runtime': 7.29.7(@babel/core@7.29.7(supports-color@10.2.2))(supports-color@10.2.2)
+      '@babel/runtime': 7.29.7
+      vite: 8.2.2(@types/node@26.4.1)(esbuild@0.28.1)(jiti@2.7.0)(terser@5.48.0)(yaml@2.9.0)
 
   '@rolldown/pluginutils@1.0.1': {}
 
@@ -12428,6 +12439,7 @@ snapshots:
   '@types/node@26.1.1':
     dependencies:
       undici-types: 8.3.0
+    optional: true
 
   '@types/node@26.4.1':
     dependencies:
@@ -12895,9 +12907,9 @@ snapshots:
   '@unrs/resolver-binding-win32-x64-msvc@1.12.2':
     optional: true
 
-  '@vitejs/plugin-basic-ssl@2.3.0(vite@8.2.2(@types/node@26.1.1)(esbuild@0.28.1)(jiti@2.7.0)(terser@5.48.0)(yaml@2.9.0))':
+  '@vitejs/plugin-basic-ssl@2.3.0(vite@8.2.2(@types/node@26.4.1)(esbuild@0.28.1)(jiti@2.7.0)(terser@5.48.0)(yaml@2.9.0))':
     dependencies:
-      vite: 8.2.2(@types/node@26.1.1)(esbuild@0.28.1)(jiti@2.7.0)(terser@5.48.0)(yaml@2.9.0)
+      vite: 8.2.2(@types/node@26.4.1)(esbuild@0.28.1)(jiti@2.7.0)(terser@5.48.0)(yaml@2.9.0)
 
   '@vitejs/plugin-react@6.1.1(@rolldown/plugin-babel@0.2.3(@babel/core@7.29.7(supports-color@10.2.2))(@babel/plugin-transform-runtime@7.29.7(@babel/core@7.29.7(supports-color@10.2.2))(supports-color@10.2.2))(@babel/runtime@7.29.7)(rolldown@1.2.6)(vite@8.2.2(@types/node@26.1.1)(esbuild@0.28.1)(jiti@2.7.0)(terser@5.48.0)(yaml@2.9.0)))(babel-plugin-react-compiler@1.0.0)(vite@8.2.2(@types/node@26.1.1)(esbuild@0.28.1)(jiti@2.7.0)(terser@5.48.0)(yaml@2.9.0))':
     dependencies:
@@ -12905,6 +12917,14 @@ snapshots:
       vite: 8.2.2(@types/node@26.1.1)(esbuild@0.28.1)(jiti@2.7.0)(terser@5.48.0)(yaml@2.9.0)
     optionalDependencies:
       '@rolldown/plugin-babel': 0.2.3(@babel/core@7.29.7(supports-color@10.2.2))(@babel/plugin-transform-runtime@7.29.7(@babel/core@7.29.7(supports-color@10.2.2))(supports-color@10.2.2))(@babel/runtime@7.29.7)(rolldown@1.2.6)(vite@8.2.2(@types/node@26.1.1)(esbuild@0.28.1)(jiti@2.7.0)(terser@5.48.0)(yaml@2.9.0))
+      babel-plugin-react-compiler: 1.0.0
+
+  '@vitejs/plugin-react@6.1.1(@rolldown/plugin-babel@0.2.4(@babel/core@7.29.7(supports-color@10.2.2))(@babel/plugin-transform-runtime@7.29.7(@babel/core@7.29.7(supports-color@10.2.2))(supports-color@10.2.2))(@babel/runtime@7.29.7)(rolldown@1.2.6)(vite@8.2.2(@types/node@26.4.1)(esbuild@0.28.1)(jiti@2.7.0)(terser@5.48.0)(yaml@2.9.0)))(babel-plugin-react-compiler@1.0.0)(vite@8.2.2(@types/node@26.4.1)(esbuild@0.28.1)(jiti@2.7.0)(terser@5.48.0)(yaml@2.9.0))':
+    dependencies:
+      '@rolldown/pluginutils': 1.0.1
+      vite: 8.2.2(@types/node@26.4.1)(esbuild@0.28.1)(jiti@2.7.0)(terser@5.48.0)(yaml@2.9.0)
+    optionalDependencies:
+      '@rolldown/plugin-babel': 0.2.4(@babel/core@7.29.7(supports-color@10.2.2))(@babel/plugin-transform-runtime@7.29.7(@babel/core@7.29.7(supports-color@10.2.2))(supports-color@10.2.2))(@babel/runtime@7.29.7)(rolldown@1.2.6)(vite@8.2.2(@types/node@26.4.1)(esbuild@0.28.1)(jiti@2.7.0)(terser@5.48.0)(yaml@2.9.0))
       babel-plugin-react-compiler: 1.0.0
 
   '@vitest/mocker@5.0.0(vite@8.2.2(@types/node@26.1.1)(esbuild@0.28.1)(jiti@2.7.0)(terser@5.48.0)(yaml@2.9.0))':
@@ -15873,7 +15893,7 @@ snapshots:
   jest-util@29.7.0:
     dependencies:
       '@jest/types': 29.6.3
-      '@types/node': 26.1.1
+      '@types/node': 26.4.1
       chalk: 4.1.2
       ci-info: 3.9.0
       graceful-fs: 4.2.11
@@ -16255,7 +16275,7 @@ snapshots:
     dependencies:
       yallist: 3.1.1
 
-  lucide-react@1.41.0(react@19.2.8):
+  lucide-react@1.42.0(react@19.2.8):
     dependencies:
       react: 19.2.8
 
@@ -18858,6 +18878,21 @@ snapshots:
       tinyglobby: 0.2.17
     optionalDependencies:
       '@types/node': 26.1.1
+      esbuild: 0.28.1
+      fsevents: 2.3.3
+      jiti: 2.7.0
+      terser: 5.48.0
+      yaml: 2.9.0
+
+  vite@8.2.2(@types/node@26.4.1)(esbuild@0.28.1)(jiti@2.7.0)(terser@5.48.0)(yaml@2.9.0):
+    dependencies:
+      lightningcss: 1.33.0
+      picomatch: 4.0.5
+      postcss: 8.5.28
+      rolldown: 1.2.6
+      tinyglobby: 0.2.17
+    optionalDependencies:
+      '@types/node': 26.4.1
       esbuild: 0.28.1
       fsevents: 2.3.3
       jiti: 2.7.0
