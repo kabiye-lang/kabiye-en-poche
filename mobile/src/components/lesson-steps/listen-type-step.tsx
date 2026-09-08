@@ -138,7 +138,8 @@ const ListenTypeStep = ({ activity, onAnswer }: ListenTypeStepProps) => {
             onPress={() => setShowHints(!showHints)}
             className="mb-4 flex-row items-center justify-center gap-2"
           >
-            <LightbulbIcon size={20} color="#f59e0b" weight="fill" />
+            {/* Amber was a second accent hue in a system that has exactly one. */}
+            <LightbulbIcon size={20} className="text-accent" weight="fill" />
             <Text variant="body" className="text-hint">
               {showHints ? t`Hide hints` : t`Show hints`}
             </Text>

@@ -4,7 +4,9 @@ import pkg from '../package.json' with { type: 'json' }
 
 export default ({ config }: ConfigContext): ExpoConfig => ({
   ...config,
-  name: 'Kabiyè en poche',
+  // Poche is capitalised: it is the product's name, and every screen inside spells it
+  // that way. The home-screen icon label and the deep-link prompt were the exceptions.
+  name: 'Kabiyè en Poche',
   slug: 'kabiye-en-poche',
   version: pkg.version,
   orientation: 'portrait',

@@ -5,7 +5,7 @@ import Animated from 'react-native-reanimated'
 
 import { useLingui } from '@lingui/react/macro'
 
-import { usePrimaryColor } from '../hooks/use-theme-color'
+import { useAccentColor, usePrimaryColor, usePrimaryForegroundColor } from '../hooks/use-theme-color'
 import { SpeakerHighIcon, SpeakerSlashIcon } from './icons'
 
 const AnimatedPressable = Animated.createAnimatedComponent(Pressable)
@@ -40,7 +40,14 @@ export const AudioPlayButton = ({
   // `bg-primary` class instead, but this inline `backgroundColor` -- `undefined`
   // in the idle case -- won the merge, so the white icon sat on a transparent
   // circle and the button was invisible on the white activity card.
-  const background = disabled ? '#d1d5db' : isPlaying ? '#22c55e' : primary
+  //
+  // Playing used to be #22c55e and disabled #d1d5db. This palette has no green and no
+  // grey, and both were hardcoded so neither followed the theme. Playing takes the one
+  // accent -- it is a state the reader caused -- and disabled is the same fill at the
+  // 40% the system already uses for a button that is not yet available.
+  const accent = useAccentColor()
+  const onPrimary = usePrimaryForegroundColor()
+  const background = isPlaying ? accent : primary
 
   return (
     <AnimatedPressable
@@ -58,6 +65,7 @@ export const AudioPlayButton = ({
         transitionProperty: 'transform',
         transitionDuration: 150,
         backgroundColor: background,
+        opacity: disabled ? 0.4 : 1,
         borderCurve: 'continuous',
       }}
       {...rest}
@@ -73,11 +81,13 @@ export const AudioPlayButton = ({
           }}
         >
           {isLoading ? (
-            <ActivityIndicator size={size === 'sm' ? 'small' : 'large'} color="white" />
+            /* White, not paper: in dark the primary fill *is* paper, so a white glyph on
+               it was a white circle. */
+            <ActivityIndicator size={size === 'sm' ? 'small' : 'large'} color={onPrimary} />
           ) : isPlaying ? (
-            <SpeakerHighIcon size={icon} color="white" weight="fill" />
+            <SpeakerHighIcon size={icon} color={onPrimary} weight="fill" />
           ) : (
-            <SpeakerSlashIcon size={icon} color="white" weight="fill" />
+            <SpeakerSlashIcon size={icon} color={onPrimary} weight="fill" />
           )}
         </Animated.View>
       )}
