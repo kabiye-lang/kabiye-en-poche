@@ -1,0 +1,41 @@
+# EAS resolves this from the archive root — the monorepo root — so it must live
+# here, not in mobile/. Paths are relative to this file.
+
+# 1. Ignore everything at the absolute root level
+/*
+
+# 2. Whitelist the workspace setup files
+!pnpm-lock.yaml
+!pnpm-workspace.yaml
+!package.json
+
+# 3. Keep the other workspace members' package.json only — pnpm install
+#    --frozen-lockfile needs every member the lockfile lists, but not their source
+!/admin
+/admin/*
+!/admin/package.json
+!/website
+/website/*
+!/website/package.json
+
+# 4. Allow the mobile app
+!/mobile
+
+# 5. Drop what the build does not need from inside mobile
+/mobile/node_modules
+/mobile/.env*
+/mobile/.expo
+/mobile/.eas
+/mobile/ios
+/mobile/android
+/mobile/google-services.json
+/mobile/GoogleService-Info.plist
+/mobile/__tests__
+/mobile/__mocks__
+/mobile/.maestro
+/mobile/.impeccable
+/mobile/.ncurc.json
+/mobile/.lintstagedrc.cjs
+/mobile/DESIGN.md
+/mobile/PRODUCT.md
+/mobile/.DS_Store
