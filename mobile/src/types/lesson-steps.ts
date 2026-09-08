@@ -80,7 +80,8 @@ export interface ContentStep extends BaseStep {
   type: 'content'
   title?: string
   content: string
-  examples?: Json | null // Raw examples from database, transformed in ContentStep component
+  /** The sentences shown under the rule -- see `sectionSentences`. */
+  examples?: LessonExample[]
 }
 
 export interface AudioStep extends BaseStep {

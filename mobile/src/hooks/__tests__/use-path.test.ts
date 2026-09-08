@@ -35,6 +35,14 @@ describe('PATH_UNIT_ORDER keeps the onboarding promises', () => {
 })
 
 describe('orderUnitsForPath', () => {
+  it('never drops or duplicates a unit', () => {
+    for (const path of ['speaker', 'heritage', 'new'] as const) {
+      const ordered = orderUnitsForPath(A1, path)
+      expect(ordered).toHaveLength(A1.length)
+      expect(new Set(codes(ordered)).size).toBe(A1.length)
+    }
+  })
+
   it('leaves the order alone without a path', () => {
     expect(codes(orderUnitsForPath(A1, null))).toEqual(codes(A1))
   })

@@ -1,7 +1,6 @@
 import { useCallback, useEffect, useState } from 'react'
 
 import AsyncStorage from '@react-native-async-storage/async-storage'
-import { useQueryClient } from '@tanstack/react-query'
 
 /**
  * Where Kabiyè sits in this learner's life.
@@ -59,7 +58,6 @@ export function orderUnitsForPath<T extends { code?: string | null }>(units: T[]
 }
 
 export function usePath() {
-  const queryClient = useQueryClient()
   const [path, setPathState] = useState<LearnerPath | null>(null)
   const [isLoading, setIsLoading] = useState(true)
 
@@ -82,15 +80,10 @@ export function usePath() {
     }
   }, [])
 
-  const setPath = useCallback(
-    async (next: LearnerPath) => {
-      setPathState(next)
-      await AsyncStorage.setItem(PATH_STORAGE_KEY, next)
-      // The next lesson is picked in path order, so a new path is a new answer.
-      await queryClient.invalidateQueries({ queryKey: ['next-lesson'] })
-    },
-    [queryClient]
-  )
+  const setPath = useCallback(async (next: LearnerPath) => {
+    setPathState(next)
+    await AsyncStorage.setItem(PATH_STORAGE_KEY, next)
+  }, [])
 
   return { path, setPath, isLoading }
 }

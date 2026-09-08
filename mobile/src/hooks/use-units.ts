@@ -9,13 +9,12 @@ import type {
 } from '../types/supabase'
 import type { LocalProgress } from '../utils/local-storage'
 
-import AsyncStorage from '@react-native-async-storage/async-storage'
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 
 import { supabase } from '../lib/supabase'
 import { lockStates, nextLesson } from '../utils/lesson-locks'
 import { localProgressStorage } from '../utils/local-storage'
-import { orderUnitsForPath, parsePath, PATH_STORAGE_KEY } from './use-path'
+import { orderUnitsForPath, usePath } from './use-path'
 
 // Query keys
 export const unitKeys = {
@@ -194,21 +193,25 @@ export function useUserProgress() {
 
 // Get next lesson to continue
 export function useNextLesson() {
+  // The path is part of the key: a new path is a new question, answered fresh, with no
+  // invalidation to remember. Until the stored path has been read there is no answer to
+  // give -- a lesson from the default order would only be replaced a moment later.
+  const { path, isLoading } = usePath()
   return useQuery({
-    queryKey: ['next-lesson'],
+    queryKey: ['next-lesson', path],
+    enabled: !isLoading,
     queryFn: async () => {
       // 235 lessons is one small request; picking the next one here, in the learner's unit
       // order, keeps Home's "continue" card and Learn's ink card on the same lesson.
-      const [unitsResult, lessonsResult, completedIds, storedPath] = await Promise.all([
+      const [unitsResult, lessonsResult, completedIds] = await Promise.all([
         supabase.from('units').select('*').order('position', { ascending: true }),
         supabase.from('lessons').select('*').order('position', { ascending: true }),
         localProgressStorage.getCompletedLessonIds(),
-        AsyncStorage.getItem(PATH_STORAGE_KEY),
       ])
       if (unitsResult.error) throw unitsResult.error
       if (lessonsResult.error) throw lessonsResult.error
 
-      const ordered = orderUnitsForPath(unitsResult.data ?? [], parsePath(storedPath))
+      const ordered = orderUnitsForPath(unitsResult.data ?? [], path)
       return nextLesson(ordered, lessonsResult.data ?? [], new Set(completedIds))
     },
   })
