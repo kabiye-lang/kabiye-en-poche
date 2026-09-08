@@ -491,6 +491,9 @@ importers:
       babel-plugin-macros:
         specifier: ^3.1.0
         version: 3.1.0
+      babel-plugin-react-compiler:
+        specifier: ^1.0.0
+        version: 1.0.0
       eslint:
         specifier: ^10.4.0
         version: 10.10.0(jiti@2.7.0)(supports-color@10.2.2)
