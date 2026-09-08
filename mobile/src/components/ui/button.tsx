@@ -19,7 +19,6 @@ const buttonVariants = tv({
       // 14.6:1 they read at against each other holds; only the whole control fades
       // slightly against the page.
       primary: 'bg-primary active:opacity-90',
-      secondary: 'bg-background-tertiary active:bg-border',
       accent: 'bg-accent-fill active:bg-accent-fill-pressed',
       // The primary button on an ink screen. "One primary per screen, ink fill" holds
       // everywhere except on ink itself, where an ink button is invisible -- the Spot
@@ -63,9 +62,6 @@ const textVariants = tv({
       // Ink on paper in dark, paper on ink in light -- 14.6:1 either way. Not
       // `text-white`: `bg-primary` is paper in dark, and white on paper was ~1.1:1.
       primary: 'text-primary-foreground',
-      // Ink on the recessed tone, ~13:1 in both themes. It was white on a pre-Laterite
-      // violet (`bg-secondary`, #8B5CF6) that no text token could clear 4.5:1 on.
-      secondary: 'text-foreground',
       accent: 'text-on-accent',
       inverse: 'text-surface-ink',
       outline: 'text-primary',

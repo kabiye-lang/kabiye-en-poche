@@ -23,10 +23,12 @@ type Props = {
   isError?: boolean
 }
 
+// The bars are a tonal step off the card, not a hue: bg-secondary was the last of the
+// violet palette still rendering in the app, and this system has no second colour.
 const WordOfTheDaySkeleton = () => (
   <View className="bg-card rounded-2xl p-4">
-    <View className="bg-secondary/20 mb-2 h-6 w-32 rounded" />
-    <View className="bg-secondary/10 h-4 w-48 rounded" />
+    <View className="bg-foreground/10 mb-2 h-6 w-32 rounded" />
+    <View className="bg-foreground/5 h-4 w-48 rounded" />
   </View>
 )
 
