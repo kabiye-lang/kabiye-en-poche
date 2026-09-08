@@ -30,7 +30,6 @@ import {
 } from '../components/lesson-steps'
 import { Skeleton, SkeletonRows, Text, View } from '../components/ui'
 import {
-  PLANNED_LESSONS,
   useAppCompleteLesson,
   useAppLesson,
   useAppLessonActivities,
@@ -390,11 +389,12 @@ const LessonScreen = () => {
   }
 
   // Not written yet, rather than broken. The direction's rule for an empty state is that
-  // it names what still works: seven of seventy-eight lessons are written, and that is a
+  // it names what still works: eighteen of the map's lessons are written, and that is a
   // fact about the curriculum a learner is entitled to before they plan around it.
   const isLessonAvailable = lesson?.status === 'available' || lesson?.status === null
   if (lesson && !isLessonAvailable) {
     const written = progressSummary?.totalLessons ?? 0
+    const planned = progressSummary?.plannedLessons ?? written
     const isPending = lesson.status === 'coming_soon'
 
     return (
@@ -407,7 +407,7 @@ const LessonScreen = () => {
           }
           body={
             written > 0
-              ? t`${written} of ${PLANNED_LESSONS} planned lessons have content. This one is on the list.`
+              ? t`${written} of ${planned} planned lessons have content. This one is on the list.`
               : t`This one is on the list.`
           }
           actions={[{ label: t`Back to path`, onPress: () => router.back(), primary: true }]}

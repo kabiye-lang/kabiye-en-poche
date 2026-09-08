@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useState } from 'react'
 
 import AsyncStorage from '@react-native-async-storage/async-storage'
+import { useQueryClient } from '@tanstack/react-query'
 
 /**
  * Where Kabiyè sits in this learner's life.
@@ -18,17 +19,30 @@ export const PATH_STORAGE_KEY = '@kabiye_path'
 /**
  * How each path reorders the curriculum.
  *
- * A fluent speaker learning to write starts at the orthography, because that is the gap.
- * A beginner starts at greetings, because the alphabet is not why they came. Someone who
- * grew up hearing the language sits between the two and gets the default order.
+ * Unit codes are the five-level map's (`A1-01` Writing & Sound, `A1-02` The Sentence
+ * Spine, `A1-03` Greetings & People, `A1-04` Numbers, Time & Days, `A1-06` Home, Food &
+ * Market). The table held the flat map's `U001`-style codes for a while after the map
+ * changed, so nothing matched and every learner got the same order -- the onboarding
+ * promises below were not being kept. A test now pins each promise to a code.
+ *
+ * A fluent speaker learning to write starts at the orthography, because that is the gap:
+ * the default order, stated. A beginner is promised greetings first, then needs the
+ * alphabet early to read anything else. Someone who grew up hearing the language is
+ * promised "the words you half-remember": the everyday vocabulary units before the
+ * writing and the grammar spine.
  *
  * Matching is on unit code so a renamed unit keeps its place. Codes not listed keep
  * their `position` order after the ones that are.
  */
 export const PATH_UNIT_ORDER: Record<LearnerPath, string[]> = {
-  speaker: ['U001', 'U003', 'U002'],
-  heritage: [],
-  new: ['U003', 'U001', 'U002'],
+  speaker: ['A1-01', 'A1-02'],
+  heritage: ['A1-03', 'A1-06', 'A1-04', 'A1-01', 'A1-02'],
+  new: ['A1-03', 'A1-01', 'A1-02'],
+}
+
+/** The stored value, or null for anything that is not one of the three paths. */
+export function parsePath(stored: string | null | undefined): LearnerPath | null {
+  return stored === 'speaker' || stored === 'heritage' || stored === 'new' ? stored : null
 }
 
 /** Sort units for a path, leaving unlisted ones in their existing order behind. */
@@ -45,6 +59,7 @@ export function orderUnitsForPath<T extends { code?: string | null }>(units: T[]
 }
 
 export function usePath() {
+  const queryClient = useQueryClient()
   const [path, setPathState] = useState<LearnerPath | null>(null)
   const [isLoading, setIsLoading] = useState(true)
 
@@ -53,7 +68,7 @@ export function usePath() {
     AsyncStorage.getItem(PATH_STORAGE_KEY)
       .then((stored) => {
         if (cancelled) return
-        setPathState(stored === 'speaker' || stored === 'heritage' || stored === 'new' ? stored : null)
+        setPathState(parsePath(stored))
       })
       .catch(() => {
         // A path we cannot read is the same as one never chosen: the app still works,
@@ -67,10 +82,15 @@ export function usePath() {
     }
   }, [])
 
-  const setPath = useCallback(async (next: LearnerPath) => {
-    setPathState(next)
-    await AsyncStorage.setItem(PATH_STORAGE_KEY, next)
-  }, [])
+  const setPath = useCallback(
+    async (next: LearnerPath) => {
+      setPathState(next)
+      await AsyncStorage.setItem(PATH_STORAGE_KEY, next)
+      // The next lesson is picked in path order, so a new path is a new answer.
+      await queryClient.invalidateQueries({ queryKey: ['next-lesson'] })
+    },
+    [queryClient]
+  )
 
   return { path, setPath, isLoading }
 }
