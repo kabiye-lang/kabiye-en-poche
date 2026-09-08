@@ -2,12 +2,6 @@
 @import 'uniwind';
 
 @theme {
-  /* Brand colors from design system (non-theme-specific) */
-  --color-secondary: #8B5CF6;
-
-  /* New semantic tokens */
-  --color-primary-light: #EDE4F7;
-
   /* Font families - IBM Plex Sans Hebrew */
   --font-ibm-thin: 'IBMPlexSansHebrew_100Thin';
   --font-ibm-extralight: 'IBMPlexSansHebrew_200ExtraLight';

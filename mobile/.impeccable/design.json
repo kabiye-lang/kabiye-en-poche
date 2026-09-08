@@ -1,47 +1,314 @@
 {
   "schemaVersion": 2,
-  "generatedAt": "2026-09-06T10:20:00Z",
+  "generatedAt": "2026-09-09T00:00:00Z",
   "title": "Design System: Kabiyè en Poche",
   "extensions": {
     "colorMeta": {
-      "primary": { "role": "primary", "displayName": "Electric Violet", "canonical": "#6200EE", "tonalRamp": ["#150033", "#26005C", "#3A0086", "#4E00B4", "#6200EE", "#8A3CF5", "#B183F9", "#DCC7FD"] },
-      "primary-dark-theme": { "role": "primary", "displayName": "Lifted Violet", "canonical": "#BB86FC", "tonalRamp": ["#2A1A45", "#3E2764", "#553584", "#6E45A5", "#8A5BC8", "#A570E4", "#BB86FC", "#DCC2FE"] },
-      "primary-tint": { "role": "primary", "displayName": "Violet Wash", "canonical": "#EDE4F7", "tonalRamp": ["#2B2138", "#403253", "#584670", "#735F8E", "#9182AC", "#B3A8C9", "#D3CBE3", "#EDE4F7"] },
-      "secondary": { "role": "secondary", "displayName": "Soft Violet", "canonical": "#8B5CF6", "tonalRamp": ["#1E1240", "#2F1D60", "#432A82", "#5937A6", "#7149CB", "#8B5CF6", "#AC8AF9", "#CFBAFC"] },
-      "paper": { "role": "neutral", "displayName": "Paper", "canonical": "#F5F3F7", "tonalRamp": ["#211F26", "#35323C", "#4B4854", "#63606D", "#7D7A87", "#9B98A4", "#C7C4CE", "#F5F3F7"] },
-      "leaf": { "role": "neutral", "displayName": "Leaf", "canonical": "#ffffff", "tonalRamp": ["#1E1B2E", "#332F45", "#4A4560", "#635E7C", "#8079999", "#A5A1B6", "#D0CDDA", "#ffffff"] },
-      "recessed": { "role": "neutral", "displayName": "Recessed", "canonical": "#EDE9F0", "tonalRamp": ["#201D25", "#333039", "#48444F", "#5F5B67", "#787381", "#98939F", "#C3BFC9", "#EDE9F0"] },
-      "ink": { "role": "neutral", "displayName": "Ink", "canonical": "#1E1B2E", "tonalRamp": ["#1E1B2E", "#332F45", "#4A4560", "#635E7C", "#807999", "#A5A1B6", "#D0CDDA", "#F2F0F7"] },
-      "ink-quiet": { "role": "neutral", "displayName": "Quiet Ink", "canonical": "#6E6B7B", "tonalRamp": ["#1B1A20", "#2D2B33", "#413E49", "#565261", "#6E6B7B", "#928FA0", "#B9B6C4", "#E3E1E9"] },
-      "rule": { "role": "neutral", "displayName": "Rule", "canonical": "#E0DCE6", "tonalRamp": ["#1F1D23", "#312E37", "#45414D", "#5B5765", "#75707F", "#958FA0", "#BEB9C7", "#E0DCE6"] },
-      "night-paper": { "role": "neutral", "displayName": "Night Paper", "canonical": "#1A1A2E", "tonalRamp": ["#0C0C17", "#131322", "#1A1A2E", "#2A2A47", "#3D3D63", "#565683", "#8080A8", "#B8B8D0"] },
-      "night-leaf": { "role": "neutral", "displayName": "Night Leaf", "canonical": "#252538", "tonalRamp": ["#101018", "#181824", "#252538", "#37374F", "#4D4D6B", "#68688B", "#9494B0", "#C4C4D6"] },
-      "night-recessed": { "role": "neutral", "displayName": "Night Recessed", "canonical": "#2F2F45", "tonalRamp": ["#14141E", "#1F1F2E", "#2F2F45", "#42425E", "#59597B", "#75759B", "#9F9FBB", "#CCCCDD"] },
-      "night-ink": { "role": "neutral", "displayName": "Night Ink", "canonical": "#E8E4F0", "tonalRamp": ["#221F2B", "#37333F", "#4E4959", "#676174", "#847E92", "#A7A2B3", "#C8C4D4", "#E8E4F0"] },
-      "night-ink-quiet": { "role": "neutral", "displayName": "Night Quiet Ink", "canonical": "#9B97A8", "tonalRamp": ["#1D1C22", "#2E2C34", "#423F49", "#575360", "#6F6B79", "#9B97A8", "#C0BDC9", "#E4E2E9"] },
-      "night-rule": { "role": "neutral", "displayName": "Night Rule", "canonical": "#3D3B50", "tonalRamp": ["#17161E", "#25242F", "#3D3B50", "#524F6A", "#6A6786", "#8A87A4", "#B2AFC5", "#DAD8E3"] },
-      "correct-bg": { "role": "tertiary", "displayName": "Correct Ground", "canonical": "#dcfce7", "tonalRamp": ["#0A2915", "#0F4020", "#15592C", "#1C7439", "#28994C", "#4FC275", "#96E0B1", "#dcfce7"] },
-      "correct-ink": { "role": "tertiary", "displayName": "Correct Ink", "canonical": "#15803d", "tonalRamp": ["#052210", "#093718", "#0E4F23", "#15803d", "#1FA853", "#40C874", "#7FDFA3", "#C4F3D5"] },
-      "wrong-bg": { "role": "tertiary", "displayName": "Wrong Ground", "canonical": "#fee2e2", "tonalRamp": ["#3A0D0D", "#551515", "#741F1F", "#992C2C", "#C04545", "#DC7B7B", "#F0B4B4", "#fee2e2"] },
-      "wrong-ink": { "role": "tertiary", "displayName": "Wrong Ink", "canonical": "#b91c1c", "tonalRamp": ["#2E0808", "#4A0F0F", "#6B1616", "#8F1C1C", "#b91c1c", "#DC4444", "#EE8585", "#F9C4C4"] },
-      "hint": { "role": "tertiary", "displayName": "Hint Amber", "canonical": "#d97706", "tonalRamp": ["#331B02", "#4E2903", "#6D3A05", "#8F4C06", "#B45F07", "#d97706", "#F0A63F", "#F8D19A"] },
-      "danger": { "role": "tertiary", "displayName": "Danger Red", "canonical": "#BF3626", "tonalRamp": ["#2E0D09", "#4A150F", "#681E16", "#8C291D", "#BF3626", "#D96354", "#E99A90", "#F6CFCA"] }
+      "laterite": {
+        "role": "primary",
+        "displayName": "Laterite",
+        "canonical": "#C4451C",
+        "tonalRamp": [
+          "#240D05",
+          "#501C0B",
+          "#862F13",
+          "#C4451C",
+          "#E26036",
+          "#EB8E70",
+          "#F2B8A6",
+          "#FAE3DB"
+        ]
+      },
+      "paper": {
+        "role": "neutral",
+        "displayName": "Paper",
+        "canonical": "#F4EBDD",
+        "tonalRamp": [
+          "#1F170A",
+          "#453316",
+          "#745525",
+          "#A27734",
+          "#C79952",
+          "#D7B684",
+          "#E6D2B2",
+          "#F4EBDD"
+        ]
+      },
+      "paper-recessed": {
+        "role": "neutral",
+        "displayName": "Paper Recessed",
+        "canonical": "#EADFCD",
+        "tonalRamp": [
+          "#1D160C",
+          "#41321B",
+          "#6C542D",
+          "#97763F",
+          "#BB985D",
+          "#CFB58C",
+          "#E1D1B7",
+          "#EADFCD"
+        ]
+      },
+      "leaf": {
+        "role": "neutral",
+        "displayName": "Leaf",
+        "canonical": "#FFFFFF",
+        "tonalRamp": [
+          "#141414",
+          "#2E2E2E",
+          "#4C4C4C",
+          "#6B6B6B",
+          "#8C8C8C",
+          "#ADADAD",
+          "#CCCCCC",
+          "#FFFFFF"
+        ]
+      },
+      "line": {
+        "role": "neutral",
+        "displayName": "Line",
+        "canonical": "#D9CDB9",
+        "tonalRamp": [
+          "#1A160E",
+          "#3B3120",
+          "#635236",
+          "#8B734B",
+          "#AE956A",
+          "#C6B395",
+          "#D9CDB9",
+          "#F1ECE5"
+        ]
+      },
+      "ink": {
+        "role": "neutral",
+        "displayName": "Ink",
+        "canonical": "#221913",
+        "tonalRamp": [
+          "#221913",
+          "#3B2B21",
+          "#624837",
+          "#89654D",
+          "#AD866C",
+          "#C4A996",
+          "#DAC9BE",
+          "#F0E9E5"
+        ]
+      },
+      "ink-quiet": {
+        "role": "neutral",
+        "displayName": "Quiet Ink",
+        "canonical": "#6B5A4E",
+        "tonalRamp": [
+          "#181411",
+          "#352D27",
+          "#584A41",
+          "#6B5A4E",
+          "#9E897A",
+          "#BAABA1",
+          "#D4CBC4",
+          "#EEEAE7"
+        ]
+      },
+      "surface-ink": {
+        "role": "neutral",
+        "displayName": "Ink Surface",
+        "canonical": "#221913",
+        "tonalRamp": [
+          "#221913",
+          "#3B2B21",
+          "#624837",
+          "#89654D",
+          "#AD866C",
+          "#C4A996",
+          "#DAC9BE",
+          "#F0E9E5"
+        ]
+      },
+      "night-laterite": {
+        "role": "primary",
+        "displayName": "Night Laterite",
+        "canonical": "#E07A55",
+        "tonalRamp": [
+          "#230E06",
+          "#4E1F0E",
+          "#813418",
+          "#B54821",
+          "#E07A55",
+          "#E69375",
+          "#EFBCA9",
+          "#F9E4DC"
+        ]
+      },
+      "night-paper": {
+        "role": "neutral",
+        "displayName": "Night Paper",
+        "canonical": "#221913",
+        "tonalRamp": [
+          "#221913",
+          "#3B2B21",
+          "#624837",
+          "#89654D",
+          "#AD866C",
+          "#C4A996",
+          "#DAC9BE",
+          "#F0E9E5"
+        ]
+      },
+      "night-recessed": {
+        "role": "neutral",
+        "displayName": "Night Recessed",
+        "canonical": "#2E241C",
+        "tonalRamp": [
+          "#19140F",
+          "#2E241C",
+          "#5F4A3A",
+          "#856851",
+          "#A88970",
+          "#C1AB9A",
+          "#D8CBC0",
+          "#F0EAE6"
+        ]
+      },
+      "night-tabbar": {
+        "role": "neutral",
+        "displayName": "Night Tab Bar",
+        "canonical": "#160F0B",
+        "tonalRamp": [
+          "#160F0B",
+          "#3D2A1F",
+          "#664633",
+          "#8F6147",
+          "#B38266",
+          "#C9A692",
+          "#DDC7BB",
+          "#F1E9E4"
+        ]
+      },
+      "night-ink": {
+        "role": "neutral",
+        "displayName": "Night Ink",
+        "canonical": "#F4EBDD",
+        "tonalRamp": [
+          "#1F170A",
+          "#453316",
+          "#745525",
+          "#A27734",
+          "#C79952",
+          "#D7B684",
+          "#E6D2B2",
+          "#F4EBDD"
+        ]
+      },
+      "night-ink-quiet": {
+        "role": "neutral",
+        "displayName": "Night Quiet Ink",
+        "canonical": "rgba(244,235,221,0.7)",
+        "tonalRamp": [
+          "#171512",
+          "#342F28",
+          "#564E43",
+          "#786D5E",
+          "#9B8E7E",
+          "#B5ACA0",
+          "#D2CDC6",
+          "#EDEBE8"
+        ]
+      },
+      "night-line": {
+        "role": "neutral",
+        "displayName": "Night Line",
+        "canonical": "rgba(244,235,221,0.12)",
+        "tonalRamp": [
+          "#181411",
+          "#3B322B",
+          "#584B41",
+          "#7C695A",
+          "#9E8A7A",
+          "#BAACA1",
+          "#D4CBC4",
+          "#EEEAE7"
+        ]
+      },
+      "scrim": {
+        "role": "neutral",
+        "displayName": "Scrim",
+        "canonical": "rgba(34,25,19,0.55)",
+        "tonalRamp": [
+          "#161413",
+          "#312E2A",
+          "#524C47",
+          "#80776E",
+          "#958C84",
+          "#B4ADA7",
+          "#D0CCC8",
+          "#ECEBE9"
+        ]
+      }
     },
     "typographyMeta": {
-      "display": { "displayName": "Display", "purpose": "Screen titles only — 'Learn Kabiyè', 'Profile'." },
-      "headline": { "displayName": "Headline", "purpose": "Section headings and lesson titles." },
-      "title": { "displayName": "Title", "purpose": "Card headings and activity questions." },
-      "body": { "displayName": "Body", "purpose": "Lesson prose, definitions, all running interface copy." },
-      "label": { "displayName": "Label", "purpose": "Captions, pronunciations, chips, secondary metadata." },
-      "kabiye": { "displayName": "Kabiyè", "purpose": "Every Kabiyè word. Andika is the only face in the system that can draw ɖ ɛ ɣ ɩ ɔ ʋ." },
-      "kabiye-strong": { "displayName": "Kabiyè Strong", "purpose": "Kabiyè headwords and emphasised Kabiyè. Andika ships two weights; the interface's eight collapse onto them." }
+      "section-label": {
+        "displayName": "Section Label",
+        "purpose": "Names what a screen is about, above its title. 600, 13px, +0.10em, uppercase, laterite -- the one place laterite carries small type, and it is bold enough to pass."
+      },
+      "screen-title": {
+        "displayName": "Screen Title",
+        "purpose": "Screen titles only -- 'Your path', '9,738 entries', 'Your Kabiyè'. 600, 40px, 1.0, -0.02em."
+      },
+      "step-question": {
+        "displayName": "Step Question",
+        "purpose": "What a lesson step is asking. 500, 26px, 1.15."
+      },
+      "card-title": {
+        "displayName": "Card Title",
+        "purpose": "Unit titles and empty-state headings. 600, 22px."
+      },
+      "body": {
+        "displayName": "Body",
+        "purpose": "Lesson prose, definitions, all running interface copy. 400, 17px, 1.5. Always ink, never laterite."
+      },
+      "body-small": {
+        "displayName": "Body Small",
+        "purpose": "Captions, pronunciations, glosses, secondary metadata. 400, 15px, quiet ink."
+      },
+      "kabiye-hero": {
+        "displayName": "Kabiyè Hero",
+        "purpose": "A single letter, never a word. Andika Bold 150px, 0.85."
+      },
+      "kabiye-word": {
+        "displayName": "Kabiyè Word",
+        "purpose": "Headwords and the word being taught. Andika Bold 44px, 1.05; a word never exceeds 44 and must be allowed to wrap."
+      },
+      "kabiye-list": {
+        "displayName": "Kabiyè List",
+        "purpose": "Kabiyè in rows. Andika Bold 24px."
+      },
+      "kabiye-sentence": {
+        "displayName": "Kabiyè Sentence",
+        "purpose": "Sentences to read. Andika Bold 34px, 1.3."
+      }
     },
     "shadows": [],
     "motion": [
-      { "name": "step-enter", "value": "FadeInRight duration 260ms", "purpose": "Each lesson step entering; the one authored motion moment in the app." },
-      { "name": "completion-enter", "value": "FadeIn duration 220ms", "purpose": "The completion screen, which fades rather than slides because nothing follows it." },
-      { "name": "card-stagger", "value": "FadeInUp duration 300ms, delay index * 100ms", "purpose": "Word of the Day cards arriving in sequence." },
-      { "name": "press-scale", "value": "transform scale 0.9 over 150ms", "purpose": "Press feedback on the audio button." }
+      {
+        "name": "step-enter",
+        "value": "FadeInRight duration 260ms",
+        "purpose": "Each lesson step entering; the one authored motion moment in the app."
+      },
+      {
+        "name": "completion-enter",
+        "value": "FadeIn duration 220ms",
+        "purpose": "The completion screen, which fades rather than slides because nothing follows it."
+      },
+      {
+        "name": "card-stagger",
+        "value": "FadeInUp duration 300ms, delay index * 100ms",
+        "purpose": "Word of the Day cards arriving in sequence."
+      },
+      {
+        "name": "press-scale",
+        "value": "transform scale 0.9 over 150ms",
+        "purpose": "Press feedback on the audio button."
+      }
     ],
     "breakpoints": []
   },
@@ -50,115 +317,156 @@
       "name": "Primary Button",
       "kind": "button",
       "refersTo": "button-primary",
-      "description": "The single filled button in the system. Bottom-pinned and full-width in lesson flows.",
+      "description": "The single filled button in the system, one per screen. Ink, not laterite -- the accent is spent on the hero glyph and the section label. Bottom-pinned and full-width in lesson flows. Every button in the system is a pill.",
       "html": "<button class=\"ds-btn-primary\">Continue</button>",
-      "css": ".ds-btn-primary { background: #6200EE; color: #fff; font-family: 'Figtree', system-ui, sans-serif; font-weight: 500; font-size: 16px; padding: 12px 16px; border: none; border-radius: 12px; width: 100%; transition: opacity 0.15s; } .ds-btn-primary:hover { opacity: 0.9; } .ds-btn-primary:focus-visible { outline: 2px solid #6200EE; outline-offset: 2px; } .ds-btn-primary:disabled { opacity: 0.5; }"
+      "css": ".ds-btn-primary { background: #221913; color: #F4EBDD; font-family: 'Bricolage Grotesque', system-ui, sans-serif; font-weight: 600; font-size: 16px; padding: 16px 24px; border: none; border-radius: 9999px; width: 100%; transition: opacity 0.15s; } .ds-btn-primary:hover { opacity: 0.9; } .ds-btn-primary:focus-visible { outline: 2px solid #C4451C; outline-offset: 2px; } .ds-btn-primary:disabled { opacity: 0.4; }"
     },
     {
       "name": "Outline Button",
       "kind": "button",
       "refersTo": "button-outline",
-      "description": "Secondary action. Accent label on a 2px accent border, no fill.",
-      "html": "<button class=\"ds-btn-outline\">Clear</button>",
-      "css": ".ds-btn-outline { background: transparent; color: #6200EE; font-family: 'Figtree', system-ui, sans-serif; font-weight: 500; font-size: 16px; padding: 12px 16px; border: 2px solid #6200EE; border-radius: 12px; transition: background 0.15s; } .ds-btn-outline:hover { background: rgba(98,0,238,0.1); } .ds-btn-outline:focus-visible { outline: 2px solid #6200EE; outline-offset: 2px; }"
+      "description": "The secondary action. A 1.5px ink rule and nothing else -- there is no grey fill in this palette.",
+      "html": "<button class=\"ds-btn-outline\">Skip</button>",
+      "css": ".ds-btn-outline { background: transparent; color: #221913; font-family: 'Bricolage Grotesque', system-ui, sans-serif; font-weight: 600; font-size: 16px; padding: 16px 24px; border: 1.5px solid #221913; border-radius: 9999px; } .ds-btn-outline:hover { background: rgba(34,25,19,0.1); } .ds-btn-outline:focus-visible { outline: 2px solid #C4451C; outline-offset: 2px; }"
+    },
+    {
+      "name": "Inverse Button",
+      "kind": "button",
+      "refersTo": "button-inverse",
+      "description": "The primary button on an ink screen. 'One primary per screen, ink fill' holds everywhere except on ink itself, where an ink button is invisible.",
+      "html": "<button class=\"ds-btn-inverse\">Continue</button>",
+      "css": ".ds-btn-inverse { background: #F4EBDD; color: #221913; font-family: 'Bricolage Grotesque', system-ui, sans-serif; font-weight: 600; font-size: 16px; padding: 16px 24px; border: none; border-radius: 9999px; width: 100%; } .ds-btn-inverse:hover { opacity: 0.9; }"
     },
     {
       "name": "Card",
       "kind": "card",
       "refersTo": "card",
-      "description": "The primary surface. White leaf on the lavender ground; no shadow, ever.",
-      "html": "<div class=\"ds-card\"><div class=\"ds-card-title\">Letters and Sounds</div><p class=\"ds-card-body\">The Kabiyè alphabet has 25 letters: 10 vowels and 15 consonants.</p></div>",
-      "css": ".ds-card { background: #ffffff; border-radius: 16px; padding: 16px; } .ds-card-title { font-family: 'Figtree', system-ui, sans-serif; font-weight: 500; font-size: 20px; color: #1E1B2E; margin-bottom: 8px; } .ds-card-body { font-family: 'Figtree', system-ui, sans-serif; font-weight: 400; font-size: 16px; line-height: 1.6; color: #1E1B2E; margin: 0; }"
+      "description": "A leaf laid on paper. Depth is the tonal step from paper to leaf -- there is no shadow anywhere in the system.",
+      "html": "<div class=\"ds-card\"><h3 class=\"ds-card-title\">Greetings</h3><p class=\"ds-card-body\">Six words to open a conversation.</p></div>",
+      "css": ".ds-card { background: #FFFFFF; border-radius: 16px; padding: 16px; } .ds-card-title { font-family: 'Bricolage Grotesque', system-ui, sans-serif; font-weight: 600; font-size: 22px; color: #221913; margin: 0; } .ds-card-body { font-family: 'Bricolage Grotesque', system-ui, sans-serif; font-weight: 400; font-size: 17px; line-height: 1.5; color: #221913; margin: 8px 0 0; }"
+    },
+    {
+      "name": "Outlined Card",
+      "kind": "card",
+      "refersTo": "card-outlined",
+      "description": "The card that has to hold its own edge on paper, where a leaf fill would not separate it: a 1.5px ink rule at 14px radius.",
+      "html": "<div class=\"ds-card-outlined\"><p class=\"ds-card-body\">Your streak</p></div>",
+      "css": ".ds-card-outlined { background: transparent; border: 1.5px solid #221913; border-radius: 14px; padding: 16px; } .ds-card-body { font-family: 'Bricolage Grotesque', system-ui, sans-serif; font-size: 17px; color: #221913; margin: 0; }"
     },
     {
       "name": "Dictionary Entry",
-      "kind": "custom",
-      "refersTo": "card",
-      "description": "Signature component. The Kabiyè headword in Andika and accent; the gloss in Figtree and ink. Shows the two-voice type system at work.",
-      "html": "<div class=\"ds-entry\"><div class=\"ds-entry-head\">kalimiye</div><div class=\"ds-entry-pron\">[kálímíyé]</div><div class=\"ds-entry-gloss\">chicken</div></div>",
-      "css": ".ds-entry { background: #ffffff; border-radius: 16px; padding: 16px; } .ds-entry-head { font-family: 'Andika', system-ui, sans-serif; font-weight: 700; font-size: 20px; color: #6200EE; } .ds-entry-pron { font-family: 'Andika', system-ui, sans-serif; font-weight: 400; font-size: 14px; color: #6E6B7B; margin-top: 4px; } .ds-entry-gloss { font-family: 'Figtree', system-ui, sans-serif; font-weight: 400; font-size: 16px; color: #1E1B2E; margin-top: 8px; }"
+      "kind": "list-item",
+      "refersTo": "dictionary-entry",
+      "description": "The Kabiyè headword is the largest thing in the block and is always Andika; the gloss below it is interface type in quiet ink.",
+      "html": "<a class=\"ds-entry\" href=\"#\"><span class=\"ds-entry-word\">ɖɛ-ɣɩŋ</span><span class=\"ds-entry-gloss\">to walk, to go on foot</span></a>",
+      "css": ".ds-entry { display: block; padding: 12px 0; border-bottom: 1px solid #D9CDB9; text-decoration: none; } .ds-entry-word { display: block; font-family: 'Andika', system-ui, sans-serif; font-weight: 700; font-size: 24px; color: #221913; } .ds-entry-gloss { display: block; margin-top: 2px; font-family: 'Bricolage Grotesque', system-ui, sans-serif; font-weight: 400; font-size: 15px; color: #6B5A4E; }"
     },
     {
       "name": "Exercise Option",
-      "kind": "custom",
-      "refersTo": "card",
-      "description": "Answer row. The whole row is the target; selection raises the border rather than casting a shadow.",
-      "html": "<button class=\"ds-option\"><span class=\"ds-option-dot\"></span><span class=\"ds-option-label\">afa</span></button>",
-      "css": ".ds-option { display: flex; align-items: center; gap: 12px; width: 100%; background: #ffffff; border: 1px solid #E0DCE6; border-radius: 12px; padding: 16px; text-align: left; transition: border-color 0.15s, background 0.15s; } .ds-option-dot { width: 20px; height: 20px; border: 2px solid #E0DCE6; border-radius: 9999px; flex: none; } .ds-option-label { font-family: 'Andika', system-ui, sans-serif; font-weight: 700; font-size: 20px; color: #1E1B2E; } .ds-option:hover { border-color: #6200EE; } .ds-option:focus-visible { outline: 2px solid #6200EE; outline-offset: 2px; }"
+      "kind": "option",
+      "refersTo": "exercise-option",
+      "description": "A tappable answer. Correct fills with ink; wrong is a laterite strikethrough with the answer beneath -- there is no green and no red anywhere in the system.",
+      "html": "<button class=\"ds-option\">ɖɛɣɩŋ</button> <button class=\"ds-option ds-option-correct\">ɖɛɣɩŋ</button> <button class=\"ds-option ds-option-wrong\">ŋɔʋñ</button>",
+      "css": ".ds-option { display: block; width: 100%; text-align: left; background: transparent; border: 1.5px solid #221913; border-radius: 18px; padding: 16px; font-family: 'Andika', system-ui, sans-serif; font-weight: 700; font-size: 24px; color: #221913; margin-bottom: 12px; } .ds-option-correct { background: #221913; color: #F4EBDD; } .ds-option-wrong { color: #C4451C; text-decoration: line-through; text-decoration-color: #C4451C; }"
     },
     {
       "name": "Search Input",
       "kind": "input",
       "refersTo": "input",
-      "description": "Recessed field. Autocorrect is off on every field that accepts Kabiyè.",
-      "html": "<input class=\"ds-input\" type=\"text\" placeholder=\"Search Kabiyè words...\" autocorrect=\"off\" spellcheck=\"false\" />",
-      "css": ".ds-input { width: 100%; background: #EDE9F0; color: #1E1B2E; font-family: 'Figtree', system-ui, sans-serif; font-size: 16px; padding: 10px; border: 1px solid #E0DCE6; border-radius: 16px; } .ds-input::placeholder { color: #6E6B7B; } .ds-input:focus { outline: none; border-color: #6200EE; }"
+      "description": "A recessed field on paper, with an ink rule when focused.",
+      "html": "<input class=\"ds-input\" placeholder=\"Search 9,738 entries\" />",
+      "css": ".ds-input { width: 100%; background: #EADFCD; border: 1px solid #D9CDB9; border-radius: 12px; padding: 14px; font-family: 'Bricolage Grotesque', system-ui, sans-serif; font-size: 17px; color: #221913; } .ds-input::placeholder { color: #6B5A4E; } .ds-input:focus { outline: none; border: 1.5px solid #221913; }"
     },
     {
       "name": "Language Tag",
-      "kind": "chip",
+      "kind": "tag",
       "refersTo": "language-tag",
-      "description": "Marks a gloss shown in a language the reader did not choose. Deliberately quiet — a footnote about the text, not part of it.",
-      "html": "<span class=\"ds-lang-tag\">FR</span>",
-      "css": ".ds-lang-tag { display: inline-block; background: #EDE9F0; color: #6E6B7B; font-family: 'Figtree', system-ui, sans-serif; font-weight: 500; font-size: 12px; text-transform: uppercase; padding: 2px 6px; border-radius: 4px; }"
+      "description": "The quietest label in the system: a recessed chip at 4px radius, quiet ink, never an accent.",
+      "html": "<span class=\"ds-tag\">FR</span>",
+      "css": ".ds-tag { display: inline-block; background: #EADFCD; color: #6B5A4E; border-radius: 4px; padding: 2px 8px; font-family: 'Bricolage Grotesque', system-ui, sans-serif; font-weight: 600; font-size: 12px; }"
     },
     {
-      "name": "Difficulty Chip",
-      "kind": "chip",
-      "refersTo": "chip-difficulty",
-      "description": "Lesson difficulty. The one place a feedback-family colour is used outside answer feedback, and it is a deliberate exception.",
-      "html": "<span class=\"ds-chip\">Beginner</span>",
-      "css": ".ds-chip { display: inline-block; background: #dcfce7; color: #16a34a; font-family: 'Figtree', system-ui, sans-serif; font-weight: 500; font-size: 12px; padding: 4px 12px; border-radius: 9999px; }"
+      "name": "Section Label",
+      "kind": "label",
+      "refersTo": "section-label",
+      "description": "The one place laterite carries small type. Uppercase, tracked, and bold enough to clear 4.5:1 on paper; it names what a screen is about, above the title.",
+      "html": "<p class=\"ds-section-label\">Today</p><h1 class=\"ds-screen-title\">Your path</h1>",
+      "css": ".ds-section-label { font-family: 'Bricolage Grotesque', system-ui, sans-serif; font-weight: 600; font-size: 13px; letter-spacing: 0.10em; text-transform: uppercase; color: #C4451C; margin: 0; } .ds-screen-title { font-family: 'Bricolage Grotesque', system-ui, sans-serif; font-weight: 600; font-size: 40px; line-height: 1.0; letter-spacing: -0.02em; color: #221913; margin: 4px 0 0; }"
+    },
+    {
+      "name": "Kabiyè Key",
+      "kind": "key",
+      "refersTo": "kabiye-key",
+      "description": "A key on the Kabiyè keyboard. 8px radius -- keys are the one thing in the system smaller than a card radius.",
+      "html": "<button class=\"ds-key\">ɖ</button>",
+      "css": ".ds-key { background: #FFFFFF; border: 1px solid #D9CDB9; border-radius: 8px; padding: 10px 14px; font-family: 'Andika', system-ui, sans-serif; font-weight: 700; font-size: 24px; color: #221913; } .ds-key:active { background: #EADFCD; }"
     },
     {
       "name": "Bottom Tab Bar",
       "kind": "nav",
       "refersTo": null,
-      "description": "Five destinations, icon over label, an accent rule above the active item.",
+      "description": "Ink from edge to edge in both themes, icon over label, the active destination in paper and the rest in a held-back paper.",
       "html": "<nav class=\"ds-tabs\"><a class=\"ds-tab ds-tab-active\" href=\"#\"><svg width=\"22\" height=\"22\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\"><path d=\"M9 21h6M12 3a6 6 0 0 1 4 10.5V16H8v-2.5A6 6 0 0 1 12 3z\"/></svg><span>Home</span></a><a class=\"ds-tab\" href=\"#\"><svg width=\"22\" height=\"22\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\"><path d=\"M3 5h7v14H3zM14 5h7v14h-7z\"/></svg><span>Learn</span></a><a class=\"ds-tab\" href=\"#\"><svg width=\"22\" height=\"22\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\"><path d=\"M4 5h16v14H4zM7 9h10M7 13h10\"/></svg><span>Dictionary</span></a></nav>",
-      "css": ".ds-tabs { display: flex; background: #F5F3F7; border-top: 1px solid #E0DCE6; } .ds-tab { flex: 1; display: flex; flex-direction: column; align-items: center; gap: 4px; padding: 8px 0 12px; color: #6E6B7B; text-decoration: none; font-family: 'Figtree', system-ui, sans-serif; font-size: 12px; position: relative; } .ds-tab-active { color: #6200EE; } .ds-tab-active::before { content: ''; position: absolute; top: 0; left: 25%; right: 25%; height: 2px; background: #6200EE; border-radius: 9999px; }"
-    },
-    {
-      "name": "Kabiyè Key",
-      "kind": "custom",
-      "refersTo": null,
-      "description": "A key from the built-in Kabiyè keyboard. Letters absent from French are tinted so they stand out.",
-      "html": "<div class=\"ds-keys\"><button class=\"ds-key\">a</button><button class=\"ds-key ds-key-kbp\">ɖ</button><button class=\"ds-key ds-key-kbp\">ɛ</button><button class=\"ds-key\">f</button></div>",
-      "css": ".ds-keys { display: flex; gap: 4px; } .ds-key { background: #ffffff; color: #1E1B2E; font-family: 'Andika', system-ui, sans-serif; font-weight: 400; font-size: 16px; min-width: 32px; height: 35px; border: none; border-radius: 8px; } .ds-key-kbp { background: rgba(98,0,238,0.15); color: #6200EE; } .ds-key:active { background: #EDE9F0; }"
+      "css": ".ds-tabs { display: flex; background: #221913; } .ds-tab { flex: 1; display: flex; flex-direction: column; align-items: center; gap: 4px; padding: 8px 0 12px; color: rgba(244,235,221,0.7); text-decoration: none; font-family: 'Bricolage Grotesque', system-ui, sans-serif; font-size: 12px; } .ds-tab-active { color: #F4EBDD; }"
     }
   ],
   "narrative": {
     "northStar": "The Pocket Primer",
-    "overview": "A well-made teaching book that happens to be a phone. The page is calm and the word is the hero: a soft lavender-grey ground, white leaves laid on it, and one confident purple reserved for the places where the reader acts. Nothing decorative competes with the language itself, because for a large part of this audience the letterforms are the lesson — they are learning to read ɖ, ɛ, ɣ, ɩ, ɔ and ʋ for the first time.\n\nThe system is deliberately quiet. It has one accent, no gradients, no shadows, and no illustration. Its only real ornament is the type: the interface speaks one voice and the Kabiyè language speaks another, and that distinction does more identity work than any decoration could. Density is generous rather than efficient — this is a primer to sit with, not a dashboard to scan.\n\nDark mode is a genuine second theme, not an inversion. The ground deepens to a blue-black and the accent lifts to a lighter violet so it keeps its authority against it.",
+    "overview": "A well-made teaching book that happens to be a phone. The page is calm and the word is the hero: bone paper, ink, and the red earth of Kara kept for the places where the reader acts and for the letters French cannot write. Nothing decorative competes with the language itself, because for a large part of this audience the letterforms *are* the lesson -- they are learning to read ɖ, ɛ, ɣ, ɩ, ɔ and ʋ for the first time. The system is deliberately quiet: one accent, no gradients, no shadows, no illustration. Its only real ornament is the type, because the interface speaks one voice and the Kabiyè language speaks another, and that distinction does more identity work than any decoration could. Density is generous rather than efficient -- this is a primer to sit with, not a dashboard to scan. Dark mode is a genuine second theme rather than an inversion: ink becomes the ground and laterite lifts to #E07A55 so it keeps its authority against it.",
     "keyCharacteristics": [
-      "One accent, used only where the reader acts",
-      "Two typefaces with one job each: interface and language",
-      "Flat by tone — no shadows anywhere in the system",
+      "One accent, used only where the reader acts or where the language is Kabiyè",
+      "Two typefaces with one job each: Bricolage Grotesque for the interface, Andika for Kabiyè",
+      "Flat by tone -- no shadows anywhere in the system",
       "Generous vertical rhythm; the Kabiyè word is always the largest thing in its block",
       "Fully paired light and dark palettes, both first-class"
     ],
     "rules": [
-      { "name": "The One Accent Rule", "body": "There is exactly one accent, and it means 'act here' or 'this is Kabiyè'. If a new colour seems necessary, the answer is a tonal step, not a new hue.", "section": "colors" },
-      { "name": "The Feedback-Only Rule", "body": "Green and red never appear outside answer feedback. They are not status colours, not decoration, and not a palette to draw from.", "section": "colors" },
-      { "name": "The Two Voices Rule", "body": "Figtree is the interface. Andika is the language. No text is ever set in a face that cannot draw its own letters.", "section": "typography" },
-      { "name": "The Declared Kabiyè Rule", "body": "Text picks its face from its content automatically, but any field the data model guarantees is Kabiyè must say so explicitly. Detection alone leaves words built only from shared letters — caa, afa, pili — in the interface face, sitting visibly wrong beside their neighbours.", "section": "typography" },
-      { "name": "The Flat Rule", "body": "No box-shadow anywhere. If a surface needs to feel raised, move it a tonal step, not a shadow. A drop shadow introduced here would be the only one in the app and would read as a mistake.", "section": "elevation" }
+      {
+        "name": "The One Accent Rule",
+        "body": "There is exactly one accent -- laterite -- and it means 'act here' or 'this is Kabiyè'. If a new colour seems necessary, the answer is a tonal step or a border, not a new hue.",
+        "section": "colors"
+      },
+      {
+        "name": "The Ink Button Rule",
+        "body": "The filled button is ink, not the accent. Laterite is spent on the hero glyph, the section label and the one primary action per screen; a screen full of laterite buttons spends it on nothing.",
+        "section": "components"
+      },
+      {
+        "name": "The Laterite Size Floor",
+        "body": "Laterite passes 4.5:1 on paper only at >= 24px, or bold >= 19px. Body text is therefore always ink and never laterite.",
+        "section": "colors"
+      },
+      {
+        "name": "The Feedback-Only Rule",
+        "body": "There is no green and no red. Correct fills with ink; wrong is a laterite strikethrough with the correct answer beneath and an explanation. A learner should not have to know a colour code to read their own mistake.",
+        "section": "colors"
+      },
+      {
+        "name": "The Two Voices Rule",
+        "body": "Every Kabiyè string is Andika and every interface string is Bricolage Grotesque. The interface face draws only 4 of the 16 letters Kabiyè needs, so a Kabiyè word set in it splits across two typefaces mid-grapheme. utils/kabiye-script.ts routes this and __tests__/kabiye-font-coverage.test.ts reads the shipped binaries and fails if the next face moves the line.",
+        "section": "typography"
+      },
+      {
+        "name": "The Ink Screen Rule",
+        "body": "Screens that are ink from edge to edge use surface-ink / on-surface-ink, not bg-foreground / text-background. The latter swap with the theme, so an ink screen built from them inverts into a bright paper screen the moment the app goes dark.",
+        "section": "colors"
+      }
     ],
     "dos": [
       "Do set every Kabiyè string in Andika, and add `kabiye` to the Text explicitly wherever the field is known to be Kabiyè.",
-      "Do separate surfaces with the tonal steps (Recessed → Paper → Leaf).",
-      "Do reserve Electric Violet for actions and for the Kabiyè language.",
-      "Do define both theme values for any new colour, and check text at 4.5:1 in each.",
-      "Do show nothing where content does not exist. An absent speaker icon is correct; a speaker icon that plays the wrong sound is a defect.",
-      "Do keep the primary action pinned in the same place on every lesson step."
+      "Do separate surfaces with the tonal steps (recessed -> paper -> leaf) or with a border.",
+      "Do reserve laterite for the hero glyph, section labels, the one primary action per screen, and the Kabiyè letters French cannot write.",
+      "Do fill the primary button with ink, and use the inverse button on an ink screen.",
+      "Do let a Kabiyè word wrap rather than shrink; 44px is the ceiling, not a target.",
+      "Do pair every colour you add across both themes at once."
     ],
     "donts": [
       "Don't add a box-shadow. There are none, and one would be conspicuous.",
-      "Don't introduce a second accent hue. Reach for a tonal step instead.",
-      "Don't use green or red for anything except answer feedback.",
-      "Don't hardcode a colour that differs between themes — take it from the theme hook.",
-      "Don't let Figtree render Kabiyè. It cannot draw ɖ Ɖ ɛ Ɛ ɣ Ɣ ɩ Ɩ ɔ Ɔ ʋ Ʋ, and the OS fallback splits words across two typefaces.",
-      "Don't enable autocorrect on any field that accepts Kabiyè."
+      "Don't introduce a second accent hue. Reach for a tonal step or a border instead.",
+      "Don't use green or red for anything, including answer feedback.",
+      "Don't set body text in laterite -- it fails contrast below 24px, or bold 19px.",
+      "Don't hardcode a colour that differs between themes; use the semantic token.",
+      "Don't give letter *type* (grapheme / vowel / consonant / indication) its own colours; the label under each tile already makes that distinction."
     ]
   }
 }

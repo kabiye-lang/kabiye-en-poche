@@ -14,7 +14,6 @@ const buttonVariants = tv({
   variants: {
     variant: {
       primary: 'bg-primary active:bg-primary/90',
-      secondary: 'bg-secondary active:bg-secondary/90',
       accent: 'bg-accent active:bg-accent/90',
       // The primary button on an ink screen. "One primary per screen, ink fill" holds
       // everywhere except on ink itself, where an ink button is invisible -- the Spot
@@ -56,7 +55,6 @@ const textVariants = tv({
   variants: {
     variant: {
       primary: 'text-white',
-      secondary: 'text-white',
       accent: 'text-white',
       inverse: 'text-surface-ink',
       outline: 'text-primary',

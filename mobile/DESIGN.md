@@ -13,6 +13,10 @@ colors:
   # Passes 4.5:1 on paper only at >= 24px, or bold >= 19px. Hero glyphs, section labels,
   # and the one primary action per screen. Never body text.
   laterite: "#C4451C"
+  # The two edge-to-edge ink screens (onboarding question, Spot the letter). Held apart
+  # from ink/paper because those swap with the theme -- see "The ink screen" below.
+  surface-ink: "#221913"
+  on-surface-ink: "#F4EBDD"
   night-paper: "#221913"
   night-recessed: "#2E241C"
   night-tabbar: "#160F0B"
@@ -97,46 +101,64 @@ spacing:
   lg: "24px"
   xl: "32px"
 components:
+  # Every button is a pill; 14-20px is for cards and 8px for keys. The filled button is
+  # ink -- the accent is spent on the hero glyph, the section label and the one primary
+  # action per screen.
   button-primary:
-    backgroundColor: "{colors.primary}"
-    textColor: "#ffffff"
-    rounded: "{rounded.lg}"
-    padding: "12px 16px"
+    backgroundColor: "{colors.ink}"
+    textColor: "{colors.paper}"
+    rounded: "{rounded.pill}"
+    padding: "16px 24px"
   button-outline:
     backgroundColor: "transparent"
-    textColor: "{colors.primary}"
-    rounded: "{rounded.lg}"
-    padding: "12px 16px"
+    textColor: "{colors.ink}"
+    border: "{borders.outlined}"
+    rounded: "{rounded.pill}"
+    padding: "16px 24px"
   button-ghost:
     backgroundColor: "transparent"
-    textColor: "{colors.primary}"
-    rounded: "{rounded.md}"
-    padding: "8px 12px"
+    textColor: "{colors.ink}"
+    rounded: "{rounded.pill}"
+    padding: "8px 18px"
+  # The primary button on an ink screen, where an ink fill is invisible.
+  button-inverse:
+    backgroundColor: "{colors.on-surface-ink}"
+    textColor: "{colors.surface-ink}"
+    rounded: "{rounded.pill}"
+    padding: "16px 24px"
   card:
     backgroundColor: "{colors.leaf}"
     textColor: "{colors.ink}"
-    rounded: "{rounded.xl}"
+    rounded: "{rounded.card-lg}"
     padding: "16px"
   card-filled:
-    backgroundColor: "{colors.recessed}"
+    backgroundColor: "{colors.paper-recessed}"
     textColor: "{colors.ink}"
-    rounded: "{rounded.xl}"
+    rounded: "{rounded.card}"
+    padding: "16px"
+  card-outlined:
+    backgroundColor: "transparent"
+    textColor: "{colors.ink}"
+    border: "{borders.outlined}"
+    rounded: "{rounded.card}"
     padding: "16px"
   input:
-    backgroundColor: "{colors.recessed}"
+    backgroundColor: "{colors.paper-recessed}"
     textColor: "{colors.ink}"
-    rounded: "{rounded.xl}"
-    padding: "10px"
+    rounded: "{rounded.card}"
+    padding: "14px"
+  # Difficulty is not colour-coded: every level is the same recessed chip. The word in
+  # it is the distinction.
   chip-difficulty:
-    backgroundColor: "{colors.correct-bg}"
-    textColor: "{colors.correct-ink}"
+    backgroundColor: "{colors.paper-recessed}"
+    textColor: "{colors.ink}"
     rounded: "{rounded.pill}"
     padding: "4px 12px"
   language-tag:
-    backgroundColor: "{colors.recessed}"
+    backgroundColor: "{colors.paper-recessed}"
     textColor: "{colors.ink-quiet}"
     rounded: "4px"
-    padding: "2px 6px"
+    padding: "2px 8px"
 ---
 
 # Design System: Kabiyè en Poche
