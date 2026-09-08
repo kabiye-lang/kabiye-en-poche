@@ -20,14 +20,6 @@ import {
 } from './use-units'
 
 // Units
-/**
- * Lessons the curriculum plans, whether or not they have content yet.
- *
- * Stated wherever the app admits a gap -- Profile's progress tile and the "not written
- * yet" state. A learner is entitled to know how much of the path exists before they
- * plan around it.
- */
-export const PLANNED_LESSONS = 78
 
 export function useAppUnits() {
   return useUnits()

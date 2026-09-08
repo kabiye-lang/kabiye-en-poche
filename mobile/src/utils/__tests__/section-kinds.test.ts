@@ -1,4 +1,4 @@
-import { dialogueTurns, placeSections, sectionKind } from '../section-kinds'
+import { dialogueTurns, placeSections, sectionKind, sectionSentences } from '../section-kinds'
 
 describe('sectionKind', () => {
   it('trusts the kind the generator set', () => {
@@ -41,5 +41,31 @@ describe('dialogueTurns', () => {
   it('keeps only examples with Kabiyè', () => {
     const turns = dialogueTurns({ examples: [{ kbp: 'Ɖoɖoo', en: 'Good morning' }, { kbp: '', en: 'x' }, null] })
     expect(turns.map((t) => t.kbp)).toEqual(['Ɖoɖoo'])
+  })
+})
+
+describe('sectionSentences', () => {
+  const ex = (kbp: string) => ({ kbp, en: '', fr: '', pronunciation: '', lexeme_id: kbp })
+  const section = {
+    kind: 'prose',
+    examples: [
+      ex('tɛɛ'),
+      ex('Nakaa wɛ tɩʋ tɛɛ.'), // uses tɛɛ
+      ex('Sukuli wɛ cɩɖɩ cɩɖɩ.'), // the clean school: not this section's
+      ex('Nakaa kɛ halʋ.'), // kɛʋ, conjugated
+      ex('Ɛwɛ ɖɩɣa wayɩ.'),
+    ],
+  }
+
+  it('keeps only the sentences that use one of the words the section taught', () => {
+    expect(sectionSentences(section, ['tɛɛ', 'kɛʋ']).map((e) => e.kbp)).toEqual(['Nakaa wɛ tɩʋ tɛɛ.', 'Nakaa kɛ halʋ.'])
+  })
+
+  it('single words are not sentences', () => {
+    expect(sectionSentences(section, ['tɛɛ']).some((e) => e.kbp === 'tɛɛ')).toBe(false)
+  })
+
+  it('a section that taught no word shows its first sentences as they are, a few at most', () => {
+    expect(sectionSentences(section, []).length).toBe(4)
   })
 })

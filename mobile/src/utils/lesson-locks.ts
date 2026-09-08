@@ -29,3 +29,35 @@ export function lockStates(lessons: LockableLesson[], completed: Set<string>): b
     return locked
   })
 }
+
+export interface PathUnit {
+  id: string
+  status: 'available' | 'coming_soon' | 'maintenance' | 'disabled' | null
+}
+
+/**
+ * The one lesson to resume from.
+ *
+ * Walk the units in the learner's order and return the first open, unlocked lesson they
+ * have not finished. It used to be computed in SQL from "the lesson after the last one
+ * completed", which knows nothing about the learner's path -- so Home said "continue
+ * with the alphabet" while Learn, sorted for a beginner, put greetings first. Both now
+ * ask this function with the same ordered units.
+ *
+ * A unit that is not open contributes nothing: its lessons cannot be opened from Learn,
+ * so they cannot be the place to resume either.
+ */
+export function nextLesson<L extends LockableLesson & { unit_id: string; position: number }>(
+  orderedUnits: PathUnit[],
+  lessons: L[],
+  completed: Set<string>
+): L | null {
+  for (const unit of orderedUnits) {
+    if (unit.status !== 'available' && unit.status !== null) continue
+    const inUnit = lessons.filter((lesson) => lesson.unit_id === unit.id).sort((a, b) => a.position - b.position)
+    const locks = lockStates(inUnit, completed)
+    const found = inUnit.find((lesson, i) => !locks[i] && !completed.has(lesson.id))
+    if (found) return found
+  }
+  return null
+}

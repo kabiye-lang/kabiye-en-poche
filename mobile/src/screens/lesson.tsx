@@ -30,7 +30,6 @@ import {
 } from '../components/lesson-steps'
 import { Skeleton, SkeletonRows, Text, View } from '../components/ui'
 import {
-  PLANNED_LESSONS,
   useAppCompleteLesson,
   useAppLesson,
   useAppLessonActivities,
@@ -42,7 +41,7 @@ import { useMyWords } from '../hooks/use-my-words'
 import { hasActivity } from '../types/lesson-steps'
 import { usableAudioUrl } from '../utils/audio-source'
 import { spellingVariants } from '../utils/kabiye-variants'
-import { dialogueTurns, placeSections } from '../utils/section-kinds'
+import { dialogueTurns, placeSections, sectionSentences } from '../utils/section-kinds'
 
 /**
  * Whether an activity has enough data to be answered.
@@ -169,13 +168,15 @@ const LessonScreen = () => {
    * few single words -- readable, and visibly thinner than a lesson written for this
    * shape, which is the honest signal that it should be regenerated.
    */
-  const words = useMemo<LessonExample[]>(() => {
-    if (!contents) return []
+  const { words, sectionOf } = useMemo(() => {
+    const sectionOf = new Map<LessonExample, number>()
+    if (!contents) return { words: [] as LessonExample[], sectionOf }
     const seen = new Set<string>()
     const all: LessonExample[] = []
     // A dialogue's turns and a note's text are not words to teach; only prose sections
-    // carry the noted examples the cover promises.
-    for (const content of placeSections(contents).prose) {
+    // carry the noted examples the cover promises. Each word remembers its section, so
+    // the section's rule can follow the words it is about.
+    placeSections(contents).prose.forEach((content, index) => {
       for (const raw of (content.examples as LessonExample[] | null) ?? []) {
         const kbp = raw?.kbp?.trim()
         // A phrase built from words taught earlier is an example, not a new word: it
@@ -183,10 +184,11 @@ const LessonScreen = () => {
         if (!kbp || seen.has(kbp) || kbp.includes(' ')) continue
         seen.add(kbp)
         all.push(raw)
+        sectionOf.set(raw, index)
       }
-    }
+    })
     const authored = all.filter((word) => word.note?.en || word.note?.fr)
-    return authored.length > 0 ? authored : all.slice(0, MAX_TAUGHT_WORDS)
+    return { words: authored.length > 0 ? authored : all.slice(0, MAX_TAUGHT_WORDS), sectionOf }
   }, [contents])
 
   /**
@@ -239,7 +241,7 @@ const LessonScreen = () => {
       return undefined
     }
 
-    for (const word of words) {
+    const teach = (word: LessonExample) => {
       built.push({ id: `teach-${word.kbp}`, type: 'teach', order: order++, example: word })
 
       const paired = answerable.find((activity) => {
@@ -257,6 +259,32 @@ const LessonScreen = () => {
         })
       }
     }
+
+    // Section by section: its words, each taught and tried, then the section's rule --
+    // the prose the generator was asked to write, with the sentences that use those
+    // words. Concrete before abstract: the learner has held taa and yɔɔ one at a time
+    // before reading that place words follow the noun. Words no section claims (content
+    // written before sections existed) are taught first, on their own.
+    const prose = placed.prose
+    for (const word of words) if (!sectionOf.has(word)) teach(word)
+    prose.forEach((section, index) => {
+      const own = words.filter((word) => sectionOf.get(word) === index)
+      for (const word of own) teach(word)
+      const rule = getValue(section, 'content')?.trim()
+      if (rule) {
+        built.push({
+          id: `rule-${index}`,
+          type: 'content',
+          order: order++,
+          title: getValue(section, 'title') || undefined,
+          content: rule,
+          examples: sectionSentences(
+            section,
+            own.map((word) => word.kbp)
+          ),
+        })
+      }
+    })
 
     for (const activity of answerable) {
       if (claimed.has(activity.id)) continue
@@ -390,11 +418,12 @@ const LessonScreen = () => {
   }
 
   // Not written yet, rather than broken. The direction's rule for an empty state is that
-  // it names what still works: seven of seventy-eight lessons are written, and that is a
+  // it names what still works: eighteen of the map's lessons are written, and that is a
   // fact about the curriculum a learner is entitled to before they plan around it.
   const isLessonAvailable = lesson?.status === 'available' || lesson?.status === null
   if (lesson && !isLessonAvailable) {
     const written = progressSummary?.totalLessons ?? 0
+    const planned = progressSummary?.plannedLessons ?? written
     const isPending = lesson.status === 'coming_soon'
 
     return (
@@ -407,7 +436,7 @@ const LessonScreen = () => {
           }
           body={
             written > 0
-              ? t`${written} of ${PLANNED_LESSONS} planned lessons have content. This one is on the list.`
+              ? t`${written} of ${planned} planned lessons have content. This one is on the list.`
               : t`This one is on the list.`
           }
           actions={[{ label: t`Back to path`, onPress: () => router.back(), primary: true }]}
@@ -534,16 +563,18 @@ const LessonScreen = () => {
         ) : null}
 
         {currentStep.type === 'notes' ? (
-          <ContentStep title={currentStep.title} content={currentStep.content} onContinue={handleStepComplete} />
+          <ContentStep
+            eyebrow={t`Culture`}
+            title={currentStep.title}
+            content={currentStep.content}
+            onContinue={handleStepComplete}
+          />
         ) : null}
 
         {currentStep.type === 'content' ? (
           <ContentStep
-            // Only the opening slide carries the lesson title and difficulty. It used to
-            // repeat on every content step and then disappear for the activities, so the
-            // heaviest type on the screen was the one thing that had not changed.
-            lessonTitle={currentStep.id === 'content-0' ? getValue(lesson, 'title') || undefined : undefined}
-            difficulty={currentStep.id === 'content-0' ? lesson?.difficulty : undefined}
+            // The cover carries the lesson title; a rule step carries only its own.
+            eyebrow={t`How it works`}
             title={currentStep.title}
             content={currentStep.content}
             examples={currentStep.examples}

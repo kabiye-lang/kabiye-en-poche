@@ -1,4 +1,3 @@
-import { lockStates } from '../utils/lesson-locks'
 import type {
   AlphabetLetter,
   CmsPage,
@@ -13,7 +12,9 @@ import type { LocalProgress } from '../utils/local-storage'
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 
 import { supabase } from '../lib/supabase'
+import { lockStates, nextLesson } from '../utils/lesson-locks'
 import { localProgressStorage } from '../utils/local-storage'
+import { orderUnitsForPath, usePath } from './use-path'
 
 // Query keys
 export const unitKeys = {
@@ -192,85 +193,26 @@ export function useUserProgress() {
 
 // Get next lesson to continue
 export function useNextLesson() {
+  // The path is part of the key: a new path is a new question, answered fresh, with no
+  // invalidation to remember. Until the stored path has been read there is no answer to
+  // give -- a lesson from the default order would only be replaced a moment later.
+  const { path, isLoading } = usePath()
   return useQuery({
-    queryKey: ['next-lesson'],
+    queryKey: ['next-lesson', path],
+    enabled: !isLoading,
     queryFn: async () => {
-      const completedLessonIds = await localProgressStorage.getCompletedLessonIds()
+      // 235 lessons is one small request; picking the next one here, in the learner's unit
+      // order, keeps Home's "continue" card and Learn's ink card on the same lesson.
+      const [unitsResult, lessonsResult, completedIds] = await Promise.all([
+        supabase.from('units').select('*').order('position', { ascending: true }),
+        supabase.from('lessons').select('*').order('position', { ascending: true }),
+        localProgressStorage.getCompletedLessonIds(),
+      ])
+      if (unitsResult.error) throw unitsResult.error
+      if (lessonsResult.error) throw lessonsResult.error
 
-      if (!completedLessonIds.length) {
-        // If no lessons completed, get the first lesson of the first unit
-        const { data: firstUnit } = await supabase
-          .from('units')
-          .select('id')
-          .eq('status', 'available')
-          .order('position', { ascending: true })
-          .limit(1)
-          .single()
-
-        if (firstUnit) {
-          const { data: firstLesson } = await supabase
-            .from('lessons')
-            .select('*')
-            .eq('unit_id', firstUnit.id)
-            .or('status.eq.available,status.is.null')
-            .order('position', { ascending: true })
-            .limit(1)
-            .single()
-
-          return firstLesson
-        }
-        return null
-      }
-
-      // Find the next incomplete lesson
-      const lastCompletedLessonId = completedLessonIds[completedLessonIds.length - 1]
-
-      const { data: lastLesson } = await supabase
-        .from('lessons')
-        .select('unit_id, position')
-        .eq('id', lastCompletedLessonId)
-        .single()
-
-      if (lastLesson) {
-        const { data: nextLesson } = await supabase
-          .from('lessons')
-          .select('*')
-          .eq('unit_id', lastLesson.unit_id)
-          .gt('position', lastLesson.position)
-          .or('status.eq.available,status.is.null')
-          .order('position', { ascending: true })
-          .limit(1)
-          .single()
-
-        if (nextLesson) {
-          return nextLesson
-        }
-
-        // If no more lessons in current unit, get first lesson of next unit
-        const { data: nextUnit } = await supabase
-          .from('units')
-          .select('id')
-          .eq('status', 'available')
-          .gt('position', lastLesson.unit_id)
-          .order('position', { ascending: true })
-          .limit(1)
-          .single()
-
-        if (nextUnit) {
-          const { data: firstLessonOfNextUnit } = await supabase
-            .from('lessons')
-            .select('*')
-            .eq('unit_id', nextUnit.id)
-            .or('status.eq.available,status.is.null')
-            .order('position', { ascending: true })
-            .limit(1)
-            .single()
-
-          return firstLessonOfNextUnit
-        }
-      }
-
-      return null
+      const ordered = orderUnitsForPath(unitsResult.data ?? [], path)
+      return nextLesson(ordered, lessonsResult.data ?? [], new Set(completedIds))
     },
   })
 }
@@ -290,6 +232,10 @@ export function useProgressSummary() {
         .in('unit_id', units?.map((u) => u.id) || [])
         .or('status.eq.available,status.is.null')
 
+      // Every lesson on the map, written or not. The five-level map holds all of them as
+      // rows, so the count comes from the table rather than a constant that goes stale.
+      const { count: plannedLessons } = await supabase.from('lessons').select('id', { count: 'exact', head: true })
+
       const totalUnits = units?.length || 0
       const totalLessons = lessons?.length || 0
       const completedLessons = completedLessonIds.length
@@ -306,6 +252,7 @@ export function useProgressSummary() {
       return {
         totalUnits,
         totalLessons,
+        plannedLessons: plannedLessons ?? totalLessons,
         completedUnits,
         completedLessons,
         progressPercentage,

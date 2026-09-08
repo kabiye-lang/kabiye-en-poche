@@ -8,7 +8,7 @@ import { toast } from 'sonner-native'
 
 import { ArrowUpRightIcon, CaretRightIcon } from '../components/icons'
 import { Text, View } from '../components/ui'
-import { PLANNED_LESSONS, useAppProgressSummary, useAppResetProgress } from '../hooks/use-app-data'
+import { useAppProgressSummary, useAppResetProgress } from '../hooks/use-app-data'
 import { nextAppearance, useAppearance } from '../hooks/use-appearance'
 import { useMyWords } from '../hooks/use-my-words'
 import { usePath } from '../hooks/use-path'
@@ -161,8 +161,8 @@ const ProfileScreen = () => {
           <View className="border-foreground mb-8 rounded-[14px] border-[1.5px] p-4">
             <Text className="text-foreground text-[17px]">
               {t`${progressSummary.completedLessons} of ${progressSummary.totalLessons} lessons`}
-              {PLANNED_LESSONS > progressSummary.totalLessons
-                ? ` · ${t`${PLANNED_LESSONS - progressSummary.totalLessons} more planned`}`
+              {progressSummary.plannedLessons > progressSummary.totalLessons
+                ? ` · ${t`${progressSummary.plannedLessons - progressSummary.totalLessons} more planned`}`
                 : ''}
             </Text>
             <View className="mt-3 flex-row gap-[3px]">

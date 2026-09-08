@@ -1,160 +1,78 @@
-import { Pressable, ScrollView } from 'react-native'
+import type { LessonExample } from '../../types/lesson-steps'
+
+import { ScrollView } from 'react-native'
 
 import { useLingui } from '@lingui/react/macro'
 
-import { useAudio } from '../../hooks/use-audio'
-import { hasUsableAudio, usableAudioUrl } from '../../utils/audio-source'
-import { getDifficultyBgClass, getDifficultyLabel, getDifficultyTextClass } from '../../utils/difficulty'
-import { SpeakerHighIcon } from '../icons'
-import { Button, Card, Text, View } from '../ui'
-
-interface Example {
-  kbp: string
-  en: string
-  fr: string
-  pronunciation?: string
-  audio_url?: string
-}
+import { useLanguage } from '../../hooks/use-language'
+import { Button, Text, View } from '../ui'
 
 interface ContentStepProps {
-  lessonTitle?: string
+  /** The small label above the title: what kind of reading this is. */
+  eyebrow: string
   title?: string
-  difficulty?: 'beginner' | 'intermediate' | 'advanced'
   content: string
-  examples?: unknown // Raw examples from database
+  /** Sentences shown under the text -- for a rule step, the ones that use its words. */
+  examples?: LessonExample[]
   onContinue: () => void
 }
 
-const ContentStep = ({
-  lessonTitle,
-  title,
-  difficulty,
-  content,
-  examples: rawExamples,
-  onContinue,
-}: ContentStepProps) => {
+/**
+ * A page of reading inside the lesson: a section's rule after the words it taught, or
+ * the cultural notes before the finish.
+ *
+ * It used to be the pre-Laterite content card -- a grey box, the old type scale, the
+ * lesson title repeated on top -- and for a while no step used it at all, so the
+ * grammar prose was written and never shown. Now it is set like the Teach card: an
+ * eyebrow, the title, the text at reading size, a rule, and the sentences as plain
+ * rows. No audio control: there are no recordings, and absence beats a stand-in.
+ */
+const ContentStep = ({ eyebrow, title, content, examples, onContinue }: ContentStepProps) => {
   const { t } = useLingui()
-  const { playAudio } = useAudio()
+  const { currentLanguage } = useLanguage()
 
-  // Transform raw examples from database into typed format
-  const examples: Example[] | undefined = rawExamples
-    ? Array.isArray(rawExamples)
-      ? rawExamples.map((ex: Record<string, unknown>) => ({
-          kbp: (ex.kbp as string) || '',
-          en: (ex.en as string) || '',
-          fr: (ex.fr as string) || '',
-          pronunciation: ex.pronunciation as string | undefined,
-          audio_url: usableAudioUrl(ex.audio_url as string | undefined),
-        }))
-      : []
-    : undefined
-
-  const anyExampleHasAudio = hasUsableAudio(examples?.map((e) => e.audio_url) ?? [])
-
-  const difficultyLabel = difficulty ? getDifficultyLabel(difficulty) : undefined
-
-  const difficultyBgClass = difficulty ? getDifficultyBgClass(difficulty) : ''
-  const difficultyTextClass = difficulty ? getDifficultyTextClass(difficulty) : ''
-
-  const handlePlayAudio = (audioUrl: string) => {
-    if (audioUrl) {
-      playAudio(audioUrl)
-    }
-  }
+  const sentences = (examples ?? []).filter((e) => e?.kbp?.trim())
 
   return (
-    <View className="flex-1">
-      <ScrollView className="flex-1 px-6" showsVerticalScrollIndicator={false}>
-        {/* Lesson Header */}
-        {(lessonTitle || difficulty) && (
-          <View className="mt-4 mb-6">
-            {title && (
-              <Text variant="h3" weight="bold" className="text-primary mb-2">
-                {lessonTitle}
-              </Text>
-            )}
-            {difficulty && (
-              <View className="flex-row items-center">
-                <View className={`rounded-full px-3 py-1 ${difficultyBgClass}`}>
-                  <Text variant="caption" weight="semibold" className={difficultyTextClass}>
-                    {difficultyLabel}
-                  </Text>
-                </View>
-              </View>
-            )}
-          </View>
-        )}
+    <View className="bg-background flex-1">
+      <ScrollView contentContainerClassName="px-6 pb-8 pt-8" showsVerticalScrollIndicator={false}>
+        <Text className="text-accent text-[13px] font-semibold uppercase tracking-[0.1em]">{eyebrow}</Text>
 
-        {/* Main Content */}
-        <Card className="mb-4 p-6">
-          <Text variant="h6" weight="bold" className="text-foreground mb-4">
+        {title ? (
+          <Text weight="semibold" className="text-foreground mt-3 text-[26px] leading-[1.15]">
             {title}
           </Text>
-          <Text variant="lg" className="text-foreground leading-7">
-            {content}
-          </Text>
-        </Card>
+        ) : null}
 
-        {/* Examples */}
-        {examples && examples.length > 0 && (
-          <View className="mb-6">
-            <Text variant="h5" weight="semibold" className="text-primary mb-3">
-              {t`Examples`}
-            </Text>
-            {anyExampleHasAudio && (
-              <Text variant="caption" className="text-foreground mb-2">
-                {t`Tap the speaker icon to hear pronunciation`}
-              </Text>
-            )}
-            {examples.map((example, index) => {
-              const hasAudio = !!example.audio_url
-              const ExampleWrapper = hasAudio ? Pressable : View
+        <Text className="text-foreground mt-5 text-[17px] leading-[1.55]">{content}</Text>
 
+        {sentences.length > 0 ? (
+          <View className="mt-8">
+            <View className="border-foreground border-t-[1.5px]" />
+            {sentences.map((example, index) => {
+              const gloss = currentLanguage === 'fr' ? example.fr || example.en : example.en || example.fr
               return (
-                <ExampleWrapper
-                  key={index}
-                  {...(hasAudio
-                    ? {
-                        onPress: () => handlePlayAudio(example.audio_url!),
-                      }
-                    : {})}
-                >
-                  <Card className="bg-background-tertiary mb-3 flex-row items-center p-4">
-                    <View className="flex-1">
-                      <Text kabiye variant="h6" weight="bold" className="text-primary">
-                        {example.kbp}
-                      </Text>
-                      <Text variant="body" className="text-foreground mt-1">
-                        {example.en}
-                      </Text>
-                      {example.pronunciation && (
-                        <Text variant="caption" className="text-foreground-secondary mt-1 italic">
-                          [{example.pronunciation}]
-                        </Text>
-                      )}
-                    </View>
-                    {hasAudio && (
-                      <View className="ml-3">
-                        <SpeakerHighIcon size={24} weight="fill" className="text-primary" />
-                      </View>
-                    )}
-                  </Card>
-                </ExampleWrapper>
+                <View key={`${example.kbp}-${index}`} className="border-border border-b py-4">
+                  <Text kabiye weight="bold" className="text-foreground text-[22px] leading-[1.2]">
+                    {example.kbp}
+                  </Text>
+                  {gloss ? <Text className="text-foreground mt-1 text-[16px] leading-[1.4]">{gloss}</Text> : null}
+                  {example.pronunciation ? (
+                    // The generator writes the brackets itself ("[tɛɛ́]").
+                    <Text kabiye className="text-foreground-secondary mt-1 text-[14px]">
+                      {example.pronunciation}
+                    </Text>
+                  ) : null}
+                </View>
               )
             })}
           </View>
-        )}
-
-        {/* Add some bottom padding */}
-        <View className="h-24" />
+        ) : null}
       </ScrollView>
 
-      {/* Bottom Continue Button */}
-      <View className="border-border bg-card border-t px-6 py-4">
-        <Button variant="primary" onPress={onContinue} className="w-full">
-          <Text variant="body" weight="bold" className="text-white">
-            {t`Continue`}
-          </Text>
+      <View className="px-6 pb-8">
+        <Button variant="primary" onPress={onContinue}>
+          {t`Continue`}
         </Button>
       </View>
     </View>
