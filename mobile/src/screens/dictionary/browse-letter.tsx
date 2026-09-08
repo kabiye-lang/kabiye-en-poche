@@ -25,13 +25,15 @@ const KABIYE_ONLY = 'ɖɛɣɩŋɔʋñ'
  */
 const BrowseByLetterScreen: React.FC = () => {
   const { letter } = useLocalSearchParams<{ letter: string }>()
-  const current = letter || ''
+  // The alphabet is folded to one case, so a link that arrives capitalised -- a deep
+  // link, or an old route -- lands on the same tile rather than an empty screen.
+  const current = (letter || '').toLowerCase()
   const { t } = useLingui()
   const { currentLanguage } = useLanguage()
   const listRef = useRef<FlatList<DictionaryEntry>>(null)
 
   const { data, isLoading, error, fetchNextPage, hasNextPage, isFetchingNextPage } = useEntriesByLetter(current)
-  const { data: total } = useLetterCount(current)
+  const total = useLetterCount(current)
   const { data: letters } = useAvailableLetters()
 
   const entries = useMemo(() => data?.pages.flat() || [], [data])
@@ -45,7 +47,12 @@ const BrowseByLetterScreen: React.FC = () => {
             ref={listRef}
             data={entries}
             keyExtractor={(item) => item.id}
-            contentContainerStyle={{ paddingLeft: 24, paddingRight: 12, paddingTop: 48, paddingBottom: 32 }}
+            contentContainerStyle={{
+              paddingLeft: 24,
+              paddingRight: 12,
+              paddingTop: 48,
+              paddingBottom: 32,
+            }}
             showsVerticalScrollIndicator={false}
             ListHeaderComponent={
               <View className="pb-4">
@@ -110,8 +117,8 @@ const BrowseByLetterScreen: React.FC = () => {
         </View>
 
         {/* The alphabet, down the edge. Andika because half of it is letters the
-            interface face cannot draw, and scrollable because the dictionary indexes
-            both cases separately -- around fifty entries, more than a phone is tall. */}
+            interface face cannot draw, and scrollable because thirty-odd rows are still
+            more than a short phone is tall. */}
         {/* A ScrollView takes the space a class gives it only if the width is a style:
             `w-9` alone let it claim half the screen and squeeze the list beside it. */}
         <ScrollView
@@ -120,7 +127,7 @@ const BrowseByLetterScreen: React.FC = () => {
           contentContainerStyle={{ paddingTop: 48, paddingBottom: 32 }}
           showsVerticalScrollIndicator={false}
         >
-          {letters?.map((entry) => {
+          {letters?.map(({ letter: entry }) => {
             const isCurrent = entry === current
             const isSpecial = KABIYE_ONLY.includes(entry)
 
@@ -132,7 +139,10 @@ const BrowseByLetterScreen: React.FC = () => {
                 accessibilityState={{ selected: isCurrent }}
                 onPress={() => {
                   if (isCurrent) {
-                    listRef.current?.scrollToOffset({ offset: 0, animated: true })
+                    listRef.current?.scrollToOffset({
+                      offset: 0,
+                      animated: true,
+                    })
                   } else {
                     router.replace(`/dictionary/letter/${entry}`)
                   }

@@ -118,23 +118,14 @@ export function useEntriesByLetter(letter: string) {
  *
  * `useEntriesByLetter` pages fifty at a time and so can only ever say "50+", but the
  * browse screen leads with the count -- it is the one number that tells a learner
- * whether a letter is a corner of the dictionary or a third of it. A head request
- * carries no rows, so this costs a count and nothing else.
+ * whether a letter is a corner of the dictionary or a third of it. It reads the count
+ * out of the alphabet, which is one cached request the screen already makes, rather
+ * than asking the table again -- and so it folds case the same way the alphabet does.
  */
 export function useLetterCount(letter: string) {
-  return useQuery({
-    queryKey: ['dictionary', 'letter-count', letter],
-    queryFn: async () => {
-      const { count, error } = await supabase
-        .from('dictionary_entries')
-        .select('id', { count: 'exact', head: true })
-        .eq('letter', letter)
-      if (error) throw error
-      return count ?? 0
-    },
-    enabled: !!letter,
-    staleTime: Infinity,
-  })
+  const { data: letters } = useAvailableLetters()
+  const key = letter.toLowerCase()
+  return letters?.find((entry) => entry.letter === key)?.count
 }
 
 /**
@@ -237,7 +228,12 @@ export function useAvailableLetters() {
       const { data, error } = await supabase.rpc('get_available_letters' as never)
 
       if (error) throw error
-      return (data as { letter: string }[])?.map((item) => item.letter) || []
+      return (
+        (data as { letter: string; entry_count: number }[])?.map((item) => ({
+          letter: item.letter,
+          count: Number(item.entry_count),
+        })) || []
+      )
     },
     staleTime: Infinity,
   })

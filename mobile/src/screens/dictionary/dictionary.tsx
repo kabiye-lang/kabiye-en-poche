@@ -210,7 +210,7 @@ const DictionaryScreen: React.FC = () => {
             </View>
           ) : (
             <View className="mt-3 flex-row flex-wrap gap-2">
-              {letters?.map((letter) => (
+              {letters?.map(({ letter }) => (
                 <Link key={letter} href={`/dictionary/letter/${letter}`} asChild>
                   <Pressable
                     accessibilityRole="link"
