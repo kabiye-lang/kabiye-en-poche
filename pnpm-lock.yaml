@@ -494,6 +494,9 @@ importers:
       babel-plugin-react-compiler:
         specifier: ^1.0.0
         version: 1.0.0
+      babel-preset-expo:
+        specifier: 57.0.10
+        version: 57.0.10(@babel/core@7.29.7(supports-color@10.2.2))(@babel/runtime@7.29.7)(expo@57.0.20)(react-refresh@0.14.2)(supports-color@10.2.2)
       eslint:
         specifier: ^10.4.0
         version: 10.10.0(jiti@2.7.0)(supports-color@10.2.2)
@@ -13482,7 +13485,7 @@ snapshots:
 
   core-js-compat@3.49.0:
     dependencies:
-      browserslist: 4.28.6
+      browserslist: 4.28.9
 
   cosmiconfig-typescript-loader@6.3.0(@types/node@26.4.1)(cosmiconfig@9.0.2(typescript@7.0.2))(typescript@7.0.2):
     dependencies:
