@@ -75,7 +75,11 @@ const SpotLetterStep = ({ activity, onAnswer }: SpotLetterStepProps) => {
   return (
     <View className="bg-surface-ink flex-1">
       <ScrollView className="flex-1" contentContainerClassName="px-6 pb-10 pt-8" showsVerticalScrollIndicator={false}>
-        <Text className="text-accent text-[13px] font-semibold uppercase tracking-[0.1em]">{t`Spot the letter`}</Text>
+        {/* `accent-on-ink`, not `accent`: the light laterite is 3.5:1 on this ground and
+            fails 4.5:1 at label size. */}
+        <Text className="text-accent-on-ink text-[13px] font-semibold uppercase tracking-[0.1em]">
+          {t`Spot the letter`}
+        </Text>
 
         <Animated.View entering={FadeInDown.duration(600)}>
           <Text className="text-on-surface-ink mt-3 text-[26px] leading-[1.15]">
@@ -97,7 +101,7 @@ const SpotLetterStep = ({ activity, onAnswer }: SpotLetterStepProps) => {
                 className={
                   isChosen
                     ? 'bg-on-surface-ink flex-row items-center justify-between rounded-[14px] px-5 py-5'
-                    : 'flex-row items-center justify-between rounded-[14px] border-[1.5px] border-[rgba(244,235,221,0.35)] px-5 py-5'
+                    : 'border-on-surface-ink/35 flex-row items-center justify-between rounded-[14px] border-[1.5px] px-5 py-5'
                 }
               >
                 <Text
@@ -110,9 +114,14 @@ const SpotLetterStep = ({ activity, onAnswer }: SpotLetterStepProps) => {
                       key={`${option}-${i}`}
                       kabiye
                       weight="bold"
+                      /* The differing letter is the whole point of the step, so it takes
+                         the laterite that reads on the ground it is actually sitting on:
+                         the chosen row fills with paper, every other row is ink. */
                       className={
                         wrongLetters.includes(i)
-                          ? 'text-accent text-[44px]'
+                          ? isChosen
+                            ? 'text-accent text-[44px]'
+                            : 'text-accent-on-ink text-[44px]'
                           : isChosen
                             ? 'text-surface-ink text-[44px]'
                             : 'text-on-surface-ink text-[44px]'
@@ -122,7 +131,9 @@ const SpotLetterStep = ({ activity, onAnswer }: SpotLetterStepProps) => {
                     </Text>
                   ))}
                 </Text>
-                {isChosen ? <CheckCircleIcon size={24} color="#C4451C" weight="fill" /> : null}
+                {/* Ink on the filled row, like the letters beside it -- and not a
+                    hardcoded hex, which is the one colour rule this system states twice. */}
+                {isChosen ? <CheckCircleIcon size={24} className="text-surface-ink" weight="fill" /> : null}
               </Pressable>
             )
           })}
@@ -139,13 +150,21 @@ const SpotLetterStep = ({ activity, onAnswer }: SpotLetterStepProps) => {
         ) : null}
       </ScrollView>
 
-      {selected ? (
-        <View className="px-6 pb-8">
-          <Button variant="inverse" fullWidth onPress={() => onAnswer(selected === correct, selected)}>
-            {t`Continue`}
-          </Button>
-        </View>
-      ) : null}
+      {/* Continue is always here, held back until there is an answer rather than
+          appearing out of nothing. The direction states it twice: the primary action sits
+          in the same place on every step so a learner never hunts for it, and an action
+          that is not yet available dims rather than disappears, so the path forward stays
+          visible. */}
+      <View className="px-6 pb-8">
+        <Button
+          variant="inverse"
+          fullWidth
+          disabled={selected === null}
+          onPress={() => selected !== null && onAnswer(selected === correct, selected)}
+        >
+          {t`Continue`}
+        </Button>
+      </View>
     </View>
   )
 }

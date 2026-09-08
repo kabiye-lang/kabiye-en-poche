@@ -443,6 +443,12 @@ const LessonScreen = () => {
 
   const currentStep = walkedSteps[currentStepIndex]
 
+  // The first teach card in the walk that has no recording. It carries the one sentence
+  // explaining the silence; every card after it is simply silent, which is the point.
+  const firstSilentTeachIndex = walkedSteps.findIndex(
+    (step) => step.type === 'teach' && usableAudioUrl(step.example.audio_url) === undefined
+  )
+
   // Audio step props (extracted for type narrowing)
   const audioStepContent =
     currentStep.type === 'audio' && hasActivity(currentStep)
@@ -480,8 +486,20 @@ const LessonScreen = () => {
   // Render current step
   return (
     <View className="bg-background flex-1">
-      {/* Progress Bar */}
-      <ProgressBar currentStep={currentStepIndex + 1} totalSteps={walkedSteps.length} />
+      {/* The frame takes the step's ground. Three steps are full-bleed -- the cover and
+          the finish are laterite, Spot the letter is ink -- and a paper bar over them
+          read as a strip of a different screen. */}
+      <ProgressBar
+        currentStep={currentStepIndex + 1}
+        totalSteps={walkedSteps.length}
+        tone={
+          currentStep.type === 'cover' || currentStep.type === 'completion'
+            ? 'accent'
+            : currentStep.type === 'spot_letter'
+              ? 'ink'
+              : 'paper'
+        }
+      />
 
       {/* Step Content — keyed so each new step triggers the entering animation */}
       <Animated.View
@@ -499,7 +517,11 @@ const LessonScreen = () => {
         ) : null}
 
         {currentStep.type === 'teach' ? (
-          <TeachStep example={currentStep.example} onContinue={handleStepComplete} />
+          <TeachStep
+            example={currentStep.example}
+            onContinue={handleStepComplete}
+            explainMissingAudio={currentStepIndex === firstSilentTeachIndex}
+          />
         ) : null}
 
         {currentStep.type === 'dialogue' ? (
