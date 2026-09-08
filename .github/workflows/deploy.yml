@@ -169,6 +169,10 @@ jobs:
       - name: Install
         if: steps.cache-nm.outputs.cache-hit != 'true'
         run: pnpm install --frozen-lockfile
+      # Replaces the pnpm-workspace.yaml `overrides:` pins that used to force
+      # deduplication. Reads the lockfile, so it does not care whether the cache hit.
+      - name: Check for duplicate copies of single-instance packages
+        run: pnpm run check-duplicates
 
   # ── Admin ─────────────────────────────────────────────────────────────────────
   deploy-admin:

@@ -121,9 +121,6 @@
     "typescript": "npm:@typescript/typescript6@^6.0.2",
     "typescript-eslint": "^8.60.0"
   },
-  "overrides": {
-    "hermes-compiler": "250829098.0.4"
-  },
   "engines": {
     "node": ">=22.19.0"
   },

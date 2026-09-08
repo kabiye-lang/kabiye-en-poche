@@ -107,35 +107,9 @@ allowBuilds:
   unrs-resolver: false
   workerd: false
 
-# Every entry here exists because two copies of one package were installed and the
-# duplication broke something. Neither version was wrong; having both was.
-overrides:
-  # admin depends on 2.115.0 directly while ra-supabase-core@3.5.2 asks for ^2.48.1 and
-  # resolved 2.112.4, so pnpm installed both — plus 2.108.1 at the root. `SupabaseClient`
-  # declares `supabaseUrl` as `protected`, and TypeScript accepts a protected member
-  # across two types only when one class derives from the other. Independent copies are
-  # not related, so passing admin's client to ra-supabase's providers failed to compile:
-  #   Property 'supabaseUrl' is protected but type 'SupabaseClient<...>' is not a class
-  #   derived from 'SupabaseClient<...>'
-  # 2.115.0 satisfies ra-supabase-core's ^2.48.1, so one copy serves both.
-  '@supabase/supabase-js': 2.115.0
-
-  # @react-native/community-cli-plugin@0.86.3 asks for metro 0.84.4 while uniwind@1.9.0
-  # asks for 0.84.5, so pnpm installed both. Metro's Bundler then held a transformer
-  # instance from the other copy and every bundle failed with "Cannot read properties of
-  # undefined (reading 'transformFile')" — the app could not start at all. They are
-  # patch-compatible; 0.84.5 is the version uniwind, the styling layer, actually requires.
-  metro: 0.84.5
-  metro-babel-transformer: 0.84.5
-  metro-cache: 0.84.5
-  metro-cache-key: 0.84.5
-  metro-config: 0.84.5
-  metro-core: 0.84.5
-  metro-file-map: 0.84.5
-  metro-minify-terser: 0.84.5
-  metro-resolver: 0.84.5
-  metro-runtime: 0.84.5
-  metro-source-map: 0.84.5
-  metro-symbolicate: 0.84.5
-  metro-transform-plugins: 0.84.5
-  metro-transform-worker: 0.84.5
+# There is deliberately no `overrides:` block. The metro and @supabase/supabase-js pins
+# that used to live here fixed two duplicate-install incidents, but both root causes are
+# gone upstream (uniwind declares metro as a peer `*`; admin's supabase-js range is a
+# caret, not an exact pin), and an exact pin silently caps every workspace until someone
+# bumps it by hand. `pnpm check-duplicates` now asserts the invariant those pins were
+# standing in for. Add an entry back only with a comment naming the incident it prevents.
