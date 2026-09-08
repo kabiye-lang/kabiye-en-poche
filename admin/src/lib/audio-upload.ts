@@ -53,7 +53,12 @@ export async function deleteAudioFromStorage(storagePath: string): Promise<void>
 
 const AUDIO_EXTENSIONS = ['webm', 'wav', 'mp3', 'm4a', 'ogg', 'oga'] as const
 
-function getExtension(blob: Blob, fileName: string): string {
+/**
+ * Pick the storage file extension for an uploaded blob: trust the filename when it
+ * carries a known audio extension, otherwise sniff the MIME type, otherwise webm.
+ * Exported for tests.
+ */
+export function getExtension(blob: Blob, fileName: string): string {
   const extFromName = fileName.includes('.') ? fileName.split('.').pop()?.toLowerCase() : null
   if (extFromName && AUDIO_EXTENSIONS.includes(extFromName as (typeof AUDIO_EXTENSIONS)[number])) return extFromName
   const mime = (blob.type || '').toLowerCase()

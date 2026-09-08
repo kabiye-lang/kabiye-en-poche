@@ -192,6 +192,12 @@ jobs:
           path: node_modules
           key: node-modules-${{ runner.os }}-${{ hashFiles('pnpm-lock.yaml') }}
           fail-on-cache-miss: true
+      - name: Type check
+        working-directory: admin
+        run: pnpm run check-types
+      - name: Test
+        working-directory: admin
+        run: pnpm test
       - name: Build
         working-directory: admin
         run: pnpm run build
