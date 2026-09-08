@@ -214,7 +214,9 @@ function MatchedHeadword({ headword, query }: { headword: string; query: string 
           kabiye
           weight="bold"
           className="text-accent text-[28px]"
-          style={{ textDecorationLine: 'underline', textDecorationColor: '#C4451C' }}
+          /* No `textDecorationColor`: it defaults to the text colour, and the hardcoded
+             laterite left a light-theme underline under dark-theme text. */
+          style={{ textDecorationLine: 'underline' }}
         >
           {prefix}
         </Text>

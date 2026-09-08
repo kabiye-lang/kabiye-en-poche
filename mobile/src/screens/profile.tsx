@@ -141,13 +141,17 @@ const ProfileScreen = () => {
             <Text weight="semibold" className="text-background text-[48px] leading-[1.0]">
               {myWords.readCount}
             </Text>
-            <Text className="text-background/70 mt-2 text-[14px] leading-[1.3]">{t`words you can read`}</Text>
+            <Text className="text-background/70 mt-2 text-[14px] leading-[1.3]">
+              {myWords.readCount === 1 ? t`word you can read` : t`words you can read`}
+            </Text>
           </View>
           <View className="border-foreground flex-1 rounded-[14px] border-[1.5px] p-4">
             <Text weight="semibold" className="text-foreground text-[48px] leading-[1.0]">
               {myWords.writtenCount}
             </Text>
-            <Text className="text-foreground-secondary mt-2 text-[14px] leading-[1.3]">{t`words you can write`}</Text>
+            <Text className="text-foreground-secondary mt-2 text-[14px] leading-[1.3]">
+              {myWords.writtenCount === 1 ? t`word you can write` : t`words you can write`}
+            </Text>
           </View>
         </View>
 
@@ -213,7 +217,7 @@ const ProfileScreen = () => {
               <Row
                 key={item.href}
                 label={item.title}
-                value={item.description}
+                description={item.description}
                 external={item.external || item.href.startsWith('http')}
                 last={index === listItem.items.length - 1}
                 onPress={() => {
@@ -228,22 +232,14 @@ const ProfileScreen = () => {
           </Section>
         ))}
 
-        {/* The footer the direction asks for: the destructive action stated quietly, and
-            the version beside the two documents nobody reads until they need to. */}
+        {/* The destructive action stated quietly, and the version. Privacy and Terms used
+            to repeat here as well as in Support above -- two routes to the same two
+            screens, a dozen pixels apart. Support owns them; it can describe them. */}
         <View className="border-border mt-4 flex-row items-center justify-between border-t pt-6">
           <Pressable accessibilityRole="button" onPress={handleResetProgress}>
             <Text className="text-foreground-secondary text-[14px] underline">{t`Reset progress`}</Text>
           </Pressable>
-          <View className="flex-row items-center gap-2">
-            <Pressable accessibilityRole="link" onPress={() => router.push('/privacy-policy')}>
-              <Text className="text-foreground-secondary text-[14px]">{t`Privacy`}</Text>
-            </Pressable>
-            <Text className="text-foreground-secondary text-[14px]">·</Text>
-            <Pressable accessibilityRole="link" onPress={() => router.push('/terms-and-conditions')}>
-              <Text className="text-foreground-secondary text-[14px]">{t`Terms`}</Text>
-            </Pressable>
-            <Text className="text-foreground-secondary text-[14px]">· v{Application.nativeApplicationVersion}</Text>
-          </View>
+          <Text className="text-foreground-secondary text-[14px]">v{Application.nativeApplicationVersion}</Text>
         </View>
       </ScrollView>
     </View>
@@ -261,16 +257,23 @@ function Section({ label, children }: { label: string; children: React.ReactNode
   )
 }
 
-/** One row: label, the current value at the right, and a caret or an outward arrow. */
+/**
+ * One row: a label, either a value at the right or a description beneath it, and a caret
+ * or an outward arrow.
+ */
 function Row({
   label,
   value,
+  description,
   onPress,
   external,
   last,
 }: {
   label: string
+  /** A state, short enough to sit at the right of the row: "English", "System". */
   value?: string
+  /** A sentence about where the row leads. Runs under the label, and wraps. */
+  description?: string
   onPress: () => void
   external?: boolean
   last?: boolean
@@ -281,7 +284,16 @@ function Row({
       onPress={onPress}
       className={last ? 'flex-row items-center py-3.5' : 'border-border flex-row items-center border-b py-3.5'}
     >
-      <Text className="text-foreground flex-1 text-[17px]">{label}</Text>
+      {/* Two different things used to share one prop. A `value` is a state -- "English",
+          "System" -- and reads as a short answer to the right of its label. A
+          `description` is a sentence about what the row leads to, and squeezing a
+          sentence into 45% of a row clipped five of the seven of them mid-word. */}
+      <View flex className="pr-3">
+        <Text className="text-foreground text-[17px]">{label}</Text>
+        {description ? (
+          <Text className="text-foreground-secondary mt-0.5 text-[15px] leading-[1.35]">{description}</Text>
+        ) : null}
+      </View>
       {value ? (
         <Text className="text-foreground-secondary mr-2 max-w-[45%] text-right text-[15px]" numberOfLines={1}>
           {value}

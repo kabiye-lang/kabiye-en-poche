@@ -92,7 +92,7 @@ const OnboardingScreen = () => {
                 className={
                   isSelected
                     ? 'bg-on-surface-ink flex-row items-start gap-3 rounded-[14px] px-[18px] py-4'
-                    : 'flex-row items-start gap-3 rounded-[14px] border-[1.5px] border-[rgba(244,235,221,0.35)] px-[18px] py-4'
+                    : 'border-on-surface-ink/35 flex-row items-start gap-3 rounded-[14px] border-[1.5px] px-[18px] py-4'
                 }
               >
                 <View className="flex-1">
@@ -107,7 +107,10 @@ const OnboardingScreen = () => {
                     {option.sub}
                   </Text>
                 </View>
-                {isSelected ? <CheckCircleIcon size={22} weight="fill" color="#C4451C" /> : null}
+                {/* Ink, like the row's own text -- the selected row fills with paper.
+                    A hardcoded laterite here was the one colour that never followed the
+                    theme. */}
+                {isSelected ? <CheckCircleIcon size={22} weight="fill" className="text-surface-ink" /> : null}
               </Pressable>
             )
           })}

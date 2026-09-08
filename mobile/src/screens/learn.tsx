@@ -191,20 +191,26 @@ const LessonRow = ({ lesson, index, isCurrent }: LessonRowProps) => {
       className={index === 0 ? 'flex-row items-center py-4' : 'border-border flex-row items-center border-t py-4'}
     >
       <Text className="text-foreground-secondary w-9 text-[14px]">{number}</Text>
-      <Text
-        className={
-          lesson.is_completed
-            ? 'text-foreground-secondary flex-1 text-[17px] line-through'
-            : locked
-              ? 'text-foreground-secondary flex-1 text-[17px]'
-              : 'text-foreground flex-1 text-[17px]'
-        }
-      >
+      {/* A finished lesson keeps its title in full ink. It used to be struck through and
+          dimmed, which read as cancelled rather than done -- and in this system a
+          strikethrough means one specific thing, a wrong answer, which is what the spell,
+          quiz and fill-blank steps use it for. A lesson you finished is also still open;
+          it should not look less available than one you cannot reach yet. */}
+      <Text className={locked ? 'text-foreground-secondary flex-1 text-[17px]' : 'text-foreground flex-1 text-[17px]'}>
         {title ?? ''}
       </Text>
-      {lesson.is_completed ? <CheckIcon size={16} weight="bold" className="text-foreground" /> : null}
-      {locked && !lesson.is_completed ? <LockIcon size={16} className="text-foreground-secondary" /> : null}
-      {!locked && !lesson.is_completed ? <CaretRightIcon size={16} className="text-foreground-secondary" /> : null}
+      {/* One trailing slot, three states, so a unit reads as a column: done is the ink
+          fill the system already uses for "settled", locked is the lock, and open is the
+          caret. */}
+      {lesson.is_completed ? (
+        <View className="bg-foreground h-6 w-6 items-center justify-center rounded-full">
+          <CheckIcon size={14} weight="bold" className="text-background" />
+        </View>
+      ) : locked ? (
+        <LockIcon size={16} className="text-foreground-secondary" />
+      ) : (
+        <CaretRightIcon size={16} className="text-foreground-secondary" />
+      )}
     </Pressable>
   )
 }

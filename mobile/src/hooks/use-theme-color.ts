@@ -12,17 +12,26 @@ import { useColorScheme } from 'react-native'
  *
  * Values mirror `src/global.css`. If a token changes there, change it here too — these
  * are the only copies, and they exist solely because the RN prop cannot read the token.
+ *
+ * These were still the pre-Laterite palette: a purple primary (`#6200EE` / `#BB86FC`)
+ * and a cool grey secondary, none of which exist anywhere else in the app any more. The
+ * placeholder in the dictionary search field and the keyboard pad was reading that grey
+ * — a fourth colour, in a system that has three.
  */
 const TOKENS = {
   light: {
-    foregroundSecondary: '#6E6B7B',
-    foreground: '#1E1B2E',
-    primary: '#6200EE',
+    foregroundSecondary: '#6B5A4E',
+    foreground: '#221913',
+    primary: '#221913',
+    primaryForeground: '#F4EBDD',
+    accent: '#C4451C',
   },
   dark: {
-    foregroundSecondary: '#9B97A8',
-    foreground: '#E8E4F0',
-    primary: '#BB86FC',
+    foregroundSecondary: 'rgba(244, 235, 221, 0.7)',
+    foreground: '#F4EBDD',
+    primary: '#F4EBDD',
+    primaryForeground: '#221913',
+    accent: '#E07A55',
   },
 } as const
 
@@ -48,4 +57,14 @@ export function usePlaceholderColor() {
  */
 export function usePrimaryColor() {
   return useThemeColors().primary
+}
+
+/** The label that reads on `usePrimaryColor`, matching `text-primary-foreground`. */
+export function usePrimaryForegroundColor() {
+  return useThemeColors().primaryForeground
+}
+
+/** Laterite, matching `text-accent` / `bg-accent`. */
+export function useAccentColor() {
+  return useThemeColors().accent
 }

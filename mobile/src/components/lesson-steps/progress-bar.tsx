@@ -2,16 +2,63 @@ import { Pressable } from 'react-native'
 import { useSafeAreaInsets } from 'react-native-safe-area-context'
 
 import { router } from 'expo-router'
+import { StatusBar } from 'expo-status-bar'
 
 import { useLingui } from '@lingui/react/macro'
 
 import { XIcon } from '../icons'
 import { Text, View } from '../ui'
 
+/**
+ * The ground the step behind the bar is standing on.
+ *
+ * Three lesson steps are full-bleed -- the cover and the finish are laterite, Spot the
+ * letter is ink -- and the bar stayed bone paper over all of them, a bright band across
+ * the top of a near-black screen. The frame belongs to the step, so it takes the step's
+ * ground and re-picks its own colours against it.
+ */
+export type ProgressTone = 'paper' | 'accent' | 'ink'
+
+const TONES: Record<
+  ProgressTone,
+  { ground: string; control: string; glyph: string; done: string; current: string; rest: string; counter: string }
+> = {
+  paper: {
+    ground: 'bg-background',
+    control: 'border-foreground',
+    glyph: 'text-foreground',
+    done: 'bg-foreground',
+    current: 'bg-accent',
+    rest: 'bg-border',
+    counter: 'text-foreground-secondary',
+  },
+  accent: {
+    ground: 'bg-accent',
+    control: 'border-white',
+    glyph: 'text-white',
+    // Done is ink, the colour laterite screens already give their primary action;
+    // current is the brightest thing on the row, so the eye lands on it.
+    done: 'bg-surface-ink',
+    current: 'bg-white',
+    rest: 'bg-white/30',
+    counter: 'text-white/80',
+  },
+  ink: {
+    ground: 'bg-surface-ink',
+    control: 'border-on-surface-ink',
+    glyph: 'text-on-surface-ink',
+    done: 'bg-on-surface-ink',
+    current: 'bg-accent-on-ink',
+    rest: 'bg-on-surface-ink/25',
+    counter: 'text-on-surface-ink/70',
+  },
+}
+
 interface ProgressBarProps {
   currentStep: number
   totalSteps: number
   onClose?: () => void
+  tone?: ProgressTone
 }
 
 /**
@@ -29,9 +76,10 @@ interface ProgressBarProps {
  */
 const MAX_SEGMENTS = 20
 
-const ProgressBar = ({ currentStep, totalSteps, onClose }: ProgressBarProps) => {
+const ProgressBar = ({ currentStep, totalSteps, onClose, tone = 'paper' }: ProgressBarProps) => {
   const insets = useSafeAreaInsets()
   const { t } = useLingui()
+  const palette = TONES[tone]
 
   const handleClose = () => {
     if (onClose) onClose()
@@ -41,15 +89,19 @@ const ProgressBar = ({ currentStep, totalSteps, onClose }: ProgressBarProps) => 
   const segmented = totalSteps <= MAX_SEGMENTS
 
   return (
-    <View className="bg-background px-6 pb-3" style={{ paddingTop: insets.top + 10 }}>
+    <View className={`${palette.ground} px-6 pb-3`} style={{ paddingTop: insets.top + 10 }}>
+      {/* The clock and the battery sit on this ground too. On the laterite cover and the
+          ink Spot-the-letter screen the app's theme-wide dark status bar was a row of
+          near-invisible glyphs; both grounds are dark, so both want the light one. */}
+      <StatusBar style={tone === 'paper' ? 'auto' : 'light'} />
       <View className="flex-row items-center gap-3">
         <Pressable
           accessibilityRole="button"
           accessibilityLabel={t`Close lesson`}
           onPress={handleClose}
-          className="border-foreground h-9 w-9 items-center justify-center rounded-full border-[1.5px]"
+          className={`${palette.control} h-9 w-9 items-center justify-center rounded-full border-[1.5px]`}
         >
-          <XIcon size={16} className="text-foreground" />
+          <XIcon size={16} className={palette.glyph} />
         </Pressable>
 
         <View
@@ -64,27 +116,23 @@ const ProgressBar = ({ currentStep, totalSteps, onClose }: ProgressBarProps) => 
               return (
                 <View
                   key={step}
-                  className={
-                    step < currentStep
-                      ? 'bg-foreground h-1 flex-1 rounded-sm'
-                      : step === currentStep
-                        ? 'bg-accent h-1 flex-1 rounded-sm'
-                        : 'bg-border h-1 flex-1 rounded-sm'
-                  }
+                  className={`h-1 flex-1 rounded-sm ${
+                    step < currentStep ? palette.done : step === currentStep ? palette.current : palette.rest
+                  }`}
                 />
               )
             })
           ) : (
-            <View className="bg-border h-1 flex-1 overflow-hidden rounded-sm">
+            <View className={`h-1 flex-1 overflow-hidden rounded-sm ${palette.rest}`}>
               <View
-                className="bg-foreground h-full rounded-sm"
+                className={`h-full rounded-sm ${palette.done}`}
                 style={{ width: `${Math.min(100, (currentStep / Math.max(totalSteps, 1)) * 100)}%` }}
               />
             </View>
           )}
         </View>
 
-        <Text weight="semibold" className="text-foreground-secondary text-[13px]">
+        <Text weight="semibold" className={`${palette.counter} text-[13px]`}>
           {currentStep}/{totalSteps}
         </Text>
       </View>

@@ -77,6 +77,11 @@
          both, hence a token of its own rather than `text-background`. */
       --color-surface-ink: #221913;
       --color-on-surface-ink: #F4EBDD;
+      /* Laterite on an ink ground. The light value is 3.5:1 there -- it fails 4.5:1 for
+         the section label on Spot the letter and only just clears 3:1 for the 44px
+         letter it highlights. The dark palette already raises laterite for exactly this
+         reason, so the ink screen borrows that value in both themes: 5.8:1. */
+      --color-accent-on-ink: #E07A55;
 
       /* Text */
       --color-foreground: #221913;            /* ink */
@@ -108,6 +113,10 @@
 
       /* Progress track */
       --color-progress-track: #D9CDB9;
+
+      /* The scrim behind a sheet. Ink at half strength -- it darkens the page rather
+         than tinting it, so it stays inside the three-colour rule. */
+      --color-scrim: rgba(34, 25, 19, 0.55);
 
       /* Laterite. Passes 4.5:1 on paper only at >= 24px, or bold >= 19px --
          hero glyphs, section labels, the one primary action per screen. Never body text. */
@@ -141,6 +150,7 @@
       --color-tabbar: #160F0B;
       --color-surface-ink: #2E241C;
       --color-on-surface-ink: #F4EBDD;
+      --color-accent-on-ink: #E07A55;
 
       /* Text */
       --color-foreground: #F4EBDD;
@@ -169,6 +179,9 @@
 
       /* Progress track */
       --color-progress-track: rgba(244, 235, 221, 0.12);
+
+      /* Deeper on a dark ground, where a half-strength ink barely reads as a layer. */
+      --color-scrim: rgba(13, 9, 6, 0.7);
 
       /* Laterite, raised for contrast */
       --color-accent: #E07A55;

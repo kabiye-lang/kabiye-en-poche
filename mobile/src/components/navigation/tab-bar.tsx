@@ -1,7 +1,7 @@
 import type { BottomTabBarProps } from 'expo-router/build/react-navigation/bottom-tabs'
 
 import { useEffect } from 'react'
-import { Dimensions, Platform, Pressable } from 'react-native'
+import { Platform, Pressable, useWindowDimensions } from 'react-native'
 import Animated, { useAnimatedStyle, useSharedValue, withTiming } from 'react-native-reanimated'
 import { useSafeAreaInsets } from 'react-native-safe-area-context'
 
@@ -10,7 +10,6 @@ import { useTheme } from 'expo-router/react-navigation'
 
 import { Text, View } from '../ui'
 
-const SCREEN_WIDTH = Math.min(Dimensions.get('screen').width, 500)
 export default function CustomTabBar({ state, descriptors, navigation }: BottomTabBarProps) {
   // descriptors[0].options.tabBarActiveTintColor
   const { colors: navColors } = useTheme()
@@ -18,6 +17,17 @@ export default function CustomTabBar({ state, descriptors, navigation }: BottomT
   const translateX = useSharedValue(0)
   const pathname = usePathname()
   const safeAreaInsets = useSafeAreaInsets()
+  // Read live rather than at module load: a width captured once puts the active-tab rule
+  // under the wrong tab after a rotation or on an iPad in split view.
+  const { width } = useWindowDimensions()
+  const barWidth = Math.min(width, 500)
+  // Plain numbers, lifted out of the worklet.
+  //
+  // `useAnimatedStyle` serialises everything its body names, and naming
+  // `state.routes.length` hands it `state` -- a navigation object carrying functions and
+  // route keys Reanimated cannot copy. It threw "[Worklets] Cannot copy value of type
+  // `unknown`" and took the whole screen down with it.
+  const tabCount = state.routes.length
   useEffect(() => {
     if (state.routes.length === 0) return
     const currentTabIdx = state.routes.findIndex((item) => {
@@ -32,7 +42,7 @@ export default function CustomTabBar({ state, descriptors, navigation }: BottomT
   const animationStyle = useAnimatedStyle(() => ({
     transform: [
       {
-        translateX: (translateX.value * SCREEN_WIDTH) / state.routes.length,
+        translateX: (translateX.value * barWidth) / tabCount,
       },
     ],
   }))
@@ -54,7 +64,7 @@ export default function CustomTabBar({ state, descriptors, navigation }: BottomT
             left: 0,
             backgroundColor: navColors.primary,
             borderRadius: 5,
-            width: SCREEN_WIDTH / state.routes.length,
+            width: barWidth / tabCount,
           },
           animationStyle,
         ]}

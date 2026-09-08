@@ -19,6 +19,15 @@ const KABIYE_ONLY = 'ɖƉɛƐɣƔɩƖŋŊɔƆʋƲñÑ'
 interface TeachStepProps {
   example: LessonExample
   onContinue: () => void
+  /**
+   * Whether this is the first word in the lesson with no recording.
+   *
+   * The absence is a fact about the lesson, not about this word -- there are no
+   * recordings at all yet -- so it is stated once, on the first card that meets it, and
+   * every card after it is simply silent. It used to appear on all of them, which turned
+   * one honest sentence into a refrain a learner reads eight times and stops seeing.
+   */
+  explainMissingAudio?: boolean
 }
 
 /**
@@ -34,7 +43,7 @@ interface TeachStepProps {
  * the phrase the chip needs -- "Like 'ng' in 'sing'" for ŋ. The hardest-looking element
  * on the card is the one that costs nothing to fill.
  */
-const TeachStep = ({ example, onContinue }: TeachStepProps) => {
+const TeachStep = ({ example, onContinue, explainMissingAudio }: TeachStepProps) => {
   const { t } = useLingui()
   const { currentLanguage, getValue } = useLanguage()
   const { data: letters } = useAppAlphabetLetters()
@@ -94,13 +103,15 @@ const TeachStep = ({ example, onContinue }: TeachStepProps) => {
           </View>
         ) : null}
 
-        {/* Absence beats a stand-in: the notice appears only when there is no recording,
-            and says why rather than showing a control that would play nothing. */}
-        {!audio ? (
+        {/* Absence beats a stand-in: no recording means no control, never a control that
+            plays nothing. Said once per lesson, and in terms of the language rather than
+            of our own policy -- Kabiyè does not write tone, so a wrong voice would teach
+            the wrong word, which is the learner's problem and not just ours. */}
+        {!audio && explainMissingAudio ? (
           <View className="bg-background-tertiary mt-6 flex-row items-start gap-3 rounded-[14px] px-4 py-3">
             <SpeakerSlashIcon size={18} className="text-foreground-secondary mt-[2px]" />
             <Text className="text-foreground-secondary flex-1 text-[14px] leading-[1.4]">
-              {t`No recording yet. We show nothing rather than a wrong voice.`}
+              {t`No recordings yet. Kabiyè does not write tone, and the wrong voice teaches the wrong word — so this lesson waits for a real one.`}
             </Text>
           </View>
         ) : null}
@@ -113,7 +124,8 @@ const TeachStep = ({ example, onContinue }: TeachStepProps) => {
             className="flex-1"
             onPress={() => router.push(`/word/${encodeURIComponent(example.kbp)}`)}
           >
-            {t`Entry`}
+            {/* "Entry" named a noun, not what the button does. */}
+            {t`Look it up`}
           </Button>
         ) : null}
         <Button variant="primary" className="flex-[1.4]" onPress={onContinue}>
