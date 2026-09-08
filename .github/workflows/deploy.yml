@@ -85,6 +85,11 @@ jobs:
         # Pin to SHA for supply-chain safety: https://github.com/dorny/paths-filter/releases/tag/v4.0.1
         uses: dorny/paths-filter@ceb8a2b8f2d89434be7ff52d3de7ec3738c5cc9d # v4.0.3
         with:
+          # Compare exactly the range this push covers. Left to default, the action
+          # diffs against the branch ref, which on a multi-commit push or a re-run
+          # can report paths that were not touched by this push.
+          base: ${{ github.event.before }}
+          ref: ${{ github.sha }}
           filters: |
             # The dependency files are shared, so every service watches them. A pnpm
             # override or a lockfile bump changes what all three build against without
