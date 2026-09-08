@@ -10,7 +10,7 @@
   "labels": [
     "dependencies"
   ],
-  "minimumReleaseAge": "1 day",
+  "minimumReleaseAge": "3 days",
   "prConcurrentLimit": 8,
   "prHourlyLimit": 2,
   "ignoreDeps": [
@@ -152,11 +152,8 @@
     },
     {
       "description": "NPM - only check major updates; skip everything else to speed up runs and cut resource usage",
-      "matchFileNames": [
-        "package.json",
-        "mobile/package.json",
-        "admin/package.json",
-        "website/package.json"
+      "matchManagers": [
+        "npm"
       ],
       "matchUpdateTypes": [
         "minor",
@@ -169,11 +166,8 @@
     },
     {
       "description": "NPM - group all major updates into one PR",
-      "matchFileNames": [
-        "package.json",
-        "mobile/package.json",
-        "admin/package.json",
-        "website/package.json"
+      "matchManagers": [
+        "npm"
       ],
       "matchUpdateTypes": [
         "major"
