@@ -3,6 +3,7 @@ import { GithubLogo } from "@phosphor-icons/react";
 import { motion } from "motion/react";
 import NewsletterSignup from "@/components/newsletter-signup";
 import KabiyeKeyboard from "@/components/kabiye-keyboard";
+import Lockup from "@/components/lockup";
 
 const fadeIn = {
   initial: { opacity: 0, y: 20 },
@@ -239,8 +240,8 @@ export default function Home() {
           the site is about. Anchors, because this is one page. */}
       <nav className="border-line bg-paper/90 sticky top-0 z-50 border-b backdrop-blur">
         <div className="mx-auto flex max-w-[1200px] items-center gap-6 px-8 py-4">
-          <a href="#top" className="text-ink text-[17px] font-semibold">
-            {t.title}
+          <a href="#top" aria-label={t.title}>
+            <Lockup className="h-8 w-auto" />
           </a>
           <div className="hidden flex-1 items-center gap-6 md:flex">
             {(
