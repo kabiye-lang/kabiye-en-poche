@@ -1,13 +1,15 @@
 import type { EntryData } from '../../types/dictionary'
 
-import { useState } from 'react'
+import { useMemo, useState } from 'react'
 import { Pressable } from 'react-native'
 
 import { Link } from 'expo-router'
 
 import { useLingui } from '@lingui/react/macro'
 
+import { useAbbreviations } from '../../hooks/use-abbreviations'
 import { resolveTranslation } from '../../utils/dictionary-helpers'
+import { describeGrammaticalInfo } from '../../utils/grammatical-info'
 import { ArrowRightIcon } from '../icons'
 import { LanguageTag } from '../language-tag'
 import { Card, Text, View } from '../ui'
@@ -15,6 +17,53 @@ import { Card, Text, View } from '../ui'
 type Translation = 'fr' | 'en'
 
 type Definition = EntryData['senses'][number]['definitions'][number]
+
+/**
+ * What a link between two words is called, in the reader's language.
+ *
+ * The pipeline files every link under one vocabulary -- the print's "=", "compar à",
+ * "Ant.", "Dim.", "c.f." and Webonary's "syn", "dim. de", "cont." all resolve to these
+ * keys -- so the heading a reader sees is "Synonyms", not "syn:" or "cf:". Rows loaded
+ * before the vocabulary existed still carry the raw labels; they map here too.
+ */
+export const useRelationLabels = (): Record<string, string> => {
+  const { t } = useLingui()
+  return useMemo(
+    () => ({
+      see: t`See`,
+      synonym: t`Synonyms`,
+      near: t`Near in meaning`,
+      antonym: t`Opposites`,
+      see_also: t`See also`,
+      diminutive: t`Diminutive`,
+      diminutive_of: t`Diminutive of`,
+      plural: t`Plural`,
+      plural_of: t`Plural of`,
+      singular: t`Singular`,
+      singular_of: t`Singular of`,
+      collective: t`Collective`,
+      continuous: t`Continuous form`,
+      repeated: t`Repeated form`,
+      with_verb: t`Used with the verb`,
+      // raw labels from rows loaded before the shared vocabulary
+      syn: t`Synonyms`,
+      cf: t`See also`,
+      ant: t`Opposites`,
+      'ant.': t`Opposites`,
+      'dim. de': t`Diminutive of`,
+      'Dim.': t`Diminutive`,
+      'cont.': t`Continuous form`,
+      rel: t`Related`,
+    }),
+    [t]
+  )
+}
+
+/** What kind of phrase a sub-entry is. */
+export const useSubEntryLabels = (): Record<string, string> => {
+  const { t } = useLingui()
+  return useMemo(() => ({ expr: t`Expression`, id: t`Idiom`, fig: t`Figurative use`, proverb: t`Proverb` }), [t])
+}
 
 /**
  * One definition line in the reader's language, with the truth about where it came from.
@@ -67,6 +116,7 @@ export const SenseDefinitions = ({
   translation: Translation
 }) => {
   const { t } = useLingui()
+  const { data: abbreviations } = useAbbreviations()
   if (!senses || senses.length === 0) return null
 
   return (
@@ -84,9 +134,11 @@ export const SenseDefinitions = ({
                   translation={translation}
                   prefix={`${sense.senseNumber || senseIdx + 1}.${defIdx + 1} `}
                 />
+                {/* The gloss's own class -- "n.m", "v", "adj" -- said in words when the
+                    table knows the code, as written when it does not. */}
                 {def.grammar && (
                   <Text variant="caption" className="text-foreground-secondary mb-1 italic">
-                    {def.grammar}
+                    {(abbreviations && describeGrammaticalInfo(def.grammar, abbreviations, translation)) || def.grammar}
                   </Text>
                 )}
               </View>
@@ -131,6 +183,7 @@ export const WordExamples = ({ examples }: { examples: EntryData['senses'][numbe
 
 /** Lexical references (related words) at the sense level */
 export const LexicalReferences = ({ lexRefs }: { lexRefs: EntryData['senses'][number]['lexRefs'] }) => {
+  const labels = useRelationLabels()
   if (!lexRefs || lexRefs.length === 0) return null
 
   return (
@@ -138,7 +191,7 @@ export const LexicalReferences = ({ lexRefs }: { lexRefs: EntryData['senses'][nu
       {lexRefs.map((ref, refIdx) => (
         <View key={refIdx} className="mb-2">
           <Text variant="caption" className="text-foreground-secondary mb-1">
-            {ref.type}:
+            {labels[ref.type] ?? ref.type}
           </Text>
           <View className="flex-row flex-wrap gap-2">
             {ref.targets.map((target, targetIdx) => (
@@ -169,6 +222,7 @@ export const SubEntries = ({
   translation: Translation
 }) => {
   const { t } = useLingui()
+  const kinds = useSubEntryLabels()
   if (!subEntries || subEntries.length === 0) return null
 
   return (
@@ -183,7 +237,7 @@ export const SubEntries = ({
           </Text>
           {subEntry.type && (
             <Text variant="caption" className="text-foreground-secondary mb-2 italic">
-              ({subEntry.type})
+              {kinds[subEntry.type] ?? subEntry.type}
             </Text>
           )}
           {subEntry.senses.map((sense, senseIdx) => (
@@ -239,6 +293,7 @@ export const SubEntries = ({
 /** Cross references (see also) */
 export const CrossReferences = ({ crossRefs }: { crossRefs: EntryData['crossRefs'] }) => {
   const { t } = useLingui()
+  const labels = useRelationLabels()
   if (!crossRefs || crossRefs.length === 0) return null
 
   return (
@@ -248,9 +303,12 @@ export const CrossReferences = ({ crossRefs }: { crossRefs: EntryData['crossRefs
       </Text>
       {crossRefs.map((ref, refIdx) => (
         <View key={refIdx} className="mb-2">
-          <Text variant="caption" className="text-foreground-secondary mb-1">
-            {ref.type}:
-          </Text>
+          {/* One heading is enough when the section says the same thing. */}
+          {labels[ref.type] && labels[ref.type] !== t`See also` ? (
+            <Text variant="caption" className="text-foreground-secondary mb-1">
+              {labels[ref.type]}
+            </Text>
+          ) : null}
           <View className="flex-row flex-wrap gap-2">
             {ref.targets.map((target, targetIdx) => (
               <Link key={targetIdx} href={`/word/${encodeURIComponent(target)}`} asChild>
