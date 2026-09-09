@@ -10,6 +10,7 @@ import { useLingui } from '@lingui/react/macro'
 
 import { ArrowRightIcon, InfoIcon, ShareNetworkIcon } from '../../components/icons'
 import { Card, Text, View } from '../../components/ui'
+import { Conjugation } from '../../components/word/conjugation'
 import { CrossReferences, SenseDefinitions, SubEntries } from '../../components/word/word-sections'
 import { useAbbreviations } from '../../hooks/use-abbreviations'
 import { useEntryByTerm } from '../../hooks/use-dictionary'
@@ -226,6 +227,7 @@ const WordDetailsScreen: React.FC = () => {
         <View className="border-foreground my-5 border-t-[1.5px]" />
 
         <SenseDefinitions senses={entry_data.senses} translation={translation} />
+        <Conjugation headword={entry_data.headword} conjugation={entry_data.conjugation} />
         <SubEntries subEntries={entry_data.subEntries} translation={translation} />
         <CrossReferences crossRefs={entry_data.crossRefs} />
         <SourceLine entry={entry_data} />
