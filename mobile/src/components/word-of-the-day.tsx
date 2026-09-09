@@ -50,9 +50,12 @@ const WordOfTheDayCard = ({ word, language, index }: { word: WordGroup; language
   // the same word twice ("ñɩŋgbasɩ, ñɩŋgbasɩ"). Only list spellings that actually differ.
   const displayHeadword = [...new Set(entries.map((e) => e.entry_data.headword))].join(', ')
 
+  const firstDefinition = firstEntry.entry_data.senses[0]?.definitions[0]
   const gloss = resolveTranslation(
-    firstEntry.entry_data.senses[0]?.definitions[0]?.translations,
-    language === 'fr' ? 'fr' : 'en'
+    firstDefinition?.translations,
+    language === 'fr' ? 'fr' : 'en',
+    '',
+    firstDefinition?.machine
   )
 
   return (
@@ -73,7 +76,11 @@ const WordOfTheDayCard = ({ word, language, index }: { word: WordGroup; language
                 <Text variant="body" className="text-foreground flex-1">
                   {gloss.text}
                 </Text>
-                {gloss.isFallback && gloss.language && <LanguageTag language={gloss.language} />}
+                {gloss.isFallback && gloss.language ? (
+                  <LanguageTag language={gloss.language} />
+                ) : gloss.isMachine && gloss.original ? (
+                  <LanguageTag language={gloss.original.language} machine />
+                ) : null}
               </View>
             )}
           </View>

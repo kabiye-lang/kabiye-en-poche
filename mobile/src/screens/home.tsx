@@ -44,14 +44,18 @@ const HomeScreen = () => {
   const group = wordOfTheDay?.[0]
   const entry = group?.entries[0]
   const headword = entry?.entry_data.headword
+  const firstDefinition = entry?.entry_data.senses[0]?.definitions[0]
   const resolved = entry
     ? resolveTranslation(
-        entry.entry_data.senses[0]?.definitions[0]?.translations,
-        currentLanguage === 'fr' ? 'fr' : 'en'
+        firstDefinition?.translations,
+        currentLanguage === 'fr' ? 'fr' : 'en',
+        '',
+        firstDefinition?.machine
       )
     : null
   const gloss = resolved?.text || null
   const isFallback = Boolean(resolved?.isFallback)
+  const isMachine = Boolean(resolved?.isMachine)
 
   return (
     <View flex safeArea="top" className="bg-background">
@@ -151,6 +155,12 @@ const HomeScreen = () => {
                       <View className="bg-background-tertiary rounded-[4px] px-2 py-[2px]">
                         <Text weight="bold" className="text-foreground-secondary text-[11px]">
                           {resolved?.language?.toUpperCase() ?? 'FR'}
+                        </Text>
+                      </View>
+                    ) : isMachine ? (
+                      <View className="bg-background-tertiary rounded-[4px] px-2 py-[2px]">
+                        <Text weight="bold" className="text-foreground-secondary text-[11px]">
+                          {t`translated`}
                         </Text>
                       </View>
                     ) : null}

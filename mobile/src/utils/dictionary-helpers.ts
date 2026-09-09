@@ -44,6 +44,13 @@ export interface ResolvedTranslation {
   language?: 'fr' | 'en'
   /** True when the gloss had to come from the other language. */
   isFallback: boolean
+  /**
+   * True when the text is a machine translation of the dictionary's gloss in the other
+   * language. The reader is told, and can ask for the original.
+   */
+  isMachine: boolean
+  /** The dictionary's own wording, when the text shown is a translation of it. */
+  original?: { text: string; language: 'fr' | 'en' }
 }
 
 /**
@@ -56,16 +63,28 @@ export interface ResolvedTranslation {
 export function resolveTranslation(
   translations: { fr?: string | null; en?: string | null } | null | undefined,
   language: 'fr' | 'en',
-  fallbackText = ''
+  fallbackText = '',
+  machine?: ('fr' | 'en')[] | null
 ): ResolvedTranslation {
-  if (!translations) return { text: fallbackText, isFallback: false }
-
-  const preferred = language === 'fr' ? translations.fr : translations.en
-  if (preferred?.trim()) return { text: preferred, language, isFallback: false }
+  if (!translations) return { text: fallbackText, isFallback: false, isMachine: false }
 
   const otherLanguage = language === 'fr' ? 'en' : 'fr'
+  const preferred = language === 'fr' ? translations.fr : translations.en
   const other = language === 'fr' ? translations.en : translations.fr
-  if (other?.trim()) return { text: other, language: otherLanguage, isFallback: true }
+  if (preferred?.trim()) {
+    // The pipeline fills a one-sided gloss from the other language and says so. A
+    // reader who sees "too bad" should know the dictionary wrote "tant pis", and be
+    // able to look at it.
+    const isMachine = Boolean(machine?.includes(language))
+    return {
+      text: preferred,
+      language,
+      isFallback: false,
+      isMachine,
+      original: isMachine && other?.trim() ? { text: other, language: otherLanguage } : undefined,
+    }
+  }
+  if (other?.trim()) return { text: other, language: otherLanguage, isFallback: true, isMachine: false }
 
-  return { text: fallbackText, isFallback: false }
+  return { text: fallbackText, isFallback: false, isMachine: false }
 }

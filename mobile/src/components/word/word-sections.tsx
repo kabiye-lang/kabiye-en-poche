@@ -1,17 +1,62 @@
 import type { EntryData } from '../../types/dictionary'
 
+import { useState } from 'react'
 import { Pressable } from 'react-native'
 
 import { Link } from 'expo-router'
 
 import { useLingui } from '@lingui/react/macro'
 
-import { resolveTranslation, translationFor } from '../../utils/dictionary-helpers'
+import { resolveTranslation } from '../../utils/dictionary-helpers'
 import { ArrowRightIcon } from '../icons'
 import { LanguageTag } from '../language-tag'
 import { Card, Text, View } from '../ui'
 
 type Translation = 'fr' | 'en'
+
+type Definition = EntryData['senses'][number]['definitions'][number]
+
+/**
+ * One definition line in the reader's language, with the truth about where it came from.
+ *
+ * Three cases. The dictionary's own gloss in the reader's language: just the text. A
+ * gloss only in the other language: the text with an "FR"/"EN" tag, as before. A gloss
+ * the pipeline translated into the reader's language: the text with a "translated" tag
+ * that swaps in the dictionary's original wording and back -- a reader who sees "too bad"
+ * can check that the book says "tant pis". `pɩtɩna-m` was the report: an English reader
+ * met French with a chip and nothing else.
+ */
+export const GlossLine = ({
+  definition,
+  translation,
+  prefix,
+}: {
+  definition: Definition
+  translation: Translation
+  prefix?: string
+}) => {
+  const [showOriginal, setShowOriginal] = useState(false)
+  const gloss = resolveTranslation(definition.translations, translation, definition.definition, definition.machine)
+  const showing = showOriginal && gloss.original ? gloss.original : { text: gloss.text, language: gloss.language }
+  return (
+    <View className="mb-1 flex-row items-baseline gap-2">
+      <Text variant="body" className="text-foreground flex-1">
+        {prefix}
+        {showing.text}
+      </Text>
+      {gloss.isMachine && gloss.original ? (
+        <LanguageTag
+          language={gloss.original.language}
+          machine
+          showingOriginal={showOriginal}
+          onPress={() => setShowOriginal((v) => !v)}
+        />
+      ) : gloss.isFallback && gloss.language ? (
+        <LanguageTag language={gloss.language} />
+      ) : null}
+    </View>
+  )
+}
 
 /** Definitions within each sense */
 export const SenseDefinitions = ({
@@ -32,15 +77,13 @@ export const SenseDefinitions = ({
       {senses.map((sense, senseIdx) => (
         <View key={senseIdx} className="mb-4">
           {sense.definitions.map((def, defIdx) => {
-            const gloss = resolveTranslation(def.translations, translation, def.definition)
             return (
               <View key={defIdx} className="mb-3">
-                <View className="mb-1 flex-row items-baseline gap-2">
-                  <Text variant="body" className="text-foreground flex-1">
-                    {sense.senseNumber || senseIdx + 1}.{defIdx + 1} {gloss.text}
-                  </Text>
-                  {gloss.isFallback && gloss.language && <LanguageTag language={gloss.language} />}
-                </View>
+                <GlossLine
+                  definition={def}
+                  translation={translation}
+                  prefix={`${sense.senseNumber || senseIdx + 1}.${defIdx + 1} `}
+                />
                 {def.grammar && (
                   <Text variant="caption" className="text-foreground-secondary mb-1 italic">
                     {def.grammar}
@@ -146,10 +189,12 @@ export const SubEntries = ({
           {subEntry.senses.map((sense, senseIdx) => (
             <View key={senseIdx} className="mb-2">
               {sense.definitions.map((def, defIdx) => (
-                <Text key={defIdx} variant="body" className="text-foreground mb-1">
-                  {sense.senseNumber ? `${sense.senseNumber}. ` : ''}
-                  {translationFor(def.translations, translation, def.definition)}
-                </Text>
+                <GlossLine
+                  key={defIdx}
+                  definition={def}
+                  translation={translation}
+                  prefix={sense.senseNumber ? `${sense.senseNumber}. ` : ''}
+                />
               ))}
               {sense.examples && sense.examples.length > 0 && (
                 <View className="mt-1 ml-3">
