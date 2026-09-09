@@ -69,6 +69,11 @@ export interface EntryData {
   dialectal?: boolean
   /** "viendrait de fr. Noël", "dérivé de halʋ et kpaɣʋ" -- where a word came from. */
   etymology?: string[]
+  /**
+   * Where a verb's conjugation tables are: the SIL sketch's schema from the entry's own
+   * `v.3b`, and the 2013 conjugation book's class(es) from its index. Verbs only.
+   */
+  conjugation?: { schema: string | null; classes: number[] } | null
 }
 
 export interface SearchResult extends Omit<DbSearchResult, 'entry_data'> {

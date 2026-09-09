@@ -8,6 +8,66 @@ export type Database = {
   }
   public: {
     Tables: {
+      verb_paradigms: {
+        Row: {
+          id: string
+          source: string
+          key: string
+          model: string
+          table: string
+          forms: Json
+          note: string | null
+          tone_written: boolean
+        }
+        Insert: {
+          id: string
+          source: string
+          key: string
+          model: string
+          table: string
+          forms: Json
+          note?: string | null
+          tone_written?: boolean
+        }
+        Update: {
+          id?: string
+          source?: string
+          key?: string
+          model?: string
+          table?: string
+          forms?: Json
+          note?: string | null
+          tone_written?: boolean
+        }
+        Relationships: []
+      }
+      verb_forms: {
+        Row: {
+          code: string
+          source: string
+          fr: string
+          en: string
+          gloss_fr: string
+          gloss_en: string
+        }
+        Insert: {
+          code: string
+          source: string
+          fr: string
+          en: string
+          gloss_fr: string
+          gloss_en: string
+        }
+        Update: {
+          code?: string
+          source?: string
+          fr?: string
+          en?: string
+          gloss_fr?: string
+          gloss_en?: string
+        }
+        Relationships: []
+      }
       dictionary_abbreviations: {
         Row: {
           code: string
