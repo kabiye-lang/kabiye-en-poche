@@ -31,7 +31,12 @@ export function useSearchDictionary(query: string, language: 'all' | 'fr' | 'en'
         const firstDef = entryData?.senses?.[0]?.definitions?.[0]
         // 'all' searches Kabiyè, so the reader's language decides which gloss to prefer.
         const preferred = language === 'all' ? 'en' : language
-        const resolved = resolveTranslation(firstDef?.translations, preferred, firstDef?.definition ?? '')
+        const resolved = resolveTranslation(
+          firstDef?.translations,
+          preferred,
+          firstDef?.definition ?? '',
+          firstDef?.machine
+        )
 
         return {
           ...r,
@@ -40,6 +45,7 @@ export function useSearchDictionary(query: string, language: 'all' | 'fr' | 'en'
           // Surfaced so a French gloss shown to an English reader can say so, the way
           // Word of the Day does. Without it the two lists disagree about the same entry.
           match_language: resolved.isFallback ? resolved.language : undefined,
+          match_machine: resolved.isMachine || undefined,
         }
       }) as unknown as SearchResult[]
     },

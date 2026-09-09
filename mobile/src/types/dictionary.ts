@@ -31,6 +31,8 @@ export interface EntryData {
         fr: string
         en: string
       }
+      /** Sides that were machine-translated from the other one; the reader is told. */
+      machine?: ('fr' | 'en')[]
     }[]
     examples: { source?: string; translation?: string }[]
     lexRefs: { type: string; targets: string[] }[] // Moved from entry level to sense level
@@ -73,6 +75,8 @@ export interface SearchResult extends Omit<DbSearchResult, 'entry_data'> {
   match_text?: string
   /** Set when match_text had to fall back to the other language. */
   match_language?: 'fr' | 'en'
+  /** The gloss shown is a machine translation of the dictionary's wording. */
+  match_machine?: boolean
 }
 
 /** Response from get_entry_by_term – includes resolution metadata */

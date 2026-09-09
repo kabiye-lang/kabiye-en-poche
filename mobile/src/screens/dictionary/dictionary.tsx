@@ -172,7 +172,11 @@ const DictionaryScreen: React.FC = () => {
                       <Text variant="caption" className="text-foreground-secondary flex-1">
                         {result.match_text}
                       </Text>
-                      {result.match_language && <LanguageTag language={result.match_language} />}
+                      {result.match_language ? (
+                        <LanguageTag language={result.match_language} />
+                      ) : result.match_machine ? (
+                        <LanguageTag language={currentLanguage === 'fr' ? 'en' : 'fr'} machine />
+                      ) : null}
                     </View>
                   )}
                 </Pressable>

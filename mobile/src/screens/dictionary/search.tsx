@@ -9,6 +9,7 @@ import { EmptyState } from '../../components/empty-state'
 import { LanguageTag } from '../../components/language-tag'
 import { Text, View } from '../../components/ui'
 import { useSearchDictionary } from '../../hooks/use-dictionary'
+import { useLanguage } from '../../hooks/use-language'
 import { kabiyeSpellingOf } from '../../utils/kabiye-variants'
 
 const SearchResultsScreen: React.FC = () => {
@@ -25,6 +26,7 @@ const SearchResultsScreen: React.FC = () => {
   const searchMode = activeFilter === 'translation' ? 'translation' : 'kabiye'
 
   const { data: searchResults, isLoading, error } = useSearchDictionary(query || '', searchLanguage, !!query)
+  const { currentLanguage } = useLanguage()
 
   /**
    * Real headwords near the query, used only to check a suggested spelling exists.
@@ -182,7 +184,11 @@ const SearchResultsScreen: React.FC = () => {
               {item.match_text && item.match_text !== item.headword ? (
                 <View className="mt-1 flex-row items-baseline gap-2">
                   <Text className="text-foreground flex-1 text-[16px] leading-[1.4]">{item.match_text}</Text>
-                  {item.match_language ? <LanguageTag language={item.match_language} /> : null}
+                  {item.match_language ? (
+                    <LanguageTag language={item.match_language} />
+                  ) : item.match_machine ? (
+                    <LanguageTag language={currentLanguage === 'fr' ? 'en' : 'fr'} machine />
+                  ) : null}
                 </View>
               ) : null}
             </Pressable>
