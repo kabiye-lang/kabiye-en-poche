@@ -56,6 +56,10 @@ const WordDetailsScreen: React.FC = () => {
 
   const { entry_data } = entry
   const translation = currentLanguage === 'fr' ? 'fr' : 'en'
+  // The print sends a dagger entry to its main word with "Voir": the `see` relation.
+  const standardForm =
+    entry_data.senses?.[0]?.lexRefs?.find((ref) => ref.type === 'see')?.targets?.[0] ??
+    entry_data.crossRefs?.[0]?.targets?.[0]
 
   /**
    * Hand the word to whatever the reader wants to send it with.
@@ -175,12 +179,12 @@ const WordDetailsScreen: React.FC = () => {
         {entry_data.dialectal ? (
           <Text className="text-foreground-secondary mt-3 text-[15px] leading-[1.45]">
             {t`† Regional variant.`}{' '}
-            {entry_data.crossRefs?.[0]?.targets?.[0] ? (
+            {standardForm ? (
               <>
                 {t`Standard form:`}{' '}
-                <Link href={`/word/${encodeURIComponent(entry_data.crossRefs[0].targets[0])}`}>
+                <Link href={`/word/${encodeURIComponent(standardForm)}`}>
                   <Text kabiye weight="semibold" className="text-foreground text-[15px] underline">
-                    {entry_data.crossRefs[0].targets[0]}
+                    {standardForm}
                   </Text>
                 </Link>
               </>

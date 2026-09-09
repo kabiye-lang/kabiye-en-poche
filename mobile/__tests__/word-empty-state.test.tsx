@@ -13,6 +13,12 @@ const wrapper = ({ children }: { children: React.ReactNode }) => {
   return React.createElement(I18nProvider, { i18n }, children)
 }
 
+// The sections read the abbreviation table through react-query and Supabase; here they
+// get an empty table, which is exactly the offline case: codes shown as written.
+jest.mock('../src/hooks/use-abbreviations', () => ({
+  useAbbreviations: () => ({ data: new Map() }),
+}))
+
 // Mock expo-router Link
 jest.mock('expo-router', () => {
   const { View } = require('react-native')
