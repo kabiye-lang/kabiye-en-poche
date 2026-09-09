@@ -8,6 +8,30 @@ export type Database = {
   }
   public: {
     Tables: {
+      dictionary_abbreviations: {
+        Row: {
+          code: string
+          kind: string
+          fr: string
+          en: string
+          detail: Json | null
+        }
+        Insert: {
+          code: string
+          kind: string
+          fr: string
+          en: string
+          detail?: Json | null
+        }
+        Update: {
+          code?: string
+          kind?: string
+          fr?: string
+          en?: string
+          detail?: Json | null
+        }
+        Relationships: []
+      }
       alphabet_letters: {
         Row: {
           audio_url: string | null

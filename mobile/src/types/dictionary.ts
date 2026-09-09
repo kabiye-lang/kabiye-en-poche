@@ -63,6 +63,10 @@ export interface EntryData {
    * doubts a definition should be able to go and look it up.
    */
   provenance?: Record<string, string[][]>
+  /** Printed with a dagger: a dialectal variant whose main word is the first cross-reference. */
+  dialectal?: boolean
+  /** "viendrait de fr. Noël", "dérivé de halʋ et kpaɣʋ" -- where a word came from. */
+  etymology?: string[]
 }
 
 export interface SearchResult extends Omit<DbSearchResult, 'entry_data'> {

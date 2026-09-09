@@ -1,7 +1,7 @@
 import type { EntryData } from '../../types/dictionary'
 
-import React from 'react'
-import { Alert, Linking, Pressable, ScrollView, Share } from 'react-native'
+import React, { useState } from 'react'
+import { Linking, Pressable, ScrollView, Share } from 'react-native'
 
 import { Link, router, Stack, useLocalSearchParams } from 'expo-router'
 import { useHeaderHeight } from 'expo-router/react-navigation'
@@ -11,10 +11,12 @@ import { useLingui } from '@lingui/react/macro'
 import { ArrowRightIcon, InfoIcon, ShareNetworkIcon } from '../../components/icons'
 import { Card, Text, View } from '../../components/ui'
 import { CrossReferences, SenseDefinitions, SubEntries } from '../../components/word/word-sections'
+import { useAbbreviations } from '../../hooks/use-abbreviations'
 import { useEntryByTerm } from '../../hooks/use-dictionary'
 import { useLanguage } from '../../hooks/use-language'
 import { useMyWords } from '../../hooks/use-my-words'
 import { isRedirectEntry, translationFor } from '../../utils/dictionary-helpers'
+import { describeGrammaticalInfo, grammaticalComponents } from '../../utils/grammatical-info'
 
 const WordDetailsScreen: React.FC = () => {
   const { id: term } = useLocalSearchParams<{ id: string }>()
@@ -22,7 +24,9 @@ const WordDetailsScreen: React.FC = () => {
   const { currentLanguage } = useLanguage()
   const { addMet } = useMyWords()
   const { data: entry, isLoading, error } = useEntryByTerm(term || '')
+  const { data: abbreviations } = useAbbreviations()
   const headerHeight = useHeaderHeight()
+  const [explainCodes, setExplainCodes] = useState(false)
   if (isLoading) {
     // Bone blocks in the shape of the entry, never a spinner.
     return (
@@ -131,35 +135,65 @@ const WordDetailsScreen: React.FC = () => {
           </Text>
         )}
 
-        {/* Grammatical Info */}
-        {entry_data.grammaticalInfo && (
-          <View className="mt-2 flex-row items-center">
-            <Text className="text-foreground-secondary text-[16px] italic">{entry_data.grammaticalInfo}</Text>
-            <Pressable
-              className="ml-1.5"
-              hitSlop={8}
-              onPress={() => {
-                Alert.alert(
-                  t`Abbreviations`,
-                  [
-                    'n.m. = nom masculin',
-                    'n.f. = nom féminin',
-                    'n.kl = noun class',
-                    'v. = verbe',
-                    'adj. = adjectif',
-                    'adv. = adverbe',
-                    'prép. = préposition',
-                    'conj. = conjonction',
-                    'pron. = pronom',
-                    'interj. = interjection',
-                  ].join('\n')
-                )
-              }}
-            >
-              <InfoIcon size={16} weight="regular" className="text-foreground-secondary" />
-            </Pressable>
+        {/* The grammatical class: the code as the dictionary prints it, then what it
+            says in words, because `n.E, pA` means nothing to someone who has never met
+            a noun class. The info button opens the codes one by one, with the facts a
+            learner can hold on to -- the pronoun, the class mark, an example word. */}
+        {entry_data.grammaticalInfo ? (
+          <View className="mt-3">
+            <View className="flex-row items-center">
+              <Text kabiye className="text-foreground-secondary text-[16px] italic">
+                {entry_data.grammaticalInfo}
+              </Text>
+              <Pressable
+                accessibilityRole="button"
+                accessibilityLabel={t`What these codes mean`}
+                accessibilityState={{ expanded: explainCodes }}
+                className="ml-1.5"
+                hitSlop={8}
+                onPress={() => setExplainCodes((open) => !open)}
+              >
+                <InfoIcon size={16} weight={explainCodes ? 'fill' : 'regular'} className="text-foreground-secondary" />
+              </Pressable>
+            </View>
+            {abbreviations ? (
+              <Text className="text-foreground mt-1 text-[15px] leading-[1.45]">
+                {describeGrammaticalInfo(entry_data.grammaticalInfo, abbreviations, translation)}
+              </Text>
+            ) : null}
+            {explainCodes && abbreviations ? (
+              <CodeExplanations
+                components={grammaticalComponents(entry_data.grammaticalInfo, abbreviations, translation)}
+                lang={translation}
+              />
+            ) : null}
           </View>
-        )}
+        ) : null}
+
+        {/* A dagger entry is a regional form; the dictionary sends the reader to the
+            standard word with "Voir", which arrives as the first cross-reference. */}
+        {entry_data.dialectal ? (
+          <Text className="text-foreground-secondary mt-3 text-[15px] leading-[1.45]">
+            {t`† Regional variant.`}{' '}
+            {entry_data.crossRefs?.[0]?.targets?.[0] ? (
+              <>
+                {t`Standard form:`}{' '}
+                <Link href={`/word/${encodeURIComponent(entry_data.crossRefs[0].targets[0])}`}>
+                  <Text kabiye weight="semibold" className="text-foreground text-[15px] underline">
+                    {entry_data.crossRefs[0].targets[0]}
+                  </Text>
+                </Link>
+              </>
+            ) : null}
+          </Text>
+        ) : null}
+
+        {/* Where the word came from, when the dictionary says. */}
+        {entry_data.etymology && entry_data.etymology.length > 0 ? (
+          <Text className="text-foreground-secondary mt-2 text-[14px] italic leading-[1.4]">
+            {entry_data.etymology.join(' · ')}
+          </Text>
+        ) : null}
 
         {/* Plural */}
         {entry_data.plural && (
@@ -217,6 +251,70 @@ const WordDetailsScreen: React.FC = () => {
           <Text weight="semibold" className="text-background text-[17px]">{t`Practise`}</Text>
         </Pressable>
       </View>
+    </View>
+  )
+}
+
+/**
+ * The codes of a grammatical class, one per row, with their meanings.
+ *
+ * A class row also carries the facts from the grammar sketch -- the pronoun that stands
+ * for the noun (which is where the code itself comes from), the class mark, and one
+ * example word -- and the panel closes with the one sentence about noun classes a
+ * newcomer needs.
+ */
+const CodeExplanations = ({
+  components,
+  lang,
+}: {
+  components: ReturnType<typeof grammaticalComponents>
+  lang: 'en' | 'fr'
+}) => {
+  const { t } = useLingui()
+  const hasClass = components.some((c) => c.kind === 'class')
+  return (
+    <View className="border-foreground mt-3 border-t-[1.5px]">
+      {components.map((c, index) => (
+        <View key={`${c.code}-${index}`} className="border-border flex-row gap-3 border-b py-3">
+          <Text kabiye weight="bold" className="text-foreground w-14 text-[16px]">
+            {c.code}
+          </Text>
+          <View className="flex-1">
+            <Text className="text-foreground text-[15px] leading-[1.45]">{c.meaning}</Text>
+            {c.detail?.pronoun ? (
+              <Text className="text-foreground-secondary mt-1 text-[13px] leading-[1.4]">
+                {lang === 'fr' ? 'pronom' : 'pronoun'}{' '}
+                <Text kabiye className="text-foreground-secondary text-[13px]">
+                  {c.detail.pronoun}
+                </Text>
+                {c.detail.suffix ? (
+                  <>
+                    {' · '}
+                    {lang === 'fr' ? 'marque' : 'class mark'}{' '}
+                    <Text kabiye className="text-foreground-secondary text-[13px]">
+                      {c.detail.suffix}
+                    </Text>
+                  </>
+                ) : null}
+                {c.detail.example ? (
+                  <>
+                    {' · '}
+                    <Text kabiye className="text-foreground-secondary text-[13px]">
+                      {c.detail.example.kbp}
+                    </Text>{' '}
+                    {lang === 'fr' ? `« ${c.detail.example.fr} »` : `“${c.detail.example.en}”`}
+                  </>
+                ) : null}
+              </Text>
+            ) : null}
+          </View>
+        </View>
+      ))}
+      {hasClass ? (
+        <Text className="text-foreground-secondary mt-3 text-[13px] leading-[1.45]">
+          {t`Kabiyè nouns fall into ten classes. The pronoun that stands for a noun, the ending of an adjective, and words like “this” and “a certain” all change with its class — and the code is the pronoun.`}
+        </Text>
+      ) : null}
     </View>
   )
 }
