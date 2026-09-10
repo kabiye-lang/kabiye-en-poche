@@ -16,6 +16,8 @@
   "ignoreDeps": [
     "@babel/types",
     "expo",
+    "babel-preset-expo",
+    "jest-expo",
     "@expo/dom-webview",
     "@expo/fingerprint",
     "@expo/metro-runtime",
@@ -113,7 +115,6 @@
     "expo-video",
     "expo-web-browser",
     "expo-widgets",
-    "jest-expo",
     "lottie-react-native",
     "react",
     "react-dom",
