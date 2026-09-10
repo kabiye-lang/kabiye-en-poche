@@ -107,9 +107,27 @@ allowBuilds:
   unrs-resolver: false
   workerd: false
 
-# There is deliberately no `overrides:` block. The metro and @supabase/supabase-js pins
-# that used to live here fixed two duplicate-install incidents, but both root causes are
-# gone upstream (uniwind declares metro as a peer `*`; admin's supabase-js range is a
-# caret, not an exact pin), and an exact pin silently caps every workspace until someone
-# bumps it by hand. `pnpm check-duplicates` now asserts the invariant those pins were
-# standing in for. Add an entry back only with a comment naming the incident it prevents.
+# Every entry here exists because two copies of one package were installed and the
+# duplication broke something. Neither version was wrong; having both was. Keep each entry
+# commented with the incident it prevents, and prefer a caret floor to an exact version —
+# an exact pin silently caps every workspace until someone bumps it by hand.
+# `pnpm check-duplicates` asserts the same one-copy invariant from the lockfile.
+#
+# Metro needs no entry any more: its 14 pins came out once uniwind@1.9.0 began declaring
+# metro as a peer `*`, so nothing pulls a second copy and the resolution is bounded by
+# @react-native/community-cli-plugin's `^0.84.3`.
+overrides:
+  # ra-supabase-core@3.5.2 depends on `^2.48.1` — a real dependency, not a peer — and pnpm
+  # never re-resolves a lockfile entry that still satisfies its range. So every
+  # `fix: upgrade deps` walks admin's own range forward while ra-supabase-core stays
+  # wherever it last landed, and a second copy appears. Admin then fails to build:
+  # SupabaseClient declares `supabaseUrl` as protected, and TypeScript accepts a protected
+  # member across two types only when one derives from the other, so admin's client does
+  # not typecheck against ra-supabase's providers —
+  #   Property 'supabaseUrl' is protected but type 'SupabaseClient<...>' is not a class
+  #   derived from 'SupabaseClient<...>'
+  # Incidents: 24beb06, and again once 2a0f27c removed the pin. Dropping it assumed the
+  # trigger was an exact pin in admin, but admin has always declared a caret; overlapping
+  # ranges were never enough. A caret floor pulls ra-supabase-core's range up to admin's
+  # without capping anyone — raise it whenever you want the tree to move.
+  '@supabase/supabase-js': '^2.116.0'

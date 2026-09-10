@@ -1,7 +1,7 @@
 import fs from 'fs'
 import https from 'https'
 
-import ncuCfg from '../mobile/.ncurc.json' with { type: 'json' }
+import ncuCfg from '../.ncurc.json' with { type: 'json' }
 import pkg from '../mobile/package.json' with { type: 'json' }
 
 /** Parse ncu cooldown string (e.g. "7d", "2w") → milliseconds. */
@@ -79,7 +79,17 @@ const expoJsonData = await fetchJson(`https://unpkg.com/expo@${expoVersion}/bund
 
 const bundledPackages = Object.keys(expoJsonData)
 
-ncuCfg.reject = ['@babel/types', ...bundledPackages]
+// Packages whose version the Expo SDK dictates, rather than "whatever is newest". Both
+// the local ncu run and Renovate must leave them alone, so build the list once and hand
+// the same one to each.
+//
+// bundledNativeModules.json names most of them. 'expo', 'babel-preset-expo' and
+// 'jest-expo' are absent from it but move with the SDK all the same — an update tool that
+// bumps one of those across an SDK major undoes the currentSdkMajor lock above.
+const sdkExtras = ['expo', 'babel-preset-expo', 'jest-expo']
+const pinnedByExpo = [...new Set(['@babel/types', ...sdkExtras, ...bundledPackages])]
+
+ncuCfg.reject = pinnedByExpo
 if (pkg.dependencies['expo']) pkg.dependencies['expo'] = expoVersion
 Object.keys(expoJsonData).forEach((dep) => {
   if (pkg.dependencies[dep]) pkg.dependencies[dep] = expoJsonData[dep]
@@ -87,19 +97,15 @@ Object.keys(expoJsonData).forEach((dep) => {
 })
 
 // Sync renovate.json ignoreDeps so it stays in lockstep with bundledNativeModules.
-// 'expo' itself is not in bundledNativeModules but must always be ignored (SDK upgrades
-// are intentional and handled by this script, not by Renovate).
 const renovateCfg = JSON.parse(fs.readFileSync('renovate.json', 'utf8'))
-renovateCfg.ignoreDeps = ['@babel/types', 'expo', ...bundledPackages]
+renovateCfg.ignoreDeps = pinnedByExpo
 fs.writeFileSync('renovate.json', JSON.stringify(renovateCfg, null, 2) + '\n')
 console.log(`Updated renovate.json ignoreDeps (${renovateCfg.ignoreDeps.length} packages).`)
 
 // Keep Expo SDK-related packages exempt from pnpm's minimumReleaseAge gating, since
 // their versions are pinned to bundledNativeModules and updated by this script directly.
 const minimumReleaseAgeExclude = [...new Set([
-  'expo',
-  'babel-preset-expo',
-  'jest-expo',
+  ...sdkExtras,
   ...bundledPackages.filter((dep) => dep.startsWith('expo-') || dep.startsWith('@expo/')),
 ])].sort()
 
@@ -112,5 +118,6 @@ fs.writeFileSync('pnpm-workspace.yaml', updatedWorkspaceYaml)
 console.log(`Updated pnpm-workspace.yaml minimumReleaseAgeExclude (${minimumReleaseAgeExclude.length} packages).`)
 
 fs.writeFileSync('mobile/package.json', JSON.stringify(pkg, null, 2) + '\n')
-fs.writeFileSync('mobile/.ncurc.json', JSON.stringify(ncuCfg, null, 2))
+fs.writeFileSync('.ncurc.json', JSON.stringify(ncuCfg, null, 2))
+console.log(`Updated .ncurc.json reject (${ncuCfg.reject.length} packages).`)
 console.log('Done.')
