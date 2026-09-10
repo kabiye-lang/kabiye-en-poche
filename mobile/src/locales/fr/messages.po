@@ -13,28 +13,76 @@ msgstr ""
 "Language-Team: \n"
 "Plural-Forms: \n"
 
-#. placeholder {0}: searchResults.length
-#. placeholder {1}: searchResults.length === 1 ? 'result' : 'results'
-#: src/screens/dictionary/search.tsx
-msgid "{0} {1} for \"{query}\""
-msgstr "{0} {1} pour \"{query}\""
+#. placeholder {0}: retried.length
+#: src/components/lesson-steps/finish-step.tsx
+msgid "{0} came back for a second try. You got them."
+msgstr "{0} sont revenus pour un second essai. Vous les avez eus."
 
-#. placeholder {0}: entries.length
-#. placeholder {1}: hasNextPage ? '+' : ''
-#. placeholder {2}: entries.length === 1 ? 'entry' : 'entries'
-#: src/screens/dictionary/browse-letter.tsx
-msgid "{0}{1} {2}"
-msgstr "{0}{1} {2}"
+#. placeholder {0}: content.length
+#: src/screens/keyboard.tsx
+msgid "{0} characters"
+msgstr "{0} caractères"
 
-#. placeholder {0}: entry.subEntries.length
-#. placeholder {1}: entry.subEntries.length === 1 ? 'expression' : 'expressions'
+#. placeholder {0}: entryCount.toLocaleString()
+#: src/screens/dictionary/dictionary.tsx
+msgid "{0} entries"
+msgstr "{0} entrées"
+
+#. placeholder {0}: progressSummary.plannedLessons - progressSummary.totalLessons
+#: src/screens/profile.tsx
+msgid "{0} more planned"
+msgstr "{0} de plus prévues"
+
+#. placeholder {0}: progressSummary.completedLessons
+#. placeholder {1}: progressSummary.totalLessons
+#: src/screens/profile.tsx
+msgid "{0} of {1} lessons"
+msgstr "{0} sur {1} leçons"
+
+#. placeholder {0}: words.length
+#: src/screens/dictionary/my-words.tsx
+msgid "{0} words"
+msgstr "{0} mots"
+
+#: src/components/lesson-steps/finish-step.tsx
+msgid "{count} words you can now read and write."
+msgstr "{count} mots que vous savez maintenant lire et écrire."
+
+#: src/screens/learn.tsx
+msgid "{done} of {total}"
+msgstr "{done} sur {total}"
+
 #: src/screens/dictionary/browse-letter.tsx
-msgid "+{0} {1}"
-msgstr "+{0} {1}"
+msgid "{total} entries"
+msgstr "{total} entrées"
+
+#: src/screens/lesson.tsx
+msgid "{written} of {planned} planned lessons have content. This one is on the list."
+msgstr "{written} des {planned} leçons prévues ont un contenu. Celle-ci est sur la liste."
 
 #: src/screens/dictionary/word.tsx
-msgid "Abbreviations"
-msgstr "Abréviations"
+msgid "† Regional variant."
+msgstr "† Variante régionale."
+
+#: src/screens/keyboard.tsx
+msgid "1 character"
+msgstr "1 caractère"
+
+#: src/screens/dictionary/browse-letter.tsx
+msgid "1 entry"
+msgstr "1 entrée"
+
+#: src/screens/dictionary/my-words.tsx
+msgid "1 word"
+msgstr "1 mot"
+
+#: src/screens/alphabet-list.tsx
+msgid "32 letters. Eight of them are not on any French keyboard."
+msgstr "32 lettres. Huit d'entre elles ne sont sur aucun clavier français."
+
+#: src/screens/dictionary/my-words.tsx
+msgid "A–Z"
+msgstr "A–Z"
 
 #: src/screens/profile.tsx
 msgid "Académie Kabiyè"
@@ -44,13 +92,19 @@ msgstr "Académie Kabiyè"
 msgid "Advanced"
 msgstr "Avancé"
 
-#: src/components/lesson-steps/quiz-step.tsx
-msgid "Almost done — you're doing great!"
-msgstr "Presque fini — vous êtes fantastique !"
+#: src/screens/alphabet-list.tsx
+#: src/screens/dictionary/search.tsx
+msgid "All"
+msgstr "Tout"
+
+#: src/screens/alphabet-list.tsx
+#: src/screens/home.tsx
+msgid "Alphabet"
+msgstr "Alphabet"
 
 #: src/screens/profile.tsx
-msgid "App Language"
-msgstr "Langue de l'application"
+msgid "Appearance"
+msgstr "Apparence"
 
 #: src/screens/profile.tsx
 msgid "Are you sure you want to reset all your progress? This action cannot be undone."
@@ -60,24 +114,51 @@ msgstr "Êtes-vous sûr de vouloir réinitialiser toute votre progression ? Cett
 msgid "Audio content will be available soon."
 msgstr "Le contenu audio sera bientôt disponible."
 
-#: src/components/lesson-steps/order-words-step.tsx
-msgid "Available words:"
-msgstr "Mots disponibles :"
+#: src/components/lesson-steps/audio-step.tsx
+#: src/components/lesson-steps/listen-choose-step.tsx
+#: src/components/lesson-steps/listen-type-step.tsx
+msgid "Audio unavailable"
+msgstr "Audio indisponible"
 
-#: src/components/lesson-steps/completion-step.tsx
-msgid "Back to Learn"
-msgstr "Retour à l'apprentissage"
+#: src/app/_layout.tsx
+#: src/app/(tabs)/(home)/_layout.tsx
+msgid "Back"
+msgstr "Retour"
 
-#: src/components/lesson-steps/completion-step.tsx
-msgid "Back to Lessons"
-msgstr "Retour aux leçons"
+#: src/components/lesson-steps/finish-step.tsx
+#: src/screens/lesson.tsx
+msgid "Back to path"
+msgstr "Retour au parcours"
+
+#: src/screens/keyboard.tsx
+msgid "Backspace"
+msgstr "Retour arrière"
+
+#: src/app/(onboarding)/index.tsx
+msgid "Before we start"
+msgstr "Avant de commencer"
+
+#: src/components/lesson-steps/cover-step.tsx
+msgid "Begin"
+msgstr "Commencer"
 
 #: src/utils/difficulty.ts
 msgid "Beginner"
 msgstr "Débutant"
 
-#: src/app/(tabs)/dictionary/_layout.tsx
+#: src/screens/lesson.tsx
+msgid "Being corrected."
+msgstr "En cours de correction."
+
 #: src/screens/dictionary/dictionary.tsx
+msgid "Browse A–Ɩ–Z"
+msgstr "Parcourir A–Ɩ–Z"
+
+#: src/screens/dictionary/dictionary.tsx
+msgid "Browse by letter"
+msgstr "Parcourir par lettre"
+
+#: src/app/(tabs)/dictionary/_layout.tsx
 msgid "Browse by Letter"
 msgstr "Parcourir par lettre"
 
@@ -85,107 +166,179 @@ msgstr "Parcourir par lettre"
 msgid "Cancel"
 msgstr "Annuler"
 
+#: src/screens/keyboard.tsx
+msgid "Caps lock on"
+msgstr "Verr. maj activé"
+
+#: src/screens/learn.tsx
+msgid "Change"
+msgstr "Changer"
+
 #: src/components/lesson-steps/order-words-step.tsx
+#: src/components/lesson-steps/spell-step.tsx
 msgid "Check"
 msgstr "Vérifier"
 
-#: src/screens/dictionary/search.tsx
-msgid "Check the spelling or try a different Kabiyè word. Remember, Kabiyè uses special characters like ɖ, ɛ, ɣ, ɩ, ŋ, ɔ, ʋ."
-msgstr "Vérifiez l'orthographe ou essayez un autre mot Kabiyè. N'oubliez pas, le Kabiyè utilise des caractères spéciaux comme ɖ, ɛ, ɣ, ɩ, ŋ, ɔ, ʋ."
+#: src/screens/dictionary/dictionary.tsx
+msgid "Check your connection and try again."
+msgstr "Vérifiez votre connexion et réessayez."
+
+#: src/components/lesson-steps/quiz-step.tsx
+msgid "Choose"
+msgstr "Choisir"
 
 #: src/components/lesson-steps/fill-blank-step.tsx
-msgid "Choose the correct word to complete the sentence"
-msgstr "Choisissez le mot correct pour compléter la phrase"
+msgid "Choose the word that completes the sentence"
+msgstr "Choisissez le mot qui complète la phrase"
+
+#: src/components/word/conjugation.tsx
+msgid "Class {key}"
+msgstr "Classe {key}"
 
 #: src/screens/keyboard.tsx
 msgid "Clear"
 msgstr "Effacer"
 
-#: src/screens/profile.tsx
-msgid "Clear all your learning progress"
-msgstr "Effacer toute votre progression d'apprentissage"
+#: src/screens/keyboard.tsx
+msgid "Close"
+msgstr "Fermer"
 
-#: src/screens/learn.tsx
+#: src/components/lesson-steps/progress-bar.tsx
+msgid "Close lesson"
+msgstr "Fermer la leçon"
+
+#: src/components/word/word-sections.tsx
+msgid "Collective"
+msgstr "Collectif"
+
 #: src/screens/unit.tsx
 msgid "Coming Soon"
 msgstr "Bientôt disponible"
 
-#: src/screens/learn.tsx
 #: src/screens/unit.tsx
 msgid "Complete previous lesson to unlock"
 msgstr "Terminez la leçon précédente pour débloquer"
 
-#: src/screens/learn.tsx
 #: src/screens/unit.tsx
 msgid "Completed"
 msgstr "Terminé"
+
+#: src/components/word/conjugation.tsx
+msgid "conjugates like"
+msgstr "se conjugue comme"
+
+#: src/components/word/conjugation.tsx
+msgid "Conjugation"
+msgstr "Conjugaison"
 
 #: src/screens/alphabet-letter.tsx
 #: src/screens/alphabet-list.tsx
 msgid "Consonant"
 msgstr "Consonne"
 
+#: src/screens/learn.tsx
+msgid "continue"
+msgstr "continuer"
+
+#: src/app/(onboarding)/index.tsx
 #: src/components/lesson-steps/audio-step.tsx
 #: src/components/lesson-steps/content-step.tsx
+#: src/components/lesson-steps/dialogue-step.tsx
 #: src/components/lesson-steps/fill-blank-step.tsx
 #: src/components/lesson-steps/listen-choose-step.tsx
 #: src/components/lesson-steps/listen-type-step.tsx
 #: src/components/lesson-steps/match-pairs-step.tsx
 #: src/components/lesson-steps/order-words-step.tsx
 #: src/components/lesson-steps/quiz-step.tsx
-#: src/screens/lesson.tsx
+#: src/components/lesson-steps/read-choose-step.tsx
+#: src/components/lesson-steps/spell-step.tsx
+#: src/components/lesson-steps/spot-letter-step.tsx
+#: src/screens/home.tsx
 msgid "Continue"
 msgstr "Continuer"
 
-#: src/screens/home.tsx
-msgid "Continue Learning"
-msgstr "Continuer l'apprentissage"
+#: src/components/word/word-sections.tsx
+msgid "Continuous form"
+msgstr "Forme continue"
 
 #: src/components/lesson-steps/audio-step.tsx
 msgid "Conversation"
 msgstr "Conversation"
 
 #: src/screens/keyboard.tsx
+msgid "Copied"
+msgstr "Copié"
+
+#: src/screens/keyboard.tsx
 msgid "Copy"
 msgstr "Copier"
 
-#: src/components/lesson-steps/completion-step.tsx
-msgid "correct"
-msgstr "correct"
+#: src/screens/keyboard.tsx
+msgid "Copy takes it with you"
+msgstr "Copier l'emporte avec vous"
 
 #: src/components/lesson-steps/listen-type-step.tsx
 msgid "Correct answer:"
 msgstr "Réponse correcte :"
 
-#: src/components/lesson-steps/order-words-step.tsx
-msgid "Correct order:"
-msgstr "Ordre correct :"
-
 #: src/components/lesson-steps/listen-choose-step.tsx
-#: src/components/lesson-steps/quiz-step.tsx
 msgid "Correct!"
 msgstr "Correct !"
 
-#: src/components/lesson-steps/fill-blank-step.tsx
 #: src/components/lesson-steps/listen-type-step.tsx
 msgid "Correct! ✓"
 msgstr "Correct ! ✓"
+
+#: src/screens/dictionary/dictionary.tsx
+msgid "Couldn't search right now"
+msgstr "Recherche impossible pour le moment"
+
+#: src/screens/lesson.tsx
+msgid "Culture"
+msgstr "Culture"
+
+#: src/screens/profile.tsx
+msgid "Dark"
+msgstr "Sombre"
 
 #: src/components/word/word-sections.tsx
 msgid "Definitions"
 msgstr "Définitions"
 
+#: src/components/lesson-steps/spell-step.tsx
+msgid "Delete"
+msgstr "Supprimer"
+
+#: src/components/lesson-steps/dialogue-step.tsx
+msgid "Dialogue"
+msgstr "Dialogue"
+
 #: src/app/(tabs)/_layout.tsx
-#: src/app/(tabs)/dictionary/_layout.tsx
-#: src/screens/home.tsx
+#: src/app/[...missing].tsx
+#: src/screens/dictionary/dictionary.tsx
 msgid "Dictionary"
 msgstr "Dictionnaire"
 
-#: src/app/(onboarding)/index.tsx
-msgid "Discover Kabiyè"
-msgstr "Découvrir le Kabiyè"
+#: src/screens/dictionary/search.tsx
+msgid "Did you mean"
+msgstr "Vouliez-vous dire"
 
-#: src/screens/dictionary/dictionary.tsx
+#: src/components/word/word-sections.tsx
+msgid "Diminutive"
+msgstr "Diminutif"
+
+#: src/components/word/word-sections.tsx
+msgid "Diminutive of"
+msgstr "Diminutif de"
+
+#: src/screens/learn.tsx
+msgid "done"
+msgstr "terminé"
+
+#: src/components/lesson-steps/finish-step.tsx
+msgid "Done"
+msgstr "Terminé"
+
 #: src/screens/dictionary/search.tsx
 msgid "English"
 msgstr "Anglais"
@@ -199,33 +352,13 @@ msgstr "Erreur"
 msgid "Error loading alphabet"
 msgstr "Erreur lors du chargement de l'alphabet"
 
-#: src/screens/dictionary/browse-letter.tsx
-msgid "Error loading entries"
-msgstr "Erreur lors du chargement des entrées"
-
-#: src/screens/dictionary/search.tsx
-msgid "Error loading results"
-msgstr "Erreur lors du chargement des résultats"
-
-#: src/components/lesson-steps/quiz-step.tsx
-msgid "Every expert was once a beginner!"
-msgstr "Tout expert a un jour été débutant !"
-
-#: src/components/lesson-steps/content-step.tsx
-msgid "Examples"
-msgstr "Exemples"
-
 #: src/components/word/word-sections.tsx
 msgid "Examples:"
 msgstr "Exemples :"
 
-#: src/app/(onboarding)/index.tsx
-msgid "Explore a rich West African language spoken by millions. Learn words, phrases, and the beautiful Kabiyè alphabet."
-msgstr "Explorez une riche langue d'Afrique de l'Ouest parlée par des millions. Apprenez des mots, des phrases et le magnifique alphabet Kabiyè."
-
-#: src/screens/home.tsx
-msgid "Ɛsɔɔlaa!"
-msgstr "Ɛsɔɔlaa!"
+#: src/components/word/word-sections.tsx
+msgid "Expression"
+msgstr "Expression"
 
 #: src/screens/lesson.tsx
 msgid "Failed to complete lesson. Please try again."
@@ -234,10 +367,6 @@ msgstr "Échec de la finalisation de la leçon. Veuillez réessayer."
 #: src/screens/dictionary/dictionary-pdf.tsx
 msgid "Failed to load dictionary"
 msgstr "Échec du chargement du dictionnaire"
-
-#: src/screens/learn.tsx
-msgid "Failed to load learning units"
-msgstr "Échec du chargement des unités d'apprentissage"
 
 #: src/screens/lesson.tsx
 msgid "Failed to load lesson"
@@ -251,70 +380,108 @@ msgstr "Échec de la réinitialisation de la progression. Veuillez réessayer."
 msgid "False"
 msgstr "Faux"
 
+#: src/components/word/conjugation.tsx
+msgid "Fewer forms"
+msgstr "Moins de formes"
+
+#: src/components/word/word-sections.tsx
+msgid "Figurative use"
+msgstr "Emploi figuré"
+
 #: src/components/lesson-steps/fill-blank-step.tsx
 msgid "Fill in the blank"
 msgstr "Complétez le trou"
 
-#: src/screens/dictionary/dictionary.tsx
-msgid "Find Kabiyè words in English..."
-msgstr "Trouver des mots Kabiyè en anglais..."
-
-#: src/screens/dictionary/dictionary.tsx
-msgid "Find Kabiyè words in French..."
-msgstr "Trouver des mots Kabiyè en français..."
-
-#: src/screens/dictionary/dictionary.tsx
-msgid "Français"
-msgstr "Français"
+#: src/components/lesson-steps/fill-blank-step.tsx
+msgid "Fill the blank"
+msgstr "Complétez la phrase"
 
 #: src/screens/dictionary/search.tsx
 msgid "French"
 msgstr "Français"
-
-#: src/app/(onboarding)/index.tsx
-msgid "Get Started"
-msgstr "Commencer"
 
 #: src/screens/alphabet-letter.tsx
 #: src/screens/alphabet-list.tsx
 msgid "Grapheme"
 msgstr "Graphème"
 
-#: src/components/lesson-steps/completion-step.tsx
-msgid "Great job!"
-msgstr "Excellent travail !"
-
 #: src/screens/lesson.tsx
 msgid "Great job! You've completed this lesson."
 msgstr "Excellent travail ! Vous avez terminé cette leçon."
-
-#: src/components/lesson-steps/quiz-step.tsx
-msgid "Halfway there — keep going!"
-msgstr "À mi-chemin — continuez !"
 
 #: src/components/lesson-steps/listen-type-step.tsx
 msgid "Hide hints"
 msgstr "Masquer les indices"
 
 #: src/app/(tabs)/_layout.tsx
+#: src/app/[...missing].tsx
 msgid "Home"
 msgstr "Accueil"
 
 #: src/screens/keyboard.tsx
-msgid "How to use"
-msgstr "Comment utiliser"
+#: src/screens/lesson.tsx
+msgid "How it works"
+msgstr "Comment ça marche"
+
+#: src/screens/keyboard.tsx
+msgid "How this keyboard works"
+msgstr "Comment fonctionne ce clavier"
 
 #: src/screens/profile.tsx
 msgid "How we collect and use your data"
 msgstr "Comment nous collectons et utilisons vos données"
 
-#: src/screens/alphabet-list.tsx
-msgid "I learn the Kabiyè Alphabet"
-msgstr "J'apprends l'alphabet Kabiyè"
+#: src/screens/profile.tsx
+msgid "I grew up hearing it"
+msgstr "J'ai grandi en l'entendant"
+
+#: src/app/(onboarding)/index.tsx
+msgid "I grew up hearing it."
+msgstr "J'ai grandi en l'entendant."
+
+#: src/screens/profile.tsx
+msgid "I speak it"
+msgstr "Je le parle"
+
+#: src/app/(onboarding)/index.tsx
+msgid "I speak it. I want to write it."
+msgstr "Je le parle. Je veux l'écrire."
+
+#: src/screens/profile.tsx
+msgid "I'm new to it"
+msgstr "Je débute"
+
+#: src/app/(onboarding)/index.tsx
+msgid "I'm new to it."
+msgstr "Je débute."
+
+#: src/components/word/word-sections.tsx
+msgid "Idiom"
+msgstr "Idiotisme"
+
+#: src/screens/dictionary/dictionary.tsx
+msgid "In Kabiyè, French and English. Browse by letter, or keep the words you meet."
+msgstr "En kabiyè, en français et en anglais. Parcourez par lettre, ou gardez les mots que vous rencontrez."
+
+#: src/screens/alphabet-letter.tsx
+msgid "In words"
+msgstr "En mots"
+
+#: src/screens/alphabet-letter.tsx
+msgid "In words you know"
+msgstr "Avec des mots que vous connaissez"
+
+#: src/screens/profile.tsx
+msgid "Interface language"
+msgstr "Langue de l'interface"
 
 #: src/utils/difficulty.ts
 msgid "Intermediate"
 msgstr "Intermédiaire"
+
+#: src/components/lesson-steps/read-choose-step.tsx
+msgid "It says: {correct}"
+msgstr "C'est écrit : {correct}"
 
 #: src/screens/profile.tsx
 msgid "Join our community to contribute to the development of the application"
@@ -324,14 +491,17 @@ msgstr "Rejoignez notre communauté pour contribuer au développement de l'appli
 msgid "Join the community"
 msgstr "Rejoindre la communauté"
 
-#: src/screens/dictionary/dictionary.tsx
 #: src/screens/dictionary/search.tsx
 msgid "Kabiyè"
 msgstr "Kabiyè"
 
+#: src/screens/keyboard.tsx
+msgid "Kabiyè capitalises where French does: sentence openings, and names."
+msgstr "Le kabiyè met la majuscule là où le français la met : en début de phrase et aux noms propres."
+
 #: src/screens/home.tsx
-msgid "Kabiyè Alphabet"
-msgstr "Alphabet Kabiyè"
+msgid "Kabiyè en Poche"
+msgstr "Kabiyè en Poche"
 
 #: src/screens/profile.tsx
 msgid "Kabiyè Essékuliye"
@@ -345,6 +515,14 @@ msgstr "Plateforme d'apprentissage de la langue Kabiyè"
 msgid "Kabiyè language resources"
 msgstr "Ressources de la langue Kabiyè"
 
+#: src/screens/dictionary/dictionary.tsx
+msgid "Kabiyè letters"
+msgstr "Lettres kabiyè"
+
+#: src/screens/dictionary/word.tsx
+msgid "Kabiyè nouns fall into ten classes. The pronoun that stands for a noun, the ending of an adjective, and words like “this” and “a certain” all change with its class — and the code is the pronoun."
+msgstr "Les noms kabiyè se répartissent en dix classes. Le pronom qui remplace un nom, la terminaison d'un adjectif et des mots comme « ce » ou « un certain » changent avec sa classe — et le code, c'est le pronom."
+
 #: src/screens/profile.tsx
 msgid "Kabiyè Tanaou"
 msgstr "Kabiyè Tanaou"
@@ -353,42 +531,35 @@ msgstr "Kabiyè Tanaou"
 msgid "Kabiyè Workbook"
 msgstr "Cahier d'exercices Kabiyè"
 
-#: src/components/lesson-steps/completion-step.tsx
-msgid "Keep trying! Practice makes perfect! 📚"
-msgstr "Continue d'essayer ! C'est en forgeant qu'on devient forgeron ! 📚"
+#: src/screens/dictionary/search.tsx
+msgid "Kabiyè writes ɩ where French writes i, and ʋ where French writes u — try those."
+msgstr "Le kabiyè écrit ɩ là où le français écrit i, et ʋ là où le français écrit u — essayez-les."
 
-#: src/screens/keyboard.tsx
-msgid "key allows you to capitalize. Long press to lock CAPS mode."
-msgstr "touche vous permet de mettre en majuscules. Appui long pour verrouiller le mode MAJ."
+#: src/screens/dictionary/word.tsx
+msgid "Kabiyè–French dictionary, p. {page}"
+msgstr "Dictionnaire kabiyè–français, p. {page}"
+
+#: src/screens/dictionary/dictionary.tsx
+msgid "Kabiyè, français, English"
+msgstr "Kabiyè, français, English"
 
 #: src/app/(tabs)/_layout.tsx
 #: src/screens/keyboard.tsx
 msgid "Keyboard"
 msgstr "Clavier"
 
+#: src/components/word/conjugation.tsx
+msgid "La conjugaison des verbes en kabiyè (2013)"
+msgstr "La conjugaison des verbes en kabiyè (2013)"
+
 #: src/app/(tabs)/_layout.tsx
+#: src/screens/learn.tsx
 msgid "Learn"
 msgstr "Apprendre"
-
-#: src/screens/learn.tsx
-msgid "Learn Kabiyè"
-msgstr "Apprendre le Kabiyè"
-
-#: src/screens/profile.tsx
-msgid "Learn Kabiyè in a fun and interactive way"
-msgstr "Apprenez le Kabiyè de manière amusante et interactive"
-
-#: src/screens/home.tsx
-msgid "Learn the letters and sounds"
-msgstr "Apprenez les lettres et les sons"
 
 #: src/screens/profile.tsx
 msgid "Learning Resources"
 msgstr "Ressources d'apprentissage"
-
-#: src/components/lesson-steps/completion-step.tsx
-msgid "Lesson Complete!"
-msgstr "Leçon terminée !"
 
 #: src/screens/lesson.tsx
 msgid "Lesson Completed!"
@@ -402,18 +573,9 @@ msgstr "Le contenu de la leçon sera bientôt disponible."
 msgid "Lesson not found"
 msgstr "Leçon introuvable"
 
-#: src/screens/home.tsx
 #: src/screens/unit.tsx
 msgid "Lessons"
 msgstr "Leçons"
-
-#: src/screens/learn.tsx
-msgid "lessons completed"
-msgstr "leçons terminées"
-
-#: src/screens/profile.tsx
-msgid "Lessons completed"
-msgstr "Leçons terminées"
 
 #: src/screens/unit.tsx
 msgid "Lessons temporarily unavailable"
@@ -423,17 +585,25 @@ msgstr "Leçons temporairement indisponibles"
 msgid "Lessons will be added soon"
 msgstr "Les leçons seront ajoutées bientôt"
 
-#: src/screens/dictionary/browse-letter.tsx
-msgid "Letter \"{letter}\""
-msgstr "Lettre \"{letter}\""
-
 #: src/screens/alphabet-letter.tsx
 msgid "Letter not found"
 msgstr "Lettre non trouvée"
 
+#: src/screens/home.tsx
+msgid "Letter of the week"
+msgstr "Lettre de la semaine"
+
 #: src/screens/profile.tsx
 msgid "Lexilogos Dictionary"
 msgstr "Dictionnaire Lexilogos"
+
+#: src/screens/profile.tsx
+msgid "Light"
+msgstr "Clair"
+
+#: src/components/word/conjugation.tsx
+msgid "like"
+msgstr "comme"
 
 #: src/components/lesson-steps/listen-choose-step.tsx
 msgid "Listen and choose the correct word"
@@ -451,10 +621,6 @@ msgstr "Écoutez l'audio et sélectionnez le mot kabiyè correct"
 msgid "Listen to the audio and type the Kabiyè word"
 msgstr "Écoutez l'audio et tapez le mot kabiyè"
 
-#: src/screens/alphabet-list.tsx
-msgid "Loading alphabet..."
-msgstr "Chargement de l'alphabet..."
-
 #: src/components/lesson-steps/audio-step.tsx
 #: src/components/lesson-steps/listen-choose-step.tsx
 #: src/components/lesson-steps/listen-type-step.tsx
@@ -465,26 +631,9 @@ msgstr "Chargement de l'audio..."
 msgid "Loading dictionary..."
 msgstr "Chargement du dictionnaire..."
 
-#: src/screens/dictionary/browse-letter.tsx
-msgid "Loading entries..."
-msgstr "Chargement des entrées..."
-
-#: src/screens/learn.tsx
-msgid "Loading learning units..."
-msgstr "Chargement des unités d'apprentissage..."
-
-#: src/screens/lesson.tsx
-msgid "Loading lesson..."
-msgstr "Chargement de la leçon..."
-
-#: src/screens/learn.tsx
 #: src/screens/unit.tsx
 msgid "Loading lessons..."
 msgstr "Chargement des leçons..."
-
-#: src/screens/alphabet-letter.tsx
-msgid "Loading letter..."
-msgstr "Chargement de la lettre..."
 
 #: src/screens/privacy-policy.tsx
 msgid "Loading privacy policy..."
@@ -494,21 +643,29 @@ msgstr "Chargement de la politique de confidentialité..."
 msgid "Loading terms..."
 msgstr "Chargement des conditions..."
 
-#: src/screens/unit.tsx
-msgid "Loading unit..."
-msgstr "Chargement de l'unité..."
-
-#: src/screens/dictionary/word.tsx
-msgid "Loading..."
-msgstr "Chargement..."
+#: src/components/ui/button.tsx
+msgid "Loading…"
+msgstr "Chargement…"
 
 #: src/screens/learn.tsx
-msgid "Locked"
-msgstr "Verrouillé"
+msgid "locked"
+msgstr "verrouillé"
 
-#: src/app/(onboarding)/index.tsx
-msgid "Look up any Kabiyè word instantly. Browse by letter, search in French or English, and discover the Word of the Day."
-msgstr "Recherchez n'importe quel mot Kabiyè instantanément. Parcourez par lettre, recherchez en français ou en anglais, et découvrez le mot du jour."
+#: src/screens/keyboard.tsx
+msgid "Long-press a letter for its capital"
+msgstr "Appui long sur une lettre pour sa majuscule"
+
+#: src/screens/keyboard.tsx
+msgid "Long-press for the capital"
+msgstr "Appui long pour la majuscule"
+
+#: src/components/lesson-steps/teach-step.tsx
+msgid "Look it up"
+msgstr "Voir l'entrée"
+
+#: src/components/lesson-steps/match-pairs-step.tsx
+msgid "Match"
+msgstr "Associer"
 
 #: src/components/lesson-steps/match-pairs-step.tsx
 msgid "Match the pairs"
@@ -518,15 +675,48 @@ msgstr "Associez les paires"
 msgid "matched"
 msgstr "associées"
 
-#: src/app/(onboarding)/index.tsx
+#: src/components/word/conjugation.tsx
+msgid "More forms"
+msgstr "Plus de formes"
+
+#: src/screens/profile.tsx
+msgid "My path"
+msgstr "Mon parcours"
+
+#: src/app/(tabs)/dictionary/_layout.tsx
+#: src/screens/dictionary/dictionary.tsx
+#: src/screens/dictionary/my-words.tsx
+msgid "My words"
+msgstr "Mes mots"
+
+#. placeholder {0}: myWords.readCount
+#: src/screens/dictionary/dictionary.tsx
+msgid "My words · {0}"
+msgstr "Mes mots · {0}"
+
+#: src/components/word/word-sections.tsx
+msgid "Near in meaning"
+msgstr "Sens proche"
+
+#: src/screens/keyboard.tsx
+msgid "New line"
+msgstr "Nouvelle ligne"
+
+#: src/screens/alphabet-list.tsx
+msgid "New to French"
+msgstr "Absentes du français"
+
+#: src/components/lesson-steps/teach-step.tsx
+msgid "New word"
+msgstr "Nouveau mot"
+
+#: src/screens/alphabet-letter.tsx
 msgid "Next"
 msgstr "Suivant"
 
-#: src/components/lesson-steps/audio-step.tsx
-#: src/components/lesson-steps/listen-choose-step.tsx
-#: src/components/lesson-steps/listen-type-step.tsx
-msgid "Audio unavailable"
-msgstr "Audio indisponible"
+#: src/components/lesson-steps/finish-step.tsx
+msgid "Next lesson"
+msgstr "Leçon suivante"
 
 #: src/components/lesson-steps/audio-step.tsx
 #: src/components/lesson-steps/listen-choose-step.tsx
@@ -534,71 +724,125 @@ msgstr "Audio indisponible"
 msgid "No audio available"
 msgstr "Aucun audio disponible"
 
-#: src/screens/dictionary/browse-letter.tsx
-msgid "No entries found"
-msgstr "Aucune entrée trouvée"
-
 #: src/screens/unit.tsx
 msgid "No lessons available"
 msgstr "Aucune leçon disponible"
 
-#: src/screens/learn.tsx
-msgid "No lessons available yet"
-msgstr "Aucune leçon disponible pour le moment"
-
-#: src/screens/dictionary/search.tsx
-msgid "No results for \"{query}\""
-msgstr "Aucun résultat pour \"{query}\""
+#: src/components/lesson-steps/teach-step.tsx
+msgid "No recordings yet. Kabiyè does not write tone, and the wrong voice teaches the wrong word — so this lesson waits for a real one."
+msgstr "Pas encore d'enregistrements. Le kabiyè n'écrit pas les tons, et une mauvaise voix enseigne un mauvais mot — cette leçon attend donc une vraie voix."
 
 #: src/components/word-of-the-day.tsx
 msgid "No word available today"
 msgstr "Aucun mot disponible aujourd'hui"
 
 #: src/screens/dictionary/browse-letter.tsx
-msgid "No words start with this letter"
-msgstr "Aucun mot ne commence par cette lettre"
+msgid "No words start with this letter."
+msgstr "Aucun mot ne commence par cette lettre."
 
-#: src/components/lesson-steps/order-words-step.tsx
-msgid "Not quite — tap Reset and try again"
-msgstr "Pas tout à fait — appuyez sur Réinitialiser et réessayez"
+#: src/screens/dictionary/my-words.tsx
+msgid "No words yet. Finish a lesson, or bookmark a word from the dictionary, and it will appear here."
+msgstr "Pas encore de mots. Terminez une leçon, ou marquez un mot du dictionnaire, et il apparaîtra ici."
+
+#: src/screens/lesson.tsx
+msgid "Not available."
+msgstr "Indisponible."
+
+#: src/screens/alphabet-letter.tsx
+msgid "Not in French"
+msgstr "Absentes du français"
+
+#: src/screens/dictionary/search.tsx
+#: src/screens/dictionary/word.tsx
+msgid "Not in the dictionary"
+msgstr "Absent du dictionnaire"
 
 #: src/components/lesson-steps/listen-choose-step.tsx
-#: src/components/lesson-steps/quiz-step.tsx
 msgid "Not quite right"
 msgstr "Pas tout à fait correct"
 
-#: src/components/lesson-steps/fill-blank-step.tsx
 #: src/components/lesson-steps/listen-type-step.tsx
 msgid "Not quite right ✗"
 msgstr "Pas tout à fait correct ✗"
 
 #: src/screens/profile.tsx
+msgid "Not set"
+msgstr "Non défini"
+
+#: src/screens/learn.tsx
+msgid "Not set yet."
+msgstr "Pas encore défini."
+
+#: src/components/lesson-steps/fill-blank-step.tsx
+#: src/components/lesson-steps/order-words-step.tsx
+#: src/components/lesson-steps/quiz-step.tsx
+#: src/components/lesson-steps/read-choose-step.tsx
+#: src/components/lesson-steps/spell-step.tsx
+msgid "Not this time"
+msgstr "Pas cette fois"
+
+#: src/screens/dictionary/my-words.tsx
+msgid "not written yet"
+msgstr "pas encore écrite"
+
+#: src/screens/lesson.tsx
+msgid "Not written yet."
+msgstr "Pas encore écrite."
+
+#: src/screens/dictionary/search.tsx
+msgid "Nothing matches that spelling."
+msgstr "Rien ne correspond à cette orthographe."
+
+#: src/screens/profile.tsx
 msgid "Official Kabiyè Academy website"
 msgstr "Site web officiel de l'Académie Kabiyè"
+
+#. placeholder {0}: retried[0]
+#: src/components/lesson-steps/finish-step.tsx
+msgid "One came back for a second try: {0}. You got it."
+msgstr "Un mot est revenu pour un second essai : {0}. Vous l'avez eu."
+
+#: src/components/lesson-steps/finish-step.tsx
+msgid "One word you can now read and write."
+msgstr "Un mot que vous savez maintenant lire et écrire."
 
 #: src/screens/profile.tsx
 msgid "Online Kabiyè dictionary"
 msgstr "Dictionnaire Kabiyè en ligne"
 
-#: src/components/lesson-steps/completion-step.tsx
-msgid "out of"
-msgstr "sur"
+#: src/components/word/word-sections.tsx
+msgid "Opposites"
+msgstr "Contraires"
+
+#: src/components/lesson-steps/order-words-step.tsx
+msgid "Order the words"
+msgstr "Mettez les mots dans l'ordre"
+
+#. placeholder {0}: language.toUpperCase()
+#: src/components/language-tag.tsx
+msgid "original · {0}"
+msgstr "original · {0}"
+
+#. placeholder {0}: conjugation.schema ?? ''
+#: src/components/word/conjugation.tsx
+msgid "Pattern {0}"
+msgstr "Schéma {0}"
+
+#: src/screens/dictionary/dictionary.tsx
+msgid "PDF"
+msgstr "PDF"
 
 #: src/app/(tabs)/dictionary/_layout.tsx
 msgid "PDF Dictionary"
 msgstr "Dictionnaire PDF"
 
-#: src/components/lesson-steps/match-pairs-step.tsx
-msgid "Perfect! All pairs matched!"
-msgstr "Parfait ! Toutes les paires associées !"
+#: src/screens/keyboard.tsx
+msgid "Period"
+msgstr "Point"
 
-#: src/components/lesson-steps/order-words-step.tsx
-msgid "Perfect! Correct order!"
-msgstr "Parfait ! Ordre correct !"
-
-#: src/components/lesson-steps/completion-step.tsx
-msgid "Perfect! You're a star! 🌟"
-msgstr "Parfait ! Tu es une star ! 🌟"
+#: src/components/audio-play-button.tsx
+msgid "Play audio"
+msgstr "Écouter l'audio"
 
 #: src/components/lesson-steps/audio-step.tsx
 #: src/components/lesson-steps/listen-choose-step.tsx
@@ -606,7 +850,6 @@ msgstr "Parfait ! Tu es une star ! 🌟"
 msgid "Playing... (Tap to stop)"
 msgstr "Lecture... (Appuyez pour arrêter)"
 
-#: src/screens/lesson.tsx
 #: src/screens/unit.tsx
 msgid "Please check back later"
 msgstr "Veuillez revenir plus tard"
@@ -619,14 +862,30 @@ msgstr "Veuillez vérifier votre connexion et réessayer"
 msgid "Please check your internet connection and try again"
 msgstr "Veuillez vérifier votre connexion internet et réessayer"
 
-#: src/screens/dictionary/browse-letter.tsx
-#: src/screens/dictionary/search.tsx
-msgid "Please try again later"
-msgstr "Veuillez réessayer plus tard"
+#: src/components/word/word-sections.tsx
+msgid "Plural"
+msgstr "Pluriel"
+
+#: src/components/word/word-sections.tsx
+msgid "Plural of"
+msgstr "Pluriel de"
 
 #: src/screens/dictionary/word.tsx
 msgid "Plural:"
 msgstr "Pluriel :"
+
+#: src/screens/dictionary/word.tsx
+msgid "Practise"
+msgstr "S'exercer"
+
+#. placeholder {0}: unwritten.length
+#: src/screens/dictionary/my-words.tsx
+msgid "Practise the {0} unwritten"
+msgstr "Exercez les {0} non écrits"
+
+#: src/screens/dictionary/my-words.tsx
+msgid "Practise the 1 unwritten"
+msgstr "Exercez le mot non écrit"
 
 #: src/app/_layout.tsx
 #: src/screens/profile.tsx
@@ -642,29 +901,40 @@ msgid "Privacy Policy not found"
 msgstr "Politique de confidentialité non trouvée"
 
 #: src/app/(tabs)/_layout.tsx
-#: src/screens/profile.tsx
 msgid "Profile"
 msgstr "Profil"
 
-#: src/screens/profile.tsx
-msgid "Progress Overview"
-msgstr "Aperçu de la progression"
+#: src/components/word/word-sections.tsx
+msgid "Proverb"
+msgstr "Proverbe"
 
 #: src/components/lesson-steps/order-words-step.tsx
 msgid "Put the words in the correct order"
 msgstr "Mettez les mots dans le bon ordre"
 
-#: src/components/lesson-steps/completion-step.tsx
-msgid "reading slide"
-msgstr "diapositive de lecture"
+#: src/components/lesson-steps/read-choose-step.tsx
+msgid "Read and choose"
+msgstr "Lisez et choisissez"
 
-#: src/components/lesson-steps/completion-step.tsx
-msgid "reading slides"
-msgstr "diapositives de lecture"
+#: src/screens/dictionary/my-words.tsx
+msgid "Recent"
+msgstr "Récents"
+
+#: src/components/word/word-sections.tsx
+msgid "Related"
+msgstr "Liés"
 
 #: src/components/word/word-sections.tsx
 msgid "Related Expressions"
 msgstr "Expressions connexes"
+
+#: src/components/word/word-sections.tsx
+msgid "Repeated form"
+msgstr "Forme répétée"
+
+#: src/screens/dictionary/word.tsx
+msgid "Report a mistake"
+msgstr "Signaler une erreur"
 
 #: src/components/lesson-steps/order-words-step.tsx
 #: src/screens/profile.tsx
@@ -672,37 +942,36 @@ msgid "Reset"
 msgstr "Réinitialiser"
 
 #: src/screens/profile.tsx
+msgid "Reset progress"
+msgstr "Réinitialiser la progression"
+
+#: src/screens/profile.tsx
 msgid "Reset Progress"
 msgstr "Réinitialiser la progression"
 
-#: src/screens/home.tsx
-msgid "Resume lesson"
-msgstr "Reprendre la leçon"
+#: src/components/lesson-steps/teach-step.tsx
+msgid "Said"
+msgstr "Se dit"
 
-#: src/screens/dictionary/dictionary.tsx
-msgid "Search for Kabiyè words and see their translations"
-msgstr "Rechercher des mots Kabiyè et voir leurs traductions"
+#: src/components/lesson-steps/finish-step.tsx
+msgid "Saved to My words · {savedTotal} so far"
+msgstr "Ajouté à Mes mots · {savedTotal} jusqu'ici"
 
-#: src/screens/dictionary/dictionary.tsx
-msgid "Search in English to find matching Kabiyè words"
-msgstr "Rechercher en anglais pour trouver des mots Kabiyè correspondants"
+#: src/screens/dictionary/search.tsx
+msgid "Search"
+msgstr "Rechercher"
 
-#: src/screens/dictionary/dictionary.tsx
-msgid "Search in French to find matching Kabiyè words"
-msgstr "Rechercher en français pour trouver des mots Kabiyè correspondants"
-
-#: src/screens/dictionary/dictionary.tsx
-msgid "Search in:"
-msgstr "Rechercher dans :"
-
-#: src/screens/dictionary/dictionary.tsx
-msgid "Search Kabiyè words..."
-msgstr "Rechercher des mots Kabiyè..."
+#: src/screens/dictionary/search.tsx
+msgid "Search again"
+msgstr "Rechercher à nouveau"
 
 #: src/app/(tabs)/dictionary/_layout.tsx
-#: src/screens/dictionary/search.tsx
 msgid "Search Results"
 msgstr "Résultats de recherche"
+
+#: src/screens/home.tsx
+msgid "Search the dictionary"
+msgstr "Rechercher dans le dictionnaire"
 
 #: src/screens/dictionary/search.tsx
 msgid "Searching in English"
@@ -716,14 +985,18 @@ msgstr "Recherche en français"
 msgid "Searching in Kabiyè"
 msgstr "Recherche en Kabiyè"
 
-#: src/screens/dictionary/search.tsx
-msgid "Searching..."
-msgstr "Recherche en cours..."
+#: src/components/word/word-sections.tsx
+msgid "See"
+msgstr "Voir"
 
 #. placeholder {0}: searchResults.length
 #: src/screens/dictionary/dictionary.tsx
 msgid "See all {0} results"
 msgstr "Voir tous les {0} résultats"
+
+#: src/components/word/word-sections.tsx
+msgid "See also"
+msgstr "Voir aussi"
 
 #: src/components/word/word-sections.tsx
 msgid "See Also"
@@ -733,29 +1006,98 @@ msgstr "Voir aussi"
 msgid "Settings"
 msgstr "Paramètres"
 
+#: src/screens/dictionary/word.tsx
+msgid "Share this word"
+msgstr "Partager ce mot"
+
+#: src/screens/keyboard.tsx
+msgid "Shift"
+msgstr "Maj"
+
+#: src/screens/keyboard.tsx
+msgid "Shift on"
+msgstr "Maj activée"
+
+#: src/screens/keyboard.tsx
+msgid "Shift, and caps lock"
+msgstr "Majuscule et verrouillage"
+
 #: src/components/lesson-steps/listen-type-step.tsx
 msgid "Show hints"
 msgstr "Afficher les indices"
+
+#: src/components/language-tag.tsx
+msgid "Show the original wording"
+msgstr "Afficher la formulation originale"
+
+#: src/components/language-tag.tsx
+msgid "Show the translation"
+msgstr "Afficher la traduction"
+
+#: src/components/word/conjugation.tsx
+msgid "SIL 1999 dictionary, pp. 545–550"
+msgstr "Dictionnaire SIL 1999, p. 545–550"
+
+#: src/components/word/word-sections.tsx
+msgid "Singular"
+msgstr "Singulier"
+
+#: src/components/word/word-sections.tsx
+msgid "Singular of"
+msgstr "Singulier de"
 
 #: src/app/(onboarding)/index.tsx
 msgid "Skip"
 msgstr "Ignorer"
 
+#: src/screens/learn.tsx
+msgid "Soon"
+msgstr "Bientôt"
+
+#: src/screens/dictionary/word.tsx
+msgid "Source"
+msgstr "Source"
+
+#: src/components/lesson-steps/spell-step.tsx
+msgid "space"
+msgstr "espace"
+
+#: src/components/lesson-steps/spell-step.tsx
 #: src/screens/keyboard.tsx
 msgid "Space"
 msgstr "Espace"
 
-#: src/screens/profile.tsx
-msgid "Start a lesson to begin tracking"
-msgstr "Commencez une leçon pour commencer le suivi"
+#: src/components/lesson-steps/spell-step.tsx
+msgid "Spell it"
+msgstr "Écrivez-le"
 
-#: src/screens/home.tsx
-msgid "Start Learning"
-msgstr "Commencer à apprendre"
+#: src/components/lesson-steps/spot-letter-step.tsx
+msgid "Spot the letter"
+msgstr "Repérez la lettre"
 
-#: src/screens/home.tsx
-msgid "Start your Kabiyè journey"
-msgstr "Commencez votre voyage en Kabiyè"
+#: src/screens/dictionary/word.tsx
+msgid "Standard form:"
+msgstr "Forme standard :"
+
+#: src/app/(onboarding)/index.tsx
+msgid "Start with greetings."
+msgstr "Commencez par les salutations."
+
+#: src/app/(onboarding)/index.tsx
+msgid "Start with the alphabet and spelling."
+msgstr "Commencez par l'alphabet et l'orthographe."
+
+#: src/app/(onboarding)/index.tsx
+msgid "Start with the words you half-remember."
+msgstr "Commencez par les mots dont vous vous souvenez à moitié."
+
+#: src/components/lesson-steps/progress-bar.tsx
+msgid "Step {currentStep} of {totalSteps}"
+msgstr "Étape {currentStep} sur {totalSteps}"
+
+#: src/components/audio-play-button.tsx
+msgid "Stop audio"
+msgstr "Arrêter l'audio"
 
 #: src/screens/profile.tsx
 msgid "Success"
@@ -765,17 +1107,21 @@ msgstr "Succès"
 msgid "Support"
 msgstr "Support"
 
-#: src/components/lesson-steps/quiz-step.tsx
-msgid "Take your time and think it through."
-msgstr "Prenez votre temps et réfléchissez bien."
+#: src/components/word/word-sections.tsx
+msgid "Synonyms"
+msgstr "Synonymes"
+
+#: src/screens/profile.tsx
+msgid "System"
+msgstr "Système"
 
 #: src/components/lesson-steps/match-pairs-step.tsx
 msgid "Tap pairs to match them"
 msgstr "Appuyez sur les paires pour les associer"
 
-#: src/components/lesson-steps/content-step.tsx
-msgid "Tap the speaker icon to hear pronunciation"
-msgstr "Appuyez sur l'icône du haut-parleur pour entendre la prononciation"
+#: src/screens/keyboard.tsx
+msgid "Tap shift for the next letter only. Long-press it to lock."
+msgstr "Touchez majuscule pour la lettre suivante seulement. Appui long pour verrouiller."
 
 #: src/components/lesson-steps/audio-step.tsx
 #: src/components/lesson-steps/listen-choose-step.tsx
@@ -783,7 +1129,6 @@ msgstr "Appuyez sur l'icône du haut-parleur pour entendre la prononciation"
 msgid "Tap to listen"
 msgstr "Appuyez pour écouter"
 
-#: src/screens/learn.tsx
 #: src/screens/unit.tsx
 msgid "Tap to start"
 msgstr "Appuyez pour commencer"
@@ -792,7 +1137,6 @@ msgstr "Appuyez pour commencer"
 msgid "Tap words in the correct order"
 msgstr "Appuyez sur les mots dans le bon ordre"
 
-#: src/screens/learn.tsx
 #: src/screens/unit.tsx
 msgid "Temporarily Unavailable"
 msgstr "Temporairement indisponible"
@@ -813,37 +1157,62 @@ msgstr "Conditions d'utilisation"
 msgid "Terms not found"
 msgstr "Conditions non trouvées"
 
-#: src/screens/keyboard.tsx
-msgid "The"
-msgstr "La"
+#: src/components/lesson-steps/spot-letter-step.tsx
+msgid "That is the attested spelling."
+msgstr "C'est l'orthographe attestée."
 
-#: src/screens/dictionary/word.tsx
-msgid "The word you're looking for doesn't exist in our dictionary"
-msgstr "Le mot que vous recherchez n'existe pas dans notre dictionnaire"
+#: src/components/lesson-steps/read-choose-step.tsx
+msgid "That is what it says."
+msgstr "C'est bien ce que ça dit."
+
+#: src/screens/dictionary/browse-letter.tsx
+#: src/screens/dictionary/search.tsx
+msgid "The dictionary needs the network."
+msgstr "Le dictionnaire a besoin du réseau."
+
+#: src/screens/alphabet-list.tsx
+msgid "The Kabiyè alphabet"
+msgstr "L'alphabet kabiyè"
+
+#: src/screens/keyboard.tsx
+msgid "The letters a French keyboard has no key for."
+msgstr "Les lettres qu'un clavier français n'a pas."
+
+#: src/app/[...missing].tsx
+msgid "The link may be old, or the word may have moved. The dictionary, your saved words and the alphabet are all still where you left them."
+msgstr "Le lien est peut-être ancien, ou le mot a changé de place. Le dictionnaire, vos mots enregistrés et l'alphabet sont toujours là où vous les avez laissés."
+
+#: src/components/lesson-steps/spot-letter-step.tsx
+msgid "The right spelling is {correct}. We'll ask this one again at the end."
+msgstr "La bonne orthographe est {correct}. Nous vous la redemanderons à la fin."
+
+#: src/components/lesson-steps/spell-step.tsx
+msgid "The spelling is"
+msgstr "L'orthographe est"
+
+#: src/components/word/conjugation.tsx
+msgid "The tables are the ones our sources print for the model verb of this pattern. No form of {headword} itself is written here that a source did not write."
+msgstr "Ces tableaux sont ceux que nos sources donnent pour le verbe modèle de ce schéma. Aucune forme de {headword} lui-même n'est écrite ici qu'une source n'ait écrite."
+
+#: src/screens/keyboard.tsx
+msgid "The tinted keys"
+msgstr "Les touches teintées"
 
 #: src/screens/dictionary/word.tsx
 msgid "This is a variant form. See the main entry for the full definition."
 msgstr "Ceci est une forme variante. Consultez l'entrée principale pour la définition complète."
 
-#: src/screens/lesson.tsx
-msgid "This lesson is coming soon!"
-msgstr "Cette leçon arrive bientôt !"
-
-#: src/screens/lesson.tsx
-msgid "This lesson is not available"
-msgstr "Cette leçon n'est pas disponible"
-
-#: src/screens/lesson.tsx
-msgid "This lesson is temporarily unavailable"
-msgstr "Cette leçon est temporairement indisponible"
-
-#: src/screens/lesson.tsx
-msgid "This lesson is under maintenance"
-msgstr "Cette leçon est en maintenance"
-
 #: src/screens/alphabet-letter.tsx
 msgid "This letter does not exist"
 msgstr "Cette lettre n'existe pas"
+
+#: src/screens/lesson.tsx
+msgid "This one is on the list."
+msgstr "Celle-ci est sur la liste."
+
+#: src/app/[...missing].tsx
+msgid "This page isn't here"
+msgstr "Cette page n'existe pas"
 
 #: src/screens/unit.tsx
 msgid "This unit does not exist"
@@ -865,54 +1234,66 @@ msgstr "Cette unité est temporairement indisponible"
 msgid "This unit is under maintenance"
 msgstr "Cette unité est en maintenance"
 
+#: src/components/lesson-steps/finish-step.tsx
+msgid "This week"
+msgstr "Cette semaine"
+
+#: src/screens/dictionary/my-words.tsx
+msgid "To practise"
+msgstr "À exercer"
+
+#: src/screens/home.tsx
+msgid "Today"
+msgstr "Aujourd'hui"
+
 #: src/components/lesson-steps/audio-step.tsx
 msgid "Transcript"
 msgstr "Transcription"
+
+#: src/components/language-tag.tsx
+#: src/screens/home.tsx
+msgid "translated"
+msgstr "traduit"
 
 #: src/components/lesson-steps/quiz-step.tsx
 msgid "True"
 msgstr "Vrai"
 
 #: src/screens/dictionary/search.tsx
-msgid "Try a different translation or switch to Kabiyè search mode."
-msgstr "Essayez une autre traduction ou passez en mode de recherche Kabiyè."
+msgid "Try again"
+msgstr "Réessayer"
 
-#: src/screens/keyboard.tsx
-msgid "Try typing:"
-msgstr "Essayez de taper :"
+#: src/components/lesson-steps/teach-step.tsx
+msgid "Try it"
+msgstr "Essayez"
 
 #: src/screens/keyboard.tsx
 msgid "Type here..."
 msgstr "Tapez ici..."
 
-#: src/app/(onboarding)/index.tsx
-msgid "Type in Kabiyè"
-msgstr "Écrire en Kabiyè"
-
 #: src/components/lesson-steps/listen-type-step.tsx
 msgid "Type what you hear..."
 msgstr "Tapez ce que vous entendez..."
 
-#: src/screens/learn.tsx
 #: src/screens/unit.tsx
 msgid "Under Maintenance"
 msgstr "En maintenance"
+
+#: src/screens/learn.tsx
+msgid "Unit"
+msgstr "Unité"
+
+#: src/screens/learn.tsx
+msgid "Unit "
+msgstr "Unité "
 
 #: src/screens/unit.tsx
 msgid "Unit not found"
 msgstr "Unité non trouvée"
 
-#: src/screens/profile.tsx
-msgid "Units completed"
-msgstr "Unités terminées"
-
-#: src/app/(onboarding)/index.tsx
-msgid "Use the built-in Kabiyè keyboard to type special characters. Copy text and share it anywhere."
-msgstr "Utilisez le clavier Kabiyè intégré pour saisir des caractères spéciaux. Copiez le texte et partagez-le partout."
-
-#: src/screens/keyboard.tsx
-msgid "Use this keyboard to write in Kabiyè."
-msgstr "Utilisez ce clavier pour écrire en Kabiyè."
+#: src/components/word/word-sections.tsx
+msgid "Used with the verb"
+msgstr "Avec le verbe"
 
 #: src/screens/dictionary/word.tsx
 msgid "Variant Forms"
@@ -927,71 +1308,115 @@ msgstr "Voir l'entrée principale :"
 msgid "Vowel"
 msgstr "Voyelle"
 
-#: src/components/lesson-steps/completion-step.tsx
-msgid "Well done! Keep practicing! 💪"
-msgstr "Bien joué ! Continue à t'entraîner ! 💪"
+#: src/screens/alphabet-list.tsx
+msgid "Vowels"
+msgstr "Voyelles"
+
+#: src/screens/learn.tsx
+msgid "We could not load your path."
+msgstr "Impossible de charger votre parcours."
 
 #: src/screens/dictionary/word.tsx
-msgid "Word not found"
-msgstr "Mot non trouvé"
+msgid "We don't hold this word. Kabiyè writes ɩ where French writes i, and ʋ where French writes u — try those."
+msgstr "Nous n'avons pas ce mot. Le kabiyè écrit ɩ là où le français écrit i, et ʋ là où le français écrit u — essayez-les."
 
-#: src/screens/dictionary/dictionary.tsx
-#: src/screens/home.tsx
-msgid "Word of the Day"
-msgstr "Mot du jour"
-
+#: src/components/lesson-steps/fill-blank-step.tsx
 #: src/components/lesson-steps/order-words-step.tsx
-msgid "Your answer will appear here"
-msgstr "Votre réponse apparaîtra ici"
+#: src/components/lesson-steps/quiz-step.tsx
+#: src/components/lesson-steps/read-choose-step.tsx
+#: src/components/lesson-steps/spell-step.tsx
+msgid "We'll ask this one again at the end."
+msgstr "Nous vous la redemanderons à la fin."
 
-#: src/screens/profile.tsx
-msgid "Your learning journey starts here."
-msgstr "Votre parcours d'apprentissage commence ici."
+#: src/components/lesson-steps/read-choose-step.tsx
+msgid "What does it say?"
+msgstr "Qu'est-ce que ça dit ?"
+
+#: src/screens/dictionary/word.tsx
+msgid "What these codes mean"
+msgstr "Ce que signifient ces codes"
+
+#: src/screens/keyboard.tsx
+msgid "What you write goes to the clipboard, to paste into any other app."
+msgstr "Ce que vous écrivez va dans le presse-papiers, à coller dans n'importe quelle autre appli."
 
 #: src/app/(onboarding)/index.tsx
-msgid "Your Personal Dictionary"
-msgstr "Votre dictionnaire personnel"
+msgid "Where does Kabiyè sit in your life?"
+msgstr "Quelle place a le kabiyè dans votre vie ?"
+
+#: src/components/lesson-steps/spot-letter-step.tsx
+msgid "Which spelling is right for “{gloss}”?"
+msgstr "Quelle orthographe est la bonne pour « {gloss} » ?"
+
+#: src/components/lesson-steps/spot-letter-step.tsx
+msgid "Which spelling is right?"
+msgstr "Quelle orthographe est la bonne ?"
+
+#: src/screens/dictionary/dictionary.tsx
+msgid "Word of the day"
+msgstr "Mot du jour"
+
+#: src/screens/profile.tsx
+msgid "word you can read"
+msgstr "mot que vous savez lire"
+
+#: src/screens/profile.tsx
+msgid "word you can write"
+msgstr "mot que vous savez écrire"
+
+#: src/screens/profile.tsx
+msgid "words you can read"
+msgstr "mots que vous savez lire"
+
+#: src/screens/profile.tsx
+msgid "words you can write"
+msgstr "mots que vous savez écrire"
+
+#: src/components/lesson-steps/spell-step.tsx
+msgid "Write “{gloss}” in Kabiyè"
+msgstr "Écrivez « {gloss} » en kabiyè"
+
+#: src/screens/keyboard.tsx
+msgid "Write in Kabiyè"
+msgstr "Écrire en kabiyè"
+
+#: src/screens/alphabet-letter.tsx
+#: src/screens/dictionary/word.tsx
+msgid "Write it"
+msgstr "Écrire"
+
+#: src/components/lesson-steps/spell-step.tsx
+msgid "Write the word in Kabiyè"
+msgstr "Écrivez le mot en kabiyè"
+
+#: src/screens/dictionary/my-words.tsx
+msgid "written"
+msgstr "écrite"
+
+#: src/components/lesson-steps/fill-blank-step.tsx
+#: src/components/lesson-steps/order-words-step.tsx
+#: src/components/lesson-steps/quiz-step.tsx
+#: src/components/lesson-steps/read-choose-step.tsx
+#: src/components/lesson-steps/spell-step.tsx
+msgid "Yes"
+msgstr "Oui"
+
+#: src/components/lesson-steps/cover-step.tsx
+msgid "You will meet"
+msgstr "Vous allez rencontrer"
+
+#: src/screens/profile.tsx
+msgid "Your Kabiyè"
+msgstr "Votre kabiyè"
+
+#: src/screens/learn.tsx
+msgid "Your path"
+msgstr "Votre parcours"
 
 #: src/screens/profile.tsx
 msgid "Your progress has been reset successfully."
 msgstr "Votre progression a été réinitialisée avec succès."
 
-#: src/components/lesson-steps/completion-step.tsx
-msgid "Your Score"
-msgstr "Votre score"
-
-#: src/components/audio-play-button.tsx
-msgid "Play audio"
-msgstr "Écouter l'audio"
-
-#: src/components/audio-play-button.tsx
-msgid "Stop audio"
-msgstr "Arrêter l'audio"
-
-#: src/screens/keyboard.tsx
-msgid "Shift"
-msgstr "Maj"
-
-#: src/screens/keyboard.tsx
-msgid "Shift on"
-msgstr "Maj activée"
-
-#: src/screens/keyboard.tsx
-msgid "Caps lock on"
-msgstr "Verr. maj activé"
-
-#: src/screens/keyboard.tsx
-msgid "Period"
-msgstr "Point"
-
-#: src/screens/keyboard.tsx
-msgid "Backspace"
-msgstr "Retour arrière"
-
-#: src/screens/keyboard.tsx
-msgid "New line"
-msgstr "Nouvelle ligne"
-
-#: src/app/_layout.tsx
-msgid "Back"
-msgstr "Retour"
+#: src/screens/dictionary/search.tsx
+msgid "Your saved words and the alphabet still work."
+msgstr "Vos mots enregistrés et l'alphabet fonctionnent toujours."
