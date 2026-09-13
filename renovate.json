@@ -11,6 +11,9 @@
     "dependencies"
   ],
   "minimumReleaseAge": "3 days",
+  "toolSettings": {
+    "nodeMaxMemory": 2048
+  },
   "prConcurrentLimit": 8,
   "prHourlyLimit": 2,
   "ignoreDeps": [
