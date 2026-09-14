@@ -56,10 +56,17 @@ export const Conjugation = ({ headword, conjugation }: { headword: string; conju
   const { t } = useLingui()
   const { data: paradigms } = useConjugation(conjugation)
   const { data: forms } = useVerbForms()
-  if (!conjugation || !paradigms || paradigms.length === 0) return null
+  // The sketch prints no table for this code (saʋ v.1e, cɔnʋʋ v.6n): say so, rather
+  // than showing nothing and letting the reader think the verb has no pattern.
+  const unprinted = conjugation?.schemaPrinted === false
+  if (!conjugation || ((!paradigms || paradigms.length === 0) && !unprinted)) return null
 
-  const sil = paradigms.filter((p) => p.source === SIL)
-  const book = paradigms.filter((p) => p.source === BOOK)
+  const sil = (paradigms ?? []).filter((p) => p.source === SIL)
+  const book = (paradigms ?? []).filter((p) => p.source === BOOK)
+  const schema = conjugation.schema ?? ''
+  // The entry names the parent pattern without its subgroup (kʋyʋʋ v.3): every
+  // subgroup's tables are shown, and the reader is told why there are several.
+  const parentOnly = (conjugation.schemaKeys?.length ?? 0) > 1
 
   return (
     <View className="mb-4">
@@ -69,9 +76,17 @@ export const Conjugation = ({ headword, conjugation }: { headword: string; conju
       <Text className="text-foreground-secondary mb-3 text-[14px] leading-[1.45]">
         {t`The tables are the ones our sources print for the model verb of this pattern. No form of ${headword} itself is written here that a source did not write.`}
       </Text>
-      {sil.length > 0 ? (
-        <PatternBlock title={t`Pattern ${conjugation.schema ?? ''}`} paradigms={sil} forms={forms} />
+      {unprinted ? (
+        <Text className="text-foreground-secondary mb-3 text-[14px] leading-[1.45]">
+          {t`The sketch prints no table for subgroup ${schema} (pp. 545–550).`}
+        </Text>
       ) : null}
+      {parentOnly ? (
+        <Text className="text-foreground-secondary mb-2 text-[13px] leading-[1.45]">
+          {t`The entry names pattern ${schema} without its subgroup, so every subgroup's tables are shown.`}
+        </Text>
+      ) : null}
+      {sil.length > 0 ? <PatternBlock title={t`Pattern ${schema}`} paradigms={sil} forms={forms} /> : null}
       {book.length > 0 ? <ClassBlock paradigms={book} forms={forms} /> : null}
     </View>
   )
