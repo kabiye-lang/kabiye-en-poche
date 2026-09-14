@@ -1,4 +1,5 @@
 import type { Database } from '../types/db.types'
+import type { Conjugation } from '../types/dictionary'
 
 import { useQuery } from '@tanstack/react-query'
 
@@ -21,17 +22,29 @@ export const BOOK = 'harmattan-conjugaison-2013'
  * The screen shows those as they were printed and says whose they are; it never fills
  * in the entry's own forms, which no source has written down.
  */
-export function useConjugation(conjugation: { schema: string | null; classes: number[] } | null | undefined) {
-  const schema = conjugation?.schema ?? null
-  const classes = conjugation?.classes ?? []
+/** The keys the sketch is asked for: the entry's own list, or its schema for a row loaded before the list existed. */
+export function sketchKeys(conjugation: Conjugation | null | undefined): string[] {
+  if (!conjugation) return []
+  if (conjugation.schemaKeys) return conjugation.schemaKeys
+  return conjugation.schema ? [conjugation.schema] : []
+}
+
+/** The PostgREST filters for the tables an entry points at, one per work. */
+export function paradigmFilters(conjugation: Conjugation | null | undefined): string[] {
+  const filters: string[] = []
+  const keys = sketchKeys(conjugation)
+  if (keys.length > 0) filters.push(`and(source.eq.${SIL},key.in.(${keys.join(',')}))`)
+  for (const c of conjugation?.classes ?? []) filters.push(`and(source.eq.${BOOK},key.eq.${c})`)
+  return filters
+}
+
+export function useConjugation(conjugation: Conjugation | null | undefined) {
+  const filters = paradigmFilters(conjugation)
   return useQuery({
-    queryKey: ['dictionary', 'conjugation', schema, classes],
-    enabled: Boolean(schema || classes.length > 0),
+    queryKey: ['dictionary', 'conjugation', filters],
+    enabled: filters.length > 0,
     staleTime: Infinity,
     queryFn: async (): Promise<Paradigm[]> => {
-      const filters: string[] = []
-      if (schema) filters.push(`and(source.eq.${SIL},key.eq.${schema})`)
-      for (const c of classes) filters.push(`and(source.eq.${BOOK},key.eq.${c})`)
       const { data, error } = await supabase.from('verb_paradigms').select('*').or(filters.join(','))
       if (error) throw error
       return (data ?? []) as unknown as Paradigm[]

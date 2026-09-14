@@ -823,10 +823,9 @@ msgstr "Mettez les mots dans l'ordre"
 msgid "original · {0}"
 msgstr "original · {0}"
 
-#. placeholder {0}: conjugation.schema ?? ''
 #: src/components/word/conjugation.tsx
-msgid "Pattern {0}"
-msgstr "Schéma {0}"
+msgid "Pattern {schema}"
+msgstr "Schéma {schema}"
 
 #: src/screens/dictionary/dictionary.tsx
 msgid "PDF"
@@ -1170,6 +1169,10 @@ msgstr "C'est bien ce que ça dit."
 msgid "The dictionary needs the network."
 msgstr "Le dictionnaire a besoin du réseau."
 
+#: src/components/word/conjugation.tsx
+msgid "The entry names pattern {schema} without its subgroup, so every subgroup's tables are shown."
+msgstr "L'entrée nomme le schéma {schema} sans son sous-groupe ; les tableaux de tous les sous-groupes sont donc montrés."
+
 #: src/screens/alphabet-list.tsx
 msgid "The Kabiyè alphabet"
 msgstr "L'alphabet kabiyè"
@@ -1185,6 +1188,10 @@ msgstr "Le lien est peut-être ancien, ou le mot a changé de place. Le dictionn
 #: src/components/lesson-steps/spot-letter-step.tsx
 msgid "The right spelling is {correct}. We'll ask this one again at the end."
 msgstr "La bonne orthographe est {correct}. Nous vous la redemanderons à la fin."
+
+#: src/components/word/conjugation.tsx
+msgid "The sketch prints no table for subgroup {schema} (pp. 545–550)."
+msgstr "L'esquisse n'imprime aucun tableau pour le sous-groupe {schema} (p. 545–550)."
 
 #: src/components/lesson-steps/spell-step.tsx
 msgid "The spelling is"

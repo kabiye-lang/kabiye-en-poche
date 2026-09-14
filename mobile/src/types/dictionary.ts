@@ -9,6 +9,20 @@ export interface DictionaryEntry extends Omit<DbDictionaryEntry, 'entry_data'> {
   entry_data: EntryData
 }
 
+
+/**
+ * Where a verb's tables are. `schemaKeys` is what to query: the entry's own subgroup
+ * when the sketch prints a table for it; every printed subgroup of the schema when the
+ * entry names only the parent (`v.3`); nothing when no page prints the code, which
+ * `schemaPrinted: false` says so the screen can say it too. Rows loaded before the keys
+ * existed carry only `schema`.
+ */
+export interface Conjugation {
+  schema: string | null
+  schemaKeys?: string[]
+  schemaPrinted?: boolean | null
+  classes: number[]
+}
 export interface EntryData {
   letter: string
   headword: string
@@ -73,7 +87,7 @@ export interface EntryData {
    * Where a verb's conjugation tables are: the SIL sketch's schema from the entry's own
    * `v.3b`, and the 2013 conjugation book's class(es) from its index. Verbs only.
    */
-  conjugation?: { schema: string | null; classes: number[] } | null
+  conjugation?: Conjugation | null
 }
 
 export interface SearchResult extends Omit<DbSearchResult, 'entry_data'> {
