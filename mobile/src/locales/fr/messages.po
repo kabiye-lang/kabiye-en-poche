@@ -23,6 +23,11 @@ msgstr "{0} caractères"
 msgid "{0} entries"
 msgstr "{0} entrées"
 
+#. placeholder {0}: coming.count
+#: src/screens/learn.tsx
+msgid "{0} more lessons are being written."
+msgstr "{0} leçons de plus sont en cours de rédaction."
+
 #. placeholder {0}: progressSummary.plannedLessons - progressSummary.totalLessons
 #: src/screens/profile.tsx
 msgid "{0} more planned"
@@ -116,6 +121,15 @@ msgstr "Tout"
 msgid "Alphabet"
 msgstr "Alphabet"
 
+#. placeholder {0}: coming.unitTitles.length - COMING_TITLES_SHOWN
+#: src/screens/learn.tsx
+msgid "and {0} more units"
+msgstr "et {0} autres unités"
+
+#: src/screens/learn.tsx
+msgid "and one more unit"
+msgstr "et une autre unité"
+
 #: src/screens/profile.tsx
 msgid "Appearance"
 msgstr "Apparence"
@@ -164,6 +178,7 @@ msgstr "Commencer"
 msgid "Beginner"
 msgstr "Débutant"
 
+#: src/screens/learn.tsx
 #: src/screens/lesson.tsx
 msgid "Being corrected."
 msgstr "En cours de correction."
@@ -570,6 +585,7 @@ msgid "Kabiyè, français, English"
 msgstr "Kabiyè, français, English"
 
 #: src/app/(tabs)/_layout.tsx
+#: src/screens/home.tsx
 #: src/screens/keyboard.tsx
 msgid "Keyboard"
 msgstr "Clavier"
@@ -586,6 +602,11 @@ msgstr "Apprendre"
 #: src/screens/profile.tsx
 msgid "Learning Resources"
 msgstr "Ressources d'apprentissage"
+
+#. placeholder {0}: getValue(unitTitle, 'title') ?? ''
+#: src/screens/home.tsx
+msgid "Lesson {ordinal} of {writtenInUnit} · {0}"
+msgstr "Leçon {ordinal} sur {writtenInUnit} · {0}"
 
 #: src/screens/lesson.tsx
 msgid "Lesson Completed!"
@@ -705,6 +726,10 @@ msgstr "associées"
 msgid "More forms"
 msgstr "Plus de formes"
 
+#: src/screens/learn.tsx
+msgid "More lessons coming"
+msgstr "D'autres leçons arrivent"
+
 #: src/screens/profile.tsx
 msgid "My path"
 msgstr "Mon parcours"
@@ -712,11 +737,13 @@ msgstr "Mon parcours"
 #: src/app/(tabs)/dictionary/_layout.tsx
 #: src/screens/dictionary/dictionary.tsx
 #: src/screens/dictionary/my-words.tsx
+#: src/screens/home.tsx
 msgid "My words"
 msgstr "Mes mots"
 
 #. placeholder {0}: myWords.savedCount
 #: src/screens/dictionary/dictionary.tsx
+#: src/screens/home.tsx
 msgid "My words · {0}"
 msgstr "Mes mots · {0}"
 
@@ -822,6 +849,10 @@ msgstr "Rien ne correspond à cette orthographe."
 #: src/screens/profile.tsx
 msgid "Official Kabiyè Academy website"
 msgstr "Site web officiel de l'Académie Kabiyè"
+
+#: src/screens/learn.tsx
+msgid "One more lesson is being written."
+msgstr "Une leçon de plus est en cours de rédaction."
 
 #: src/screens/profile.tsx
 msgid "Online Kabiyè dictionary"
@@ -965,6 +996,7 @@ msgstr "Réinitialiser la progression"
 msgid "Reset Progress"
 msgstr "Réinitialiser la progression"
 
+#: src/screens/home.tsx
 #: src/screens/lesson.tsx
 msgid "Review"
 msgstr "Révision"
@@ -1034,6 +1066,18 @@ msgstr "Voir aussi"
 msgid "See Also"
 msgstr "Voir aussi"
 
+#: src/screens/learn.tsx
+msgid "Set for someone new to Kabiyè."
+msgstr "Pour quelqu'un qui découvre le kabiyè."
+
+#: src/screens/learn.tsx
+msgid "Set for someone who already speaks Kabiyè."
+msgstr "Pour quelqu'un qui parle déjà le kabiyè."
+
+#: src/screens/learn.tsx
+msgid "Set for someone who grew up hearing Kabiyè."
+msgstr "Pour quelqu'un qui a grandi en entendant le kabiyè."
+
 #: src/screens/profile.tsx
 msgid "Settings"
 msgstr "Paramètres"
@@ -1086,10 +1130,6 @@ msgstr "Singulier de"
 msgid "Skip"
 msgstr "Ignorer"
 
-#: src/screens/learn.tsx
-msgid "Soon"
-msgstr "Bientôt"
-
 #: src/screens/dictionary/word.tsx
 msgid "Source"
 msgstr "Source"
@@ -1119,6 +1159,10 @@ msgstr "Repérez la lettre"
 msgid "Standard form:"
 msgstr "Forme standard :"
 
+#: src/screens/home.tsx
+msgid "Start here"
+msgstr "Commencer ici"
+
 #: src/app/(onboarding)/index.tsx
 msgid "Start with greetings."
 msgstr "Commencez par les salutations."
@@ -1130,6 +1174,12 @@ msgstr "Commencez par l'alphabet et l'orthographe."
 #: src/app/(onboarding)/index.tsx
 msgid "Start with the words you half-remember."
 msgstr "Commencez par les mots dont vous vous souvenez à moitié."
+
+#. placeholder {0}: summary.current
+#. placeholder {1}: summary.total
+#: src/screens/home.tsx
+msgid "Step {0} of {1}"
+msgstr "Étape {0} sur {1}"
 
 #: src/components/lesson-steps/progress-bar.tsx
 msgid "Step {currentStep} of {totalSteps}"
@@ -1317,6 +1367,7 @@ msgid "True"
 msgstr "Vrai"
 
 #: src/screens/dictionary/search.tsx
+#: src/screens/home.tsx
 msgid "Try again"
 msgstr "Réessayer"
 
@@ -1368,6 +1419,10 @@ msgstr "Voyelle"
 #: src/screens/alphabet-list.tsx
 msgid "Vowels"
 msgstr "Voyelles"
+
+#: src/screens/home.tsx
+msgid "We could not load your next lesson."
+msgstr "Impossible de charger votre prochaine leçon."
 
 #: src/screens/learn.tsx
 msgid "We could not load your path."

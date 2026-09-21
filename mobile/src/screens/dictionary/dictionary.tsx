@@ -1,7 +1,7 @@
-import React, { useCallback, useState } from 'react'
+import React, { useCallback, useRef, useState } from 'react'
 import { Pressable, ScrollView, TextInput } from 'react-native'
 
-import { Link, router, useFocusEffect } from 'expo-router'
+import { Link, router, useFocusEffect, useLocalSearchParams } from 'expo-router'
 
 import { useLingui } from '@lingui/react/macro'
 
@@ -44,6 +44,22 @@ const DictionaryScreen: React.FC = () => {
     useCallback(() => {
       void refreshMyWords()
     }, [refreshMyWords])
+  )
+
+  // Home's search field hands off here rather than owning a field itself. `focus` is a
+  // fresh timestamp on every hand-off, so arriving twice in a row -- Home, back, Home,
+  // search again -- focuses the keyboard both times rather than only the first.
+  const inputRef = useRef<TextInput>(null)
+  const { focus } = useLocalSearchParams<{ focus?: string }>()
+  const consumedFocusRef = useRef<string | undefined>(undefined)
+  useFocusEffect(
+    useCallback(() => {
+      if (focus && focus !== consumedFocusRef.current) {
+        consumedFocusRef.current = focus
+        inputRef.current?.focus()
+        router.setParams({ focus: undefined })
+      }
+    }, [focus])
   )
 
   // Determine search language based on mode
@@ -91,6 +107,7 @@ const DictionaryScreen: React.FC = () => {
         <View className="bg-background-secondary border-foreground mt-6 flex-row items-center rounded-[14px] border-[1.5px] px-4 py-3">
           <MagnifyingGlassIcon size={22} className="text-foreground-secondary mr-3" />
           <TextInput
+            ref={inputRef}
             value={searchQuery}
             onChangeText={setSearchQuery}
             onSubmitEditing={handleSearch}

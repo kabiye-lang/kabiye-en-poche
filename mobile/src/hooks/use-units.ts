@@ -13,6 +13,7 @@ import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 
 import { supabase } from '../lib/supabase'
 import { lockStates, nextLesson } from '../utils/lesson-locks'
+import { isWritten } from '../utils/lesson-status'
 import { localProgressStorage } from '../utils/local-storage'
 import { orderUnitsForPath, usePath } from './use-path'
 
@@ -181,6 +182,72 @@ export function useLessonsWithProgress(unitId: string) {
   })
 }
 
+// Get every lesson on the path, with local progress -- one query instead of one per
+// unit, so Learn can partition without waterfalling a fetch per chapter.
+export function usePathLessons() {
+  return useQuery({
+    queryKey: [...unitKeys.all, 'lessons', 'with-progress', 'local', 'path'],
+    queryFn: async (): Promise<LessonWithProgress[]> => {
+      const { data: lessons, error: lessonsError } = await supabase
+        .from('lessons')
+        .select(
+          `
+          *,
+          units (title_en, title_fr),
+          categories (name)
+        `
+        )
+        .order('position', { ascending: true })
+
+      if (lessonsError) throw lessonsError
+
+      const localProgress = await localProgressStorage.getAll()
+      const progressMap = new Map(localProgress.map((p) => [p.lessonId, p]))
+      const completed = new Set(localProgress.filter((p) => p.completedAt).map((p) => p.lessonId))
+
+      // Locks are computed one unit at a time -- lockStates walks a single unit's
+      // lessons in position order, the same shape useLessonsWithProgress feeds it.
+      const byUnit = new Map<string, typeof lessons>()
+      for (const lesson of lessons ?? []) {
+        const list = byUnit.get(lesson.unit_id) ?? []
+        list.push(lesson)
+        byUnit.set(lesson.unit_id, list)
+      }
+      const lockedById = new Map<string, boolean>()
+      for (const unitLessons of byUnit.values()) {
+        const sorted = [...unitLessons].sort((a, b) => a.position - b.position)
+        const locks = lockStates(sorted, completed)
+        sorted.forEach((lesson, i) => lockedById.set(lesson.id, locks[i]))
+      }
+
+      return (
+        lessons?.map((lesson) => {
+          const userProgress = progressMap.get(lesson.id)
+          const isCompleted = !!userProgress?.completedAt
+
+          return {
+            ...lesson,
+            is_completed: isCompleted,
+            is_locked: lockedById.get(lesson.id) ?? false,
+            progress_percentage: isCompleted ? 100 : 0,
+            progress: userProgress
+              ? {
+                  id: userProgress.lessonId,
+                  user_id: 'local',
+                  lesson_id: userProgress.lessonId,
+                  completed_at: userProgress.completedAt,
+                  score: userProgress.score ?? null,
+                  created_at: userProgress.completedAt,
+                  updated_at: userProgress.completedAt,
+                }
+              : null,
+          }
+        }) || []
+      )
+    },
+  })
+}
+
 // Get user progress
 export function useUserProgress() {
   return useQuery({
@@ -189,6 +256,15 @@ export function useUserProgress() {
       return await localProgressStorage.getAll()
     },
   })
+}
+
+/** Where to resume: the lesson, its unit's title (both languages, for the caller to
+ *  resolve), and where it sits among the unit's written lessons. */
+export interface NextLessonSummary {
+  lesson: Lesson
+  unitTitle: { title_en: string; title_fr: string }
+  ordinal: number
+  writtenInUnit: number
 }
 
 // Get next lesson to continue
@@ -200,7 +276,7 @@ export function useNextLesson() {
   return useQuery({
     queryKey: ['next-lesson', path],
     enabled: !isLoading,
-    queryFn: async () => {
+    queryFn: async (): Promise<NextLessonSummary | null> => {
       // 235 lessons is one small request; picking the next one here, in the learner's unit
       // order, keeps Home's "continue" card and Learn's ink card on the same lesson.
       const [unitsResult, lessonsResult, completedIds] = await Promise.all([
@@ -212,7 +288,15 @@ export function useNextLesson() {
       if (lessonsResult.error) throw lessonsResult.error
 
       const ordered = orderUnitsForPath(unitsResult.data ?? [], path)
-      return nextLesson(ordered, lessonsResult.data ?? [], new Set(completedIds))
+      const found = nextLesson(ordered, lessonsResult.data ?? [], new Set(completedIds))
+      if (!found) return null
+
+      return {
+        lesson: found.lesson,
+        unitTitle: { title_en: found.unit.title_en, title_fr: found.unit.title_fr },
+        ordinal: found.ordinal,
+        writtenInUnit: found.writtenInUnit,
+      }
     },
   })
 }
@@ -224,28 +308,36 @@ export function useProgressSummary() {
     queryFn: async () => {
       const completedLessonIds = await localProgressStorage.getCompletedLessonIds()
 
-      const { data: units } = await supabase.from('units').select('id').eq('status', 'available')
+      const { data: units, error: unitsError } = await supabase.from('units').select('id, status')
+      if (unitsError) throw unitsError
+      const writtenUnits = (units ?? []).filter((unit) => isWritten(unit.status))
 
-      const { data: lessons } = await supabase
+      const { data: lessons, error: lessonsError } = await supabase
         .from('lessons')
-        .select('id, unit_id')
-        .in('unit_id', units?.map((u) => u.id) || [])
-        .or('status.eq.available,status.is.null')
+        .select('id, unit_id, status')
+        .in(
+          'unit_id',
+          writtenUnits.map((u) => u.id)
+        )
+      if (lessonsError) throw lessonsError
+      const writtenLessons = (lessons ?? []).filter((lesson) => isWritten(lesson.status))
 
       // Every lesson on the map, written or not. The five-level map holds all of them as
       // rows, so the count comes from the table rather than a constant that goes stale.
-      const { count: plannedLessons } = await supabase.from('lessons').select('id', { count: 'exact', head: true })
+      const { count: plannedLessons, error: plannedError } = await supabase
+        .from('lessons')
+        .select('id', { count: 'exact', head: true })
+      if (plannedError) throw plannedError
 
-      const totalUnits = units?.length || 0
-      const totalLessons = lessons?.length || 0
+      const totalUnits = writtenUnits.length
+      const totalLessons = writtenLessons.length
       const completedLessons = completedLessonIds.length
 
       // Calculate completed units (units where all lessons are completed)
-      const completedUnits =
-        units?.filter((unit) => {
-          const unitLessons = lessons?.filter((lesson) => lesson.unit_id === unit.id) || []
-          return unitLessons.every((lesson) => completedLessonIds.includes(lesson.id))
-        }).length || 0
+      const completedUnits = writtenUnits.filter((unit) => {
+        const unitLessons = writtenLessons.filter((lesson) => lesson.unit_id === unit.id)
+        return unitLessons.every((lesson) => completedLessonIds.includes(lesson.id))
+      }).length
 
       const progressPercentage = totalLessons > 0 ? (completedLessons / totalLessons) * 100 : 0
 

@@ -44,25 +44,25 @@ describe('nextLesson', () => {
   ]
 
   it('starts at the first open lesson of the first unit in the given order', () => {
-    expect(nextLesson(units, lessons, new Set())?.id).toBe('alphabet')
+    expect(nextLesson(units, lessons, new Set())?.lesson.id).toBe('alphabet')
   })
 
   it('follows the unit order it is handed, so a path changes the answer', () => {
     const forBeginner = [units[2], units[0], units[1]]
-    expect(nextLesson(forBeginner, lessons, new Set())?.id).toBe('hello')
+    expect(nextLesson(forBeginner, lessons, new Set())?.lesson.id).toBe('hello')
   })
 
   it('skips finished lessons and unbuilt ones alike', () => {
-    expect(nextLesson(units, lessons, new Set(['alphabet']))?.id).toBe('vowels')
+    expect(nextLesson(units, lessons, new Set(['alphabet']))?.lesson.id).toBe('vowels')
   })
 
   it('moves to the next unit when a unit is finished', () => {
-    expect(nextLesson(units, lessons, new Set(['alphabet', 'vowels']))?.id).toBe('joining')
+    expect(nextLesson(units, lessons, new Set(['alphabet', 'vowels']))?.lesson.id).toBe('joining')
   })
 
   it('never resumes inside a unit that is not open', () => {
     const closed = [U('writing', 'coming_soon'), U('spine')]
-    expect(nextLesson(closed, lessons, new Set())?.id).toBe('joining')
+    expect(nextLesson(closed, lessons, new Set())?.lesson.id).toBe('joining')
   })
 
   it('is null when everything open is done', () => {
@@ -71,6 +71,21 @@ describe('nextLesson', () => {
 
   it('orders lessons by position, not by the order the rows arrived in', () => {
     const shuffled = [lessons[5], lessons[4]]
-    expect(nextLesson([units[2]], shuffled, new Set())?.id).toBe('hello')
+    expect(nextLesson([units[2]], shuffled, new Set())?.lesson.id).toBe('hello')
+  })
+
+  it('reports the unit and the lesson’s ordinal among that unit’s written lessons', () => {
+    // writing: alphabet (1st written), eight-letters (unbuilt, does not count), vowels (2nd written)
+    const found = nextLesson(units, lessons, new Set())
+    expect(found?.unit.id).toBe('writing')
+    expect(found?.ordinal).toBe(1)
+    expect(found?.writtenInUnit).toBe(2)
+  })
+
+  it('counts an unbuilt lesson out of the ordinal, not into it', () => {
+    const found = nextLesson(units, lessons, new Set(['alphabet']))
+    expect(found?.lesson.id).toBe('vowels')
+    expect(found?.ordinal).toBe(2)
+    expect(found?.writtenInUnit).toBe(2)
   })
 })

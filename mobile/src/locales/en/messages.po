@@ -23,6 +23,11 @@ msgstr "{0} characters"
 msgid "{0} entries"
 msgstr "{0} entries"
 
+#. placeholder {0}: coming.count
+#: src/screens/learn.tsx
+msgid "{0} more lessons are being written."
+msgstr "{0} more lessons are being written."
+
 #. placeholder {0}: progressSummary.plannedLessons - progressSummary.totalLessons
 #: src/screens/profile.tsx
 msgid "{0} more planned"
@@ -116,6 +121,15 @@ msgstr "All"
 msgid "Alphabet"
 msgstr "Alphabet"
 
+#. placeholder {0}: coming.unitTitles.length - COMING_TITLES_SHOWN
+#: src/screens/learn.tsx
+msgid "and {0} more units"
+msgstr "and {0} more units"
+
+#: src/screens/learn.tsx
+msgid "and one more unit"
+msgstr "and one more unit"
+
 #: src/screens/profile.tsx
 msgid "Appearance"
 msgstr "Appearance"
@@ -164,6 +178,7 @@ msgstr "Begin"
 msgid "Beginner"
 msgstr "Beginner"
 
+#: src/screens/learn.tsx
 #: src/screens/lesson.tsx
 msgid "Being corrected."
 msgstr "Being corrected."
@@ -570,6 +585,7 @@ msgid "Kabiyè, français, English"
 msgstr "Kabiyè, français, English"
 
 #: src/app/(tabs)/_layout.tsx
+#: src/screens/home.tsx
 #: src/screens/keyboard.tsx
 msgid "Keyboard"
 msgstr "Keyboard"
@@ -586,6 +602,11 @@ msgstr "Learn"
 #: src/screens/profile.tsx
 msgid "Learning Resources"
 msgstr "Learning Resources"
+
+#. placeholder {0}: getValue(unitTitle, 'title') ?? ''
+#: src/screens/home.tsx
+msgid "Lesson {ordinal} of {writtenInUnit} · {0}"
+msgstr "Lesson {ordinal} of {writtenInUnit} · {0}"
 
 #: src/screens/lesson.tsx
 msgid "Lesson Completed!"
@@ -705,6 +726,10 @@ msgstr "matched"
 msgid "More forms"
 msgstr "More forms"
 
+#: src/screens/learn.tsx
+msgid "More lessons coming"
+msgstr "More lessons coming"
+
 #: src/screens/profile.tsx
 msgid "My path"
 msgstr "My path"
@@ -712,11 +737,13 @@ msgstr "My path"
 #: src/app/(tabs)/dictionary/_layout.tsx
 #: src/screens/dictionary/dictionary.tsx
 #: src/screens/dictionary/my-words.tsx
+#: src/screens/home.tsx
 msgid "My words"
 msgstr "My words"
 
 #. placeholder {0}: myWords.savedCount
 #: src/screens/dictionary/dictionary.tsx
+#: src/screens/home.tsx
 msgid "My words · {0}"
 msgstr "My words · {0}"
 
@@ -822,6 +849,10 @@ msgstr "Nothing matches that spelling."
 #: src/screens/profile.tsx
 msgid "Official Kabiyè Academy website"
 msgstr "Official Kabiyè Academy website"
+
+#: src/screens/learn.tsx
+msgid "One more lesson is being written."
+msgstr "One more lesson is being written."
 
 #: src/screens/profile.tsx
 msgid "Online Kabiyè dictionary"
@@ -965,6 +996,7 @@ msgstr "Reset progress"
 msgid "Reset Progress"
 msgstr "Reset Progress"
 
+#: src/screens/home.tsx
 #: src/screens/lesson.tsx
 msgid "Review"
 msgstr "Review"
@@ -1034,6 +1066,18 @@ msgstr "See also"
 msgid "See Also"
 msgstr "See Also"
 
+#: src/screens/learn.tsx
+msgid "Set for someone new to Kabiyè."
+msgstr "Set for someone new to Kabiyè."
+
+#: src/screens/learn.tsx
+msgid "Set for someone who already speaks Kabiyè."
+msgstr "Set for someone who already speaks Kabiyè."
+
+#: src/screens/learn.tsx
+msgid "Set for someone who grew up hearing Kabiyè."
+msgstr "Set for someone who grew up hearing Kabiyè."
+
 #: src/screens/profile.tsx
 msgid "Settings"
 msgstr "Settings"
@@ -1086,10 +1130,6 @@ msgstr "Singular of"
 msgid "Skip"
 msgstr "Skip"
 
-#: src/screens/learn.tsx
-msgid "Soon"
-msgstr "Soon"
-
 #: src/screens/dictionary/word.tsx
 msgid "Source"
 msgstr "Source"
@@ -1119,6 +1159,10 @@ msgstr "Spot the letter"
 msgid "Standard form:"
 msgstr "Standard form:"
 
+#: src/screens/home.tsx
+msgid "Start here"
+msgstr "Start here"
+
 #: src/app/(onboarding)/index.tsx
 msgid "Start with greetings."
 msgstr "Start with greetings."
@@ -1130,6 +1174,12 @@ msgstr "Start with the alphabet and spelling."
 #: src/app/(onboarding)/index.tsx
 msgid "Start with the words you half-remember."
 msgstr "Start with the words you half-remember."
+
+#. placeholder {0}: summary.current
+#. placeholder {1}: summary.total
+#: src/screens/home.tsx
+msgid "Step {0} of {1}"
+msgstr "Step {0} of {1}"
 
 #: src/components/lesson-steps/progress-bar.tsx
 msgid "Step {currentStep} of {totalSteps}"
@@ -1317,6 +1367,7 @@ msgid "True"
 msgstr "True"
 
 #: src/screens/dictionary/search.tsx
+#: src/screens/home.tsx
 msgid "Try again"
 msgstr "Try again"
 
@@ -1368,6 +1419,10 @@ msgstr "Vowel"
 #: src/screens/alphabet-list.tsx
 msgid "Vowels"
 msgstr "Vowels"
+
+#: src/screens/home.tsx
+msgid "We could not load your next lesson."
+msgstr "We could not load your next lesson."
 
 #: src/screens/learn.tsx
 msgid "We could not load your path."

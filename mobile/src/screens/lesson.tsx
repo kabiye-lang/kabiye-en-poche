@@ -47,6 +47,7 @@ import { usableAudioUrl } from '../utils/audio-source'
 import { spellingVariants } from '../utils/kabiye-variants'
 import { practisedWords } from '../utils/lesson-outcomes'
 import { progressView as computeProgressView, reviewOutcomes } from '../utils/lesson-session'
+import { isWritten } from '../utils/lesson-status'
 import { dialogueTurns, placeSections, sectionSentences } from '../utils/section-kinds'
 
 /**
@@ -417,7 +418,7 @@ const LessonScreen = () => {
   // Not written yet, rather than broken. The direction's rule for an empty state is that
   // it names what still works: eighteen of the map's lessons are written, and that is a
   // fact about the curriculum a learner is entitled to before they plan around it.
-  const isLessonAvailable = lesson?.status === 'available' || lesson?.status === null
+  const isLessonAvailable = lesson ? isWritten(lesson.status) : false
   if (lesson && !isLessonAvailable) {
     const written = progressSummary?.totalLessons ?? 0
     const planned = progressSummary?.plannedLessons ?? written

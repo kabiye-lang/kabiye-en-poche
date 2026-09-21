@@ -1,4 +1,5 @@
 import type { LearnerPath } from '../hooks/use-path'
+import type { LessonWithProgress } from '../types/supabase'
 
 import { Pressable, ScrollView } from 'react-native'
 
@@ -8,32 +9,43 @@ import { useLingui } from '@lingui/react/macro'
 
 import { CaretRightIcon, CheckIcon, LockIcon, PlayIcon } from '../components/icons'
 import { Skeleton, SkeletonRows, Text, View } from '../components/ui'
-import { useAppLessonsWithProgress, useAppNextLesson, useAppUnits } from '../hooks/use-app-data'
+import { useAppNextLesson, useAppPathLessons, useAppUnits } from '../hooks/use-app-data'
 import { useLanguage } from '../hooks/use-language'
 import { orderUnitsForPath, usePath } from '../hooks/use-path'
+import { partitionLearnPath } from '../utils/learn-path'
+import { isWritten } from '../utils/lesson-status'
+
+/** How many coming units are named before the rest are counted. */
+const COMING_TITLES_SHOWN = 5
 
 /**
  * The whole path on one screen.
  *
  * Units used to be cards you tapped into, which put a navigation step between the
  * learner and the only thing they came for -- the next lesson -- and hid how far the
- * curriculum went. Laterite makes the units chapters of a single list: every lesson is
- * visible, the current one is an ink card you can start from here, and what is finished
- * is struck through rather than removed.
+ * curriculum went. Laterite makes the units chapters of a single list: every written
+ * lesson is visible, the current one is an ink card you can start from here, and what is
+ * finished keeps its title and gains a check, rather than being removed. Lessons still
+ * only planned are gathered in one quiet block at the end, rather than a "Soon" pill
+ * scattered across the chapters that held them (design review 2026-09-21).
  */
-const PATH_DESCRIPTION: Record<LearnerPath, string> = {
-  speaker: 'Set for someone who already speaks Kabiyè.',
-  heritage: 'Set for someone who grew up hearing Kabiyè.',
-  new: 'Set for someone new to Kabiyè.',
-}
-
 const LearnScreen = () => {
   const { t } = useLingui()
-  const { data: units, isLoading, error } = useAppUnits()
+  const { getValue } = useLanguage()
+  // Inside the component so the macro can translate them: as a module constant these
+  // stayed English on a French screen.
+  const pathDescription: Record<LearnerPath, string> = {
+    speaker: t`Set for someone who already speaks Kabiyè.`,
+    heritage: t`Set for someone who grew up hearing Kabiyè.`,
+    new: t`Set for someone new to Kabiyè.`,
+  }
+  const { data: units, isLoading: unitsLoading, error: unitsError } = useAppUnits()
+  const { data: lessons, isLoading: lessonsLoading, error: lessonsError } = useAppPathLessons()
   const { data: nextLesson } = useAppNextLesson()
   const { path } = usePath()
 
-  const ordered = orderUnitsForPath(units ?? [], path)
+  const isLoading = unitsLoading || lessonsLoading
+  const error = unitsError || lessonsError
 
   if (isLoading) {
     return (
@@ -53,6 +65,10 @@ const LearnScreen = () => {
     )
   }
 
+  const ordered = orderUnitsForPath(units ?? [], path)
+  const pathUnits = ordered.map((unit) => ({ ...unit, title: getValue(unit, 'title') ?? '' }))
+  const { units: chapters, coming } = partitionLearnPath(pathUnits, lessons ?? [])
+
   return (
     <ScrollView className="bg-background flex-1" contentContainerClassName="px-6 pb-10 pt-16">
       <Text className="text-accent-text text-[13px] font-semibold uppercase tracking-[0.1em]">{t`Learn`}</Text>
@@ -61,7 +77,7 @@ const LearnScreen = () => {
       </Text>
 
       <View className="mt-3 flex-row flex-wrap items-baseline gap-2">
-        <Text className="text-foreground-secondary text-[15px]">{path ? PATH_DESCRIPTION[path] : t`Not set yet.`}</Text>
+        <Text className="text-foreground-secondary text-[15px]">{path ? pathDescription[path] : t`Not set yet.`}</Text>
         <Pressable
           accessibilityRole="button"
           onPress={() => router.push('/(onboarding)')}
@@ -76,10 +92,40 @@ const LearnScreen = () => {
       </View>
 
       <View className="mt-8">
-        {ordered.map((unit) => (
-          <UnitChapter key={unit.id} unit={unit} currentLessonId={nextLesson?.id} />
+        {chapters.map(({ unit, lessons: unitLessons }) => (
+          <UnitChapter key={unit.id} unit={unit} lessons={unitLessons} currentLessonId={nextLesson?.lesson.id} />
         ))}
       </View>
+
+      {coming.count > 0 ? (
+        <View className="border-border mt-2 border-t-[1.5px] pt-6">
+          <Text className="text-accent-text text-[13px] font-semibold uppercase tracking-[0.1em]">
+            {t`More lessons coming`}
+          </Text>
+          <Text className="text-foreground-secondary mt-2 text-[15px] leading-[1.4]">
+            {coming.count === 1
+              ? t`One more lesson is being written.`
+              : t`${coming.count} more lessons are being written.`}
+          </Text>
+          {/* The next few units by name, then a count. Listing all of them -- some seventy
+              titles, three screens of scrolling -- put the weight back on what is not
+              written, which is what this block exists to stop doing. */}
+          <View className="mt-3">
+            {coming.unitTitles.slice(0, COMING_TITLES_SHOWN).map((title) => (
+              <Text key={title} accessibilityRole="text" className="text-foreground-secondary py-1 text-[15px]">
+                {title}
+              </Text>
+            ))}
+            {coming.unitTitles.length > COMING_TITLES_SHOWN ? (
+              <Text accessibilityRole="text" className="text-foreground-secondary py-1 text-[15px]">
+                {coming.unitTitles.length - COMING_TITLES_SHOWN === 1
+                  ? t`and one more unit`
+                  : t`and ${coming.unitTitles.length - COMING_TITLES_SHOWN} more units`}
+              </Text>
+            ) : null}
+          </View>
+        </View>
+      ) : null}
     </ScrollView>
   )
 }
@@ -92,29 +138,27 @@ interface UnitChapterProps {
     title_fr: string
     status: 'available' | 'coming_soon' | 'maintenance' | 'disabled' | null
   }
+  /** Only the lessons this chapter lists -- written or under maintenance. */
+  lessons: LessonWithProgress[]
   /** The one lesson to resume, across the whole path. */
   currentLessonId?: string
 }
 
-const UnitChapter = ({ unit, currentLessonId }: UnitChapterProps) => {
+const UnitChapter = ({ unit, lessons, currentLessonId }: UnitChapterProps) => {
   const { t } = useLingui()
   const { getValue } = useLanguage()
-  const { data: lessons } = useAppLessonsWithProgress(unit.id)
 
   const title = getValue(unit, 'title')
-  const isOpen = unit.status === 'available' || unit.status === null
-  const done = lessons?.filter((lesson) => lesson.is_completed).length ?? 0
-  const total = lessons?.length ?? 0
+  const done = lessons.filter((lesson) => lesson.is_completed).length
+  // "Total" here means the written lessons only -- maintenance rows are listed but were
+  // never something to finish, so counting them would make "3 of 4" claim a 4th lesson
+  // the learner could never actually complete.
+  const total = lessons.filter((lesson) => isWritten(lesson.status)).length
 
   // The ink card marks where to resume, and there is exactly one of those on the screen.
   // Computing it per unit gave every unit its own -- three "continue here" cards on one
   // path, which is three answers to a question that has one. `useAppNextLesson` already
   // knows the globally next lesson, so the unit only asks whether it holds it.
-
-  // No entering animation on this block. Each chapter fetches its own lessons, so it
-  // mounts short and grows when they arrive; Reanimated snapshots the layout at mount
-  // and the siblings never catch up -- two units drew on top of each other with a gap
-  // above them. A stagger is not worth a path a learner cannot read.
   return (
     <View className="mb-9">
       <View className="border-foreground flex-row items-baseline border-b-[1.5px] pb-2">
@@ -124,21 +168,12 @@ const UnitChapter = ({ unit, currentLessonId }: UnitChapterProps) => {
         <Text weight="semibold" className="text-foreground ml-3 flex-1 text-[22px] leading-[1.15]">
           {title ?? ''}
         </Text>
-        {isOpen && total > 0 ? (
-          <Text className="text-foreground-secondary text-[14px]">{t`${done} of ${total}`}</Text>
-        ) : null}
-        {!isOpen ? (
-          <View className="border-border rounded-full border px-3 py-1">
-            <Text className="text-foreground-secondary text-[13px]">{t`Soon`}</Text>
-          </View>
-        ) : null}
+        {total > 0 ? <Text className="text-foreground-secondary text-[14px]">{t`${done} of ${total}`}</Text> : null}
       </View>
 
-      {isOpen
-        ? lessons?.map((lesson, i) => (
-            <LessonRow key={lesson.id} lesson={lesson} index={i} isCurrent={lesson.id === currentLessonId} />
-          ))
-        : null}
+      {lessons.map((lesson, i) => (
+        <LessonRow key={lesson.id} lesson={lesson} index={i} isCurrent={lesson.id === currentLessonId} />
+      ))}
     </View>
   )
 }
@@ -161,10 +196,23 @@ const LessonRow = ({ lesson, index, isCurrent }: LessonRowProps) => {
   const { getValue } = useLanguage()
 
   const title = getValue(lesson, 'title')
-  const open = lesson.status === 'available' || lesson.status === null
   const number = String(index + 1).padStart(2, '0')
+  const rowClassName = index === 0 ? 'flex-row items-center py-4' : 'border-border flex-row items-center border-t py-4'
 
-  if (isCurrent && open && !lesson.is_locked) {
+  // A row under maintenance is listed so the learner still knows it exists, but it is
+  // never pressable -- there is nothing to open, and "locked" would wrongly say it is
+  // gated by progress rather than being worked on.
+  if (lesson.status === 'maintenance') {
+    return (
+      <View accessibilityRole="text" className={rowClassName}>
+        <Text className="text-foreground-secondary w-9 text-[14px]">{number}</Text>
+        <Text className="text-foreground-secondary flex-1 text-[17px]">{title ?? ''}</Text>
+        <Text className="text-foreground-secondary text-[13px]">{t`Being corrected.`}</Text>
+      </View>
+    )
+  }
+
+  if (isCurrent && !lesson.is_locked) {
     return (
       <Pressable
         accessibilityRole="link"
@@ -187,7 +235,7 @@ const LessonRow = ({ lesson, index, isCurrent }: LessonRowProps) => {
     )
   }
 
-  const locked = lesson.is_locked || !open
+  const locked = lesson.is_locked
 
   return (
     <Pressable
@@ -198,7 +246,7 @@ const LessonRow = ({ lesson, index, isCurrent }: LessonRowProps) => {
       accessibilityState={{ disabled: locked }}
       disabled={locked}
       onPress={() => router.push(`/lesson/${lesson.id}`)}
-      className={index === 0 ? 'flex-row items-center py-4' : 'border-border flex-row items-center border-t py-4'}
+      className={rowClassName}
     >
       <Text className="text-foreground-secondary w-9 text-[14px]">{number}</Text>
       {/* A finished lesson keeps its title in full ink. It used to be struck through and

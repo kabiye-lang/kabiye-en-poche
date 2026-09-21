@@ -11,6 +11,7 @@ import {
   useLessons,
   useLessonsWithProgress,
   useNextLesson,
+  usePathLessons,
   useProgressSummary,
   useResetProgress,
   useUnit,
@@ -56,6 +57,10 @@ export function useAppLessonActivities(lessonId: string) {
 
 export function useAppLessonsWithProgress(unitId: string) {
   return useLessonsWithProgress(unitId)
+}
+
+export function useAppPathLessons() {
+  return usePathLessons()
 }
 
 // Progress
