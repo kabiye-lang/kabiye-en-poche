@@ -1,0 +1,17 @@
+{
+  "hooks": {
+    "PreToolUse": [
+      {
+        "matcher": "Bash",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "/Users/mrk/devs/dotfiles/claude/ai/hook-scripts/review-before-commit.sh",
+            "timeout": 600,
+            "statusMessage": "Independent review before commit"
+          }
+        ]
+      }
+    ]
+  }
+}
