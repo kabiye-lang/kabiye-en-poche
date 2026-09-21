@@ -4,16 +4,18 @@
    Inline rather than <img src="/lockup.svg">: the exported SVG sets its type in Andika
    and Bricolage, and an SVG loaded through <img> cannot reach the page's fonts, so it
    would fall back to whatever the browser has and the wordmark would come out wrong.
-   Inlined, it uses the two faces index.css already loads. The exported file leaves the
+   Inlined, it uses the two faces main.tsx already loads. The exported file leaves the
    weights to its .kbp/.ui classes, which do not exist here -- they are set explicitly
-   below, Andika Bold and Bricolage 600, as the logo specifies. */
-export default function Lockup({ className = "" }: { className?: string }) {
+   below, Andika Bold and Bricolage 600, as the logo specifies.
+
+   `decorative` is for a lockup inside a control that already carries the name, like the
+   nav's home link: there the SVG naming itself again read as a second, nested image. */
+export default function Lockup({ className = "", decorative = false }: { className?: string; decorative?: boolean }) {
   return (
     <svg
       viewBox="0 0 176 48"
       className={className}
-      role="img"
-      aria-label="Kabiyè en Poche"
+      {...(decorative ? { "aria-hidden": true } : { role: "img", "aria-label": "Kabiyè en Poche" })}
     >
       {/* K bubble */}
       <path

@@ -10,9 +10,18 @@ colors:
   line: "#D9CDB9"
   ink: "#221913"
   ink-quiet: "#6B5A4E"
-  # Passes 4.5:1 on paper only at >= 24px, or bold >= 19px. Hero glyphs, section labels,
-  # and the one primary action per screen. Never body text.
+  # 4.22:1 on paper: large text only (>= 24px, or bold >= 18.66px), decoration and
+  # non-text marks. Hero glyphs and the letters French cannot write. Never small text.
   laterite: "#C4451C"
+  # Laterite for text below large size -- section labels, eyebrows. 5.07:1 on paper,
+  # 4.55:1 on paper-recessed. In the dark theme it is night-laterite.
+  laterite-text: "#B03C17"
+  # A laterite ground (cover, finish, Check key, accent button) stays #C4451C in both
+  # themes: night-laterite carries white text at only 2.96:1. Text on it is white at full
+  # opacity (4.98:1), never a translucent white.
+  laterite-fill: "#C4451C"
+  laterite-fill-pressed: "#B03C17"
+  on-laterite: "#FFFFFF"
   # The two edge-to-edge ink screens (onboarding question, Spot the letter). Held apart
   # from ink/paper because those swap with the theme -- see "The ink screen" below.
   surface-ink: "#221913"
@@ -24,9 +33,10 @@ colors:
   night-ink-quiet: "rgba(244,235,221,0.7)"
   night-line: "rgba(244,235,221,0.12)"
   night-laterite: "#E07A55"
-  # There is no correct/wrong colour pair. Correct fills with ink; wrong is a laterite
-  # strikethrough plus an explanation. A learner should not need to know a colour code
-  # to read their own mistake.
+  # There is no correct/wrong colour pair. Correct fills with ink; wrong keeps the
+  # attempt readable and states the right answer beside it, never a strikethrough -- a
+  # line through ɖ or ɛ hides the letter being taught. A learner should not need to
+  # know a colour code to read their own mistake.
 typography:
   # Bricolage Grotesque is the interface face. It misses the same twelve Kabiyè letters
   # Figtree did (ɖ Ɖ ɛ Ɛ ɣ Ɣ ɩ Ɩ ɔ Ɔ ʋ Ʋ), so every Kabiyè word is routed to Andika --
@@ -37,7 +47,7 @@ typography:
     fontWeight: 600
     letterSpacing: "0.10em"
     textTransform: "uppercase"
-    color: laterite
+    color: laterite-text
   screen-title:
     fontFamily: "BricolageGrotesque_600SemiBold, system-ui, sans-serif"
     fontSize: "40px"
@@ -200,9 +210,12 @@ tone (recessed → paper → leaf) or from a border; there are no shadows anywhe
   ink reads as printed rather than displayed.
 - **Ink** (`#221913`): text, filled buttons, the tab bar, and every "done" fill. It is
   also the primary button colour — the accent is spent elsewhere.
-- **Laterite** (`#C4451C`): the hero glyph, section labels, the one primary action per
-  screen, and the letters French cannot write. It passes 4.5:1 on paper only at ≥ 24px
-  or bold ≥ 19px, which is why body text is always ink and never laterite.
+- **Laterite** (`#C4451C`): the hero glyph, the one primary action per screen, and the
+  letters French cannot write. It is 4.22:1 on paper -- enough for large text (≥ 24px, or
+  bold ≥ 18.66px) and marks, not for small text. Section labels and other small laterite
+  text use **laterite-text** (`#B03C17`, 5.07:1), `text-accent-text` in code. A laterite
+  ground keeps `#C4451C` in both themes (`bg-accent-fill`) with full-opacity white on it.
+  Body text is always ink. The token pairs are pinned by `src/utils/__tests__/contrast.test.ts`.
 
 ### The ink screen
 Two screens are ink from edge to edge: the onboarding question and Spot the letter. They
@@ -212,8 +225,9 @@ paper screen the moment the app went dark. `surface-ink` is ink in light and the
 ink of the dark palette in dark; its text is paper in both.
 
 ### What does not get a colour
-Answer feedback. There is no green and no red: **correct fills with ink, wrong is a
-laterite strikethrough with the correct answer beneath and an explanation.** A learner
+Answer feedback. There is no green and no red: **correct fills with ink; wrong keeps the
+attempt readable and states the correct answer, with the letters that differ marked, and
+an explanation -- never a strikethrough.** A learner
 should not have to know a colour code to read their own mistake, and a wrong answer in a
 language this under-documented is more often the app's gap than the learner's.
 
@@ -367,8 +381,13 @@ are no shadows anywhere.
 ### Don't:
 - **Don't** add a `box-shadow`. There are none, and one would be conspicuous.
 - **Don't** introduce a second accent hue. Reach for a tonal step instead.
-- **Don't** use green or red at all. Answer feedback is ink for settled and a laterite
-  strikethrough for wrong, with the explanation beneath.
+- **Don't** use green or red at all. Answer feedback is ink for settled; wrong keeps the
+  attempt readable and states the right answer, with the explanation beneath.
+- **Don't** strike through a wrong answer. A line through ɖ or ɛ hides the very letter
+  being taught.
+- **Don't** set small text in `#C4451C`. Below large size it is `laterite-text`.
+- **Don't** reach for `hitSlop` to make a target 44pt: it does not widen the native
+  hit-test on this architecture. Make the pressable itself 44pt.
 - **Don't** hardcode a colour that differs between themes — take it from the theme hook.
 - **Don't** let the interface face render Kabiyè. It cannot draw `ɖ Ɖ ɛ Ɛ ɣ Ɣ ɩ Ɩ ɔ Ɔ ʋ Ʋ`, and the
   OS fallback splits words across two typefaces.

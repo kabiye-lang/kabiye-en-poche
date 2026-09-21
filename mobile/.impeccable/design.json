@@ -19,6 +19,18 @@
           "#FAE3DB"
         ]
       },
+      "laterite-text": {
+        "role": "text",
+        "displayName": "Laterite text",
+        "canonical": "#B03C17",
+        "note": "Laterite for text below large size: 5.07:1 on paper, 4.55:1 on paper-recessed. night-laterite in the dark theme."
+      },
+      "laterite-fill": {
+        "role": "surface",
+        "displayName": "Laterite fill",
+        "canonical": "#C4451C",
+        "note": "A laterite ground, #C4451C in both themes; pressed #B03C17. Text on it is on-laterite (#FFFFFF) at full opacity, 4.98:1."
+      },
       "paper": {
         "role": "neutral",
         "displayName": "Paper",
@@ -365,9 +377,9 @@
       "name": "Exercise Option",
       "kind": "option",
       "refersTo": "exercise-option",
-      "description": "A tappable answer. Correct fills with ink; wrong is a laterite strikethrough with the answer beneath -- there is no green and no red anywhere in the system.",
+      "description": "A tappable answer. Correct fills with ink; the wrong choice stays readable, marked with an X and 'your answer, wrong' for screen readers, and the right answer is stated -- there is no green, no red and no strikethrough anywhere in the system.",
       "html": "<button class=\"ds-option\">ɖɛɣɩŋ</button> <button class=\"ds-option ds-option-correct\">ɖɛɣɩŋ</button> <button class=\"ds-option ds-option-wrong\">ŋɔʋñ</button>",
-      "css": ".ds-option { display: block; width: 100%; text-align: left; background: transparent; border: 1.5px solid #221913; border-radius: 18px; padding: 16px; font-family: 'Andika', system-ui, sans-serif; font-weight: 700; font-size: 24px; color: #221913; margin-bottom: 12px; } .ds-option-correct { background: #221913; color: #F4EBDD; } .ds-option-wrong { color: #C4451C; text-decoration: line-through; text-decoration-color: #C4451C; }"
+      "css": ".ds-option { display: block; width: 100%; text-align: left; background: transparent; border: 1.5px solid #221913; border-radius: 18px; padding: 16px; font-family: 'Andika', system-ui, sans-serif; font-weight: 700; font-size: 24px; color: #221913; margin-bottom: 12px; } .ds-option-correct { background: #221913; color: #F4EBDD; } .ds-option-wrong { color: #221913; border-color: #B03C17; }"
     },
     {
       "name": "Search Input",
@@ -433,12 +445,12 @@
       },
       {
         "name": "The Laterite Size Floor",
-        "body": "Laterite passes 4.5:1 on paper only at >= 24px, or bold >= 19px. Body text is therefore always ink and never laterite.",
+        "body": "Laterite (#C4451C) is 4.22:1 on paper: large text (>= 24px, or bold >= 18.66px) and marks only. Small laterite text uses laterite-text (#B03C17, 5.07:1). A laterite ground keeps #C4451C in both themes with full-opacity white on it. Body text is always ink.",
         "section": "colors"
       },
       {
         "name": "The Feedback-Only Rule",
-        "body": "There is no green and no red. Correct fills with ink; wrong is a laterite strikethrough with the correct answer beneath and an explanation. A learner should not have to know a colour code to read their own mistake.",
+        "body": "There is no green and no red. Correct fills with ink; wrong keeps the attempt readable and states the correct answer, with the letters that differ marked, and an explanation -- never a strikethrough. A learner should not have to know a colour code to read their own mistake.",
         "section": "colors"
       },
       {

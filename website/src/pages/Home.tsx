@@ -279,7 +279,7 @@ export default function Home() {
       <nav className="border-line bg-paper/90 sticky top-0 z-50 border-b backdrop-blur">
         <div className="mx-auto flex max-w-[1200px] items-center gap-6 px-8 py-4">
           <a href="#top" aria-label={t.title}>
-            <Lockup className="h-8 w-auto" />
+            <Lockup className="h-8 w-auto" decorative />
           </a>
           <div className="hidden flex-1 items-center gap-6 md:flex">
             {(

@@ -7,9 +7,9 @@
           "image-name": "icon-light.png",
           "name": "icon",
           "glass": false,
-          "fill-specializations": [
-            { "appearance": "dark", "value": { "image-name": "icon-dark.png" } },
-            { "appearance": "tinted", "value": { "image-name": "icon-tinted.png" } }
+          "image-name-specializations": [
+            { "appearance": "dark", "value": "icon-dark.png" },
+            { "appearance": "tinted", "value": "icon-tinted.png" }
           ]
         }
       ],
