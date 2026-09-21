@@ -75,9 +75,9 @@ const translations = {
     // The mock says "five words"; the generator asks for four to eight, so the site
     // says what the app does rather than what the mock guessed.
     howBody:
-      "Every lesson teaches a handful of words. Each is shown, explained letter by letter, and then you spell it with the Kabiyè keyboard. Mistakes come back at the end. There is no score — just the words you can now read and write, each linking to its dictionary entry.",
+      "Every lesson teaches a handful of words. Each is shown and explained letter by letter, then you try it in a short activity. Mistakes come back at the end. There is no score — just the words you practised, each linking to its dictionary entry.",
     howProvenance:
-      "Every word, example and sentence in a lesson traces to a source. Nothing is generated. Where we have no recording, you hear nothing — a wrong voice teaches a wrong word.",
+      "Words and examples are checked against dictionary sources. Where we have no recording, you hear nothing — a wrong voice teaches a wrong word.",
     shotTeach: "Teach — the word, letter by letter",
     shotSpell: "Spell it — on the Kabiyè keyboard",
     contributeRoles: [
@@ -164,9 +164,9 @@ const translations = {
     audienceNewBody:
       "D'abord les salutations et les mots de tous les jours — du kabiyè utile pour vivre et travailler dans la région de la Kara.",
     howBody:
-      "Chaque leçon enseigne une poignée de mots. Chacun est montré, expliqué lettre par lettre, puis vous l'écrivez avec le clavier kabiyè. Les erreurs reviennent à la fin. Il n'y a pas de score — seulement les mots que vous savez désormais lire et écrire, chacun renvoyant à son entrée du dictionnaire.",
+      "Chaque leçon enseigne une poignée de mots. Chacun est montré et expliqué lettre par lettre, puis vous l'essayez dans une courte activité. Les erreurs reviennent à la fin. Il n'y a pas de score — seulement les mots que vous avez pratiqués, chacun renvoyant à son entrée du dictionnaire.",
     howProvenance:
-      "Chaque mot, exemple et phrase d'une leçon remonte à une source. Rien n'est inventé. Là où nous n'avons pas d'enregistrement, vous n'entendez rien — une mauvaise voix enseigne un mauvais mot.",
+      "Les mots et les exemples sont vérifiés dans les sources du dictionnaire. Là où nous n'avons pas d'enregistrement, vous n'entendez rien — une mauvaise voix enseigne un mauvais mot.",
     shotTeach: "Apprendre — le mot, lettre par lettre",
     shotSpell: "L'écrire — sur le clavier kabiyè",
     contributeRoles: [

@@ -1,7 +1,7 @@
-import React, { useState } from 'react'
+import React, { useCallback, useState } from 'react'
 import { Pressable, ScrollView, TextInput } from 'react-native'
 
-import { Link, router } from 'expo-router'
+import { Link, router, useFocusEffect } from 'expo-router'
 
 import { useLingui } from '@lingui/react/macro'
 
@@ -38,6 +38,13 @@ const DictionaryScreen: React.FC = () => {
   const { data: letters, isLoading: isLoadingLetters } = useAvailableLetters()
   const { data: stats } = useDictionaryStats()
   const myWords = useMyWords()
+  // Re-read on focus: the tab stays mounted and the "My words" count went stale after a lesson.
+  const { refresh: refreshMyWords } = myWords
+  useFocusEffect(
+    useCallback(() => {
+      void refreshMyWords()
+    }, [refreshMyWords])
+  )
 
   // Determine search language based on mode
   const searchLanguage: 'all' | 'fr' | 'en' = searchMode === 'kabiye' ? 'all' : currentLanguage
@@ -130,7 +137,7 @@ const DictionaryScreen: React.FC = () => {
             className="border-foreground rounded-full border-[1.5px] px-[18px] py-3"
           >
             <Text weight="semibold" className="text-foreground text-[15px]">
-              {myWords.readCount > 0 ? t`My words · ${myWords.readCount}` : t`My words`}
+              {myWords.savedCount > 0 ? t`My words · ${myWords.savedCount}` : t`My words`}
             </Text>
           </Pressable>
           <Pressable

@@ -44,10 +44,6 @@ msgstr "{0} of {1} lessons"
 msgid "{0} words"
 msgstr "{0} words"
 
-#: src/components/lesson-steps/finish-step.tsx
-msgid "{count} words you can now read and write."
-msgstr "{count} words you can now read and write."
-
 #: src/screens/learn.tsx
 msgid "{done} of {total}"
 msgstr "{done} of {total}"
@@ -693,7 +689,7 @@ msgstr "My path"
 msgid "My words"
 msgstr "My words"
 
-#. placeholder {0}: myWords.readCount
+#. placeholder {0}: myWords.savedCount
 #: src/screens/dictionary/dictionary.tsx
 msgid "My words · {0}"
 msgstr "My words · {0}"
@@ -777,6 +773,10 @@ msgstr "Not set"
 msgid "Not set yet."
 msgstr "Not set yet."
 
+#: src/screens/dictionary/my-words.tsx
+msgid "not spelled yet"
+msgstr "not spelled yet"
+
 #: src/components/lesson-steps/fill-blank-step.tsx
 #: src/components/lesson-steps/order-words-step.tsx
 #: src/components/lesson-steps/quiz-step.tsx
@@ -784,10 +784,6 @@ msgstr "Not set yet."
 #: src/components/lesson-steps/spell-step.tsx
 msgid "Not this time"
 msgstr "Not this time"
-
-#: src/screens/dictionary/my-words.tsx
-msgid "not written yet"
-msgstr "not written yet"
 
 #: src/screens/lesson.tsx
 msgid "Not written yet."
@@ -805,10 +801,6 @@ msgstr "Official Kabiyè Academy website"
 #: src/components/lesson-steps/finish-step.tsx
 msgid "One came back for a second try: {0}. You got it."
 msgstr "One came back for a second try: {0}. You got it."
-
-#: src/components/lesson-steps/finish-step.tsx
-msgid "One word you can now read and write."
-msgstr "One word you can now read and write."
 
 #: src/screens/profile.tsx
 msgid "Online Kabiyè dictionary"
@@ -883,12 +875,12 @@ msgstr "Practise"
 
 #. placeholder {0}: unwritten.length
 #: src/screens/dictionary/my-words.tsx
-msgid "Practise the {0} unwritten"
-msgstr "Practise the {0} unwritten"
+msgid "Practise the {0} not spelled yet"
+msgstr "Practise the {0} not spelled yet"
 
 #: src/screens/dictionary/my-words.tsx
-msgid "Practise the 1 unwritten"
-msgstr "Practise the 1 unwritten"
+msgid "Practise the 1 not spelled yet"
+msgstr "Practise the 1 not spelled yet"
 
 #: src/app/_layout.tsx
 #: src/screens/profile.tsx
@@ -1073,6 +1065,10 @@ msgstr "Space"
 #: src/components/lesson-steps/spell-step.tsx
 msgid "Spell it"
 msgstr "Spell it"
+
+#: src/screens/dictionary/my-words.tsx
+msgid "spelled correctly"
+msgstr "spelled correctly"
 
 #: src/components/lesson-steps/spot-letter-step.tsx
 msgid "Spot the letter"
@@ -1368,20 +1364,24 @@ msgid "Word of the day"
 msgstr "Word of the day"
 
 #: src/screens/profile.tsx
-msgid "word you can read"
-msgstr "word you can read"
+msgid "word saved"
+msgstr "word saved"
 
 #: src/screens/profile.tsx
-msgid "word you can write"
-msgstr "word you can write"
+msgid "word spelled correctly"
+msgstr "word spelled correctly"
 
 #: src/screens/profile.tsx
-msgid "words you can read"
-msgstr "words you can read"
+msgid "words saved"
+msgstr "words saved"
 
 #: src/screens/profile.tsx
-msgid "words you can write"
-msgstr "words you can write"
+msgid "words spelled correctly"
+msgstr "words spelled correctly"
+
+#: src/components/lesson-steps/finish-step.tsx
+msgid "Words you met"
+msgstr "Words you met"
 
 #: src/components/lesson-steps/spell-step.tsx
 msgid "Write “{gloss}” in Kabiyè"
@@ -1400,10 +1400,6 @@ msgstr "Write it"
 msgid "Write the word in Kabiyè"
 msgstr "Write the word in Kabiyè"
 
-#: src/screens/dictionary/my-words.tsx
-msgid "written"
-msgstr "written"
-
 #: src/components/lesson-steps/fill-blank-step.tsx
 #: src/components/lesson-steps/order-words-step.tsx
 #: src/components/lesson-steps/quiz-step.tsx
@@ -1411,6 +1407,22 @@ msgstr "written"
 #: src/components/lesson-steps/spell-step.tsx
 msgid "Yes"
 msgstr "Yes"
+
+#: src/components/lesson-steps/finish-step.tsx
+msgid "You met {headlineCount} words."
+msgstr "You met {headlineCount} words."
+
+#: src/components/lesson-steps/finish-step.tsx
+msgid "You met one word."
+msgstr "You met one word."
+
+#: src/components/lesson-steps/finish-step.tsx
+msgid "You practised {headlineCount} words."
+msgstr "You practised {headlineCount} words."
+
+#: src/components/lesson-steps/finish-step.tsx
+msgid "You practised one word."
+msgstr "You practised one word."
 
 #: src/components/lesson-steps/cover-step.tsx
 msgid "You will meet"

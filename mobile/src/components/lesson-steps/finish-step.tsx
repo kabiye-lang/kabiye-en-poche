@@ -12,7 +12,10 @@ import { ArrowRightIcon, BookmarkSimpleIcon } from '../icons'
 import { Button, Text, View } from '../ui'
 
 interface FinishStepProps {
-  words: LessonExample[]
+  /** Taught words whose own paired activity was answered, right or wrong. */
+  practised: LessonExample[]
+  /** Taught words with no answered activity of their own -- shown, not tried. */
+  metOnly: LessonExample[]
   /** Words that were missed once and came back. Named, not counted against the learner. */
   retried: string[]
   savedTotal?: number
@@ -24,19 +27,26 @@ interface FinishStepProps {
 }
 
 /**
- * What you can now read, not how you scored.
+ * What was practised, and what was only met.
  *
- * The old completion screen showed a percentage over a question count. That measured the
- * app's exercises rather than the learner's Kabiyè, and a low number at the end of a
- * lesson someone had just worked through is a strange thing to hand them. Laterite
- * counts words instead, and treats a retry as a thing that happened rather than a
- * deduction -- "One came back for a second try. You got it."
+ * The old completion screen claimed every taught word was one the learner could read
+ * and write, whether or not they were ever asked about it -- a claim the app has no
+ * evidence for. Laterite instead counts only the words whose own paired activity was
+ * answered ("practised"); anything taught but never tried is named separately, under
+ * "Words you met", never folded into the same claim. A retry is a thing that happened,
+ * not a deduction -- "One came back for a second try. You got it."
  */
-const FinishStep = ({ words, retried, savedTotal, tda, onDone, isBusy }: FinishStepProps) => {
+const FinishStep = ({ practised, metOnly, retried, savedTotal, tda, onDone, isBusy }: FinishStepProps) => {
   const { t } = useLingui()
   const { currentLanguage } = useLanguage()
 
-  const count = words.length
+  const practisedCount = practised.length
+  // Nothing was practised: the headline falls back to what was met, so the lesson never
+  // reports zero words for a lesson that did teach some.
+  const headlineCount = practisedCount > 0 ? practisedCount : metOnly.length
+  // The met words are always listed -- every one links to its entry. Only their label
+  // depends on the mix: with nothing practised, the headline already says "met".
+  const labelMetSection = practisedCount > 0 && metOnly.length > 0
 
   return (
     <View className="bg-accent-fill flex-1">
@@ -44,7 +54,13 @@ const FinishStep = ({ words, retried, savedTotal, tda, onDone, isBusy }: FinishS
         <Text className="text-on-accent text-[13px] font-semibold uppercase tracking-[0.1em]">{t`Done`}</Text>
 
         <Text weight="semibold" className="text-on-accent mt-4 text-[40px] leading-[1.0]">
-          {count === 1 ? t`One word you can now read and write.` : t`${count} words you can now read and write.`}
+          {practisedCount > 0
+            ? headlineCount === 1
+              ? t`You practised one word.`
+              : t`You practised ${headlineCount} words.`
+            : headlineCount === 1
+              ? t`You met one word.`
+              : t`You met ${headlineCount} words.`}
         </Text>
 
         {retried.length > 0 ? (
@@ -56,29 +72,23 @@ const FinishStep = ({ words, retried, savedTotal, tda, onDone, isBusy }: FinishS
         ) : null}
 
         <View className="mt-8">
-          {words.map((word, i) => (
-            <Animated.View key={`${word.kbp}-${i}`} entering={FadeInUp.duration(240).delay(i * 60)}>
-              <Pressable
-                accessibilityRole="link"
-                accessibilityLabel={`${word.kbp}, ${currentLanguage === 'fr' ? word.fr : word.en}`}
-                onPress={() => router.push(`/word/${encodeURIComponent(word.kbp)}`)}
-                className={
-                  i === 0
-                    ? 'flex-row items-baseline justify-between py-3'
-                    : 'flex-row items-baseline justify-between border-t border-white/30 py-3'
-                }
-              >
-                <Text kabiye weight="bold" className="text-on-accent flex-1 text-[24px]">
-                  {word.kbp}
-                </Text>
-                <Text className="text-on-accent ml-4 max-w-[42%] text-right text-[15px]">
-                  {currentLanguage === 'fr' ? word.fr : word.en}
-                </Text>
-                <ArrowRightIcon size={16} className="text-on-accent ml-3" />
-              </Pressable>
-            </Animated.View>
+          {practised.map((word, i) => (
+            <WordRow key={`practised-${word.kbp}-${i}`} word={word} index={i} currentLanguage={currentLanguage} />
           ))}
         </View>
+
+        {labelMetSection ? (
+          <Text className="text-on-accent mt-6 text-[13px] font-semibold uppercase tracking-[0.1em]">
+            {t`Words you met`}
+          </Text>
+        ) : null}
+        {metOnly.length > 0 ? (
+          <View className={labelMetSection ? 'mt-2' : ''}>
+            {metOnly.map((word, i) => (
+              <WordRow key={`met-${word.kbp}-${i}`} word={word} index={i} currentLanguage={currentLanguage} />
+            ))}
+          </View>
+        ) : null}
 
         {tda ? (
           // The lesson leaving the phone: one thing to go and do with a Kabiyè speaker.
@@ -105,6 +115,33 @@ const FinishStep = ({ words, retried, savedTotal, tda, onDone, isBusy }: FinishS
         </Button>
       </View>
     </View>
+  )
+}
+
+/** One word row: the Kabiyè headword, its gloss, and a link to the dictionary entry.
+ *  Shared between the practised list and the "Words you met" list -- same row style. */
+function WordRow({ word, index, currentLanguage }: { word: LessonExample; index: number; currentLanguage: string }) {
+  return (
+    <Animated.View entering={FadeInUp.duration(240).delay(index * 60)}>
+      <Pressable
+        accessibilityRole="link"
+        accessibilityLabel={`${word.kbp}, ${currentLanguage === 'fr' ? word.fr : word.en}`}
+        onPress={() => router.push(`/word/${encodeURIComponent(word.kbp)}`)}
+        className={
+          index === 0
+            ? 'flex-row items-baseline justify-between py-3'
+            : 'flex-row items-baseline justify-between border-t border-white/30 py-3'
+        }
+      >
+        <Text kabiye weight="bold" className="text-on-accent flex-1 text-[24px]">
+          {word.kbp}
+        </Text>
+        <Text className="text-on-accent ml-4 max-w-[42%] text-right text-[15px]">
+          {currentLanguage === 'fr' ? word.fr : word.en}
+        </Text>
+        <ArrowRightIcon size={16} className="text-on-accent ml-3" />
+      </Pressable>
+    </Animated.View>
   )
 }
 

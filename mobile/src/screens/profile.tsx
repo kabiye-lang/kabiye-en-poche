@@ -1,7 +1,8 @@
+import { useCallback } from 'react'
 import { Alert, Linking, Platform, Pressable, ScrollView } from 'react-native'
 
 import * as Application from 'expo-application'
-import { Href, useRouter } from 'expo-router'
+import { Href, useFocusEffect, useRouter } from 'expo-router'
 
 import { useLingui } from '@lingui/react/macro'
 import { toast } from 'sonner-native'
@@ -19,6 +20,16 @@ const ProfileScreen = () => {
   const { data: progressSummary } = useAppProgressSummary()
   const myWords = useMyWords()
   const resetProgressMutation = useAppResetProgress()
+
+  // The tab stays mounted, so the counts were read once and went stale: a lesson finished
+  // since said "31 so far" while this screen still said 26. Re-read on every focus, as
+  // My words does.
+  const { refresh: refreshMyWords } = myWords
+  useFocusEffect(
+    useCallback(() => {
+      void refreshMyWords()
+    }, [refreshMyWords])
+  )
   const { appearance, setAppearance } = useAppearance()
   const { path } = usePath()
 
@@ -134,15 +145,15 @@ const ProfileScreen = () => {
         {/* Two counts, not a percentage.
             A percentage of the curriculum is a number about us -- 7 of 78 lessons are
             written -- and showing a learner 9% after they worked through a lesson is
-            both discouraging and about the wrong thing. Words met and words spelled are
-            about them, and both are true. */}
+            both discouraging and about the wrong thing. Words saved and words spelled
+            are about them, and both are true. */}
         <View className="mb-6 flex-row gap-3">
           <View className="bg-foreground flex-1 rounded-[14px] p-4">
             <Text weight="semibold" className="text-background text-[48px] leading-[1.0]">
-              {myWords.readCount}
+              {myWords.savedCount}
             </Text>
             <Text className="text-background/70 mt-2 text-[14px] leading-[1.3]">
-              {myWords.readCount === 1 ? t`word you can read` : t`words you can read`}
+              {myWords.savedCount === 1 ? t`word saved` : t`words saved`}
             </Text>
           </View>
           <View className="border-foreground flex-1 rounded-[14px] border-[1.5px] p-4">
@@ -150,7 +161,7 @@ const ProfileScreen = () => {
               {myWords.writtenCount}
             </Text>
             <Text className="text-foreground-secondary mt-2 text-[14px] leading-[1.3]">
-              {myWords.writtenCount === 1 ? t`word you can write` : t`words you can write`}
+              {myWords.writtenCount === 1 ? t`word spelled correctly` : t`words spelled correctly`}
             </Text>
           </View>
         </View>

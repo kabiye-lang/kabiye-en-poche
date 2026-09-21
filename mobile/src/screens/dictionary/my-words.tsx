@@ -14,12 +14,13 @@ import { useMyWords } from '../../hooks/use-my-words'
 type Sort = 'recent' | 'alpha' | 'practise'
 
 /**
- * Every word this learner has met, and whether they have written it.
+ * Every word this learner has saved -- from finishing a lesson or bookmarking a
+ * dictionary entry -- and whether they have spelled it correctly.
  *
- * The pencil is the whole point of the list: filled means written correctly at least
- * once, outline means met but not yet written. That distinction is what the app is for
- * -- one of its three audiences already speaks Kabiyè and is here to learn the
- * orthography -- so it earns the trailing position on every row.
+ * The pencil is the whole point of the list: filled means spelled correctly at least
+ * once, outline means saved but not yet spelled correctly. That distinction is what the
+ * app is for -- one of its three audiences already speaks Kabiyè and is here to learn
+ * the orthography -- so it earns the trailing position on every row.
  */
 const MyWordsScreen = () => {
   const { t } = useLingui()
@@ -100,8 +101,8 @@ const MyWordsScreen = () => {
                   accessibilityRole="link"
                   accessibilityLabel={
                     word.writtenCount > 0
-                      ? `${word.headword}, ${t`written`}`
-                      : `${word.headword}, ${t`not written yet`}`
+                      ? `${word.headword}, ${t`spelled correctly`}`
+                      : `${word.headword}, ${t`not spelled yet`}`
                   }
                   onPress={() => router.push(`/word/${encodeURIComponent(word.headword)}`)}
                   className={
@@ -134,7 +135,9 @@ const MyWordsScreen = () => {
             className="bg-foreground items-center rounded-full px-6 py-[18px]"
           >
             <Text weight="semibold" className="text-background text-[17px]">
-              {unwritten.length === 1 ? t`Practise the 1 unwritten` : t`Practise the ${unwritten.length} unwritten`}
+              {unwritten.length === 1
+                ? t`Practise the 1 not spelled yet`
+                : t`Practise the ${unwritten.length} not spelled yet`}
             </Text>
           </Pressable>
         </View>

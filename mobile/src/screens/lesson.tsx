@@ -41,6 +41,7 @@ import { useMyWords } from '../hooks/use-my-words'
 import { hasActivity } from '../types/lesson-steps'
 import { usableAudioUrl } from '../utils/audio-source'
 import { spellingVariants } from '../utils/kabiye-variants'
+import { isInteractive, practisedWords } from '../utils/lesson-outcomes'
 import { dialogueTurns, placeSections, sectionSentences } from '../utils/section-kinds'
 
 /**
@@ -94,28 +95,6 @@ const isAnswerable = (activity: { activity_type: string; data: unknown }): boole
 const AUDIO_DEPENDENT_ACTIVITIES = new Set(['audio', 'listen_choose', 'listen_type'])
 
 /**
- * Step types the learner can get wrong.
- *
- * Content and completion are not answerable, so they are neither scored nor re-queued.
- * The list was spelled out twice before -- once for scoring and once for the question
- * count -- and the two had already drifted apart.
- */
-const INTERACTIVE_STEPS = new Set<LessonStep['type']>([
-  'listen_choose',
-  'listen_type',
-  'match_pairs',
-  'order_words',
-  'fill_blank',
-  'multiple_choice',
-  'true_false',
-  'spell',
-  'spot_letter',
-  'read_choose',
-])
-
-const isInteractive = (step: LessonStep) => INTERACTIVE_STEPS.has(step.type)
-
-/**
  * How many words a lesson teaches when the content does not say.
  *
  * A Laterite lesson is a handful of words the learner will remember, not an inventory:
@@ -139,11 +118,15 @@ const LessonScreen = () => {
   const { data: contents, isLoading: contentsLoading } = useAppLessonContents(lessonId)
   const { data: activities, isLoading: activitiesLoading } = useAppLessonActivities(lessonId)
   const completeLessonMutation = useAppCompleteLesson()
-  const { addMet, markWritten, readCount } = useMyWords()
+  const { addMet, markWritten } = useMyWords()
 
   const [currentStepIndex, setCurrentStepIndex] = useState(0)
   const [score, setScore] = useState(0)
   const [answers, setAnswers] = useState<Map<string, { answer: string; isCorrect: boolean }>>(new Map())
+
+  // Finish never claims a save the app has not confirmed: this is set only once the
+  // `addMet` write actually resolves, not the instant it is fired.
+  const [savedTotal, setSavedTotal] = useState<number | undefined>(undefined)
 
   /**
    * Steps the learner got wrong, re-asked before the lesson ends.
@@ -256,6 +239,7 @@ const LessonScreen = () => {
           type: paired.activity_type as ActivityStep['type'],
           order: order++,
           activity: paired,
+          wordKbp: word.kbp,
         })
       }
     }
@@ -286,6 +270,8 @@ const LessonScreen = () => {
       }
     })
 
+    // No word claimed these, so they carry no `wordKbp` -- answering one is not
+    // practising a word, whatever the answer. See `utils/lesson-outcomes.ts`.
     for (const activity of answerable) {
       if (claimed.has(activity.id)) continue
       built.push({
@@ -348,8 +334,12 @@ const LessonScreen = () => {
 
     // Reaching the end means these words have been met, whether or not the learner
     // taps through the finish screen -- closing the lesson there should not lose them.
+    // Finish is told the new total only once this resolves -- a failed save should not
+    // be claimed, and the lesson still finishes either way.
     if (next >= walkedSteps.length - 1 && words.length > 0) {
-      void addMet(words.map((word) => ({ headword: word.kbp, lexemeId: word.lexeme_id })))
+      addMet(words.map((word) => ({ headword: word.kbp, lexemeId: word.lexeme_id })))
+        .then((saved) => setSavedTotal(saved.length))
+        .catch(() => {})
     }
 
     if (reachedEnd && missed.length > 0 && !retriesQueued) {
@@ -512,6 +502,15 @@ const LessonScreen = () => {
     })
     .filter((word): word is string => word !== undefined)
 
+  /**
+   * Practised vs. merely met, for the finish screen -- the distinction the whole spec is
+   * about. `steps`, not `walkedSteps`: a retry's id is `retry-{id}`, and `practisedWords`
+   * already checks both forms against the original step.
+   */
+  const practisedSet = new Set(practisedWords(steps, answers))
+  const practised = words.filter((word) => practisedSet.has(word.kbp))
+  const metOnly = words.filter((word) => !practisedSet.has(word.kbp))
+
   // Render current step
   return (
     <View className="bg-background flex-1">
@@ -622,10 +621,11 @@ const LessonScreen = () => {
 
         {currentStep.type === 'completion' ? (
           <FinishStep
-            words={words}
+            practised={practised}
+            metOnly={metOnly}
             tda={currentStep.tda}
             retried={retriedWords}
-            savedTotal={readCount > 0 ? readCount : undefined}
+            savedTotal={savedTotal}
             onDone={handleLessonComplete}
             isBusy={completeLessonMutation.isPending}
           />

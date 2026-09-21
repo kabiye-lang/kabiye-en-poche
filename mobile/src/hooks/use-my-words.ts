@@ -3,12 +3,15 @@ import { useCallback, useEffect, useState } from 'react'
 import AsyncStorage from '@react-native-async-storage/async-storage'
 
 /**
- * The words this learner has met, and whether they have written any of them.
+ * The words this learner has saved -- from finishing a lesson or bookmarking a
+ * dictionary entry -- and whether they have written any of them.
  *
  * Local only. There is no account, so this is the whole record of what someone has
- * learned, and it is the only number the Profile screen can honestly report: not a
- * percentage of a curriculum that is 7/78 written, but how many words they can read and
- * how many they have spelled correctly at least once.
+ * saved, and it is the only number the Profile screen can honestly report: not a
+ * percentage of a curriculum that is 7/78 written, but how many words are saved and how
+ * many they have spelled correctly at least once. Because a bookmark lands here the same
+ * way a lesson word does, the total is "words saved", never "words met" -- the app has
+ * no way to tell the two apart once they are in this list.
  */
 export interface MyWord {
   headword: string
@@ -58,6 +61,28 @@ async function read(): Promise<MyWord[]> {
   }
 }
 
+/**
+ * Every mutation runs through this one chain, in call order.
+ *
+ * `addMet` (finishing a lesson, or bookmarking from the dictionary) and `markWritten` (a
+ * correct spell answer) each read storage, then write it back. Fired without waiting on
+ * each other -- a lesson finishing while a bookmark from the same word's dictionary
+ * entry is still landing -- both would read the same starting state, and whichever wrote
+ * last would silently erase the other's change. Queuing means a mutation's read never
+ * happens until the one queued before it has finished writing.
+ */
+let queue: Promise<unknown> = Promise.resolve()
+function enqueue<T>(fn: () => Promise<T>): Promise<T> {
+  const result = queue.then(fn, fn)
+  // The chain must keep moving even if a mutation throws, or every mutation queued
+  // after it would wait on a promise that never resolves.
+  queue = result.then(
+    () => undefined,
+    () => undefined
+  )
+  return result
+}
+
 export function useMyWords() {
   const [words, setWords] = useState<MyWord[]>([])
   const [isLoading, setIsLoading] = useState(true)
@@ -86,19 +111,27 @@ export function useMyWords() {
     }
   }, [])
 
-  const addMet = useCallback(async (met: { headword: string; lexemeId?: string }[]) => {
-    const next = mergeWords(await read(), met)
-    await AsyncStorage.setItem(MY_WORDS_KEY, JSON.stringify(next))
-    setWords(next)
-    return next
-  }, [])
+  const addMet = useCallback(
+    (met: { headword: string; lexemeId?: string }[]) =>
+      enqueue(async () => {
+        const next = mergeWords(await read(), met)
+        await AsyncStorage.setItem(MY_WORDS_KEY, JSON.stringify(next))
+        setWords(next)
+        return next
+      }),
+    []
+  )
 
-  const markWritten = useCallback(async (headword: string) => {
-    const next = recordWritten(await read(), headword)
-    await AsyncStorage.setItem(MY_WORDS_KEY, JSON.stringify(next))
-    setWords(next)
-    return next
-  }, [])
+  const markWritten = useCallback(
+    (headword: string) =>
+      enqueue(async () => {
+        const next = recordWritten(await read(), headword)
+        await AsyncStorage.setItem(MY_WORDS_KEY, JSON.stringify(next))
+        setWords(next)
+        return next
+      }),
+    []
+  )
 
   return {
     words,
@@ -106,8 +139,8 @@ export function useMyWords() {
     refresh,
     addMet,
     markWritten,
-    /** Words met, i.e. words the learner can read. */
-    readCount: words.length,
+    /** Entries in My words -- lesson words and dictionary bookmarks. */
+    savedCount: words.length,
     /** Words spelled correctly at least once. */
     writtenCount: words.filter((word) => word.writtenCount > 0).length,
   }

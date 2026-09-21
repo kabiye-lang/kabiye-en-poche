@@ -74,6 +74,10 @@ export interface ActivityStep extends BaseStep {
     | 'spot_letter'
     | 'read_choose'
   activity: LessonActivity
+  /** The taught word this activity was paired to, set by `lesson.tsx`'s `teach()`.
+   *  Unset on an activity nothing claimed -- it ran after the paired steps instead of
+   *  being dropped, but answering it does not count as practising a word. */
+  wordKbp?: string
 }
 
 export interface ContentStep extends BaseStep {
