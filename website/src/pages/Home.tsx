@@ -1,8 +1,6 @@
-import { useState, useEffect } from "react";
+import { useEffect, useRef, useState } from "react";
 import { GithubLogo } from "@phosphor-icons/react";
 import { motion } from "motion/react";
-import NewsletterSignup from "@/components/newsletter-signup";
-import KabiyeKeyboard from "@/components/kabiye-keyboard";
 
 const fadeIn = {
   initial: { opacity: 0, y: 20 },
@@ -18,7 +16,8 @@ const translations = {
     heroWord: "Kabɩyɛ.",
     heroBody:
       "Lessons, a dictionary of 9,738 words and a keyboard for the letters your phone doesn't have — for the language of northern Togo, in English and French. Free, open source, no ads.",
-    availability: "iOS on TestFlight today · Android soon",
+    comingSoon: "Coming to iPhone and Android.",
+    notifyMe: "Tell me when it's out",
     glyphCaption:
       "One of eight letters French cannot write. There are 32 in all.",
     discoverTitle: "One of Togo's two national languages.",
@@ -44,10 +43,8 @@ const translations = {
       "Kabiyè en poche is built in the open. The largest gap is audio: no recordings exist yet, and they need a Kabiyè speaker rather than a synthesiser.",
     viewGithub: "GitHub",
     joinUs: "Record with us",
-    readyToStart: "Get the app",
-    downloadNow:
-      "An independent, community-run project. No ads, no tracking, no paywall.",
-    openKeyboard: "Open Kabiyè Keyboard",
+    readyToStart: "The app",
+    downloadNow: "Coming soon to iPhone and Android.",
     statEntries: "dictionary entries",
     statLanguages: "languages — Kabiyè, French, English",
     statLetters: "letters, 8 not in French",
@@ -57,7 +54,7 @@ const translations = {
     padClear: "Clear",
     padCopy: "Copy",
     padCopied: "Copied",
-    navDictionary: "Dictionary",
+    padCopyFailed: "Could not copy — select the text and copy it yourself.",
     navAlphabet: "Alphabet",
     navLessons: "Lessons",
     navContribute: "Contribute",
@@ -100,9 +97,15 @@ const translations = {
     ],
     footerTagline: "sɔɔlɩm — love.",
     footerProject: "Project",
-    footerLinks: ["Dictionary", "Alphabet", "Lessons", "Contribute"],
+    footerLinks: [
+      { label: "Alphabet", href: "#alphabet" },
+      { label: "Lessons", href: "#lessons" },
+      { label: "Contribute", href: "#contribute" },
+    ],
     footerMore: "More",
-    footerMoreLinks: ["GitHub", "Sources & licences", "Privacy", "Terms"],
+    footerMoreLinks: [
+      { label: "GitHub", href: "https://github.com/kabiye-lang/kabiye-en-poche" },
+    ],
   },
   fr: {
     title: "Kabiyè en poche",
@@ -111,7 +114,8 @@ const translations = {
     heroWord: "Kabɩyɛ.",
     heroBody:
       "Des leçons, un dictionnaire de 9 738 mots et un clavier pour les lettres que votre téléphone n'a pas — pour la langue du nord du Togo, en français et en anglais. Gratuit, libre, sans publicité.",
-    availability: "iOS sur TestFlight aujourd'hui · Android bientôt",
+    comingSoon: "Bientôt sur iPhone et Android.",
+    notifyMe: "Prévenez-moi à la sortie",
     glyphCaption:
       "L'une des huit lettres que le français ne peut pas écrire. Il y en a 32 en tout.",
     discoverTitle: "L'une des deux langues nationales du Togo.",
@@ -135,10 +139,8 @@ const translations = {
       "Kabiyè en poche se construit à découvert. Le plus grand manque, c'est l'audio : aucun enregistrement n'existe encore, et il faudra une voix kabiyè, pas un synthétiseur.",
     viewGithub: "GitHub",
     joinUs: "Enregistrer avec nous",
-    readyToStart: "Obtenir l'application",
-    downloadNow:
-      "Un projet indépendant, porté par la communauté. Sans publicité, sans traçage, sans abonnement.",
-    openKeyboard: "Ouvrir le clavier Kabiyè",
+    readyToStart: "L'application",
+    downloadNow: "Bientôt sur iPhone et Android.",
     statEntries: "entrées du dictionnaire",
     statLanguages: "langues — kabiyè, français, anglais",
     statLetters: "lettres, dont 8 absentes du français",
@@ -148,7 +150,8 @@ const translations = {
     padClear: "Effacer",
     padCopy: "Copier",
     padCopied: "Copié",
-    navDictionary: "Dictionnaire",
+    padCopyFailed:
+      "Copie impossible — sélectionnez le texte et copiez-le vous-même.",
     navAlphabet: "Alphabet",
     navLessons: "Leçons",
     navContribute: "Contribuer",
@@ -189,9 +192,15 @@ const translations = {
     ],
     footerTagline: "sɔɔlɩm — l'amour.",
     footerProject: "Le projet",
-    footerLinks: ["Dictionnaire", "Alphabet", "Leçons", "Contribuer"],
+    footerLinks: [
+      { label: "Alphabet", href: "#alphabet" },
+      { label: "Leçons", href: "#lessons" },
+      { label: "Contribuer", href: "#contribute" },
+    ],
     footerMore: "Plus",
-    footerMoreLinks: ["GitHub", "Sources et licences", "Confidentialité", "Conditions"],
+    footerMoreLinks: [
+      { label: "GitHub", href: "https://github.com/kabiye-lang/kabiye-en-poche" },
+    ],
   },
 };
 
@@ -207,27 +216,56 @@ const KABIYE_ONLY = "ɖɛɣɩŋɔʋñ";
 export default function Home() {
   const [lang, setLang] = useState<"en" | "fr">("en");
   const [pad, setPad] = useState("");
-  const [copied, setCopied] = useState(false);
-  const [isKeyboardOpen, setIsKeyboardOpen] = useState(false);
+  const [copyStatus, setCopyStatus] = useState<"idle" | "copied" | "failed">(
+    "idle",
+  );
+  const copyTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   useEffect(() => {
     const detectLanguage = () => {
       const browserLang = navigator.language.split("-")[0];
-      console.log(browserLang);
       return browserLang === "fr" ? "fr" : "en";
     };
     setLang(detectLanguage());
+  }, []);
+
+  useEffect(() => {
+    return () => {
+      if (copyTimerRef.current) clearTimeout(copyTimerRef.current);
+    };
   }, []);
 
   const toggleLanguage = () => {
     setLang((prevLang) => (prevLang === "en" ? "fr" : "en"));
   };
 
+  const resetCopyStatus = () => {
+    if (copyTimerRef.current) {
+      clearTimeout(copyTimerRef.current);
+      copyTimerRef.current = null;
+    }
+    setCopyStatus("idle");
+  };
+
+  const updatePad = (updater: (value: string) => string) => {
+    resetCopyStatus();
+    setPad(updater);
+  };
+
   const handleCopyPad = async () => {
     if (!pad) return;
-    await navigator.clipboard.writeText(pad);
-    setCopied(true);
-    setTimeout(() => setCopied(false), 1600);
+    resetCopyStatus();
+    if (!navigator.clipboard?.writeText) {
+      setCopyStatus("failed");
+      return;
+    }
+    try {
+      await navigator.clipboard.writeText(pad);
+      setCopyStatus("copied");
+      copyTimerRef.current = setTimeout(() => setCopyStatus("idle"), 1600);
+    } catch {
+      setCopyStatus("failed");
+    }
   };
 
   const t = translations[lang];
@@ -245,7 +283,6 @@ export default function Home() {
           <div className="hidden flex-1 items-center gap-6 md:flex">
             {(
               [
-                ['#dictionary', t.navDictionary],
                 ['#alphabet', t.navAlphabet],
                 ['#lessons', t.navLessons],
                 ['#contribute', t.navContribute],
@@ -266,17 +303,12 @@ export default function Home() {
           </button>
           <a
             href="#get-the-app"
-            className="bg-ink rounded-full px-5 py-2 text-[14px] font-semibold text-white"
+            className="bg-ink hidden rounded-full px-5 py-2 text-[14px] font-semibold text-white sm:inline-flex"
           >
             {t.readyToStart}
           </a>
         </div>
       </nav>
-      <KabiyeKeyboard
-        isOpen={isKeyboardOpen}
-        onClose={() => setIsKeyboardOpen(false)}
-        lang={lang}
-      />
 
       {/* Paper, not a photograph. The previous hero was an AI-generated image with a
           black scrim over it and white text on top -- its own alt text said so. Laterite
@@ -309,19 +341,19 @@ export default function Home() {
               {t.heroBody}
             </motion.p>
             <motion.div
-              className="mt-8 flex flex-wrap items-center gap-4"
+              className="mt-8"
               initial={{ opacity: 0, y: 18 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.8, delay: 0.34, ease: [0.2, 0.7, 0.2, 1] }}
             >
-              <a href="#" className="w-40">
-                <img src="/app-store-badge.png" alt="Download on the App Store" className="h-auto w-full" />
-              </a>
-              <a href="#" className="w-40">
-                <img src="/google-play-badge.png" alt="Get it on Google Play" className="h-auto w-full" />
+              <p className="text-ink text-[17px]">{t.comingSoon}</p>
+              <a
+                href="mailto:hello@kabiye-en-poche.org?subject=Kabiy%C3%A8%20en%20Poche"
+                className="mt-2 inline-flex min-h-11 items-center underline underline-offset-4"
+              >
+                {t.notifyMe}
               </a>
             </motion.div>
-            <p className="text-ink-quiet mt-4 text-[14px]">{t.availability}</p>
           </div>
 
           <motion.div
@@ -367,7 +399,7 @@ export default function Home() {
       {/* The alphabet, playable. Tapping a tile appends the letter to the pad, so a
           visitor can produce a Kabiyè letter before installing anything -- which is the
           single most convincing thing this site can do. */}
-      <section id="dictionary" className="bg-paper px-8 py-20">
+      <section id="alphabet" className="bg-paper px-8 py-20">
         <div className="mx-auto max-w-[1200px]">
           <h2
             className="text-ink font-semibold leading-[1.02] tracking-[-0.02em]"
@@ -381,7 +413,7 @@ export default function Home() {
               return (
                 <button
                   key={letter}
-                  onClick={() => setPad((value) => value + letter)}
+                  onClick={() => updatePad((value) => value + letter)}
                   aria-label={letter}
                   className={
                     special
@@ -401,13 +433,13 @@ export default function Home() {
             </div>
             <div className="mt-4 flex flex-wrap gap-3">
               <button
-                onClick={() => setPad((value) => [...value].slice(0, -1).join(""))}
+                onClick={() => updatePad((value) => [...value].slice(0, -1).join(""))}
                 className="border-ink text-ink focus-visible:ring-ink rounded-full border-[1.5px] px-5 py-2 text-[15px] font-semibold focus-visible:ring-2 focus-visible:ring-offset-2"
               >
                 {t.padDelete}
               </button>
               <button
-                onClick={() => setPad("")}
+                onClick={() => updatePad(() => "")}
                 className="border-ink text-ink focus-visible:ring-ink rounded-full border-[1.5px] px-5 py-2 text-[15px] font-semibold focus-visible:ring-2 focus-visible:ring-offset-2"
               >
                 {t.padClear}
@@ -416,9 +448,20 @@ export default function Home() {
                 onClick={handleCopyPad}
                 className="bg-ink text-paper focus-visible:ring-ink rounded-full px-5 py-2 text-[15px] font-semibold focus-visible:ring-2 focus-visible:ring-offset-2"
               >
-                {copied ? t.padCopied : t.padCopy}
+                {copyStatus === "copied" ? t.padCopied : t.padCopy}
               </button>
             </div>
+            <p
+              role="status"
+              aria-live="polite"
+              className="text-ink-quiet mt-3 text-[14px]"
+            >
+              {copyStatus === "copied"
+                ? t.padCopied
+                : copyStatus === "failed"
+                  ? t.padCopyFailed
+                  : ""}
+            </p>
           </div>
         </div>
       </section>
@@ -426,7 +469,7 @@ export default function Home() {
       {/* The same three audiences onboarding asks about, so the site and the app agree
           about who this is for. Each card is headed by a letter from that audience's
           first lesson. */}
-      <section id="alphabet" className="bg-paper px-8 pb-20">
+      <section id="audience" className="bg-paper px-8 pb-20">
         <div className="mx-auto max-w-[1200px]">
           <h2
             className="text-ink font-semibold leading-[1.02] tracking-[-0.02em]"
@@ -630,10 +673,6 @@ export default function Home() {
         </div>
       </section>
 
-      <section className="bg-paper px-8 py-20">
-        <NewsletterSignup lang={lang} />
-      </section>
-
       <footer id="get-the-app" className="bg-ink text-paper px-8 py-16">
         <div className="mx-auto max-w-[1200px]">
           <div className="grid gap-10 md:grid-cols-[2fr_1fr_1fr]">
@@ -642,22 +681,13 @@ export default function Home() {
               <p className="kbp text-paper/60 mt-2 text-[18px]">
                 {t.footerTagline}
               </p>
-              <div className="mt-6 flex items-center gap-3">
-                <a href="#" className="w-36">
-                  <img
-                    src="/app-store-badge.png"
-                    alt="Download on the App Store"
-                    className="h-auto w-full"
-                  />
-                </a>
-                <a href="#" className="w-36">
-                  <img
-                    src="/google-play-badge.png"
-                    alt="Get it on Google Play"
-                    className="h-auto w-full"
-                  />
-                </a>
-              </div>
+              <p className="text-paper mt-6 text-[17px]">{t.comingSoon}</p>
+              <a
+                href="mailto:hello@kabiye-en-poche.org?subject=Kabiy%C3%A8%20en%20Poche"
+                className="text-paper mt-2 inline-flex min-h-11 items-center underline underline-offset-4"
+              >
+                {t.notifyMe}
+              </a>
             </div>
             {[
               { heading: t.footerProject, links: t.footerLinks },
@@ -669,9 +699,15 @@ export default function Home() {
                 </p>
                 <ul className="mt-4 space-y-2">
                   {column.links.map((link) => (
-                    <li key={link}>
-                      <a href="#" className="text-paper/85 text-[15px]">
-                        {link}
+                    <li key={link.label}>
+                      <a
+                        href={link.href}
+                        {...(link.href.startsWith("http")
+                          ? { target: "_blank", rel: "noreferrer" }
+                          : {})}
+                        className="text-paper/85 text-[15px]"
+                      >
+                        {link.label}
                       </a>
                     </li>
                   ))}
