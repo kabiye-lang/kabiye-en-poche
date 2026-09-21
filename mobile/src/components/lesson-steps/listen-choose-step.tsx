@@ -11,13 +11,15 @@ import { useLanguage } from '../../hooks/use-language'
 import { usableAudioUrl } from '../../utils/audio-source'
 import { AudioPlayButton } from '../audio-play-button'
 import { Button, Card, Text, View } from '../ui'
+import MissNote from './miss-note'
 
 interface ListenChooseStepProps {
   activity: LessonActivity
   onAnswer: (isCorrect: boolean, answer: string) => void
+  isReview?: boolean
 }
 
-const ListenChooseStep = ({ activity, onAnswer }: ListenChooseStepProps) => {
+const ListenChooseStep = ({ activity, onAnswer, isReview }: ListenChooseStepProps) => {
   const { t } = useLingui()
   const { getValue } = useLanguage()
   const { playAudio, stopAudio, isPlaying, isLoading, error: audioError } = useAudio()
@@ -184,16 +186,21 @@ const ListenChooseStep = ({ activity, onAnswer }: ListenChooseStepProps) => {
 
         {/* Feedback */}
         {showFeedback && (
-          <Card
-            className={`mb-4 p-4 ${options[selectedIndex!] === correctAnswer ? 'bg-background-tertiary' : 'bg-background-tertiary'}`}
-          >
-            <Text
-              variant="h6"
-              weight="bold"
-              className={`${options[selectedIndex!] === correctAnswer ? 'text-background' : 'text-foreground'}`}
-            >
+          <Card className="bg-background-tertiary mb-4 p-4">
+            <Text variant="h6" weight="bold" className="text-foreground">
               {options[selectedIndex!] === correctAnswer ? t`Correct!` : t`Not quite right`}
             </Text>
+            {/* This step used to only highlight the right option -- the same information
+                a colour-blind reader, or anyone glancing back at the question, could not
+                get any other way. */}
+            {options[selectedIndex!] !== correctAnswer ? (
+              <>
+                <Text variant="body" className="text-foreground mt-2">
+                  {t`The answer is ${correctAnswer}.`}
+                </Text>
+                <MissNote isReview={isReview} className="text-foreground-secondary mt-2 text-[15px] leading-[1.5]" />
+              </>
+            ) : null}
           </Card>
         )}
 

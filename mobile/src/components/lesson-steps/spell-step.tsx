@@ -8,12 +8,16 @@ import Animated, { FadeIn, FadeInDown } from 'react-native-reanimated'
 import { useLingui } from '@lingui/react/macro'
 
 import { useLanguage } from '../../hooks/use-language'
+import { letterDiff } from '../../utils/letter-diff'
 import { LightbulbIcon } from '../icons'
 import { Button, Text, View } from '../ui'
+import MissNote from './miss-note'
 
 interface SpellStepProps {
   activity: LessonActivity
   onAnswer: (isCorrect: boolean, answer: string) => void
+  /** Whether this is the review re-ask rather than the first pass -- see `miss-note.tsx`. */
+  isReview?: boolean
 }
 
 /**
@@ -44,7 +48,7 @@ export function matchesSpelling(written: string, answer: string): boolean {
 }
 
 /** "Write X in Kabiyè" — the step that asks the learner to produce, not recognise. */
-const SpellStep = ({ activity, onAnswer }: SpellStepProps) => {
+const SpellStep = ({ activity, onAnswer, isReview }: SpellStepProps) => {
   const { t } = useLingui()
   const { getLocalised } = useLanguage()
   const data = activity.data as SpellActivityData | null | undefined
@@ -84,12 +88,21 @@ const SpellStep = ({ activity, onAnswer }: SpellStepProps) => {
           </Text>
         </Animated.View>
 
-        {/* Answer line: a 2px ink underline, not a boxed input — the word is the subject. */}
+        {/* Answer line: a 2px ink underline, not a boxed input — the word is the subject.
+            Wrong is never a strikethrough: what was actually typed is still a fact worth
+            reading, labelled rather than crossed out, once there is a verdict. */}
         <View className="border-foreground mt-9 min-h-[64px] justify-end border-b-2 pb-2">
+          {checked !== null ? <Text className="text-foreground-secondary text-[13px]">{t`You wrote`}</Text> : null}
           <Text
             kabiye
             weight="bold"
-            className={checked === false ? 'text-accent text-[40px] line-through' : 'text-foreground text-[40px]'}
+            className={
+              checked !== null
+                ? isReview
+                  ? 'text-foreground-secondary text-[40px]'
+                  : 'text-foreground text-[40px]'
+                : 'text-foreground text-[40px]'
+            }
           >
             {written || ' '}
           </Text>
@@ -104,15 +117,25 @@ const SpellStep = ({ activity, onAnswer }: SpellStepProps) => {
               {checked ? t`Yes` : t`Not this time`}
             </Text>
             {checked === false ? (
-              <>
+              <View accessible accessibilityLabel={t`You wrote ${written}. The spelling is ${answer}.`}>
                 <Text className="text-foreground-secondary mt-2 text-[15px]">{t`The spelling is`}</Text>
                 <Text kabiye weight="bold" className="text-foreground mt-1 text-[28px]">
-                  {answer}
+                  {letterDiff(written, answer).map((d, i) => (
+                    <Text
+                      key={i}
+                      kabiye
+                      weight="bold"
+                      // The size is repeated on every letter: `Text` applies its default
+                      // size to nested spans, so they rendered at body size inside the 28px line.
+                      className={d.differs ? 'text-accent-text text-[28px]' : 'text-foreground text-[28px]'}
+                      style={d.differs ? { textDecorationLine: 'underline' } : undefined}
+                    >
+                      {d.letter}
+                    </Text>
+                  ))}
                 </Text>
-                <Text className="text-foreground-secondary mt-2 text-[15px]">
-                  {t`We'll ask this one again at the end.`}
-                </Text>
-              </>
+                <MissNote isReview={isReview} />
+              </View>
             ) : null}
           </Animated.View>
         ) : null}

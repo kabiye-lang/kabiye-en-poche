@@ -95,7 +95,8 @@
       --color-border-strong: #221913;         /* 1.5px outlined buttons, cards, section rules */
 
       /* Feedback carries no colour of its own.
-         Correct fills with ink; wrong is a laterite strikethrough plus an explanation.
+         Correct fills with ink; wrong states the right answer beside a readable attempt,
+         never a strikethrough -- a line through ɖ or ɛ hides the letter being taught.
          These stay mapped so legacy call sites degrade to the palette instead of
          punching green and red through it. */
       --color-success-bg: #EADFCD;

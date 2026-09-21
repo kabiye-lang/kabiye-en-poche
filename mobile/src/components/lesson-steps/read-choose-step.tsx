@@ -10,10 +10,12 @@ import { useLingui } from '@lingui/react/macro'
 import { useLanguage } from '../../hooks/use-language'
 import { correctIndex } from '../../utils/activity-answer'
 import { Button, Text, View } from '../ui'
+import MissNote from './miss-note'
 
 interface ReadChooseStepProps {
   activity: LessonActivity
   onAnswer: (isCorrect: boolean, answer: string) => void
+  isReview?: boolean
 }
 
 /**
@@ -22,7 +24,7 @@ interface ReadChooseStepProps {
  * The sentence sits behind a 3px ink rule rather than in a card: it is the thing being
  * read, and a card would make it another element on the screen instead of the subject.
  */
-const ReadChooseStep = ({ activity, onAnswer }: ReadChooseStepProps) => {
+const ReadChooseStep = ({ activity, onAnswer, isReview }: ReadChooseStepProps) => {
   const { t } = useLingui()
   const { currentLanguage, getLocalised } = useLanguage()
   const data = activity.data as ReadChooseActivityData | null | undefined
@@ -112,9 +114,7 @@ const ReadChooseStep = ({ activity, onAnswer }: ReadChooseStepProps) => {
               {selected === correct ? (explanation ?? t`That is what it says.`) : t`It says: ${correct}`}
             </Text>
             {selected !== correct ? (
-              <Text className="text-foreground-secondary mt-2 text-[15px]">
-                {t`We'll ask this one again at the end.`}
-              </Text>
+              <MissNote isReview={isReview} className="text-foreground-secondary mt-2 text-[15px]" />
             ) : null}
           </Animated.View>
         ) : null}

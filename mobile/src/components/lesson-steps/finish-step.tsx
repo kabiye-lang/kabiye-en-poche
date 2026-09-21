@@ -1,4 +1,5 @@
 import type { LessonExample } from '../../types/lesson-steps'
+import type { ReviewOutcome } from '../../utils/lesson-session'
 
 import { Pressable, ScrollView } from 'react-native'
 import Animated, { FadeInUp } from 'react-native-reanimated'
@@ -16,8 +17,9 @@ interface FinishStepProps {
   practised: LessonExample[]
   /** Taught words with no answered activity of their own -- shown, not tried. */
   metOnly: LessonExample[]
-  /** Words that were missed once and came back. Named, not counted against the learner. */
-  retried: string[]
+  /** Words that came back for review, one outcome each -- see `utils/lesson-session.ts`'s
+   *  `reviewOutcomes`. Named, never folded into a deduction against the learner. */
+  review: { word: string; outcome: ReviewOutcome }[]
   savedTotal?: number
   /** One sentence to go and do in a Kabiyè-speaking community this week -- the lesson
    *  leaving the phone. Learned from the Peace Corps workbook's TDA. */
@@ -33,12 +35,40 @@ interface FinishStepProps {
  * and write, whether or not they were ever asked about it -- a claim the app has no
  * evidence for. Laterite instead counts only the words whose own paired activity was
  * answered ("practised"); anything taught but never tried is named separately, under
- * "Words you met", never folded into the same claim. A retry is a thing that happened,
- * not a deduction -- "One came back for a second try. You got it."
+ * "Words you met", never folded into the same claim. Review is a thing that happened, not
+ * a deduction -- named by outcome, right/helped/missed, never subtracted from the count.
  */
-const FinishStep = ({ practised, metOnly, retried, savedTotal, tda, onDone, isBusy }: FinishStepProps) => {
+const FinishStep = ({ practised, metOnly, review, savedTotal, tda, onDone, isBusy }: FinishStepProps) => {
   const { t } = useLingui()
   const { currentLanguage } = useLanguage()
+
+  // Right, then helped, then missed -- best news first, matching the order the old
+  // single retry sentence always read in.
+  const reviewGroups = (['right', 'helped', 'missed'] as const)
+    .map((outcome) => ({ outcome, words: review.filter((r) => r.outcome === outcome).map((r) => r.word) }))
+    .filter((group) => group.words.length > 0)
+
+  // One line per outcome group, singular naming the word, plural counting it -- kept as a
+  // closure over `t` (not a module-level helper) so the Lingui macro sees every `t` tag
+  // where it expects one: inside the component `useLingui()` was called in.
+  const reviewLine = (outcome: ReviewOutcome, words: string[]) => {
+    const [word] = words
+    if (outcome === 'right') {
+      return words.length === 1
+        ? t`${word} came back for a second try. You got it.`
+        : t`${words.length} words came back for a second try. You got them.`
+    }
+    // "Helped" can follow any activity -- a choice as much as a spelling -- so it says
+    // what happened, not "you wrote", which a multiple-choice answer never was.
+    if (outcome === 'helped') {
+      return words.length === 1
+        ? t`You got ${word} with the word shown.`
+        : t`You got ${words.length} words with the word shown.`
+    }
+    return words.length === 1
+      ? t`${word} is in My words to practise.`
+      : t`${words.length} words are in My words to practise.`
+  }
 
   const practisedCount = practised.length
   // Nothing was practised: the headline falls back to what was met, so the lesson never
@@ -63,13 +93,11 @@ const FinishStep = ({ practised, metOnly, retried, savedTotal, tda, onDone, isBu
               : t`You met ${headlineCount} words.`}
         </Text>
 
-        {retried.length > 0 ? (
-          <Text className="text-on-accent mt-4 text-[17px] leading-[1.5]">
-            {retried.length === 1
-              ? t`One came back for a second try: ${retried[0]}. You got it.`
-              : t`${retried.length} came back for a second try. You got them.`}
+        {reviewGroups.map((group) => (
+          <Text key={group.outcome} className="text-on-accent mt-4 text-[17px] leading-[1.5]">
+            {reviewLine(group.outcome, group.words)}
           </Text>
-        ) : null}
+        ))}
 
         <View className="mt-8">
           {practised.map((word, i) => (

@@ -12,6 +12,10 @@ import { Button, Text, View } from '../ui'
 interface MatchPairsStepProps {
   activity: LessonActivity
   onAnswer: (isCorrect: boolean, answer: string) => void
+  /** Accepted for the same prop contract every interactive step carries, but unused here:
+   *  `Continue` only ever appears once every pair is matched (`allMatched` below), so this
+   *  step has no wrong-answer state to show a review-specific line for. */
+  isReview?: boolean
 }
 
 interface SelectedPair {

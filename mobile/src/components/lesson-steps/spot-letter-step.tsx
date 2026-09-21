@@ -11,10 +11,12 @@ import { useLanguage } from '../../hooks/use-language'
 import { differingIndices, spellingVariants } from '../../utils/kabiye-variants'
 import { CheckCircleIcon } from '../icons'
 import { Button, Text, View } from '../ui'
+import MissNote from './miss-note'
 
 interface SpotLetterStepProps {
   activity: LessonActivity
   onAnswer: (isCorrect: boolean, answer: string) => void
+  isReview?: boolean
 }
 
 /** Deterministic shuffle, seeded by the word, so the answer does not move between renders. */
@@ -37,7 +39,7 @@ function seededOrder<T>(items: T[], seed: string): T[] {
  * learner is choosing against the exact mistake a French keyboard invites rather than
  * against a word somebody made up.
  */
-const SpotLetterStep = ({ activity, onAnswer }: SpotLetterStepProps) => {
+const SpotLetterStep = ({ activity, onAnswer, isReview }: SpotLetterStepProps) => {
   const { t } = useLingui()
   const { getLocalised } = useLanguage()
   const data = activity.data as SpotLetterActivityData | null | undefined
@@ -144,8 +146,11 @@ const SpotLetterStep = ({ activity, onAnswer }: SpotLetterStepProps) => {
             <Text className="text-on-surface-ink/70 text-[15px] leading-[1.5]">
               {selected === correct
                 ? (explanation ?? t`That is the attested spelling.`)
-                : t`The right spelling is ${correct}. We'll ask this one again at the end.`}
+                : t`The right spelling is ${correct}.`}
             </Text>
+            {selected !== correct ? (
+              <MissNote isReview={isReview} className="text-on-surface-ink/70 mt-2 text-[15px] leading-[1.5]" />
+            ) : null}
           </Animated.View>
         ) : null}
       </ScrollView>

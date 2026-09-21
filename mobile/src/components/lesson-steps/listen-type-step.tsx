@@ -12,13 +12,15 @@ import { useOnAccentColor, usePlaceholderColor, usePrimaryForegroundColor } from
 import { usableAudioUrl } from '../../utils/audio-source'
 import { LightbulbIcon, SpeakerHighIcon, SpeakerSlashIcon } from '../icons'
 import { Button, Card, Text, View } from '../ui'
+import MissNote from './miss-note'
 
 interface ListenTypeStepProps {
   activity: LessonActivity
   onAnswer: (isCorrect: boolean, answer: string) => void
+  isReview?: boolean
 }
 
-const ListenTypeStep = ({ activity, onAnswer }: ListenTypeStepProps) => {
+const ListenTypeStep = ({ activity, onAnswer, isReview }: ListenTypeStepProps) => {
   const placeholderColor = usePlaceholderColor()
   const { t } = useLingui()
   const { getValue } = useLanguage()
@@ -194,6 +196,7 @@ const ListenTypeStep = ({ activity, onAnswer }: ListenTypeStepProps) => {
                 <Text variant="body" className="text-foreground">
                   {t`Correct answer:`} <Text weight="bold">{correctAnswer}</Text>
                 </Text>
+                <MissNote isReview={isReview} className="text-foreground-secondary mt-2 text-[15px] leading-[1.5]" />
               </View>
             )}
           </Card>

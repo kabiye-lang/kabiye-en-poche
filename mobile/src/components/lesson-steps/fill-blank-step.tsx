@@ -7,12 +7,14 @@ import { Pressable, ScrollView } from 'react-native'
 import { useLingui } from '@lingui/react/macro'
 
 import { useLanguage } from '../../hooks/use-language'
-import { CheckIcon } from '../icons'
+import { CheckIcon, XIcon } from '../icons'
 import { Button, Text, View } from '../ui'
+import MissNote from './miss-note'
 
 interface FillBlankStepProps {
   activity: LessonActivity
   onAnswer: (isCorrect: boolean, answer: string) => void
+  isReview?: boolean
 }
 
 /**
@@ -23,7 +25,7 @@ interface FillBlankStepProps {
  * struck through, and the right answer fills beside it. Colour-blind readers get the
  * same information as everyone else, and the screen stays in the palette.
  */
-const FillBlankStep = ({ activity, onAnswer }: FillBlankStepProps) => {
+const FillBlankStep = ({ activity, onAnswer, isReview }: FillBlankStepProps) => {
   const { t } = useLingui()
   const { getValue } = useLanguage()
 
@@ -112,6 +114,7 @@ const FillBlankStep = ({ activity, onAnswer }: FillBlankStepProps) => {
               <Pressable
                 key={index}
                 accessibilityRole="button"
+                accessibilityLabel={struckThrough ? t`${option}, your answer, wrong` : undefined}
                 accessibilityState={{ selected: isSelected }}
                 onPress={() => handleSelectOption(option)}
                 disabled={showFeedback}
@@ -119,7 +122,7 @@ const FillBlankStep = ({ activity, onAnswer }: FillBlankStepProps) => {
                   fillsIn
                     ? 'bg-foreground border-foreground flex-row items-center justify-center gap-2 rounded-full border-[1.5px] px-5 py-3.5'
                     : struckThrough
-                      ? 'border-accent flex-row items-center justify-center rounded-full border-[1.5px] px-5 py-3.5'
+                      ? 'border-accent flex-row items-center justify-center gap-2 rounded-full border-[1.5px] px-5 py-3.5'
                       : 'border-foreground flex-row items-center justify-center rounded-full border-[1.5px] px-5 py-3.5'
                 }
               >
@@ -127,11 +130,11 @@ const FillBlankStep = ({ activity, onAnswer }: FillBlankStepProps) => {
                   kabiye
                   weight="bold"
                   className={fillsIn ? 'text-background text-[20px]' : 'text-foreground text-[20px]'}
-                  style={struckThrough ? { textDecorationLine: 'line-through' } : undefined}
                 >
                   {option}
                 </Text>
                 {fillsIn ? <CheckIcon size={18} weight="bold" className="text-background" /> : null}
+                {struckThrough ? <XIcon size={18} weight="bold" className="text-accent" /> : null}
               </Pressable>
             )
           })}
@@ -143,9 +146,12 @@ const FillBlankStep = ({ activity, onAnswer }: FillBlankStepProps) => {
               {isCorrect ? t`Yes` : t`Not this time`}
             </Text>
             {!isCorrect ? (
-              <Text className="text-foreground-secondary mt-2 text-[15px] leading-[1.5]">
-                {t`We'll ask this one again at the end.`}
-              </Text>
+              <>
+                <Text className="text-foreground-secondary mt-2 text-[15px] leading-[1.5]">
+                  {t`The answer is ${correctAnswer}.`}
+                </Text>
+                <MissNote isReview={isReview} />
+              </>
             ) : null}
           </View>
         ) : null}

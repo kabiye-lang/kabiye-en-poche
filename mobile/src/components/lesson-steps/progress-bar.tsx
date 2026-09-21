@@ -1,3 +1,5 @@
+import type { ProgressView } from '../../utils/lesson-session'
+
 import { Pressable } from 'react-native'
 import { useSafeAreaInsets } from 'react-native-safe-area-context'
 
@@ -57,8 +59,9 @@ const TONES: Record<
 }
 
 interface ProgressBarProps {
-  currentStep: number
-  totalSteps: number
+  /** What to draw: which track (lesson, review, or the full bar at finish), and how far
+   *  along it -- see `utils/lesson-session.ts`'s `progressView`. */
+  view: ProgressView
   onClose?: () => void
   tone?: ProgressTone
 }
@@ -78,7 +81,7 @@ interface ProgressBarProps {
  */
 const MAX_SEGMENTS = 20
 
-const ProgressBar = ({ currentStep, totalSteps, onClose, tone = 'paper' }: ProgressBarProps) => {
+const ProgressBar = ({ view, onClose, tone = 'paper' }: ProgressBarProps) => {
   const insets = useSafeAreaInsets()
   const { t } = useLingui()
   const palette = TONES[tone]
@@ -88,7 +91,15 @@ const ProgressBar = ({ currentStep, totalSteps, onClose, tone = 'paper' }: Progr
     else router.back()
   }
 
+  // Finish draws the lesson bar full -- there is no further step to be "current".
+  const currentStep = view.kind === 'finish' ? view.total : view.current
+  const totalSteps = view.total
   const segmented = totalSteps <= MAX_SEGMENTS
+
+  const counterText =
+    view.kind === 'review' ? t`Review · ${currentStep} of ${totalSteps}` : `${currentStep}/${totalSteps}`
+  const a11yLabel =
+    view.kind === 'review' ? t`Review, ${currentStep} of ${totalSteps}` : t`Step ${currentStep} of ${totalSteps}`
 
   return (
     <View className={`${palette.ground} px-6 pb-3`} style={{ paddingTop: insets.top + 10 }}>
@@ -113,7 +124,7 @@ const ProgressBar = ({ currentStep, totalSteps, onClose, tone = 'paper' }: Progr
         <View
           className="flex-1 flex-row items-center gap-[3px]"
           accessibilityRole="progressbar"
-          accessibilityLabel={t`Step ${currentStep} of ${totalSteps}`}
+          accessibilityLabel={a11yLabel}
           accessibilityValue={{ min: 1, max: totalSteps, now: currentStep }}
         >
           {segmented ? (
@@ -139,7 +150,7 @@ const ProgressBar = ({ currentStep, totalSteps, onClose, tone = 'paper' }: Progr
         </View>
 
         <Text weight="semibold" className={`${palette.counter} text-[13px]`}>
-          {currentStep}/{totalSteps}
+          {counterText}
         </Text>
       </View>
     </View>

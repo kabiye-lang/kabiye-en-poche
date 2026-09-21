@@ -10,13 +10,15 @@ import { useLingui } from '@lingui/react/macro'
 import { useLanguage } from '../../hooks/use-language'
 import { ArrowsClockwiseIcon } from '../icons'
 import { Button, Text, View } from '../ui'
+import MissNote from './miss-note'
 
 interface OrderWordsStepProps {
   activity: LessonActivity
   onAnswer: (isCorrect: boolean, answer: string) => void
+  isReview?: boolean
 }
 
-const OrderWordsStep = ({ activity, onAnswer }: OrderWordsStepProps) => {
+const OrderWordsStep = ({ activity, onAnswer, isReview }: OrderWordsStepProps) => {
   const { t } = useLingui()
   const { getValue } = useLanguage()
   const activityData = activity.data as OrderWordsActivityData | null | undefined
@@ -137,9 +139,7 @@ const OrderWordsStep = ({ activity, onAnswer }: OrderWordsStepProps) => {
                 <Text kabiye weight="bold" className="text-foreground mt-2 text-[20px] leading-[1.35]">
                   {correctOrder.join(' ')}
                 </Text>
-                <Text className="text-foreground-secondary mt-2 text-[15px] leading-[1.5]">
-                  {t`We'll ask this one again at the end.`}
-                </Text>
+                <MissNote isReview={isReview} />
               </>
             ) : null}
           </Animated.View>

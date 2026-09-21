@@ -9,17 +9,20 @@ import { useLingui } from '@lingui/react/macro'
 
 import { useLanguage } from '../../hooks/use-language'
 import { correctIndex } from '../../utils/activity-answer'
+import { XIcon } from '../icons'
 import { Button, Text, View } from '../ui'
+import MissNote from './miss-note'
 
 interface QuizStepProps {
   activity: LessonActivity
   onAnswer: (isCorrect: boolean, answer: string) => void
+  isReview?: boolean
 }
 
 /** For true_false: index 0 = true, index 1 = false */
 const TRUE_FALSE_VALUES: [boolean, boolean] = [true, false]
 
-const QuizStep = ({ activity, onAnswer }: QuizStepProps) => {
+const QuizStep = ({ activity, onAnswer, isReview }: QuizStepProps) => {
   const { t } = useLingui()
   const { getValue, currentLanguage } = useLanguage()
   const activityData = activity.data as QuizActivityData | null | undefined
@@ -44,6 +47,9 @@ const QuizStep = ({ activity, onAnswer }: QuizStepProps) => {
 
   const explanationData = activityData?.explanation
   const explanation = explanationData?.[currentLanguage] ?? explanationData?.en ?? undefined
+  // True/false has no option list to read the label off -- the label is the same built-in
+  // True/False text the options themselves use.
+  const correctAnswerLabel = isTrueFalse ? (correctAnswer ? t`True` : t`False`) : String(correctAnswer)
 
   const [selectedIndex, setSelectedIndex] = useState<number | null>(null)
   const [showFeedback, setShowFeedback] = useState(false)
@@ -94,6 +100,7 @@ const QuizStep = ({ activity, onAnswer }: QuizStepProps) => {
               <Pressable
                 key={index}
                 accessibilityRole="button"
+                accessibilityLabel={struckThrough ? t`${option}, your answer, wrong` : undefined}
                 accessibilityState={{ selected: isSelected }}
                 onPress={() => handleSelectAnswer(index)}
                 disabled={showFeedback}
@@ -114,18 +121,15 @@ const QuizStep = ({ activity, onAnswer }: QuizStepProps) => {
                         : 'border-foreground mr-3 h-[22px] w-[22px] items-center justify-center rounded-full border-[1.5px]'
                   }
                 >
-                  {isSelected || fillsIn ? (
-                    <View
-                      className={
-                        fillsIn ? 'bg-background h-2.5 w-2.5 rounded-full' : 'bg-foreground h-2.5 w-2.5 rounded-full'
-                      }
-                    />
+                  {fillsIn ? (
+                    <View className="bg-background h-2.5 w-2.5 rounded-full" />
+                  ) : struckThrough ? (
+                    <XIcon size={12} weight="bold" className="text-accent" />
+                  ) : isSelected ? (
+                    <View className="bg-foreground h-2.5 w-2.5 rounded-full" />
                   ) : null}
                 </View>
-                <Text
-                  className={fillsIn ? 'text-background flex-1 text-[17px]' : 'text-foreground flex-1 text-[17px]'}
-                  style={struckThrough ? { textDecorationLine: 'line-through' } : undefined}
-                >
+                <Text className={fillsIn ? 'text-background flex-1 text-[17px]' : 'text-foreground flex-1 text-[17px]'}>
                   {option}
                 </Text>
               </Pressable>
@@ -145,9 +149,14 @@ const QuizStep = ({ activity, onAnswer }: QuizStepProps) => {
               <Text className="text-foreground-secondary mt-2 text-[15px] leading-[1.5]">{explanation}</Text>
             ) : null}
             {!gotItRight ? (
-              <Text className="text-foreground-secondary mt-2 text-[15px] leading-[1.5]">
-                {t`We'll ask this one again at the end.`}
-              </Text>
+              <>
+                {!explanation ? (
+                  <Text className="text-foreground-secondary mt-2 text-[15px] leading-[1.5]">
+                    {t`The answer is ${correctAnswerLabel}.`}
+                  </Text>
+                ) : null}
+                <MissNote isReview={isReview} />
+              </>
             ) : null}
           </Animated.View>
         ) : null}
