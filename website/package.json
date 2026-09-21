@@ -9,6 +9,7 @@
     "build": "tsc -b && vite build",
     "preview": "npm run build && wrangler dev",
     "lint": "eslint --fix .",
+    "lint:check": "eslint .",
     "deploy": "npm run build && wrangler deploy"
   },
   "dependencies": {

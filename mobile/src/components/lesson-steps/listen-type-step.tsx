@@ -8,7 +8,7 @@ import { useLingui } from '@lingui/react/macro'
 
 import { useAudio } from '../../hooks/use-audio'
 import { useLanguage } from '../../hooks/use-language'
-import { usePlaceholderColor } from '../../hooks/use-theme-color'
+import { useOnAccentColor, usePlaceholderColor, usePrimaryForegroundColor } from '../../hooks/use-theme-color'
 import { usableAudioUrl } from '../../utils/audio-source'
 import { LightbulbIcon, SpeakerHighIcon, SpeakerSlashIcon } from '../icons'
 import { Button, Card, Text, View } from '../ui'
@@ -28,6 +28,12 @@ const ListenTypeStep = ({ activity, onAnswer }: ListenTypeStepProps) => {
   const question = getValue(activity, 'question') || undefined
   const instructions = getValue(activity, 'instructions') || undefined
   const audioUrl = usableAudioUrl(activityData?.audio_url)
+
+  // The glyph follows its ground. It was white on all three, which in dark mode put a
+  // white speaker on the paper-coloured `bg-foreground` circle.
+  const onAccentColor = useOnAccentColor()
+  const onPrimaryColor = usePrimaryForegroundColor()
+  const glyphColor = !audioUrl ? placeholderColor : isPlaying ? onAccentColor : onPrimaryColor
   const correctAnswer = activityData?.correct_answer || ''
   const hints = activityData?.hints || []
   const translation = getValue(activityData, 'translation') || ''
@@ -95,15 +101,15 @@ const ListenTypeStep = ({ activity, onAnswer }: ListenTypeStepProps) => {
               onPress={handleToggleAudio}
               disabled={!audioUrl || isLoading}
               className={`h-20 w-20 items-center justify-center rounded-full ${
-                !audioUrl ? 'bg-background-tertiary' : isPlaying ? 'bg-accent' : 'bg-foreground'
+                !audioUrl ? 'bg-background-tertiary' : isPlaying ? 'bg-accent-fill' : 'bg-foreground'
               }`}
             >
               {isLoading ? (
-                <ActivityIndicator size="large" color="white" />
+                <ActivityIndicator size="large" color={glyphColor} />
               ) : isPlaying ? (
-                <SpeakerHighIcon size={40} color="white" weight="fill" />
+                <SpeakerHighIcon size={40} color={glyphColor} weight="fill" />
               ) : (
-                <SpeakerSlashIcon size={40} color="white" weight="fill" />
+                <SpeakerSlashIcon size={40} color={glyphColor} weight="fill" />
               )}
             </Pressable>
             <Text variant="caption" className="text-foreground-secondary mt-2 text-center">
@@ -176,12 +182,11 @@ const ListenTypeStep = ({ activity, onAnswer }: ListenTypeStepProps) => {
 
         {/* Feedback */}
         {showFeedback && (
-          <Card className={`mb-4 p-4 ${isCorrect ? 'bg-background-tertiary' : 'bg-background-tertiary'}`}>
-            <Text
-              variant="h6"
-              weight="semibold"
-              className={`mb-2 ${isCorrect ? 'text-background' : 'text-foreground'}`}
-            >
+          <Card className="bg-background-tertiary mb-4 p-4">
+            {/* Both outcomes read against this same recessed ground, so both take
+                `text-foreground` -- `text-background` here was near-invisible: it is the
+                *page's* background, not this card's. */}
+            <Text variant="h6" weight="semibold" className="text-foreground mb-2">
               {isCorrect ? t`Correct! ✓` : t`Not quite right ✗`}
             </Text>
             {!isCorrect && (

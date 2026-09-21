@@ -396,6 +396,10 @@ msgstr "Fill in the blank"
 msgid "Fill the blank"
 msgstr "Fill the blank"
 
+#: src/screens/dictionary/my-words.tsx
+msgid "Filled pencil: spelled correctly at least once."
+msgstr "Filled pencil: spelled correctly at least once."
+
 #: src/screens/dictionary/search.tsx
 msgid "French"
 msgstr "French"

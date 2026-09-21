@@ -55,14 +55,22 @@ const LearnScreen = () => {
 
   return (
     <ScrollView className="bg-background flex-1" contentContainerClassName="px-6 pb-10 pt-16">
-      <Text className="text-accent text-[13px] font-semibold uppercase tracking-[0.1em]">{t`Learn`}</Text>
+      <Text className="text-accent-text text-[13px] font-semibold uppercase tracking-[0.1em]">{t`Learn`}</Text>
       <Text weight="semibold" className="text-foreground mt-2 text-[40px] leading-[1.0]">
         {t`Your path`}
       </Text>
 
       <View className="mt-3 flex-row flex-wrap items-baseline gap-2">
         <Text className="text-foreground-secondary text-[15px]">{path ? PATH_DESCRIPTION[path] : t`Not set yet.`}</Text>
-        <Pressable accessibilityRole="button" onPress={() => router.push('/(onboarding)')}>
+        <Pressable
+          accessibilityRole="button"
+          onPress={() => router.push('/(onboarding)')}
+          // The visible label is a short underlined word, well under 44pt on its own.
+          // Padding, cancelled by an equal negative margin, makes the pressable itself
+          // 44pt tall without moving the line; `hitSlop` does not widen the native
+          // hit-test on this architecture (see the search button in screens/home.tsx).
+          className="-my-[13px] py-[13px]"
+        >
           <Text className="text-foreground text-[15px] underline">{t`Change`}</Text>
         </Pressable>
       </View>
@@ -110,7 +118,7 @@ const UnitChapter = ({ unit, currentLessonId }: UnitChapterProps) => {
   return (
     <View className="mb-9">
       <View className="border-foreground flex-row items-baseline border-b-[1.5px] pb-2">
-        <Text className="text-accent text-[13px] font-semibold uppercase tracking-[0.1em]">
+        <Text className="text-accent-text text-[13px] font-semibold uppercase tracking-[0.1em]">
           {unit.code ? unit.code.replace(/^U0*/, t`Unit ` + '') : t`Unit`}
         </Text>
         <Text weight="semibold" className="text-foreground ml-3 flex-1 text-[22px] leading-[1.15]">
@@ -170,8 +178,10 @@ const LessonRow = ({ lesson, index, isCurrent }: LessonRowProps) => {
             {title ?? ''}
           </Text>
         </View>
-        <View className="bg-accent ml-3 h-9 w-9 items-center justify-center rounded-full">
-          <PlayIcon size={16} weight="fill" className="text-white" />
+        {/* Decorative -- the row above is the tappable target and is already well past
+            44pt tall, so this circle does not need its own hit area. */}
+        <View className="bg-accent-fill ml-3 h-9 w-9 items-center justify-center rounded-full">
+          <PlayIcon size={16} weight="fill" className="text-on-accent" />
         </View>
       </Pressable>
     )

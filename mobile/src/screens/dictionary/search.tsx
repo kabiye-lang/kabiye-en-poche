@@ -118,7 +118,7 @@ const SearchResultsScreen: React.FC = () => {
   return (
     <View flex className="bg-background" safeArea="top">
       <View className="px-6 pt-4 pb-2">
-        <Text className="text-accent text-[13px] font-semibold uppercase tracking-[0.1em]">{t`Search`}</Text>
+        <Text className="text-accent-text text-[13px] font-semibold uppercase tracking-[0.1em]">{t`Search`}</Text>
         <Text kabiye weight="bold" className="text-foreground mt-2 text-[28px] leading-[1.15]">
           {query}
         </Text>

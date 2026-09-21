@@ -82,13 +82,19 @@ const HomeScreen = () => {
             accessibilityRole="button"
             accessibilityLabel={t`Search the dictionary`}
             onPress={() => router.push('/(tabs)/dictionary')}
-            className="border-foreground h-9 w-9 items-center justify-center rounded-full border-[1.5px]"
+            // The touch target is the 44pt pressable; the circle is drawn inside it and the
+            // negative margin keeps the header where it was. `hitSlop` looked equivalent but
+            // does not widen the native hit-test on this architecture -- a tap 4pt outside the
+            // circle landed on the screen behind it.
+            className="-m-[6px] h-[44px] w-[44px] items-center justify-center"
           >
-            <MagnifyingGlassIcon size={16} className="text-foreground" />
+            <View className="border-foreground h-9 w-9 items-center justify-center rounded-full border-[1.5px]">
+              <MagnifyingGlassIcon size={16} className="text-foreground" />
+            </View>
           </Pressable>
         </View>
 
-        <Text className="text-accent mt-10 text-[13px] font-semibold uppercase tracking-[0.1em]">
+        <Text className="text-accent-text mt-10 text-[13px] font-semibold uppercase tracking-[0.1em]">
           {t`Letter of the week`}
         </Text>
 
@@ -135,7 +141,7 @@ const HomeScreen = () => {
 
         {headword ? (
           <View className="border-foreground mt-12 border-t-[1.5px] pt-5">
-            <Text className="text-accent text-[13px] font-semibold uppercase tracking-[0.1em]">{t`Today`}</Text>
+            <Text className="text-accent-text text-[13px] font-semibold uppercase tracking-[0.1em]">{t`Today`}</Text>
             <Pressable
               accessibilityRole="link"
               accessibilityLabel={`${headword}${gloss ? `, ${gloss}` : ''}`}

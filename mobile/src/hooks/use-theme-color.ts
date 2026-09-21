@@ -18,13 +18,16 @@ import { useColorScheme } from 'react-native'
  * placeholder in the dictionary search field and the keyboard pad was reading that grey
  * — a fourth colour, in a system that has three.
  */
-const TOKENS = {
+export const TOKENS = {
   light: {
     foregroundSecondary: '#6B5A4E',
     foreground: '#221913',
     primary: '#221913',
     primaryForeground: '#F4EBDD',
     accent: '#C4451C',
+    accentText: '#B03C17',
+    accentFill: '#C4451C',
+    onAccent: '#FFFFFF',
   },
   dark: {
     foregroundSecondary: 'rgba(244, 235, 221, 0.7)',
@@ -32,6 +35,9 @@ const TOKENS = {
     primary: '#F4EBDD',
     primaryForeground: '#221913',
     accent: '#E07A55',
+    accentText: '#E07A55',
+    accentFill: '#C4451C',
+    onAccent: '#FFFFFF',
   },
 } as const
 
@@ -64,7 +70,26 @@ export function usePrimaryForegroundColor() {
   return useThemeColors().primaryForeground
 }
 
-/** Laterite, matching `text-accent` / `bg-accent`. */
+/** Laterite, matching `text-accent` / `bg-accent`. Large text and non-text graphics
+ *  only -- a small-text consumer wants `useAccentTextColor`, and a filled ground wants
+ *  `useAccentFillColor`. */
 export function useAccentColor() {
   return useThemeColors().accent
+}
+
+/** Laterite for text below large size, matching `text-accent-text`. */
+export function useAccentTextColor() {
+  return useThemeColors().accentText
+}
+
+/** The fixed laterite fill, matching `bg-accent-fill`. Unlike `useAccentColor`, this
+ *  does not change between themes -- it is the ground a full-opacity `useOnAccentColor`
+ *  label was measured against. */
+export function useAccentFillColor() {
+  return useThemeColors().accentFill
+}
+
+/** The label colour for `useAccentFillColor`, matching `text-on-accent`. */
+export function useOnAccentColor() {
+  return useThemeColors().onAccent
 }

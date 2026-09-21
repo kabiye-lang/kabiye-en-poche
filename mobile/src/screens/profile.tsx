@@ -250,7 +250,7 @@ const ProfileScreen = () => {
 function Section({ label, children }: { label: string; children: React.ReactNode }) {
   return (
     <View className="mb-8">
-      <Text className="text-accent text-[13px] font-semibold uppercase tracking-[0.1em]">{label}</Text>
+      <Text className="text-accent-text text-[13px] font-semibold uppercase tracking-[0.1em]">{label}</Text>
       <View className="border-foreground mt-3 border-t-[1.5px]" />
       {children}
     </View>

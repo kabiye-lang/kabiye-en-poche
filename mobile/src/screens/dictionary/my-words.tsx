@@ -43,7 +43,7 @@ const MyWordsScreen = () => {
       {/* `flex-1`, or the ScrollView grows to its content and the footer button
           below it draws over the last rows instead of under them. */}
       <ScrollView className="flex-1" contentContainerClassName="px-6 pb-8 pt-14" showsVerticalScrollIndicator={false}>
-        <Text className="text-accent text-[13px] font-semibold uppercase tracking-[0.1em]">{t`My words`}</Text>
+        <Text className="text-accent-text text-[13px] font-semibold uppercase tracking-[0.1em]">{t`My words`}</Text>
         <Text weight="semibold" className="text-foreground mt-2 text-[40px] leading-[1.0]">
           {words.length === 1 ? t`1 word` : t`${words.length} words`}
         </Text>
@@ -84,32 +84,45 @@ const MyWordsScreen = () => {
             </Text>
           </View>
         ) : (
-          <View className="mt-6">
-            {sorted.map((word, i) => (
-              <Pressable
-                key={word.headword}
-                accessibilityRole="link"
-                accessibilityLabel={
-                  word.writtenCount > 0 ? `${word.headword}, ${t`written`}` : `${word.headword}, ${t`not written yet`}`
-                }
-                onPress={() => router.push(`/word/${encodeURIComponent(word.headword)}`)}
-                className={
-                  i === 0
-                    ? 'flex-row items-center justify-between py-4'
-                    : 'border-border flex-row items-center justify-between border-t py-4'
-                }
-              >
-                <Text kabiye weight="bold" className="text-foreground flex-1 text-[24px]">
-                  {word.headword}
-                </Text>
-                <PencilSimpleIcon
-                  size={18}
-                  weight={word.writtenCount > 0 ? 'fill' : 'regular'}
-                  className={word.writtenCount > 0 ? 'text-foreground' : 'text-border'}
-                />
-              </Pressable>
-            ))}
-          </View>
+          <>
+            {/* The pencil is the only thing that tells filled from outline apart, so it
+                gets a legend rather than relying on the reader to infer the rule. */}
+            <View className="mt-6 flex-row items-center gap-2">
+              <PencilSimpleIcon size={14} weight="fill" className="text-foreground" />
+              <Text className="text-foreground-secondary text-[13px]">
+                {t`Filled pencil: spelled correctly at least once.`}
+              </Text>
+            </View>
+            <View className="mt-3">
+              {sorted.map((word, i) => (
+                <Pressable
+                  key={word.headword}
+                  accessibilityRole="link"
+                  accessibilityLabel={
+                    word.writtenCount > 0
+                      ? `${word.headword}, ${t`written`}`
+                      : `${word.headword}, ${t`not written yet`}`
+                  }
+                  onPress={() => router.push(`/word/${encodeURIComponent(word.headword)}`)}
+                  className={
+                    i === 0
+                      ? 'flex-row items-center justify-between py-4'
+                      : 'border-border flex-row items-center justify-between border-t py-4'
+                  }
+                >
+                  <Text kabiye weight="bold" className="text-foreground flex-1 text-[24px]">
+                    {word.headword}
+                  </Text>
+                  <PencilSimpleIcon
+                    size={18}
+                    weight={word.writtenCount > 0 ? 'fill' : 'regular'}
+                    // `text-border` (#D9CDB9 on paper, ~1.33:1) was practically invisible.
+                    className={word.writtenCount > 0 ? 'text-foreground' : 'text-foreground-secondary'}
+                  />
+                </Pressable>
+              ))}
+            </View>
+          </>
         )}
       </ScrollView>
 

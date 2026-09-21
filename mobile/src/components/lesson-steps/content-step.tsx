@@ -36,7 +36,7 @@ const ContentStep = ({ eyebrow, title, content, examples, onContinue }: ContentS
   return (
     <View className="bg-background flex-1">
       <ScrollView contentContainerClassName="px-6 pb-8 pt-8" showsVerticalScrollIndicator={false}>
-        <Text className="text-accent text-[13px] font-semibold uppercase tracking-[0.1em]">{eyebrow}</Text>
+        <Text className="text-accent-text text-[13px] font-semibold uppercase tracking-[0.1em]">{eyebrow}</Text>
 
         {title ? (
           <Text weight="semibold" className="text-foreground mt-3 text-[26px] leading-[1.15]">

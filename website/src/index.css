@@ -17,6 +17,9 @@
   --color-ink: #221913;
   --color-ink-quiet: #6B5A4E;
   --color-laterite: #C4451C;
+  /* Laterite for text below large size (24px+, or 18.66px+ bold): 5.07:1 on paper. The
+     4.22:1 `laterite` itself stays for large glyphs/words and non-text graphics. */
+  --color-laterite-text: #B03C17;
   --color-leaf: #FFFFFF;
 
   --color-background: #F4EBDD;

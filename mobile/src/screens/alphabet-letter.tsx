@@ -149,8 +149,8 @@ export default function AlphabetLetterScreen() {
             </View>
             {/* The distinction the app exists to teach earns the filled pill. */}
             {KABIYE_ONLY.includes(letter.id) ? (
-              <View className="bg-accent rounded-full px-4 py-2">
-                <Text weight="semibold" className="text-[15px] text-white">{t`Not in French`}</Text>
+              <View className="bg-accent-fill rounded-full px-4 py-2">
+                <Text weight="semibold" className="text-on-accent text-[15px]">{t`Not in French`}</Text>
               </View>
             ) : null}
           </View>
@@ -168,7 +168,7 @@ export default function AlphabetLetterScreen() {
 
         {examples.length > 0 ? (
           <View className="mt-8 px-6">
-            <Text className="text-accent text-[13px] font-semibold uppercase tracking-[0.1em]">
+            <Text className="text-accent-text text-[13px] font-semibold uppercase tracking-[0.1em]">
               {known.length ? t`In words you know` : t`In words`}
             </Text>
             <View className="mt-3">

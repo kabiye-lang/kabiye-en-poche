@@ -70,7 +70,7 @@ const OrderWordsStep = ({ activity, onAnswer }: OrderWordsStepProps) => {
   return (
     <View className="flex-1">
       <ScrollView className="flex-1 px-6" showsVerticalScrollIndicator={false}>
-        <Text className="text-accent text-[13px] font-semibold uppercase tracking-[0.1em]">{t`Order the words`}</Text>
+        <Text className="text-accent-text text-[13px] font-semibold uppercase tracking-[0.1em]">{t`Order the words`}</Text>
         <Text weight="medium" className="text-foreground mt-2 text-[26px] leading-[1.25]">
           {question ?? t`Put the words in the correct order`}
         </Text>

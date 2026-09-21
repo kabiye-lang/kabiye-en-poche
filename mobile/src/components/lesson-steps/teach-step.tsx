@@ -65,7 +65,7 @@ const TeachStep = ({ example, onContinue, explainMissingAudio }: TeachStepProps)
   return (
     <View className="bg-background flex-1">
       <ScrollView contentContainerClassName="px-6 pb-8 pt-8" showsVerticalScrollIndicator={false}>
-        <Text className="text-accent text-[13px] font-semibold uppercase tracking-[0.1em]">{t`New word`}</Text>
+        <Text className="text-accent-text text-[13px] font-semibold uppercase tracking-[0.1em]">{t`New word`}</Text>
 
         <Animated.View entering={FadeInDown.duration(600)}>
           <Text kabiye weight="bold" className="text-foreground mt-3 text-[44px] leading-[1.05]">
@@ -94,6 +94,9 @@ const TeachStep = ({ example, onContinue, explainMissingAudio }: TeachStepProps)
                 key={chip.letter}
                 className="border-foreground flex-row items-center gap-2 rounded-[10px] border-[1.5px] px-3 py-2"
               >
+                {/* large-text: 22px bold clears the WCAG large-text threshold (>= 18.66px
+                    bold), so `accent` (4.22:1) is the large-glyph carve-out here, not a
+                    small-text miss. */}
                 <Text kabiye className="text-accent text-[22px]" weight="bold">
                   {chip.letter}
                 </Text>

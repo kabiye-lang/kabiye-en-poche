@@ -67,7 +67,7 @@ export default function AlphabetListScreen() {
         // the content and would otherwise sit on the title.
         ListHeaderComponent={() => (
           <View className="pb-6 pt-14">
-            <Text className="text-accent text-[13px] font-semibold uppercase tracking-[0.1em]">{t`Alphabet`}</Text>
+            <Text className="text-accent-text text-[13px] font-semibold uppercase tracking-[0.1em]">{t`Alphabet`}</Text>
             <Text weight="semibold" className="text-foreground mt-2 text-[40px] leading-[1.0]">
               {alphabetIntro?.title_en || t`The Kabiyè alphabet`}
             </Text>
@@ -107,10 +107,16 @@ export default function AlphabetListScreen() {
         )}
         renderItem={({ item }) => {
           const isKabiyeOnly = KABIYE_ONLY.includes(item.id)
+          // Full opacity, >= 12px: at 9px and 60% (both grounds) this read as barely
+          // there, and dropped it twice over -- once against the WCAG floor for small
+          // text, once against a reader who is here specifically to tell letter shapes
+          // apart. Reused for the accessibility label below so the spoken type always
+          // matches the printed one.
+          const typeLabel = item.type === 'vowel' ? t`Vowel` : item.type === 'consonant' ? t`Consonant` : t`Grapheme`
           return (
             <Pressable
               accessibilityRole="link"
-              accessibilityLabel={item.id}
+              accessibilityLabel={`${item.id}, ${typeLabel}`}
               onPress={() =>
                 router.push({
                   pathname: '/alphabet/[letter]',
@@ -119,25 +125,25 @@ export default function AlphabetListScreen() {
               }
               className={
                 isKabiyeOnly
-                  ? 'bg-accent aspect-square flex-1 items-center justify-center rounded-xl'
+                  ? 'bg-accent-fill aspect-square flex-1 items-center justify-center rounded-xl'
                   : 'bg-background-secondary border-border aspect-square flex-1 items-center justify-center rounded-xl border'
               }
             >
               <Text
                 kabiye
                 weight="bold"
-                className={isKabiyeOnly ? 'text-[34px] text-white' : 'text-foreground text-[34px]'}
+                className={isKabiyeOnly ? 'text-on-accent text-[34px]' : 'text-foreground text-[34px]'}
               >
                 {item.id}
               </Text>
               <Text
                 className={
                   isKabiyeOnly
-                    ? 'absolute bottom-2 text-[9px] uppercase tracking-[0.08em] text-white/60'
-                    : 'text-foreground-secondary/60 absolute bottom-2 text-[9px] uppercase tracking-[0.08em]'
+                    ? 'text-on-accent absolute bottom-2 text-[12px] uppercase tracking-[0.08em]'
+                    : 'text-foreground-secondary absolute bottom-2 text-[12px] uppercase tracking-[0.08em]'
                 }
               >
-                {item.type === 'vowel' ? t`Vowel` : item.type === 'consonant' ? t`Consonant` : t`Grapheme`}
+                {typeLabel}
               </Text>
             </Pressable>
           )

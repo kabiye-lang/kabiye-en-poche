@@ -91,7 +91,7 @@ const FillBlankStep = ({ activity, onAnswer }: FillBlankStepProps) => {
   return (
     <View className="flex-1">
       <ScrollView className="flex-1 px-6" showsVerticalScrollIndicator={false}>
-        <Text className="text-accent text-[13px] font-semibold uppercase tracking-[0.1em]">{t`Fill the blank`}</Text>
+        <Text className="text-accent-text text-[13px] font-semibold uppercase tracking-[0.1em]">{t`Fill the blank`}</Text>
         <Text weight="medium" className="text-foreground mt-2 text-[26px] leading-[1.25]">
           {question ?? t`Fill in the blank`}
         </Text>

@@ -39,16 +39,16 @@ const FinishStep = ({ words, retried, savedTotal, tda, onDone, isBusy }: FinishS
   const count = words.length
 
   return (
-    <View className="bg-accent flex-1">
+    <View className="bg-accent-fill flex-1">
       <ScrollView className="flex-1" contentContainerClassName="px-6 pb-8 pt-6" showsVerticalScrollIndicator={false}>
-        <Text className="text-[13px] font-semibold uppercase tracking-[0.1em] text-white/80">{t`Done`}</Text>
+        <Text className="text-on-accent text-[13px] font-semibold uppercase tracking-[0.1em]">{t`Done`}</Text>
 
-        <Text weight="semibold" className="mt-4 text-[40px] leading-[1.0] text-white">
+        <Text weight="semibold" className="text-on-accent mt-4 text-[40px] leading-[1.0]">
           {count === 1 ? t`One word you can now read and write.` : t`${count} words you can now read and write.`}
         </Text>
 
         {retried.length > 0 ? (
-          <Text className="mt-4 text-[17px] leading-[1.5] text-white/90">
+          <Text className="text-on-accent mt-4 text-[17px] leading-[1.5]">
             {retried.length === 1
               ? t`One came back for a second try: ${retried[0]}. You got it.`
               : t`${retried.length} came back for a second try. You got them.`}
@@ -68,13 +68,13 @@ const FinishStep = ({ words, retried, savedTotal, tda, onDone, isBusy }: FinishS
                     : 'flex-row items-baseline justify-between border-t border-white/30 py-3'
                 }
               >
-                <Text kabiye weight="bold" className="flex-1 text-[24px] text-white">
+                <Text kabiye weight="bold" className="text-on-accent flex-1 text-[24px]">
                   {word.kbp}
                 </Text>
-                <Text className="ml-4 max-w-[42%] text-right text-[15px] text-white/80">
+                <Text className="text-on-accent ml-4 max-w-[42%] text-right text-[15px]">
                   {currentLanguage === 'fr' ? word.fr : word.en}
                 </Text>
-                <ArrowRightIcon size={16} className="ml-3 text-white/80" />
+                <ArrowRightIcon size={16} className="text-on-accent ml-3" />
               </Pressable>
             </Animated.View>
           ))}
@@ -83,15 +83,15 @@ const FinishStep = ({ words, retried, savedTotal, tda, onDone, isBusy }: FinishS
         {tda ? (
           // The lesson leaving the phone: one thing to go and do with a Kabiyè speaker.
           <View className="mt-8 border-l-[3px] border-white/60 pl-4">
-            <Text className="text-[12px] font-semibold uppercase tracking-[0.1em] text-white/70">{t`This week`}</Text>
-            <Text className="mt-1.5 text-[16px] leading-[1.5] text-white">{tda}</Text>
+            <Text className="text-on-accent text-[12px] font-semibold uppercase tracking-[0.1em]">{t`This week`}</Text>
+            <Text className="text-on-accent mt-1.5 text-[16px] leading-[1.5]">{tda}</Text>
           </View>
         ) : null}
 
         {savedTotal !== undefined ? (
           <View className="mt-6 flex-row items-center gap-2">
-            <BookmarkSimpleIcon size={16} className="text-white/70" />
-            <Text className="text-[13px] text-white/70">{t`Saved to My words · ${savedTotal} so far`}</Text>
+            <BookmarkSimpleIcon size={16} className="text-on-accent" />
+            <Text className="text-on-accent text-[13px]">{t`Saved to My words · ${savedTotal} so far`}</Text>
           </View>
         ) : null}
       </ScrollView>

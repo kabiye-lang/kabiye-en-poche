@@ -73,7 +73,7 @@ const OnboardingScreen = () => {
         </View>
 
         <Animated.View entering={FadeInDown.duration(600)} className="mt-10">
-          <Text className="text-accent text-[13px] font-semibold uppercase tracking-[0.1em]">{t`Before we start`}</Text>
+          <Text className="text-accent-on-ink text-[13px] font-semibold uppercase tracking-[0.1em]">{t`Before we start`}</Text>
           <Text className="text-on-surface-ink mt-3 text-[32px] leading-[1.1]">
             {t`Where does Kabiyè sit in your life?`}
           </Text>
@@ -118,13 +118,12 @@ const OnboardingScreen = () => {
       </ScrollView>
 
       <View className="px-6 pb-10">
-        <Button
-          variant="primary"
-          fullWidth
-          disabled={selected === null}
-          className="bg-accent"
-          onPress={() => finish(selected)}
-        >
+        {/* `accent`, not `primary` with a `bg-accent` override: the override only ever
+            reached the container, so the label kept following `primary`'s text token
+            regardless -- harmless while that token happened to be white, a trap once it
+            became `text-primary-foreground`. The button's own accent variant keeps the
+            fill and the label in step. */}
+        <Button variant="accent" fullWidth disabled={selected === null} onPress={() => finish(selected)}>
           {t`Continue`}
         </Button>
       </View>

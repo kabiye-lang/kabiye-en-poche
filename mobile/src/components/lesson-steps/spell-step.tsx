@@ -76,7 +76,7 @@ const SpellStep = ({ activity, onAnswer }: SpellStepProps) => {
   return (
     <View className="bg-background flex-1">
       <ScrollView className="flex-1" contentContainerClassName="px-6 pt-8" showsVerticalScrollIndicator={false}>
-        <Text className="text-accent text-[13px] font-semibold uppercase tracking-[0.1em]">{t`Spell it`}</Text>
+        <Text className="text-accent-text text-[13px] font-semibold uppercase tracking-[0.1em]">{t`Spell it`}</Text>
 
         <Animated.View entering={FadeInDown.duration(600)}>
           <Text className="text-foreground mt-3 text-[26px] leading-[1.15]">
@@ -127,6 +127,12 @@ const SpellStep = ({ activity, onAnswer }: SpellStepProps) => {
 
       {checked === null ? (
         // Keyboard tray. Kabiyè letters in ink on top, the ordinary keys in paper below.
+        //
+        // Hit-area rule for every key in this tray (WCAG 2.2 SC 2.5.8): 44pt width is not
+        // achievable at ten columns, so height carries the target -- every key is 44pt
+        // tall -- and the letter keys share the row width with no minimum, so a narrow
+        // screen shrinks them instead of pushing the edge keys off it. No `hitSlop`: it
+        // does not widen the native hit-test on this architecture (see screens/home.tsx).
         <View className="bg-background-tertiary px-2 pb-8 pt-3">
           <View className="mb-2 flex-row justify-center gap-[6px]">
             {KABIYE_KEYS.map((key) => (
@@ -135,7 +141,7 @@ const SpellStep = ({ activity, onAnswer }: SpellStepProps) => {
                 accessibilityRole="button"
                 accessibilityLabel={key}
                 onPress={() => type(key)}
-                className="bg-foreground h-[44px] min-w-[34px] flex-1 items-center justify-center rounded-lg"
+                className="bg-foreground h-[44px] flex-1 items-center justify-center rounded-lg"
               >
                 <Text kabiye className="text-background text-[20px]">
                   {key}
@@ -152,7 +158,7 @@ const SpellStep = ({ activity, onAnswer }: SpellStepProps) => {
                   accessibilityRole="button"
                   accessibilityLabel={key}
                   onPress={() => type(key)}
-                  className="bg-background h-[42px] min-w-[30px] flex-1 items-center justify-center rounded-md"
+                  className="bg-background h-[44px] flex-1 items-center justify-center rounded-md"
                 >
                   <Text kabiye className="text-foreground text-[18px]">
                     {key}
@@ -164,7 +170,7 @@ const SpellStep = ({ activity, onAnswer }: SpellStepProps) => {
                   accessibilityRole="button"
                   accessibilityLabel={t`Delete`}
                   onPress={backspace}
-                  className="bg-border h-[42px] min-w-[44px] items-center justify-center rounded-md px-3"
+                  className="bg-border h-[44px] min-w-[44px] items-center justify-center rounded-md px-3"
                 >
                   <Text className="text-foreground text-[16px]">⌫</Text>
                 </Pressable>
@@ -177,7 +183,7 @@ const SpellStep = ({ activity, onAnswer }: SpellStepProps) => {
               accessibilityRole="button"
               accessibilityLabel={t`Space`}
               onPress={() => type(' ')}
-              className="bg-background h-[42px] flex-1 items-center justify-center rounded-md"
+              className="bg-background h-[44px] flex-1 items-center justify-center rounded-md"
             >
               <Text className="text-foreground-secondary text-[14px]">{t`space`}</Text>
             </Pressable>
@@ -188,11 +194,11 @@ const SpellStep = ({ activity, onAnswer }: SpellStepProps) => {
               onPress={check}
               className={
                 written.length === 0
-                  ? 'bg-accent h-[42px] w-[96px] items-center justify-center rounded-md opacity-40'
-                  : 'bg-accent h-[42px] w-[96px] items-center justify-center rounded-md'
+                  ? 'bg-accent-fill h-[44px] w-[96px] items-center justify-center rounded-md opacity-40'
+                  : 'bg-accent-fill h-[44px] w-[96px] items-center justify-center rounded-md'
               }
             >
-              <Text className="text-[15px] font-semibold text-white">{t`Check`}</Text>
+              <Text className="text-on-accent text-[15px] font-semibold">{t`Check`}</Text>
             </Pressable>
           </View>
         </View>

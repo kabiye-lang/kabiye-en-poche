@@ -13,9 +13,14 @@ const buttonVariants = tv({
   base: 'flex-row items-center justify-center',
   variants: {
     variant: {
-      primary: 'bg-primary active:bg-primary/90',
-      secondary: 'bg-secondary active:bg-secondary/90',
-      accent: 'bg-accent active:bg-accent/90',
+      // `active:opacity-90` rather than `active:bg-primary/90`: the earlier alpha
+      // background composited with whatever the page behind the button happened to be,
+      // an unpredictable contrast. Opacity dims the fill and its label together, so the
+      // 14.6:1 they read at against each other holds; only the whole control fades
+      // slightly against the page.
+      primary: 'bg-primary active:opacity-90',
+      secondary: 'bg-background-tertiary active:bg-border',
+      accent: 'bg-accent-fill active:bg-accent-fill-pressed',
       // The primary button on an ink screen. "One primary per screen, ink fill" holds
       // everywhere except on ink itself, where an ink button is invisible -- the Spot
       // the letter step's Continue was bare text on the dark ground.
@@ -55,9 +60,13 @@ const buttonVariants = tv({
 const textVariants = tv({
   variants: {
     variant: {
-      primary: 'text-white',
-      secondary: 'text-white',
-      accent: 'text-white',
+      // Ink on paper in dark, paper on ink in light -- 14.6:1 either way. Not
+      // `text-white`: `bg-primary` is paper in dark, and white on paper was ~1.1:1.
+      primary: 'text-primary-foreground',
+      // Ink on the recessed tone, ~13:1 in both themes. It was white on a pre-Laterite
+      // violet (`bg-secondary`, #8B5CF6) that no text token could clear 4.5:1 on.
+      secondary: 'text-foreground',
+      accent: 'text-on-accent',
       inverse: 'text-surface-ink',
       outline: 'text-primary',
       ghost: 'text-primary',

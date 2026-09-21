@@ -116,7 +116,7 @@ export default function KabiyeKeyboard({
                   href="https://www.lexilogos.com/clavier/kabiye.htm"
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="text-laterite hover:text-ink flex items-center"
+                  className="text-laterite-text hover:text-ink flex items-center"
                 >
                   <LinkIcon size={18} className="mr-1" />
                   {t.externalKeyboard}

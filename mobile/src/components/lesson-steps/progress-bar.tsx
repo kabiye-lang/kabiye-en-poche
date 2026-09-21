@@ -33,7 +33,9 @@ const TONES: Record<
     counter: 'text-foreground-secondary',
   },
   accent: {
-    ground: 'bg-accent',
+    // The fixed fill, not the theme-raised `accent`: this ground carries the counter
+    // text, and white on dark-mode `accent` is 2.96:1, a fail.
+    ground: 'bg-accent-fill',
     control: 'border-white',
     glyph: 'text-white',
     // Done is ink, the colour laterite screens already give their primary action;
@@ -41,7 +43,7 @@ const TONES: Record<
     done: 'bg-surface-ink',
     current: 'bg-white',
     rest: 'bg-white/30',
-    counter: 'text-white/80',
+    counter: 'text-on-accent',
   },
   ink: {
     ground: 'bg-surface-ink',
@@ -99,9 +101,13 @@ const ProgressBar = ({ currentStep, totalSteps, onClose, tone = 'paper' }: Progr
           accessibilityRole="button"
           accessibilityLabel={t`Close lesson`}
           onPress={handleClose}
-          className={`${palette.control} h-9 w-9 items-center justify-center rounded-full border-[1.5px]`}
+          // A 44pt pressable around the visible circle; see the search button in
+          // screens/home.tsx for why this is not `hitSlop`.
+          className="-m-[6px] h-[44px] w-[44px] items-center justify-center"
         >
-          <XIcon size={16} className={palette.glyph} />
+          <View className={`${palette.control} h-9 w-9 items-center justify-center rounded-full border-[1.5px]`}>
+            <XIcon size={16} className={palette.glyph} />
+          </View>
         </Pressable>
 
         <View

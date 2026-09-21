@@ -170,7 +170,7 @@ const ClassBlock = ({ paradigms, forms }: { paradigms: Paradigm[]; forms?: Map<s
             {(more ? tables : simple).map((p) => (
               <View key={p.id} className="mt-2">
                 {more || simple.length > 1 ? (
-                  <Text className="text-accent mt-1 text-[12px] font-semibold uppercase tracking-[0.1em]">
+                  <Text className="text-accent-text mt-1 text-[12px] font-semibold uppercase tracking-[0.1em]">
                     {p.table}
                   </Text>
                 ) : null}

@@ -10,6 +10,7 @@
     "web": "expo start --web",
     "check-types": "tsc",
     "lint": "eslint --fix .",
+    "lint:check": "eslint .",
     "prepare": "husky",
     "pre-commit": "lint-staged",
     "admin": "cd admin && pnpm run dev",

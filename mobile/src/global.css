@@ -118,10 +118,25 @@
          than tinting it, so it stays inside the three-colour rule. */
       --color-scrim: rgba(34, 25, 19, 0.55);
 
-      /* Laterite. Passes 4.5:1 on paper only at >= 24px, or bold >= 19px --
-         hero glyphs, section labels, the one primary action per screen. Never body text. */
+      /* Laterite. 4.22:1 on paper -- large text only (>= 24px regular, >= 18.66px bold)
+         or a non-text graphic. Never small text: use `accent-text` below that size. */
       --color-accent: #C4451C;
       --color-laterite: #C4451C;
+
+      /* Laterite for text below large size: 5.07:1 on paper, 4.55:1 on recessed,
+         5.99:1 on leaf. `accent` itself stays for large glyphs/words, decorative marks
+         and non-text graphics. */
+      --color-accent-text: #B03C17;
+
+      /* A laterite ground that carries text or icons: always this fixed red, not the
+         theme-raised `accent`, and always paired with `on-accent` at full opacity --
+         white on `#E07A55` (dark-mode `accent` today) is 2.96:1, a fail. White on this
+         fixed fill is 4.98:1 in both themes. Pressed states use the opaque
+         `accent-fill-pressed`, never a `/90` alpha, which would reintroduce the same
+         failure by blending toward the ground behind it. */
+      --color-accent-fill: #C4451C;
+      --color-on-accent: #FFFFFF;
+      --color-accent-fill-pressed: #B03C17;
 
       /* Secondary tint */
       --color-gold-light: #EADFCD;
@@ -183,9 +198,21 @@
       /* Deeper on a dark ground, where a half-strength ink barely reads as a layer. */
       --color-scrim: rgba(13, 9, 6, 0.7);
 
-      /* Laterite, raised for contrast */
+      /* Laterite, raised for contrast: 5.82:1 on ink, 5.11:1 on card. Large text and
+         non-text graphics only -- see `accent-text` for small text. */
       --color-accent: #E07A55;
       --color-laterite: #E07A55;
+
+      /* Laterite for text below large size: the same raised value already clears
+         4.5:1 in this theme (5.82:1 on ink, 5.11:1 on card), so dark keeps one laterite
+         instead of raising twice. */
+      --color-accent-text: #E07A55;
+
+      /* Fixed across both themes -- see the light block. White on this fill is 4.98:1
+         here too, where the theme-raised `accent` (#E07A55) would only give 2.96:1. */
+      --color-accent-fill: #C4451C;
+      --color-on-accent: #FFFFFF;
+      --color-accent-fill-pressed: #B03C17;
 
       /* Secondary tint */
       --color-gold-light: #2E241C;

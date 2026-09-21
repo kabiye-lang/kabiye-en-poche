@@ -156,7 +156,7 @@ const BrowseByLetterScreen: React.FC = () => {
                 <Text
                   kabiye
                   weight={isSpecial ? 'bold' : 'regular'}
-                  className={isSpecial ? 'text-accent text-[11px]' : 'text-foreground-secondary text-[11px]'}
+                  className={isSpecial ? 'text-accent-text text-[11px]' : 'text-foreground-secondary text-[11px]'}
                 >
                   {entry}
                 </Text>

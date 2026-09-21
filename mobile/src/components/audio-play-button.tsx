@@ -5,7 +5,12 @@ import Animated from 'react-native-reanimated'
 
 import { useLingui } from '@lingui/react/macro'
 
-import { useAccentColor, usePrimaryColor, usePrimaryForegroundColor } from '../hooks/use-theme-color'
+import {
+  useAccentFillColor,
+  useOnAccentColor,
+  usePrimaryColor,
+  usePrimaryForegroundColor,
+} from '../hooks/use-theme-color'
 import { SpeakerHighIcon, SpeakerSlashIcon } from './icons'
 
 const AnimatedPressable = Animated.createAnimatedComponent(Pressable)
@@ -45,9 +50,15 @@ export const AudioPlayButton = ({
   // grey, and both were hardcoded so neither followed the theme. Playing takes the one
   // accent -- it is a state the reader caused -- and disabled is the same fill at the
   // 40% the system already uses for a button that is not yet available.
-  const accent = useAccentColor()
+  //
+  // The playing ground is the fixed accent fill, not the theme-raised `accent`: white on
+  // dark-mode `accent` (#E07A55) is 2.96:1, a fail, where white on this fill is 4.98:1
+  // in both themes.
+  const accentFill = useAccentFillColor()
+  const onAccent = useOnAccentColor()
   const onPrimary = usePrimaryForegroundColor()
-  const background = isPlaying ? accent : primary
+  const background = isPlaying ? accentFill : primary
+  const iconColor = isPlaying ? onAccent : onPrimary
 
   return (
     <AnimatedPressable
@@ -85,9 +96,9 @@ export const AudioPlayButton = ({
                it was a white circle. */
             <ActivityIndicator size={size === 'sm' ? 'small' : 'large'} color={onPrimary} />
           ) : isPlaying ? (
-            <SpeakerHighIcon size={icon} color={onPrimary} weight="fill" />
+            <SpeakerHighIcon size={icon} color={iconColor} weight="fill" />
           ) : (
-            <SpeakerSlashIcon size={icon} color={onPrimary} weight="fill" />
+            <SpeakerSlashIcon size={icon} color={iconColor} weight="fill" />
           )}
         </Animated.View>
       )}

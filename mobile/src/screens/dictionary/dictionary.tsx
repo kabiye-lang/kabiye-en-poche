@@ -67,7 +67,7 @@ const DictionaryScreen: React.FC = () => {
         showsVerticalScrollIndicator={false}
         keyboardShouldPersistTaps="handled"
       >
-        <Text className="text-accent text-[13px] font-semibold uppercase tracking-[0.1em]">{t`Dictionary`}</Text>
+        <Text className="text-accent-text text-[13px] font-semibold uppercase tracking-[0.1em]">{t`Dictionary`}</Text>
 
         {/* The count is the claim this product can make and no neighbouring app can: a
             942-page printed dictionary, decoded rather than retyped. It is read live so
@@ -195,7 +195,7 @@ const DictionaryScreen: React.FC = () => {
             second thing, not a competing surface. */}
         {wordOfTheDay && wordOfTheDay.length > 0 ? (
           <View className="border-foreground mt-10 border-t-[1.5px] pt-5">
-            <Text className="text-accent text-[13px] font-semibold uppercase tracking-[0.1em]">
+            <Text className="text-accent-text text-[13px] font-semibold uppercase tracking-[0.1em]">
               {t`Word of the day`}
             </Text>
             <WordOfTheDay words={wordOfTheDay.slice(0, 1)} language={currentLanguage} isLoading={isLoadingRandom} />
@@ -203,7 +203,7 @@ const DictionaryScreen: React.FC = () => {
         ) : null}
 
         <View className="mt-10">
-          <Text className="text-accent text-[13px] font-semibold uppercase tracking-[0.1em]">
+          <Text className="text-accent-text text-[13px] font-semibold uppercase tracking-[0.1em]">
             {t`Browse by letter`}
           </Text>
           {isLoadingLetters ? (

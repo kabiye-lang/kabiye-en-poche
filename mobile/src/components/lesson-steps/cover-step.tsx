@@ -27,25 +27,25 @@ const CoverStep = ({ title, description, unitLabel, words, onBegin }: CoverStepP
   const { currentLanguage } = useLanguage()
 
   return (
-    <View className="bg-accent flex-1">
+    <View className="bg-accent-fill flex-1">
       <ScrollView className="flex-1" contentContainerClassName="px-6 pb-8 pt-4" showsVerticalScrollIndicator={false}>
         {unitLabel ? (
-          <Text className="text-right text-[13px] font-semibold uppercase tracking-[0.1em] text-white/80">
+          <Text className="text-on-accent text-right text-[13px] font-semibold uppercase tracking-[0.1em]">
             {unitLabel}
           </Text>
         ) : null}
 
         <Animated.View entering={FadeInDown.duration(600)}>
-          <Text weight="semibold" className="mt-6 text-[40px] leading-[1.0] text-white">
+          <Text weight="semibold" className="text-on-accent mt-6 text-[40px] leading-[1.0]">
             {title}
           </Text>
         </Animated.View>
 
-        {description ? <Text className="mt-4 text-[17px] leading-[1.5] text-white/90">{description}</Text> : null}
+        {description ? <Text className="text-on-accent mt-4 text-[17px] leading-[1.5]">{description}</Text> : null}
 
         {words.length > 0 ? (
           <>
-            <Text className="mt-9 text-[13px] font-semibold uppercase tracking-[0.1em] text-white/70">
+            <Text className="text-on-accent mt-9 text-[13px] font-semibold uppercase tracking-[0.1em]">
               {t`You will meet`}
             </Text>
             <View className="mt-3">
@@ -58,10 +58,10 @@ const CoverStep = ({ title, description, unitLabel, words, onBegin }: CoverStepP
                       : 'flex-row items-baseline justify-between border-t border-white/30 py-3'
                   }
                 >
-                  <Text kabiye weight="bold" className="flex-1 text-[24px] text-white">
+                  <Text kabiye weight="bold" className="text-on-accent flex-1 text-[24px]">
                     {word.kbp}
                   </Text>
-                  <Text className="ml-4 max-w-[45%] text-right text-[15px] text-white/80">
+                  <Text className="text-on-accent ml-4 max-w-[45%] text-right text-[15px]">
                     {currentLanguage === 'fr' ? word.fr : word.en}
                   </Text>
                 </View>

@@ -191,14 +191,16 @@ export default function KeyboardScreen() {
         onPress={() => changeText(letter)}
         onLongPress={() => typeCapital(letter)}
         delayLongPress={300}
-        hitSlop={3}
+        // Hit-area rule (WCAG 2.2 SC 2.5.8): 44pt width is not achievable at 11 columns,
+        // so height carries the target (44pt). No `hitSlop`: it does not widen the native
+        // hit-test on this architecture (see screens/home.tsx).
         /* Laterite, not `primary`. `primary` is ink in light and paper in dark, so the
            wash that marked these keys as special went dark on a light tray and light on
            a dark one -- the same eight keys reading as two different ideas depending on
            the theme. The accent is the colour this system already spends on "a letter
            French cannot write"; the glyph stays ink so the contrast holds at 17px. */
         className={`items-center justify-center rounded-md ${isKabiye ? 'bg-accent/20' : 'bg-card'}`}
-        style={{ width: buttonWidth, minWidth: buttonWidth, height: 35 }}
+        style={{ width: buttonWidth, minWidth: buttonWidth, height: 44 }}
       >
         <Text kabiye weight={isKabiye ? 'bold' : 'regular'} className="text-foreground text-[17px]">
           {capsLock > 0 ? letter.caps : letter.id}
@@ -218,7 +220,7 @@ export default function KeyboardScreen() {
             whole width, so the title keeps a full line and does not wrap in either
             interface language. */}
         <View className="flex-row items-center justify-between gap-3">
-          <Text className="text-accent text-[13px] font-semibold uppercase tracking-[0.1em]">{t`Keyboard`}</Text>
+          <Text className="text-accent-text text-[13px] font-semibold uppercase tracking-[0.1em]">{t`Keyboard`}</Text>
           <Pressable
             accessibilityRole="button"
             accessibilityLabel={t`How this keyboard works`}
@@ -302,7 +304,7 @@ export default function KeyboardScreen() {
               variant="ghost"
               size="sm"
               className="bg-card rounded-md px-0 py-0"
-              style={{ width: 50, minWidth: 50, height: 35 }}
+              style={{ width: 50, minWidth: 50, height: 44 }}
               accessibilityLabel={capsLock === 2 ? t`Caps lock on` : capsLock === 1 ? t`Shift on` : t`Shift`}
               onPress={() => setCapsLock((capsLockOld) => (capsLockOld > 0 ? 0 : 1))}
               onLongPress={() => setCapsLock((capsLockOld) => (capsLockOld > 0 ? 0 : 2))}
@@ -318,7 +320,7 @@ export default function KeyboardScreen() {
               variant="ghost"
               size="sm"
               className="bg-card rounded-md px-0 py-0"
-              style={{ width: 50, minWidth: 50, height: 35 }}
+              style={{ width: 50, minWidth: 50, height: 44 }}
               accessibilityLabel={t`Period`}
               onPress={() => changeText({ id: '.' })}
               hitSlop={3}
@@ -329,7 +331,7 @@ export default function KeyboardScreen() {
               variant="ghost"
               size="sm"
               className="bg-card rounded-md px-0 py-0"
-              style={{ width: 90, minWidth: 90, height: 35 }}
+              style={{ width: 90, minWidth: 90, height: 44 }}
               onPress={() => changeText({ id: ' ' })}
               hitSlop={3}
             >
@@ -341,7 +343,7 @@ export default function KeyboardScreen() {
               variant="ghost"
               size="sm"
               className="bg-card rounded-md px-0 py-0"
-              style={{ width: 50, minWidth: 50, height: 35 }}
+              style={{ width: 50, minWidth: 50, height: 44 }}
               accessibilityLabel={t`Backspace`}
               onPress={() => setContent((content) => content.substring(0, content.length - 1))}
               hitSlop={3}
@@ -352,7 +354,7 @@ export default function KeyboardScreen() {
               variant="ghost"
               size="sm"
               className="bg-card rounded-md px-0 py-0"
-              style={{ width: 50, minWidth: 50, height: 35 }}
+              style={{ width: 50, minWidth: 50, height: 44 }}
               accessibilityLabel={t`New line`}
               onPress={() => {
                 changeText({ id: '\n' })
@@ -442,7 +444,7 @@ const KeyboardHelpSheet: React.FC<{
           >
             <View className="flex-row items-start justify-between gap-3">
               <View flex>
-                <Text className="text-accent text-[13px] font-semibold uppercase tracking-[0.1em]">{t`Keyboard`}</Text>
+                <Text className="text-accent-text text-[13px] font-semibold uppercase tracking-[0.1em]">{t`Keyboard`}</Text>
                 <Text weight="semibold" className="text-foreground mt-1 text-[28px] leading-[1.1]">
                   {t`How it works`}
                 </Text>

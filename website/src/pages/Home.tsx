@@ -259,7 +259,7 @@ export default function Home() {
           <button
             type="button"
             onClick={toggleLanguage}
-            className="border-ink text-ink ml-auto rounded-full border-[1.5px] px-4 py-2 text-[14px] font-semibold md:ml-0"
+            className="border-ink text-ink ml-auto min-h-11 rounded-full border-[1.5px] px-4 py-2 text-[14px] font-semibold md:ml-0"
             aria-label={lang === "en" ? "Switch to French" : "Switch to English"}
           >
             {lang === "en" ? "FR" : "EN"}
@@ -285,7 +285,7 @@ export default function Home() {
         <div className="mx-auto grid max-w-[1200px] items-center gap-12 md:grid-cols-[1.1fr_0.9fr]">
           <div>
             <motion.p
-              className="text-laterite text-[13px] font-semibold uppercase tracking-[0.1em]"
+              className="text-laterite-text text-[13px] font-semibold uppercase tracking-[0.1em]"
               {...fadeIn}
             >
               {t.subtitle}
@@ -385,8 +385,8 @@ export default function Home() {
                   aria-label={letter}
                   className={
                     special
-                      ? "kbp bg-laterite aspect-square rounded-xl text-[30px] font-bold text-white transition-transform hover:-translate-y-[3px] active:scale-[0.94]"
-                      : "kbp bg-leaf border-line text-ink aspect-square rounded-xl border text-[30px] font-bold transition-transform hover:-translate-y-[3px] active:scale-[0.94]"
+                      ? "kbp bg-laterite focus-visible:ring-ink aspect-square rounded-xl text-[30px] font-bold text-white transition-transform hover:-translate-y-[3px] focus-visible:ring-2 focus-visible:ring-offset-2 active:scale-[0.94]"
+                      : "kbp bg-leaf border-line text-ink focus-visible:ring-ink aspect-square rounded-xl border text-[30px] font-bold transition-transform hover:-translate-y-[3px] focus-visible:ring-2 focus-visible:ring-offset-2 active:scale-[0.94]"
                   }
                 >
                   {letter}
@@ -402,19 +402,19 @@ export default function Home() {
             <div className="mt-4 flex flex-wrap gap-3">
               <button
                 onClick={() => setPad((value) => [...value].slice(0, -1).join(""))}
-                className="border-ink text-ink rounded-full border-[1.5px] px-5 py-2 text-[15px] font-semibold"
+                className="border-ink text-ink focus-visible:ring-ink rounded-full border-[1.5px] px-5 py-2 text-[15px] font-semibold focus-visible:ring-2 focus-visible:ring-offset-2"
               >
                 {t.padDelete}
               </button>
               <button
                 onClick={() => setPad("")}
-                className="border-ink text-ink rounded-full border-[1.5px] px-5 py-2 text-[15px] font-semibold"
+                className="border-ink text-ink focus-visible:ring-ink rounded-full border-[1.5px] px-5 py-2 text-[15px] font-semibold focus-visible:ring-2 focus-visible:ring-offset-2"
               >
                 {t.padClear}
               </button>
               <button
                 onClick={handleCopyPad}
-                className="bg-ink text-paper rounded-full px-5 py-2 text-[15px] font-semibold"
+                className="bg-ink text-paper focus-visible:ring-ink rounded-full px-5 py-2 text-[15px] font-semibold focus-visible:ring-2 focus-visible:ring-offset-2"
               >
                 {copied ? t.padCopied : t.padCopy}
               </button>
@@ -562,7 +562,7 @@ export default function Home() {
                   transition={{ delay: index * 0.1 }}
                   viewport={{ once: true }}
                 >
-                  <span className="text-laterite mr-2">✓</span>
+                  <span className="text-laterite-text mr-2">✓</span>
                   <span>{item}</span>
                 </motion.li>
               ))}
@@ -588,7 +588,7 @@ export default function Home() {
       <section id="contribute" className="bg-laterite px-8 py-20 text-white">
         <div className="mx-auto grid max-w-[1200px] gap-12 md:grid-cols-2">
           <div>
-            <p className="text-[13px] font-semibold tracking-[0.14em] text-white/70 uppercase">
+            <p className="text-[13px] font-semibold tracking-[0.14em] text-white uppercase">
               {t.communityLabel}
             </p>
             <h2
@@ -597,7 +597,7 @@ export default function Home() {
             >
               {t.joinCommunity}
             </h2>
-            <p className="mt-5 max-w-[46ch] text-[17px] leading-[1.6] text-white/85">
+            <p className="mt-5 max-w-[46ch] text-[17px] leading-[1.6] text-white">
               {t.communityText}
             </p>
             <div className="mt-8 flex flex-wrap gap-3">
@@ -621,7 +621,7 @@ export default function Home() {
             {t.contributeRoles.map((role) => (
               <li key={role.title} className="py-5">
                 <p className="text-[18px] font-semibold">{role.title}</p>
-                <p className="mt-1 text-[15px] leading-[1.5] text-white/80">
+                <p className="mt-1 text-[15px] leading-[1.5] text-white">
                   {role.body}
                 </p>
               </li>

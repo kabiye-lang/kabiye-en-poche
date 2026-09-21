@@ -396,6 +396,10 @@ msgstr "Complétez le trou"
 msgid "Fill the blank"
 msgstr "Complétez la phrase"
 
+#: src/screens/dictionary/my-words.tsx
+msgid "Filled pencil: spelled correctly at least once."
+msgstr "Crayon plein : bien écrit au moins une fois."
+
 #: src/screens/dictionary/search.tsx
 msgid "French"
 msgstr "Français"
