@@ -16,7 +16,7 @@ Hard rules (full conventions in `.cursorrules` — read it before touching lesso
 - Long runs: when a step doesn't need my input, keep going and put status notes in the same message as the next action; stop only when you can't continue without me or before anything destructive (the /ai:loop gates still wait for my yes). Build what was asked; list extras as suggestions instead of building them.
 
 ## Lanes
-- Real features: `/ai:loop` (spec → independent spec review → Sonnet builds → independent QA). Specs live at the repo root as `SPEC-<slug>.md`; never overwrite an existing spec.
+- Real features: `/ai:loop` (spec → independent spec review → the `implementer` agent builds → the `verifier` agent checks risky changes → independent QA). Specs live at the repo root as `SPEC-<slug>.md`; never overwrite an existing spec.
 - Wrapping up a branch: `/ai:ship`. A pre-commit hook runs one independent review on every `git commit`; prefix `AI_LOOP_SKIP_REVIEW=1` only when a review just ran. Where `git config ai-loop.jevtriage` is set, a Jev triage of the diff runs first (`shadow` only logs; `on` may skip trivial commits and sharpen risky reviews).
 - Mechanical work (renames, boilerplate, test scaffolds, surveys) goes to the cheap lane through the `grunt` agent / `grunt-run`, always with a self-contained brief. When `grunt-run --free-status` exits 0 a free model is on and the lane costs nothing: also send it first drafts of well-specified code, tests and docs, then review and run the gates yourself.
 - Delegating to any subagent: give it a scope and acceptance criteria; it returns changed files, the test commands with their exit status, and log paths rather than pasted logs. One writer per file.
