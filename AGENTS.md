@@ -14,6 +14,10 @@ Hard rules (full conventions in `.cursorrules` — read it before touching lesso
 - Goal-driven: every task gets a verifiable "done means" (tests, build, observable behaviour) before work starts. Never report done on a self-report — run the gates.
 - Tests: add one only when you can name the behaviour it protects, the credible regression that would fail it, and why the existing tests (e2e included) miss it; otherwise extend an existing case or leave it out. No tests that restate the implementation, copy fixtures, or keep a test-only export alive. A bug fix's regression test must fail on the old code. Pruning old ones: `/ai:test-audit`.
 - Long runs: when a step doesn't need my input, keep going and put status notes in the same message as the next action; stop only when you can't continue without me or before anything destructive (the /ai:loop gates still wait for my yes). Build what was asked; list extras as suggestions instead of building them.
+- Before editing, read the whole file (or the whole function you're changing) and plan the change. If you've edited the same spot three times for one request, stop and re-read the request: repeated patches usually mean it was misread.
+- When I correct you, re-read my message and say in one line what changes, then do it. Ask first only if the correction is ambiguous.
+- When the same approach fails twice (a command, a fix that doesn't hold), change approach instead of retrying it. If a second approach also fails, stop and tell me what you tried, what failed and what you'd try next.
+- Before you report back, re-read my original message and check off every part of it; finish what's missing or say which parts are left and why. In a long session, also re-read it before starting each new part.
 
 ## Lanes
 - Real features: `/ai:loop` (spec → independent spec review → the `implementer` agent builds → the `verifier` agent checks risky changes → independent QA). Specs live at the repo root as `SPEC-<slug>.md`; never overwrite an existing spec.
