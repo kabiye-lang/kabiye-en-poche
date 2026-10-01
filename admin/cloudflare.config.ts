@@ -11,28 +11,12 @@ import { defineConfig } from "cf/config";
  */
 
 export default defineConfig((ctx) => {
+	// `production` is the default case: Vite builds in production mode unless --mode says otherwise.
 	switch (ctx.mode) {
 		case "staging": {
 			return {
 				worker: {
 					name: "kabiye-en-poche-admin-staging",
-					compatibilityDate: "2025-09-27",
-					compatibilityFlags: [
-						"nodejs_compat",
-					],
-					observability: {
-						enabled: true,
-					},
-					assets: {
-						notFoundHandling: "single-page-application",
-					},
-				},
-			};
-		}
-		case "production": {
-			return {
-				worker: {
-					name: "kabiye-en-poche-admin",
 					compatibilityDate: "2025-09-27",
 					compatibilityFlags: [
 						"nodejs_compat",
