@@ -2,7 +2,7 @@
  * HomeScreen render-level tests.
  *
  * Home opens on a resume card and a search field first, with the letter of the week
- * kept below as an editorial feature (design review 2026-09-21, SPEC-home-learn-
+ * kept below as an editorial feature (design review 2026-09-21, docs/archive/SPEC-home-learn-
  * priorities). These assertions describe that ordering and the resume card's four
  * states: loading, error, "nothing left to resume", and the lesson itself.
  */
