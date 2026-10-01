@@ -49,6 +49,7 @@ jobs:
     outputs:
       env_name:     ${{ steps.pick.outputs.env_name }}
       wrangler_env: ${{ steps.pick.outputs.wrangler_env }}
+      cf_mode:      ${{ steps.pick.outputs.cf_mode }}
       admin:        ${{ steps.services.outputs.admin }}
       website:      ${{ steps.services.outputs.website }}
       app:          ${{ steps.services.outputs.app }}
@@ -64,17 +65,21 @@ jobs:
             if [[ "${{ github.ref }}" == "refs/heads/develop" ]]; then
               echo "env_name=staging"           >> $GITHUB_OUTPUT
               echo "wrangler_env=--env staging" >> $GITHUB_OUTPUT
+              echo "cf_mode=staging"              >> $GITHUB_OUTPUT
             else
               echo "env_name=production"           >> $GITHUB_OUTPUT
               echo "wrangler_env=--env production" >> $GITHUB_OUTPUT
+              echo "cf_mode=production"           >> $GITHUB_OUTPUT
             fi
           else
             if [[ "${{ github.event.inputs.environment }}" == "production" ]]; then
               echo "env_name=production"           >> $GITHUB_OUTPUT
               echo "wrangler_env=--env production" >> $GITHUB_OUTPUT
+              echo "cf_mode=production"           >> $GITHUB_OUTPUT
             else
               echo "env_name=staging"           >> $GITHUB_OUTPUT
               echo "wrangler_env=--env staging" >> $GITHUB_OUTPUT
+              echo "cf_mode=staging"              >> $GITHUB_OUTPUT
             fi
           fi
 
@@ -204,14 +209,16 @@ jobs:
         run: pnpm test
       - name: Build
         working-directory: admin
-        run: pnpm run build
+        run: pnpm exec cf build --mode ${{ needs.resolve.outputs.cf_mode }}
         env:
+          CF_SEND_TELEMETRY: "false"
           VITE_SUPABASE_URL: ${{ vars.VITE_SUPABASE_URL }}
           VITE_SUPABASE_ANON_KEY: ${{ vars.VITE_SUPABASE_ANON_KEY }}
       - name: Deploy
         working-directory: admin
-        run: pnpm exec wrangler deploy ${{ needs.resolve.outputs.wrangler_env }} --minify
+        run: pnpm exec cf deploy --prebuilt --mode ${{ needs.resolve.outputs.cf_mode }}
         env:
+          CF_SEND_TELEMETRY: "false"
           CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
           CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
 
