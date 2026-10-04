@@ -47,19 +47,16 @@ npm run build
 
 - **Markdown** – Content (EN/FR) uses live markdown editor with preview
 - **Audio** – Examples and activities support `audio_url` (Supabase Storage or external URL)
-- **Activity data** – JSON editor for flexible activity structures; see `src/types/activity-data.ts` for shapes
+- **Activity data** – JSON editor for flexible activity structures; the shapes the app reads are in `../mobile/src/types/activity-data.ts`
 
 ## RLS / Permissions
 
-Apply the admin RLS migration from `../supabase/migrations/20240225000001_admin_rls_policies.sql`:
+The live project already has what the panel needs:
 
-1. Open **Supabase Dashboard → SQL Editor**
-2. Paste and run the migration file contents
+- RLS enabled on every table
+- A public read policy on each content table the app reads (units, lessons, lesson contents and activities, alphabet, CMS pages, categories, topics), for anon and signed-in users alike
+- **`<table>_admin_select` / `_insert` / `_update` / `_delete`** policies on those tables and on `audios`, true when the user's `user_role` claim is `"ADMIN"` (read with `get_my_claim`)
 
-This migration:
-
-- Enables RLS on admin-managed tables
-- Adds **public_read** policies so the app can read content (anon + authenticated)
-- Adds **admin_all** policies so users with `user_role = 'ADMIN'` in app_metadata get full CRUD
+They were created in the dashboard. No migration file for them exists in this repo or the pipeline repo (the `20240225000001_admin_rls_policies.sql` this page used to cite never existed); the live project is the reference.
 
 Admin access uses the `user_role` claim via [supabase-custom-claims](https://github.com/supabase-community/supabase-custom-claims). Set `app_metadata.user_role = 'ADMIN'` in the Supabase Auth user (step 3 above) or via the custom claims `set_claim()` function.
