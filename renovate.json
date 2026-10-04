@@ -177,6 +177,22 @@
         "major"
       ],
       "groupName": "Major npm dependencies"
+    },
+    {
+      "description": "NPM - majors the Expo SDK decides: jest-expo 57 depends on the jest 29 packages (with jest 30 every suite fails with `clearMocksOnScope is not a function`) and babel-preset-expo 57 is built against Babel 7. Lift this rule at the SDK upgrade",
+      "matchManagers": [
+        "npm"
+      ],
+      "matchPackageNames": [
+        "jest",
+        "@types/jest",
+        "@babel/core",
+        "@babel/plugin-transform-export-namespace-from"
+      ],
+      "matchUpdateTypes": [
+        "major"
+      ],
+      "enabled": false
     }
   ]
 }
