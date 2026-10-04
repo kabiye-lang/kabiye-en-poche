@@ -2,15 +2,6 @@
 @import 'uniwind';
 
 @theme {
-  /* Font families - IBM Plex Sans Hebrew */
-  --font-ibm-thin: 'IBMPlexSansHebrew_100Thin';
-  --font-ibm-extralight: 'IBMPlexSansHebrew_200ExtraLight';
-  --font-ibm-light: 'IBMPlexSansHebrew_300Light';
-  --font-ibm-regular: 'IBMPlexSansHebrew_400Regular';
-  --font-ibm-medium: 'IBMPlexSansHebrew_500Medium';
-  --font-ibm-semibold: 'IBMPlexSansHebrew_600SemiBold';
-  --font-ibm-bold: 'IBMPlexSansHebrew_700Bold';
-
   /* Font family - Kabiyè.
      The interface face carries 4 of the 16 letters Kabiyè needs, so every Kabiyè word
      was drawn half in it and half in the iOS fallback -- visible mid-word, and visible
