@@ -1,36 +1,38 @@
 # Kabiyè en poche
 
-## Developement
+Learn to read and write Kabiyè (Togo): a mobile app with lessons and a dictionary, its
+admin panel and its website.
 
-Check Expo docs for requirements <https://docs.expo.dev/get-started/installation/#requirements>
+| Workspace | What it is |
+|---|---|
+| `mobile/` | Expo app (Expo Router, Uniwind, Lingui, Supabase); iOS on TestFlight |
+| `admin/` | React-admin panel for lessons, alphabet and audio (Vite; deployed with `cf`) |
+| `website/` | The site (React + Vite; deployed with `wrangler`) |
+| `supabase/` | The `upload-audio` edge function |
 
-Also check the recommended tools from Expo docs <https://docs.expo.dev/get-started/installation/#recommended-tools>
+The dictionary data and the lessons come from the content pipeline in the sibling
+repository `kbp-dict-crawler`, which also holds the captured database schema.
 
-### Linting
+## Development
 
-We are using ESLint. Install the [ESLint VSCode plugin](https://marketplace.visualstudio.com/items?itemName=dbaeumer.vscode-eslint) to get insights while writing the code.
-
-### Pre commit hooks
-
-Commitlint will check if the commit message respects the desired format and reject the commit if not.
-
-Lintstaged will run eslint and Typescript check and reject commit if any of thoses checks failed.
-
-### Run the project
+A pnpm workspace (`packageManager` in `package.json`), Node 22.19 or later.
 
 ```bash
-npm run data:download # to get data from Airtable. !!! You need to run this at least once before launching the project. Unless it will fail to find utils/data/alphabet.json file
-npm run ios # to run on iOS
-npm run android # to run on Android
+pnpm install
+pnpm --filter mobile ios             # or android, start
+pnpm --filter mobile test            # jest
+pnpm --filter mobile check-types
+pnpm --filter admin dev              # setup in admin/README.md
+pnpm --filter website dev
 ```
 
-### Translations
+The app reads `EXPO_PUBLIC_SUPABASE_URL` and `EXPO_PUBLIC_SUPABASE_ANON_KEY`, locally from
+`mobile/.env.local` (gitignored).
 
-Translation files are located in `i18n/` folder.
-To help with editing translation files, install the [i18n Ally VSCode Extension](https://marketplace.visualstudio.com/items?itemName=Lokalise.i18n-ally)
+Commit hooks: commitlint checks the message format, and lint-staged runs ESLint (with
+`--fix`) and the type check on staged files.
 
-## DATA
+Interface strings are Lingui catalogs in `mobile/src/locales/`; `pnpm --filter mobile
+i18n:extract` refreshes them.
 
-Data is coming from Airtable.
-
-Alphabet list -> <https://airtable.com/appK7j84d1AB9WDjw/tblYaUlSlj2mCcOSE/viw6qTt8RbrkjOrio>
+Conventions for code and for lesson content are in `AGENTS.md` and `.cursorrules`.
