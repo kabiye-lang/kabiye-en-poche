@@ -136,11 +136,18 @@ export default function AlphabetListScreen() {
               >
                 {item.id}
               </Text>
+              {/* Under the letter, in the flow, on one line. Pinned to the tile's bottom edge
+                  it had no room of its own: descenders (`ɣ`, `g`) ran into it, and
+                  "CONSONANT", wider than an 80pt tile at 12px tracked, wrapped upward over
+                  the glyph. It shrinks a little on a narrow phone rather than wrap. */}
               <Text
+                numberOfLines={1}
+                adjustsFontSizeToFit
+                minimumFontScale={0.85}
                 className={
                   isKabiyeOnly
-                    ? 'text-on-accent absolute bottom-2 text-[12px] uppercase tracking-[0.08em]'
-                    : 'text-foreground-secondary absolute bottom-2 text-[12px] uppercase tracking-[0.08em]'
+                    ? 'text-on-accent px-1 text-[12px] uppercase tracking-[0.04em]'
+                    : 'text-foreground-secondary px-1 text-[12px] uppercase tracking-[0.04em]'
                 }
               >
                 {typeLabel}
