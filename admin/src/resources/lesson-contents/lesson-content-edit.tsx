@@ -19,6 +19,8 @@ import {
 import { AudioUrlInput } from '@/components/inputs/audio-url-input'
 import { MarkdownInput } from '@/components/inputs/markdown-input'
 
+import { sectionKindChoices } from './section-kinds'
+
 const LessonContentEditActions = () => {
   const record = useRecordContext()
   const redirect = useRedirect()
@@ -51,16 +53,20 @@ export const LessonContentEdit = () => (
       <TextInput source="title_en" label="Title (EN)" validate={[required()]} />
       <TextInput source="title_fr" label="Title (FR)" validate={[required()]} />
       <NumberInput source="position" />
+      <SelectInput source="kind" label="Kind" choices={sectionKindChoices} />
 
       <MarkdownInput source="content_en" label="Content (EN)" />
       <MarkdownInput source="content_fr" label="Content (FR)" />
 
-      <ArrayInput source="examples" label="Examples (kbp, en, fr, pronunciation, audio_url)">
+      <ArrayInput source="examples" label="Examples (kbp, en, fr, pronunciation, lexeme id, note, audio_url)">
         <SimpleFormIterator inline>
           <TextInput source="kbp" label="Kabiyè" />
           <TextInput source="en" label="English" />
           <TextInput source="fr" label="French" />
           <TextInput source="pronunciation" label="Pronunciation" />
+          <TextInput source="lexeme_id" label="Lexeme id" />
+          <TextInput source="note.en" label="Note (EN)" multiline />
+          <TextInput source="note.fr" label="Note (FR)" multiline />
           <AudioUrlInput source="audio_url" label="Audio URL" />
         </SimpleFormIterator>
       </ArrayInput>
