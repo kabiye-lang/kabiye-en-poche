@@ -2,24 +2,56 @@ import { compareRows } from '../conjugation-order'
 
 describe('compareRows', () => {
   // jsonb returns keys shortest first, so the book's complex table arrived with
-  // 'Habituel → Impératif' above 'Futur'. The book prints plain rows, then each group.
-  it('puts the book complex and negative tables back in printed order', () => {
-    const printed = [
-      'Futur',
-      'Irréel du passé',
-      'Adversatif → Impératif',
-      'Adversatif → Inaccompli présent',
-      'Adversatif → Accompli',
-      'Habituel → Impératif',
-      'Immédiat → Aoriste',
-      'Lointain → Inaccompli passé',
-      'Négatif simple → Impératif (prohibitif)',
-      'Négatif simple → Inaccompli présent',
-      'Négatif provisoire → Accompli',
-      'Négatif provisoire → Accompli lointain',
-    ]
-    const asStored = [...printed].sort((a, b) => a.length - b.length || (a < b ? -1 : 1))
-    expect(asStored.sort(compareRows)).toEqual(printed)
+  // 'Habituel → Impératif' above 'Futur'. Both tables below are the book's, as printed.
+  const complexes = [
+    'Futur',
+    'Irréel du passé',
+    'Adversatif → Impératif',
+    'Adversatif → Inaccompli présent',
+    'Adversatif → Inaccompli passé',
+    'Adversatif → Accompli',
+    'Adversatif → Comparatif inaccompli',
+    'Adversatif → Comparatif accompli',
+    'Habituel → Impératif',
+    'Habituel → Inaccompli présent',
+    'Habituel → Comparatif inaccompli',
+    'Expectatif → Impératif',
+    'Expectatif → Inaccompli présent',
+    'Immédiat → Aoriste',
+    'Immédiat → Inaccompli passé',
+    'Immédiat → Accompli',
+    'Immédiat → Comparatif inaccompli',
+    'Immédiat → Comparatif accompli',
+    'Lointain → Impératif',
+    'Lointain → Inaccompli présent',
+    'Lointain → Inaccompli passé',
+    'Lointain → Accompli',
+  ]
+  const negatives = [
+    'Négatif simple → Impératif (prohibitif)',
+    'Négatif simple → Inaccompli présent',
+    'Négatif simple → Inaccompli passé',
+    'Négatif simple → Accompli',
+    'Négatif catégorique → Impératif (prohibitif)',
+    'Négatif catégorique → Inaccompli présent',
+    'Négatif catégorique → Inaccompli passé',
+    'Négatif catégorique → Accompli',
+    'Négatif habituel → Impératif (prohibitif)',
+    'Négatif habituel → Inaccompli présent',
+    'Négatif lointain → Impératif (prohibitif)',
+    'Négatif lointain → Inaccompli passé',
+    'Négatif lointain → Accompli',
+    'Négatif provisoire → Impératif (prohibitif)',
+    'Négatif provisoire → Accompli',
+    'Négatif provisoire → Accompli lointain',
+  ]
+  const asStored = (keys: string[]) => [...keys].sort((a, b) => a.length - b.length || (a < b ? -1 : 1))
+
+  it.each([
+    ['complexes', complexes],
+    ['négatives', negatives],
+  ])('puts the book %s table back in printed order', (_, printed) => {
+    expect(asStored(printed).sort(compareRows)).toEqual(printed)
   })
 
   it('ranks unknown rows after the known ones, and unknown groups after the known groups', () => {
