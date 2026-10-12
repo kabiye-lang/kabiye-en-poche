@@ -12,7 +12,7 @@ import { Skeleton, SkeletonRows, Text, View } from '../components/ui'
 import { useAppNextLesson, useAppPathLessons, useAppUnits } from '../hooks/use-app-data'
 import { useLanguage } from '../hooks/use-language'
 import { orderUnitsForPath, usePath } from '../hooks/use-path'
-import { partitionLearnPath } from '../utils/learn-path'
+import { partitionLearnPath, unitEyebrow } from '../utils/learn-path'
 import { isWritten } from '../utils/lesson-status'
 
 /** How many coming units are named before the rest are counted. */
@@ -163,7 +163,7 @@ const UnitChapter = ({ unit, lessons, currentLessonId }: UnitChapterProps) => {
     <View className="mb-9">
       <View className="border-foreground flex-row items-baseline border-b-[1.5px] pb-2">
         <Text className="text-accent-text text-[13px] font-semibold uppercase tracking-[0.1em]">
-          {unit.code ? unit.code.replace(/^U0*/, t`Unit ` + '') : t`Unit`}
+          {unitEyebrow(unit.code, (number) => t`Unit ${number}`) ?? t`Unit`}
         </Text>
         <Text weight="semibold" className="text-foreground ml-3 flex-1 text-[22px] leading-[1.15]">
           {title ?? ''}

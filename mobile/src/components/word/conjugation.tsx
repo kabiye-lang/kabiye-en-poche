@@ -8,38 +8,11 @@ import { useLingui } from '@lingui/react/macro'
 
 import { BOOK, SIL, useConjugation, useVerbForms } from '../../hooks/use-conjugation'
 import { useLanguage } from '../../hooks/use-language'
+import { compareRows } from '../../utils/conjugation-order'
 import { stripTone } from '../../utils/strip-tone'
 import { Text, View } from '../ui'
 
 const SIMPLE_TABLES = new Set(['typique', 'simples'])
-
-/** The order a learner reads a table in: the dictionary form first, then the order, then
- *  the aspects from bare to marked. Unknown rows keep their printed order after these. */
-const ROW_ORDER = [
-  'infinitif',
-  'Infinitif',
-  'Impératif',
-  'Aoriste',
-  'Inaccompli présent',
-  'Accompli non lié',
-  'Accompli lié',
-  'Futur',
-  'Comparatif inaccompli',
-  'Comparatif accompli',
-  'Négatif catégorique',
-  'Négatif provisoire',
-  'Lointain',
-  'descriptif',
-  'progressif passé',
-  'accompli simple',
-  'accompli avec complément',
-  'accompli sans complément',
-  'consécutif / impératif',
-]
-const rank = (code: string) => {
-  const i = ROW_ORDER.indexOf(code)
-  return i === -1 ? ROW_ORDER.length : i
-}
 
 /**
  * How the verb conjugates -- as a source printed it.
@@ -195,7 +168,7 @@ const ClassBlock = ({ paradigms, forms }: { paradigms: Paradigm[]; forms?: Map<s
 const FormRows = ({ paradigm, forms }: { paradigm: Paradigm; forms?: Map<string, VerbForm> }) => {
   const { currentLanguage } = useLanguage()
   const lang = currentLanguage === 'fr' ? 'fr' : 'en'
-  const entries = Object.entries(paradigm.forms ?? {}).sort(([a], [b]) => rank(a) - rank(b))
+  const entries = Object.entries(paradigm.forms ?? {}).sort(([a], [b]) => compareRows(a, b))
   return (
     <View className="border-foreground mt-2 border-t-[1.5px]">
       {entries.map(([code, value]) => {

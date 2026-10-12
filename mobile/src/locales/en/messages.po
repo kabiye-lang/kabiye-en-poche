@@ -1392,8 +1392,8 @@ msgid "Unit"
 msgstr "Unit"
 
 #: src/screens/learn.tsx
-msgid "Unit "
-msgstr "Unit "
+msgid "Unit {number}"
+msgstr "Unit {number}"
 
 #: src/screens/unit.tsx
 msgid "Unit not found"

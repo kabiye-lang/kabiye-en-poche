@@ -78,3 +78,13 @@ export function partitionLearnPath<U extends LearnPathUnit, L extends LearnPathL
 
   return { units, coming: { count: comingCount, unitTitles: comingTitles } }
 }
+
+/** The chapter eyebrow for a unit code. `A1-01` reads "A1 · Unit 1" and the old `U01`
+ *  reads "Unit 1". The level stays, because B1-01 is also unit 1 of its level. Any other
+ *  code is shown as it is, and no code gives null. */
+export function unitEyebrow(code: string | null | undefined, unit: (number: string) => string): string | null {
+  if (!code) return null
+  const match = code.match(/^(?:U|([A-C][12])-)0*(\d+)$/)
+  if (!match) return code
+  return match[1] ? `${match[1]} · ${unit(match[2])}` : unit(match[2])
+}

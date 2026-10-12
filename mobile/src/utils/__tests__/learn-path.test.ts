@@ -1,4 +1,4 @@
-import { partitionLearnPath } from '../learn-path'
+import { partitionLearnPath, unitEyebrow } from '../learn-path'
 
 const U = (
   id: string,
@@ -136,5 +136,18 @@ describe('partitionLearnPath', () => {
 
     expect(coming.unitTitles).toEqual(['Writing & Sound'])
     expect(coming.count).toBe(2)
+  })
+})
+
+describe('unitEyebrow', () => {
+  const unit = (number: string) => `Unit ${number}`
+
+  // The live units are coded A1-01 … B1-02, and the old U0* rewrite left them raw.
+  it('keeps the level and numbers the unit, for every code shape the units carry', () => {
+    expect(unitEyebrow('A1-01', unit)).toBe('A1 · Unit 1')
+    expect(unitEyebrow('B1-12', unit)).toBe('B1 · Unit 12')
+    expect(unitEyebrow('U03', unit)).toBe('Unit 3')
+    expect(unitEyebrow('intro', unit)).toBe('intro')
+    expect(unitEyebrow(null, unit)).toBeNull()
   })
 })
