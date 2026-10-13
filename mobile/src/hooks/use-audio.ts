@@ -29,13 +29,19 @@ export const useAudio = () => {
   // covers a source that loaded and then failed natively.
   const [playError, setPlayError] = useState<string | null>(null)
   const currentSourceRef = useRef<string | null>(null)
+  // Set once this hook unmounts. expo-audio releases the player first, and a caller's own
+  // unmount cleanup (the listening steps stop their clip there) would then pause a player
+  // that no longer exists.
+  const unmountedRef = useRef(false)
 
   // Stop on unmount only. This used to depend on `status.playing` as well, so its cleanup
   // ran -- pausing and rewinding -- every time playback started or stopped. Replay worked
   // only by that accident; it is now explicit in `playAudio`.
   useEffect(
     function pauseOnUnmount() {
+      unmountedRef.current = false
       return () => {
+        unmountedRef.current = true
         try {
           player.pause()
         } catch {
@@ -108,7 +114,8 @@ export const useAudio = () => {
   const stopAudio = async () => {
     // Unconditional: `status` here can be a render behind (a caller stopping from an
     // effect sees the status of the render that scheduled it), and pausing a paused
-    // player is harmless.
+    // player is harmless. After unmount there is nothing left to stop.
+    if (unmountedRef.current) return
     try {
       player.pause()
       await player.seekTo(0) // Reset to beginning
@@ -118,6 +125,7 @@ export const useAudio = () => {
   }
 
   const pauseAudio = async () => {
+    if (unmountedRef.current) return
     try {
       if (status.playing) {
         player.pause()

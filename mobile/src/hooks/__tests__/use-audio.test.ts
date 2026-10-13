@@ -217,4 +217,19 @@ describe('useAudio', () => {
     expect(mockPlayer.pause).toHaveBeenCalled()
     expect(mockPlayer.seekTo).toHaveBeenCalledWith(0)
   })
+
+  // Found in the simulator: the listening steps stop the clip from their unmount cleanup,
+  // which runs after expo-audio has released the player. Pausing a released player throws,
+  // and the now-unconditional stop logged it as an error on every step change.
+  it('does nothing, and logs nothing, when stopped after the player is gone', async () => {
+    const { result, unmount } = await renderHook(() => useAudio())
+    const { stopAudio } = result.current
+    await unmount()
+    mockPlayer.pause.mockImplementationOnce(() => {
+      throw new Error('ERR_NATIVE_SHARED_OBJECT_NOT_FOUND')
+    })
+
+    await act(() => stopAudio())
+    expect(console.error).not.toHaveBeenCalled()
+  })
 })
