@@ -25,7 +25,11 @@ export function AudioReviewFieldsInput({ value, onChange }: AudioReviewFieldsInp
         <label className="text-sm font-medium">Kind</label>
         <select
           value={value.kind ?? ''}
-          onChange={(e) => set('kind', (e.target.value || null) as AudioKind | null)}
+          onChange={(e) => {
+            const kind = (e.target.value || null) as AudioKind | null
+            // A sentence never carries a lexeme id (see prepareAudioWrite).
+            onChange({ ...value, kind, lexeme_id: kind === 'sentence' ? null : value.lexeme_id })
+          }}
           className={selectClass}
         >
           <option value="">Not set</option>
@@ -43,15 +47,17 @@ export function AudioReviewFieldsInput({ value, onChange }: AudioReviewFieldsInp
         />
         <p className="text-muted-foreground mt-1 text-xs">Match key: {key || '—'}</p>
       </div>
-      <div>
-        <label className="text-sm font-medium">Lexeme id{value.kind === 'word' ? ' *' : ''}</label>
-        <LexemeLookup value={value.lexeme_id} onChange={(lexemeId) => set('lexeme_id', lexemeId)} />
-        {value.kind === 'word' && (
-          <p className="text-muted-foreground mt-1 text-xs">
-            Required to approve a word: without it the audio could play for a same-spelling word with another tone.
-          </p>
-        )}
-      </div>
+      {value.kind !== 'sentence' && (
+        <div>
+          <label className="text-sm font-medium">Lexeme id{value.kind === 'word' ? ' *' : ''}</label>
+          <LexemeLookup value={value.lexeme_id} onChange={(lexemeId) => set('lexeme_id', lexemeId)} />
+          {value.kind === 'word' && (
+            <p className="text-muted-foreground mt-1 text-xs">
+              Required to approve a word: without it the audio could play for a same-spelling word with another tone.
+            </p>
+          )}
+        </div>
+      )}
       <div className="flex gap-4">
         <div className="flex-1">
           <label className="text-sm font-medium">Source</label>

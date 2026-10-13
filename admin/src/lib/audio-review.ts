@@ -60,10 +60,16 @@ export async function checkApproval(record: Record<string, unknown> | AudioRevie
   return null
 }
 
-/** Trim the typed review fields before a write and derive kbp_key from kbp_text. */
-export function prepareAudioWrite<T extends Record<string, unknown>>(data: T): T {
+/**
+ * Trim the typed review fields before a write and derive kbp_key from kbp_text.
+ * A sentence never keeps a lexeme id: the app matches word audio by lexeme id, so a
+ * sentence carrying one could be played for that word. `currentKind` is the stored
+ * kind, for a write that sets lexeme_id without kind.
+ */
+export function prepareAudioWrite<T extends Record<string, unknown>>(data: T, currentKind?: unknown): T {
   const out: Record<string, unknown> = { ...data }
   if ('lexeme_id' in data) out.lexeme_id = (typeof data.lexeme_id === 'string' && data.lexeme_id.trim()) || null
+  if (('kind' in data ? data.kind : currentKind) === 'sentence') out.lexeme_id = null
   if ('kbp_text' in data) {
     const text = typeof data.kbp_text === 'string' ? data.kbp_text.trim() : ''
     out.kbp_text = text || null

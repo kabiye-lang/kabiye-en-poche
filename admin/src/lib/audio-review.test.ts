@@ -57,6 +57,15 @@ describe('prepareAudioWrite', () => {
     expect(prepareAudioWrite({ kbp_text: '' })).toEqual({ kbp_text: null, kbp_key: null })
   })
 
+  it('drops the lexeme id of a sentence, so it cannot be played for that word', () => {
+    expect(prepareAudioWrite({ kind: 'sentence', lexeme_id: 'keɖe#1' })).toEqual({ kind: 'sentence', lexeme_id: null })
+    expect(prepareAudioWrite({ lexeme_id: 'keɖe#1' }, 'sentence')).toEqual({ lexeme_id: null })
+    expect(prepareAudioWrite({ kind: 'word', lexeme_id: 'keɖe#1' }, 'sentence')).toEqual({
+      kind: 'word',
+      lexeme_id: 'keɖe#1',
+    })
+  })
+
   it('leaves kbp_key alone when the write does not touch kbp_text', () => {
     expect(prepareAudioWrite({ status: 'approved' })).toEqual({ status: 'approved' })
   })

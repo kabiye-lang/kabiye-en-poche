@@ -23,7 +23,7 @@ export const dataProvider: DataProvider = {
   },
   update: async (resource, params) => {
     if (resource !== 'audios') return baseDataProvider.update(resource, params)
-    const data = prepareAudioWrite(params.data)
+    const data = prepareAudioWrite(params.data, params.previousData?.kind)
     if (data.status === 'approved') await assertApprovable({ ...params.previousData, ...data })
     return baseDataProvider.update(resource, { ...params, data })
   },
