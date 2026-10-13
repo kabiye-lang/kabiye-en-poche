@@ -28,6 +28,12 @@ export const AudioShow = () => (
       <TextField source="name" />
       <TextField source="description" />
       <TextField source="tags" />
+      <TextField source="status" emptyText="—" />
+      <TextField source="kind" emptyText="—" />
+      <TextField source="kbp_text" label="Kabiyè text" emptyText="—" />
+      <TextField source="kbp_key" label="Match key" emptyText="—" />
+      <TextField source="lexeme_id" label="Lexeme id" emptyText="—" />
+      <TextField source="source" emptyText="—" />
       <TextField source="storage_path" label="Storage path" />
       <AudioPlayerField />
       <TextField source="mime_type" label="MIME type" />

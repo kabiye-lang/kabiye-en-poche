@@ -1,3 +1,5 @@
+import type { AudioReviewFields } from '@/lib/audio-review'
+
 import { useEffect, useRef, useState } from 'react'
 import {
   DeleteButton,
@@ -11,8 +13,11 @@ import {
 } from 'react-admin'
 
 import { Input } from '@/components/ui/input'
+import { approvalBlocker, DEFAULT_AUDIO_REVIEW, hasReviewColumns, readAudioReview } from '@/lib/audio-review'
 import { trimSilence } from '@/lib/audio-trim'
 import { deleteAudioFromStorage, getAudioPublicUrl, uploadAudioToStorage } from '@/lib/audio-upload'
+
+import { AudioReviewFieldsInput } from './audio-review-fields'
 
 type ReplaceMode = 'keep' | 'upload' | 'record'
 
@@ -44,6 +49,7 @@ function AudioEditForm() {
   const [name, setName] = useState('')
   const [description, setDescription] = useState('')
   const [tags, setTags] = useState('')
+  const [review, setReview] = useState<AudioReviewFields>(DEFAULT_AUDIO_REVIEW)
   const [saving, setSaving] = useState(false)
   const mediaRecorderRef = useRef<MediaRecorder | null>(null)
   const chunksRef = useRef<Blob[]>([])
@@ -53,6 +59,7 @@ function AudioEditForm() {
       setName(record.name ?? '')
       setDescription(record.description ?? '')
       setTags(Array.isArray(record.tags) ? record.tags.join(', ') : '')
+      setReview(readAudioReview(record))
     }
   }, [record?.id])
 
@@ -104,6 +111,15 @@ function AudioEditForm() {
       name: name.trim() || record.name,
       description: description.trim() || null,
       tags: tagsArr,
+    }
+    // Before the review migration these columns do not exist: sending them would fail every save.
+    if (hasReviewColumns(record)) {
+      Object.assign(payload, review)
+      const blocker = review.status === 'approved' ? approvalBlocker(review) : null
+      if (blocker) {
+        notify(blocker, { type: 'warning' })
+        return
+      }
     }
 
     let newStoragePath: string | null = null
@@ -268,6 +284,14 @@ function AudioEditForm() {
           className="mt-1"
         />
       </div>
+      {hasReviewColumns(record) ? (
+        <AudioReviewFieldsInput value={review} onChange={setReview} />
+      ) : (
+        <p className="text-muted-foreground text-sm">
+          Review fields (kind, Kabiyè text, lexeme id, source, status) appear once the audio review migration is
+          applied.
+        </p>
+      )}
       <div className="flex gap-2">
         <button
           type="submit"

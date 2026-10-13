@@ -1,15 +1,21 @@
+import type { AudioReviewFields } from '@/lib/audio-review'
+
 import { useRef, useState } from 'react'
-import { Create, useNotify, useRedirect } from 'react-admin'
+import { Create, useNotify, useRedirect, useUpdate } from 'react-admin'
 
 import { Input } from '@/components/ui/input'
+import { approvalBlocker, DEFAULT_AUDIO_REVIEW } from '@/lib/audio-review'
 import { trimSilence } from '@/lib/audio-trim'
 import { uploadAudio } from '@/lib/audio-upload'
+
+import { AudioReviewFieldsInput } from './audio-review-fields'
 
 type InputMode = 'upload' | 'record'
 
 export const AudioCreate = () => {
   const notify = useNotify()
   const redirect = useRedirect()
+  const [update] = useUpdate()
   const [mode, setMode] = useState<InputMode>('record')
   const [file, setFile] = useState<File | null>(null)
   const [recordedBlob, setRecordedBlob] = useState<Blob | null>(null)
@@ -18,6 +24,7 @@ export const AudioCreate = () => {
   const [name, setName] = useState('')
   const [description, setDescription] = useState('')
   const [tags, setTags] = useState('')
+  const [review, setReview] = useState<AudioReviewFields>(DEFAULT_AUDIO_REVIEW)
   const [uploading, setUploading] = useState(false)
   const mediaRecorderRef = useRef<MediaRecorder | null>(null)
   const chunksRef = useRef<Blob[]>([])
@@ -81,13 +88,38 @@ export const AudioCreate = () => {
       notify('At least one tag is required to find audios later', { type: 'warning' })
       return
     }
+    const blocker = review.status === 'approved' ? approvalBlocker(review) : null
+    if (blocker) {
+      notify(blocker, { type: 'warning' })
+      return
+    }
     setUploading(true)
     try {
-      await uploadAudio(blobToUpload, {
+      const created = await uploadAudio(blobToUpload, {
         name: fileName || `audio-${Date.now()}`,
         description: description.trim() || undefined,
         tags: tagsArr,
       })
+      // The upload function only writes the base columns. Save the review fields after it,
+      // and only when they differ from the column defaults, so creating works before the migration.
+      const reviewChanged = (Object.keys(review) as (keyof AudioReviewFields)[]).some(
+        (field) => (review[field] || null) !== DEFAULT_AUDIO_REVIEW[field]
+      )
+      if (reviewChanged) {
+        try {
+          await update(
+            'audios',
+            { id: created.id, data: review, previousData: { id: created.id } },
+            { returnPromise: true }
+          )
+        } catch (err) {
+          notify(`Audio uploaded, but review fields were not saved: ${err instanceof Error ? err.message : err}`, {
+            type: 'warning',
+          })
+          redirect('list', 'audios')
+          return
+        }
+      }
       notify('ra.notification.created')
       redirect('list', 'audios')
     } catch (err) {
@@ -198,6 +230,7 @@ export const AudioCreate = () => {
             className="mt-1"
           />
         </div>
+        <AudioReviewFieldsInput value={review} onChange={setReview} />
         <div className="flex gap-2">
           <button
             type="submit"
