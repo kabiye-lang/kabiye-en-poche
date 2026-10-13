@@ -9,8 +9,9 @@ import { act, renderHook, waitFor } from '@testing-library/react-native'
 
 import { supabase } from '../../lib/supabase'
 import { buildLessonSteps, taughtWords } from '../../utils/build-lesson-steps'
+import { DEV_AUDIO_FIXTURE_URI } from '../../utils/dev-audio-fixture'
 import { useAudioIndex, useLessonAudio } from '../use-audio-index'
-import { useLessonSession } from '../use-lesson-session'
+import { audioSnapshotKey, sessionKey, useLessonSession } from '../use-lesson-session'
 
 // An in-memory store: the session and the audio snapshot must survive an unmount.
 const mockStore = new Map<string, string>()
@@ -199,6 +200,73 @@ describe('useLessonAudio', () => {
 
     expect(second.result.current.lessonSteps.map((step) => step.id)).toEqual(stepIds)
     expect(second.result.current.lessonSession.session).toMatchObject({ phase: 'lesson', lessonIndex: 3 })
+  })
+
+  // Final review (P2): a session saved by the version before audio has no snapshot. It was
+  // seeded from today's recordings, a listening step changed its fingerprint, and hydration
+  // deleted the learner's progress.
+  it('keeps the progress of a session saved before snapshots existed', async () => {
+    queueResults([{ data: [], error: null }])
+    const first = await renderHook(() => useLessonUnderTest('L'), { wrapper: wrapperFor(noRetryClient()) })
+    await waitFor(() => expect(first.result.current.lessonSession.isHydrated).toBe(true))
+    const stepIds = first.result.current.lessonSteps.map((step) => step.id)
+    await act(async () => {
+      first.result.current.lessonSession.advance()
+      first.result.current.lessonSession.advance()
+      first.result.current.lessonSession.advance()
+      await first.result.current.lessonSession.flush()
+    })
+    await first.unmount()
+    // The older app version wrote the session and nothing else.
+    mockStore.delete(audioSnapshotKey('L'))
+
+    queueResults([{ data: [wiuRow], error: null }])
+    const second = await renderHook(() => useLessonUnderTest('L'), { wrapper: wrapperFor(noRetryClient()) })
+    await waitFor(() => expect(second.result.current.lessonSession.isHydrated).toBe(true))
+
+    expect(second.result.current.lessonSteps.map((step) => step.id)).toEqual(stepIds)
+    expect(second.result.current.lessonSession.session).toMatchObject({ phase: 'lesson', lessonIndex: 3 })
+  })
+
+  // Final review (P2): restored URLs skipped `usableAudioUrl`, so a snapshot holding the
+  // Metro-served fixture still played after the flag was turned off or in a release build.
+  it('plays nothing from a restored snapshot that holds no recording we host', async () => {
+    expect(DEV_AUDIO_FIXTURE_URI).toBeUndefined() // the fixture flag is off in this test
+    const wiu = word('wɩʋ', 'wɩʋ')
+    mockStore.set(sessionKey('L'), '{"phase":"lesson"}')
+    mockStore.set(
+      audioSnapshotKey('L'),
+      JSON.stringify({ 'wɩʋ|wɩʋ': 'http://192.168.1.20:8081/assets/assets/audio/dev-fixture-tone.m4a' })
+    )
+    queueResults([{ data: [wiuRow], error: null }])
+
+    const { result } = await renderHook(() => useLessonAudio('L', [wiu], true), {
+      wrapper: wrapperFor(noRetryClient()),
+    })
+    await waitFor(() => expect(result.current.isSettled).toBe(true))
+
+    expect(result.current.audioFor(wiu)).toBeUndefined()
+    // Discarded, and the saved session keeps the empty snapshot it had before audio.
+    await waitFor(() => expect(mockStore.get(audioSnapshotKey('L'))).toBe('{}'))
+  })
+
+  it('drops only the restored entries that fail, and keeps the rest', async () => {
+    const wiu = word('wɩʋ', 'wɩʋ')
+    const keɖe = word('keɖe', 'keɖe#1')
+    mockStore.set(sessionKey('L'), '{"phase":"lesson"}')
+    mockStore.set(
+      audioSnapshotKey('L'),
+      JSON.stringify({ 'wɩʋ|wɩʋ': `${HOSTED}wɩʋ.m4a`, 'keɖe#1|keɖe': 'https://example.com/keɖe.m4a' })
+    )
+    queueResults([{ data: [], error: null }])
+
+    const { result } = await renderHook(() => useLessonAudio('L', [wiu, keɖe], true), {
+      wrapper: wrapperFor(noRetryClient()),
+    })
+    await waitFor(() => expect(result.current.isSettled).toBe(true))
+
+    expect(result.current.audioFor(wiu)).toBe(`${HOSTED}wɩʋ.m4a`)
+    expect(result.current.audioFor(keɖe)).toBeUndefined()
   })
 
   it('gives a new session the recordings approved since, once there is no session to resume', async () => {

@@ -7,6 +7,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage'
 import { useQuery } from '@tanstack/react-query'
 
 import { supabase } from '../lib/supabase'
+import { usableAudioUrl } from '../utils/audio-source'
 import { DEV_AUDIO_FIXTURE_URI } from '../utils/dev-audio-fixture'
 import { EMPTY_AUDIO_INDEX, exampleAudioUrl } from '../utils/find-audio'
 import { audioSnapshotKey, sessionKey } from './use-lesson-session'
@@ -86,17 +87,34 @@ function parseSnapshot(raw: string | null): AudioSnapshot | null {
   }
 }
 
-/** The stored snapshot, but only when there is a saved session for it to belong to. */
-async function readResumableSnapshot(lessonId: string): Promise<AudioSnapshot | null> {
+/**
+ * A stored snapshot's entries, each through `usableAudioUrl` -- the gate every other URL
+ * passes. An entry that fails plays nothing. A snapshot whose entries all fail was written
+ * in fixture mode (the Metro-served tone) or against another storage origin, and counts as
+ * no snapshot at all.
+ */
+function restoreSnapshot(raw: string | null): AudioSnapshot | null {
+  const parsed = parseSnapshot(raw)
+  if (!parsed) return null
+  const entries = Object.entries(parsed)
+  const usable = entries.filter(([, url]) => usableAudioUrl(url) !== undefined)
+  if (entries.length > 0 && usable.length === 0) return null
+  return Object.fromEntries(usable)
+}
+
+/** Whether a saved session exists, and its snapshot -- read only when there is one. */
+async function readResumableSnapshot(
+  lessonId: string
+): Promise<{ hasSession: boolean; snapshot: AudioSnapshot | null }> {
   try {
     const [session, snapshot] = await Promise.all([
       AsyncStorage.getItem(sessionKey(lessonId)),
       AsyncStorage.getItem(audioSnapshotKey(lessonId)),
     ])
-    return session ? parseSnapshot(snapshot) : null
+    return session ? { hasSession: true, snapshot: restoreSnapshot(snapshot) } : { hasSession: false, snapshot: null }
   } catch (err) {
     console.warn('[use-lesson-audio] failed to read the audio snapshot', err)
-    return null
+    return { hasSession: false, snapshot: null }
   }
 }
 
@@ -113,11 +131,24 @@ async function readResumableSnapshot(lessonId: string): Promise<AudioSnapshot | 
  * session to resume. Within one visit the snapshot also holds still when a later fetch
  * recovers from a failed one (another screen's observer retries the query).
  *
+ * A saved session with no snapshot is frozen with an empty snapshot, never seeded. The app
+ * version before audio saved sessions without one, and built their steps without listening
+ * questions: seeding would add one, change the fingerprint and discard the progress. An
+ * unreadable snapshot is treated the same way.
+ *
+ * Restored URLs pass through `usableAudioUrl` (see `restoreSnapshot`). A dropped entry
+ * silences that word's Teach card and adds no listening question. The step builder's own
+ * `isAnswerable` check refuses a listening question on such a URL anyway, so dropping it
+ * does not change the steps. A snapshot of fixture URLs, resumed with the fixture off, so
+ * loses its listening questions and its saved session: development data only, and a
+ * listening question with nothing to play is worse.
+ *
  * `isSettled` waits for the storage read, so the lesson never builds its steps -- and
  * hydrates its session -- from the live index when a snapshot is about to arrive.
  *
  * Trade-off: if the lesson's content changes and its saved session is discarded, the next
- * session still uses the old snapshot, until the lesson is completed and `clear` runs.
+ * session still uses the old snapshot (an empty one included), until the lesson is completed
+ * and `clear` runs.
  */
 export function useLessonAudio(
   lessonId: string,
@@ -129,7 +160,9 @@ export function useLessonAudio(
   clear: () => Promise<void>
 } {
   const live = useAudioIndex()
-  const [stored, setStored] = useState<{ lessonId: string; snapshot: AudioSnapshot | null } | undefined>(undefined)
+  const [stored, setStored] = useState<
+    { lessonId: string; hasSession: boolean; snapshot: AudioSnapshot | null } | undefined
+  >(undefined)
   const [frozen, setFrozen] = useState<{ lessonId: string; snapshot: AudioSnapshot; seeded: boolean } | undefined>(
     undefined
   )
@@ -137,8 +170,8 @@ export function useLessonAudio(
   useEffect(
     function readStoredSnapshot() {
       let cancelled = false
-      void readResumableSnapshot(lessonId).then((snapshot) => {
-        if (!cancelled) setStored({ lessonId, snapshot })
+      void readResumableSnapshot(lessonId).then(({ hasSession, snapshot }) => {
+        if (!cancelled) setStored({ lessonId, hasSession, snapshot })
       })
       return () => {
         cancelled = true
@@ -148,10 +181,13 @@ export function useLessonAudio(
   )
 
   // Render-time state adjustment: fix the snapshot once per lesson. A stored one wins; a
-  // new session is seeded from the live index, the failed-load fallback included.
+  // saved session without one gets an empty one, stored so it reads back the same; a new
+  // session is seeded from the live index, the failed-load fallback included.
   if (frozen?.lessonId !== lessonId && stored?.lessonId === lessonId) {
     if (stored.snapshot) {
       setFrozen({ lessonId, snapshot: stored.snapshot, seeded: false })
+    } else if (stored.hasSession) {
+      setFrozen({ lessonId, snapshot: {}, seeded: true })
     } else if (live.isSettled && wordsReady) {
       const seed: AudioSnapshot = {}
       for (const word of words) {
