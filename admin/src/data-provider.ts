@@ -28,13 +28,13 @@ export const dataProvider: DataProvider = {
     if (resource !== 'audios') return baseDataProvider.update(resource, params)
     const [stored] = await storedAudios([params.id])
     if (!stored) throw new Error('Audio not found')
-    const reviewedPath = params.previousData?.storage_path ?? null
+    const reviewed = reviewedSnapshot(params.previousData)
     const approving = wantsApproved(params.data, stored)
-    if (approving && reviewedPath !== (stored.storage_path ?? null)) throw new Error(CHANGED_SINCE_OPENED)
+    if (approving && !matchesReviewed(stored, reviewed)) throw new Error(CHANGED_SINCE_OPENED)
     // Only what the editor changed: resending what they merely saw could undo someone else's edit.
     const [data] = await auditedAudioWrites([stored], changedFields(params.data, params.previousData))
     if (!Object.keys(data).length) return { data: stored } as UpdateResult
-    return { data: await writeAudio(stored.id, data, approving ? reviewedPath : undefined) } as UpdateResult
+    return { data: await writeAudio(stored.id, data, approving ? reviewed : undefined) } as UpdateResult
   },
   updateMany: async (resource, params) => {
     if (resource !== 'audios') return baseDataProvider.updateMany(resource, params)
@@ -42,11 +42,11 @@ export const dataProvider: DataProvider = {
     const missing = params.ids.filter((id) => !rows.some((row) => String(row.id) === String(id)))
     if (missing.length) throw new Error(`Audio not found: ${missing.join(', ')}. Nothing was saved.`)
     const names = (part: RaRecord[]) => part.map((r) => `"${r.name ?? r.id}"`).join(', ') || 'none'
-    // The file each reviewer heard, from the list they selected in: { [id]: storage_path }.
-    const reviewedPaths: Record<string, string | undefined> = params.meta?.reviewedPaths ?? {}
-    const reviewedPath = (row: RaRecord) => reviewedPaths[String(row.id)] ?? null
+    // What the reviewer saw of each row, from the list they selected in: { [id]: record }.
+    const seen: Record<string, Record<string, unknown> | undefined> = params.meta?.reviewed ?? {}
+    const reviewed = rows.map((row) => reviewedSnapshot(seen[String(row.id)]))
     const approving = rows.map((row) => wantsApproved(params.data, row))
-    const changed = rows.filter((row, i) => approving[i] && reviewedPath(row) !== (row.storage_path ?? null))
+    const changed = rows.filter((row, i) => approving[i] && !matchesReviewed(row, reviewed[i]))
     if (changed.length) {
       throw new Error(`Not approved: ${names(changed)}. ${CHANGED_SINCE_OPENED} Nothing was saved.`)
     }
@@ -55,7 +55,7 @@ export const dataProvider: DataProvider = {
     // One write per row, so a failure part-way leaves earlier rows saved: say which.
     for (const [i, row] of rows.entries()) {
       try {
-        await writeAudio(row.id, writes[i], approving[i] ? reviewedPath(row) : undefined)
+        await writeAudio(row.id, writes[i], approving[i] ? reviewed[i] : undefined)
       } catch (err) {
         const message = err instanceof Error ? err.message : String(err)
         rethrowReadable(
@@ -109,6 +109,19 @@ async function storedAudios(ids: Identifier[]): Promise<RaRecord[]> {
   return data ?? []
 }
 
+/** The columns a reviewer approves: the file and what it is said to be. */
+const REVIEWED_COLUMNS = ['storage_path', 'kind', 'kbp_text', 'kbp_key', 'lexeme_id', 'source'] as const
+type Reviewed = Record<(typeof REVIEWED_COLUMNS)[number], unknown>
+
+/** What the reviewer saw of the reviewed columns. A column they did not see counts as null. */
+function reviewedSnapshot(seen: Record<string, unknown> | undefined): Reviewed {
+  return Object.fromEntries(REVIEWED_COLUMNS.map((column) => [column, seen?.[column] ?? null])) as Reviewed
+}
+
+function matchesReviewed(stored: Record<string, unknown>, reviewed: Reviewed): boolean {
+  return REVIEWED_COLUMNS.every((column) => (stored[column] ?? null) === reviewed[column])
+}
+
 /** True when the write sets status 'approved', or leaves an approved row approved. */
 function wantsApproved(patch: Record<string, unknown>, stored: RaRecord): boolean {
   return (patch.status ?? stored.status) === 'approved'
@@ -124,15 +137,18 @@ function changedFields(data: Record<string, unknown>, opened: Record<string, unk
 }
 
 /**
- * Write one audio row. With `reviewedPath`, the UPDATE only matches while the row still
- * holds the file the reviewer heard, so a file replaced after the checks is never approved.
+ * Write one audio row. With `reviewed`, the UPDATE only matches while the row still holds
+ * what the reviewer saw, so a change made after the checks is never approved.
  */
-async function writeAudio(id: Identifier, data: Record<string, unknown>, reviewedPath?: string | null) {
+async function writeAudio(id: Identifier, data: Record<string, unknown>, reviewed?: Reviewed) {
   let query = audiosTable().update(data).eq('id', String(id))
-  if (reviewedPath !== undefined) query = query.eq('storage_path', reviewedPath)
+  for (const column of reviewed ? REVIEWED_COLUMNS : []) {
+    const value = reviewed?.[column]
+    query = value === null ? query.is(column, null) : query.eq(column, value)
+  }
   const { data: rows, error, status } = await query.select()
   if (error) throw new HttpError(readableWriteError(error), status, error)
-  if (!rows?.length) throw new Error(reviewedPath !== undefined ? CHANGED_SINCE_OPENED : 'Audio not found')
+  if (!rows?.length) throw new Error(reviewed ? CHANGED_SINCE_OPENED : 'Audio not found')
   return rows[0] as RaRecord
 }
 

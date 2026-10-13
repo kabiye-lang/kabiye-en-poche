@@ -50,6 +50,7 @@ vi.mock('@/supabase', () => {
       eq: (column: string, value: unknown) => where((row) => row[column] === value),
       filter: (column: string, _op: 'eq', value: unknown) => where((row) => row[column] === value),
       neq: (column: string, value: unknown) => where((row) => row[column] !== value),
+      is: (column: string, value: null) => where((row) => (row[column] ?? null) === value),
       in: (column: string, values: unknown[]) => where((row) => values.includes(row[column])),
       limit: (n: number) => {
         count = n
@@ -90,14 +91,14 @@ const audio = (row: Row): Row => ({
   ...row,
 })
 
-// The editor opened each row while it held its original file, `<id>.wav`.
-const update = (id: string, data: Row) =>
-  dataProvider.update('audios', { id, data, previousData: { id, storage_path: `${id}.wav` } })
+// The editor saw each row as it is stored when the call is made.
+const seen = (id: string) => ({ ...db.tables.audios.find((row) => row.id === id) })
+const update = (id: string, data: Row) => dataProvider.update('audios', { id, data, previousData: seen(id) })
 const updateMany = (ids: string[], data: Row) =>
   dataProvider.updateMany('audios', {
     ids,
     data,
-    meta: { reviewedPaths: Object.fromEntries(ids.map((id) => [id, `${id}.wav`])) },
+    meta: { reviewed: Object.fromEntries(ids.map((id) => [id, seen(id)])) },
   })
 const writtenFor = (id: string) => db.written.find((write) => write.id === id)?.data
 
@@ -347,7 +348,7 @@ describe('a reviewer approves only the file they heard', () => {
     const approve = dataProvider.updateMany('audios', {
       ids: ['word', 'swap'],
       data: { status: 'approved' },
-      meta: { reviewedPaths: { word: 'word.wav', swap: 'a.wav' } },
+      meta: { reviewed: { word: seen('word'), swap: { ...seen('swap'), storage_path: 'a.wav' } } },
     })
     await expect(approve).rejects.toThrow(`Not approved: "audio swap". ${CHANGED_SINCE_OPENED}`)
     expect(db.written).toEqual([])
@@ -376,5 +377,46 @@ describe('read failures keep their HTTP status for the auth provider', () => {
     // The first audios read is the stored row, the second the duplicate check.
     db.failRead = { table: 'audios', status, skip: 1 }
     await expect(update('word', { status: 'approved' })).rejects.toMatchObject({ status })
+  })
+})
+
+describe('a reviewer approves only what they saw of the text and lexeme', () => {
+  // Someone else moved the word to the other homograph while the reviewer had it open.
+  // The approved keɖe#2 fixture is rejected first, so only the stale check can refuse it.
+  const relink = () => {
+    const row = db.tables.audios.find((r) => r.id === 'word')
+    if (row) row.lexeme_id = 'keɖe#2'
+    const other = db.tables.audios.find((r) => r.id === 'approved')
+    if (other) other.status = 'rejected'
+  }
+
+  it('refuses a single approval when the lexeme id changed since the editor opened it', async () => {
+    const opened = seen('word')
+    relink()
+    const approve = dataProvider.update('audios', { id: 'word', data: { status: 'approved' }, previousData: opened })
+    await expect(approve).rejects.toThrow(CHANGED_SINCE_OPENED)
+    expect(db.written).toEqual([])
+  })
+
+  it('refuses only the bulk row whose lexeme id changed, naming it', async () => {
+    db.tables.audios.push(audio({ id: 'tidy', kind: 'sentence', kbp_text: 'Páná!', kbp_key: 'pana' }))
+    const reviewed = { word: seen('word'), tidy: seen('tidy') }
+    relink()
+    const approve = dataProvider.updateMany('audios', {
+      ids: ['word', 'tidy'],
+      data: { status: 'approved' },
+      meta: { reviewed },
+    })
+    await expect(approve).rejects.toThrow(`Not approved: "audio word". ${CHANGED_SINCE_OPENED}`)
+    expect(db.written).toEqual([])
+  })
+
+  it('conditions the write on the reviewed text columns too, null ones included', async () => {
+    db.beforeWrite = () => {
+      const row = db.tables.audios.find((r) => r.id === 'sentence')
+      if (row) row.kbp_text = 'Páná!'
+    }
+    await expect(update('sentence', { status: 'approved' })).rejects.toThrow(CHANGED_SINCE_OPENED)
+    expect(db.written).toEqual([])
   })
 })

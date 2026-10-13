@@ -40,8 +40,9 @@ const audioFilters = [
 ]
 
 /**
- * Approve the selected rows. Each row is approved only while it still holds the file
- * shown in this list: the data provider checks the paths passed in `meta`. On failure
+ * Approve the selected rows. Each row is approved only while it still holds what this
+ * list showed (file, kind, text, lexeme, source): the data provider checks the records
+ * passed in `meta`. On failure
  * some rows may be saved already (the message says which), so the list reloads.
  */
 const BulkApproveButton = () => {
@@ -53,13 +54,13 @@ const BulkApproveButton = () => {
 
   const approve = async () => {
     setOpen(false)
-    const reviewedPaths = Object.fromEntries(
-      (data ?? []).filter((record) => selectedIds.includes(record.id)).map((record) => [record.id, record.storage_path])
+    const reviewed = Object.fromEntries(
+      (data ?? []).filter((record) => selectedIds.includes(record.id)).map((record) => [record.id, record])
     )
     try {
       await updateMany(
         'audios',
-        { ids: selectedIds, data: { status: 'approved' }, meta: { reviewedPaths } },
+        { ids: selectedIds, data: { status: 'approved' }, meta: { reviewed } },
         { returnPromise: true }
       )
       notify(`${selectedIds.length} audio(s) approved`)

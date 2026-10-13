@@ -105,8 +105,13 @@ export const AudioCreate = () => {
       try {
         await update(
           'audios',
-          // The file just uploaded is the one this editor reviewed.
-          { id: created.id, data: review, previousData: { id: created.id, storage_path: created.storage_path } },
+          // What this editor reviewed: the file just uploaded, on a row the upload function
+          // created with only base columns, so the review columns hold their defaults.
+          {
+            id: created.id,
+            data: review,
+            previousData: { id: created.id, storage_path: created.storage_path, source: 'native' },
+          },
           { returnPromise: true }
         )
       } catch (err) {
