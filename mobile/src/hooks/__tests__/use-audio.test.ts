@@ -207,6 +207,77 @@ describe('useAudio', () => {
     })
   })
 
+  // Final review (P2): the play went on after its `await` whatever happened meanwhile. A
+  // slow audio-mode setup started the clip after the UI had reported failure, or after the
+  // learner had stopped it or left the step.
+  describe('a play still waiting on the audio-mode setup', () => {
+    let resolveSetup: () => void
+    beforeEach(() => {
+      jest.spyOn(audioSession, 'configureAudioSession').mockReturnValueOnce(
+        new Promise<void>((resolve) => {
+          resolveSetup = resolve
+        })
+      )
+    })
+
+    it('never starts once the load has timed out', async () => {
+      jest.useFakeTimers()
+      try {
+        const { result } = await renderHook(() => useAudio())
+        let pending!: Promise<void>
+        await act(async () => {
+          pending = result.current.playAudio(URL)
+        })
+        await act(async () => {
+          jest.advanceTimersByTime(LOAD_TIMEOUT_MS)
+        })
+        expect(result.current.error).toEqual(expect.any(String))
+
+        await act(async () => {
+          resolveSetup()
+          await pending
+        })
+        expect(mockPlayer.replace).not.toHaveBeenCalled()
+        expect(mockPlayer.play).not.toHaveBeenCalled()
+      } finally {
+        jest.useRealTimers()
+      }
+    })
+
+    it('never starts once it has been stopped, and stops loading', async () => {
+      const { result } = await renderHook(() => useAudio())
+      let pending!: Promise<void>
+      await act(async () => {
+        pending = result.current.playAudio(URL)
+      })
+      await act(() => result.current.stopAudio())
+      expect(result.current.isLoading).toBe(false)
+
+      await act(async () => {
+        resolveSetup()
+        await pending
+      })
+      expect(mockPlayer.replace).not.toHaveBeenCalled()
+      expect(mockPlayer.play).not.toHaveBeenCalled()
+      expect(result.current.isLoading).toBe(false)
+    })
+
+    it('never touches the player once the hook has unmounted', async () => {
+      const { result, unmount } = await renderHook(() => useAudio())
+      let pending!: Promise<void>
+      await act(async () => {
+        pending = result.current.playAudio(URL)
+      })
+      await unmount()
+
+      resolveSetup()
+      await pending
+      expect(mockPlayer.replace).not.toHaveBeenCalled()
+      expect(mockPlayer.play).not.toHaveBeenCalled()
+      expect(mockPlayer.seekTo).not.toHaveBeenCalled()
+    })
+  })
+
   // Review round 2 (P3): the Teach card stops the clip from an effect, where `status` can
   // be a render behind and still read `playing: false`. Stopping must not depend on it.
   it('stops even when the status it holds does not yet say playing', async () => {

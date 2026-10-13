@@ -33,6 +33,11 @@ export const useAudio = () => {
   // unmount cleanup (the listening steps stop their clip there) would then pause a player
   // that no longer exists.
   const unmountedRef = useRef(false)
+  // The current play request. `playAudio` awaits before it touches the player; a stop, a
+  // load timeout or a newer play bumps this, and the waiting play then gives up instead of
+  // starting a clip the learner stopped or was told had failed. An unmount (`unmountedRef`)
+  // cancels it too.
+  const playTokenRef = useRef(0)
 
   // Stop on unmount only. This used to depend on `status.playing` as well, so its cleanup
   // ran -- pausing and rewinding -- every time playback started or stopped. Replay worked
@@ -60,6 +65,7 @@ export const useAudio = () => {
     function failSlowLoad() {
       if (!isLoading) return
       const timer = setTimeout(() => {
+        playTokenRef.current++
         try {
           // Do not start playing seconds after the learner was told it failed.
           player.pause()
@@ -76,6 +82,8 @@ export const useAudio = () => {
   )
 
   const playAudio = async (audioUri: string) => {
+    const token = ++playTokenRef.current
+    const cancelled = () => token !== playTokenRef.current || unmountedRef.current
     setPlayError(null)
     setRequested(true)
 
@@ -86,6 +94,7 @@ export const useAudio = () => {
       // next tap tries the session again.
       console.warn('Could not set the audio mode:', error)
     }
+    if (cancelled()) return
 
     try {
       // A source that failed natively is loaded again rather than played as it is.
@@ -97,11 +106,15 @@ export const useAudio = () => {
         // from there plays nothing -- rewind first.
         const atEnd =
           status.didJustFinish || (status.duration > 0 && status.currentTime >= status.duration - END_TOLERANCE_SECONDS)
-        if (atEnd) await player.seekTo(0)
+        if (atEnd) {
+          await player.seekTo(0)
+          if (cancelled()) return
+        }
       }
 
       player.play()
     } catch (error) {
+      if (cancelled()) return
       // Not loading any more -- a spinner that never ends is a disabled button. Say it
       // failed, and let the next tap start from a clean `replace`.
       currentSourceRef.current = null
@@ -112,10 +125,13 @@ export const useAudio = () => {
   }
 
   const stopAudio = async () => {
+    // Cancels a play still waiting to start, which also ends its loading state.
+    playTokenRef.current++
     // Unconditional: `status` here can be a render behind (a caller stopping from an
     // effect sees the status of the render that scheduled it), and pausing a paused
     // player is harmless. After unmount there is nothing left to stop.
     if (unmountedRef.current) return
+    setRequested(false)
     try {
       player.pause()
       await player.seekTo(0) // Reset to beginning
