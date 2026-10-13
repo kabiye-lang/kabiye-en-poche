@@ -148,6 +148,13 @@ export type Database = {
           mime_type: string | null
           created_at: string | null
           updated_at: string | null
+          kind: string | null
+          kbp_text: string | null
+          kbp_key: string | null
+          lexeme_id: string | null
+          source: string
+          status: string
+          qc_report: Json | null
         }
         Insert: {
           id?: string
@@ -159,6 +166,13 @@ export type Database = {
           mime_type?: string | null
           created_at?: string | null
           updated_at?: string | null
+          kind?: string | null
+          kbp_text?: string | null
+          kbp_key?: string | null
+          lexeme_id?: string | null
+          source?: string
+          status?: string
+          qc_report?: Json | null
         }
         Update: {
           id?: string
@@ -170,6 +184,13 @@ export type Database = {
           mime_type?: string | null
           created_at?: string | null
           updated_at?: string | null
+          kind?: string | null
+          kbp_text?: string | null
+          kbp_key?: string | null
+          lexeme_id?: string | null
+          source?: string
+          status?: string
+          qc_report?: Json | null
         }
         Relationships: []
       }

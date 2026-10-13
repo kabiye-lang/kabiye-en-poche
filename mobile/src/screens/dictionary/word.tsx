@@ -8,15 +8,20 @@ import { useHeaderHeight } from 'expo-router/react-navigation'
 
 import { useLingui } from '@lingui/react/macro'
 
+import { AudioPlayButton } from '../../components/audio-play-button'
 import { ArrowRightIcon, InfoIcon, ShareNetworkIcon } from '../../components/icons'
 import { Card, Text, View } from '../../components/ui'
 import { Conjugation } from '../../components/word/conjugation'
 import { CrossReferences, SenseDefinitions, SubEntries } from '../../components/word/word-sections'
 import { useAbbreviations } from '../../hooks/use-abbreviations'
+import { useAudio } from '../../hooks/use-audio'
+import { useAudioIndex } from '../../hooks/use-audio-index'
 import { useEntryByTerm } from '../../hooks/use-dictionary'
 import { useLanguage } from '../../hooks/use-language'
 import { useMyWords } from '../../hooks/use-my-words'
+import { usableAudioUrl } from '../../utils/audio-source'
 import { isRedirectEntry, translationFor } from '../../utils/dictionary-helpers'
+import { findAudio } from '../../utils/find-audio'
 import { describeGrammaticalInfo, grammaticalComponents } from '../../utils/grammatical-info'
 
 const WordDetailsScreen: React.FC = () => {
@@ -28,6 +33,8 @@ const WordDetailsScreen: React.FC = () => {
   const { data: abbreviations } = useAbbreviations()
   const headerHeight = useHeaderHeight()
   const [explainCodes, setExplainCodes] = useState(false)
+  const { index: audioIndex } = useAudioIndex()
+  const { playAudio, stopAudio, isPlaying, isLoading: audioLoading } = useAudio()
   if (isLoading) {
     // Bone blocks in the shape of the entry, never a spinner.
     return (
@@ -57,6 +64,18 @@ const WordDetailsScreen: React.FC = () => {
 
   const { entry_data } = entry
   const translation = currentLanguage === 'fr' ? 'fr' : 'en'
+
+  // The headword's recording: this lexeme (the headword, plus `#n` for a homograph -- the
+  // id lesson examples carry) in its headword form. Never another homograph's recording:
+  // `findAudio` plays only an exact (lexeme id, spelling) match when given a lexeme id.
+  const homograph = entry_data.homograph_number
+  const headwordAudio = usableAudioUrl(
+    findAudio(audioIndex, {
+      lexemeId: homograph ? `${entry_data.headword}#${homograph}` : entry_data.headword,
+      kbp: entry_data.headword,
+    })
+  )
+
   // The print sends a dagger entry to its main word with "Voir": the `see` relation.
   const standardForm =
     entry_data.senses?.[0]?.lexRefs?.find((ref) => ref.type === 'see')?.targets?.[0] ??
@@ -130,9 +149,19 @@ const WordDetailsScreen: React.FC = () => {
       >
         {/* The headword is the page. At 44 it is the first and largest thing, in the
             face that can actually draw it. */}
-        <Text kabiye weight="bold" className="text-foreground text-[44px] leading-[1.05]">
-          {entry_data.headword}
-        </Text>
+        <View className="flex-row items-center gap-4">
+          <Text kabiye weight="bold" className="text-foreground flex-shrink text-[44px] leading-[1.05]">
+            {entry_data.headword}
+          </Text>
+          {headwordAudio ? (
+            <AudioPlayButton
+              size="sm"
+              isPlaying={isPlaying}
+              isLoading={audioLoading}
+              onPress={() => void (isPlaying ? stopAudio() : playAudio(headwordAudio))}
+            />
+          ) : null}
+        </View>
 
         {entry_data.pronunciations && entry_data.pronunciations.length > 0 && (
           <Text kabiye className="text-foreground-secondary mt-1 text-[18px]">

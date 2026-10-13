@@ -145,6 +145,7 @@ msgstr "Audio content will be available soon."
 #: src/components/lesson-steps/audio-step.tsx
 #: src/components/lesson-steps/listen-choose-step.tsx
 #: src/components/lesson-steps/listen-type-step.tsx
+#: src/components/lesson-steps/teach-step.tsx
 msgid "Audio unavailable"
 msgstr ""
 
@@ -445,6 +446,10 @@ msgstr "Grapheme"
 #: src/screens/lesson.tsx
 msgid "Great job! You've completed this lesson."
 msgstr "Great job! You've completed this lesson."
+
+#: src/components/lesson-steps/teach-step.tsx
+msgid "Hear it said"
+msgstr "Hear it said"
 
 #: src/components/lesson-steps/listen-type-step.tsx
 msgid "Hide hints"
