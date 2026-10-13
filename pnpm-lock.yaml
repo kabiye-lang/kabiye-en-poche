@@ -248,6 +248,9 @@ importers:
       globals:
         specifier: ^17.12.0
         version: 17.12.0
+      jsdom:
+        specifier: 20.0.3
+        version: 20.0.3
       postcss:
         specifier: ^8.5.28
         version: 8.5.28
