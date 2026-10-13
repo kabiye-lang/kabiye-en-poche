@@ -58,6 +58,18 @@ describe('findAudio', () => {
     expect(findAudio(idx, { lexemeId: 'keɖe#1', kbp: 'keɖe' })).toBeUndefined()
   })
 
+  it('finds a sentence by its spelling only, never by lexeme id', () => {
+    const idx = index(rec('sentence.m4a', { kind: 'sentence', kbpKey: 'tuu keɖe pasakɩ sɔka', lexemeId: 'keɖe#1' }))
+    expect(findAudio(idx, { kbp: 'Tuu keɖe pasakɩ sɔka.', kind: 'sentence' })).toBe(BASE + 'sentence.m4a')
+    expect(findAudio(idx, { lexemeId: 'keɖe#1', kbp: 'keɖe', kind: 'sentence' })).toBeUndefined()
+  })
+
+  it('never plays a row with no kind', () => {
+    const idx = index(rec('unknown.m4a', { kind: null, kbpKey: 'keɖe', lexemeId: 'keɖe#1' }))
+    expect(findAudio(idx, { lexemeId: 'keɖe#1', kbp: 'keɖe' })).toBeUndefined()
+    expect(findAudio(idx, { kbp: 'keɖe', kind: 'sentence' })).toBeUndefined()
+  })
+
   it('finds nothing in an empty index or for an empty word', () => {
     expect(findAudio(EMPTY_AUDIO_INDEX, { kbp: 'keɖe' })).toBeUndefined()
     expect(findAudio(index(rec('x.m4a', { kbpKey: '' })), { kbp: '!' })).toBeUndefined()

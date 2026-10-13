@@ -6,7 +6,7 @@ import { kbpKey } from './kbp-key'
 /** One playable recording from the `audios` table, with its public URL already built. */
 export interface AudioRecord {
   url: string
-  /** 'word' | 'sentence', or null on a row filed before the column existed. */
+  /** 'word' | 'sentence'. A row with no kind (filed before the column existed) is never played. */
   kind: string | null
   kbpKey: string | null
   lexemeId: string | null
@@ -21,7 +21,9 @@ export interface AudioIndex {
 export const EMPTY_AUDIO_INDEX: AudioIndex = { records: [] }
 
 /**
- * The recording of one Kabiyè word, or undefined when we have none we can trust.
+ * The recording of one Kabiyè word or sentence, or undefined when we have none we can trust.
+ *
+ * Word lookups (the default) consider only rows with `kind = 'word'`:
  *
  * 1. A recording filed under the word's exact `lexemeId` wins.
  * 2. Otherwise a recording whose `kbp_key` matches the word's spelling, skipping any that
@@ -29,9 +31,9 @@ export const EMPTY_AUDIO_INDEX: AudioIndex = { records: [] }
  *    there is no answer: Kabiyè does not write tone, so `keɖe#1` and `keɖe#2` are spelled
  *    alike and may be said differently. Silence beats teaching the wrong word.
  *
- * Only recordings of the asked `kind` count (a row with no kind counts for both). Lesson
- * sentences carry the lexeme id of the word they illustrate, so without this a sentence
- * recording would answer for the word.
+ * Sentence lookups consider only `kind = 'sentence'` rows, by `kbp_key` alone. A sentence
+ * row carries the lexeme id of the word it illustrates, so matching it by lexeme id would
+ * play a sentence for a word. A row with no kind is never played.
  */
 export function findAudio(
   index: AudioIndex,
@@ -39,14 +41,18 @@ export function findAudio(
 ): string | undefined {
   if (index.fixtureUrl) return index.fixtureUrl
 
-  const records = index.records.filter((record) => record.kind === null || record.kind === kind)
+  const records = index.records.filter((record) => record.kind === kind)
+  const key = kbpKey(kbp)
+
+  if (kind === 'sentence') {
+    return key ? records.find((record) => record.kbpKey === key)?.url : undefined
+  }
 
   if (lexemeId) {
     const exact = records.find((record) => record.lexemeId === lexemeId)
     if (exact) return exact.url
   }
 
-  const key = kbpKey(kbp)
   if (!key) return undefined
   const candidates = records.filter(
     (record) => record.kbpKey === key && !(lexemeId && record.lexemeId && record.lexemeId !== lexemeId)
