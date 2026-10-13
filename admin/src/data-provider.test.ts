@@ -2,46 +2,68 @@ import { beforeEach, describe, expect, it, vi } from 'vitest'
 
 type Row = Record<string, unknown>
 
-// A small in-memory stand-in for the two tables the audio paths read, and for the
-// ra-supabase provider they write through. Writes land in `written`, not in the tables.
+// A small in-memory stand-in for the Supabase client the audio paths read and write
+// through. Writes land in `written`, not in the tables.
 const db = vi.hoisted(() => ({
   tables: {} as Record<string, Row[]>,
   written: [] as { id: unknown; data: Row }[],
-  // The write to this row id fails with this error, as a database refusal would.
-  failOn: null as { id: string; error: unknown } | null,
+  // The write to this row id fails with this Postgres error and HTTP status.
+  failOn: null as { id: string; error: { message: string; code?: string }; status: number } | null,
+  // Reads of this table fail with this status, after `skip` reads succeed.
+  failRead: null as { table: string; status: number; skip: number } | null,
+  // Runs just before a write is matched, to change the table between the checks and the write.
+  beforeWrite: null as (() => void) | null,
 }))
 
 vi.mock('@/supabase', () => {
-  const query = (rows: Row[]) => {
-    let result = rows
+  const query = (table: string) => {
+    let patch: Row | null = null
+    const filters: ((row: Row) => boolean)[] = []
+    let count = Infinity
     const where = (keep: (row: Row) => boolean) => {
-      result = result.filter(keep)
+      filters.push(keep)
       return builder
+    }
+    const matching = () => (db.tables[table] ?? []).filter((row) => filters.every((keep) => keep(row)))
+    const run = () => {
+      if (patch) {
+        db.beforeWrite?.()
+        const rows = matching()
+        const fail = db.failOn
+        if (fail && rows.some((row) => row.id === fail.id))
+          return { data: null, error: fail.error, status: fail.status }
+        for (const row of rows) db.written.push({ id: row.id, data: patch })
+        return { data: rows.map((row) => ({ ...row, ...patch })), error: null, status: 200 }
+      }
+      const failRead = db.failRead
+      if (failRead?.table === table && failRead.skip-- <= 0) {
+        return { data: null, error: { message: 'JWT expired' }, status: failRead.status }
+      }
+      return { data: matching().slice(0, count), error: null, status: 200 }
     }
     const builder = {
       select: () => builder,
+      update: (data: Row) => {
+        patch = data
+        return builder
+      },
       eq: (column: string, value: unknown) => where((row) => row[column] === value),
       filter: (column: string, _op: 'eq', value: unknown) => where((row) => row[column] === value),
       neq: (column: string, value: unknown) => where((row) => row[column] !== value),
       in: (column: string, values: unknown[]) => where((row) => values.includes(row[column])),
-      limit: (count: number) => {
-        result = result.slice(0, count)
+      limit: (n: number) => {
+        count = n
         return builder
       },
-      then: (resolve: (value: { data: Row[]; error: null }) => unknown) => resolve({ data: result, error: null }),
+      then: (resolve: (value: ReturnType<typeof run>) => unknown) => resolve(run()),
     }
     return builder
   }
-  return { supabase: { from: (table: string) => query(db.tables[table] ?? []) } }
+  return { supabase: { from: query } }
 })
 
 vi.mock('ra-supabase', () => ({
   supabaseDataProvider: () => ({
-    update: async (_resource: string, params: { id: unknown; data: Row }) => {
-      if (db.failOn && db.failOn.id === params.id) throw db.failOn.error
-      db.written.push({ id: params.id, data: params.data })
-      return { data: { id: params.id, ...params.data } }
-    },
     create: async (_resource: string, params: { data: Row }) => {
       db.written.push({ id: 'new', data: params.data })
       return { data: { id: 'new', ...params.data } }
@@ -49,7 +71,7 @@ vi.mock('ra-supabase', () => ({
   }),
 }))
 
-const { dataProvider } = await import('./data-provider')
+const { CHANGED_SINCE_OPENED, dataProvider } = await import('./data-provider')
 
 const entry = (headword: string, homograph: number | null) => ({
   headword,
@@ -58,6 +80,7 @@ const entry = (headword: string, homograph: number | null) => ({
 
 const audio = (row: Row): Row => ({
   name: `audio ${row.id}`,
+  storage_path: `${row.id}.wav`,
   kind: null,
   kbp_text: null,
   kbp_key: null,
@@ -67,13 +90,22 @@ const audio = (row: Row): Row => ({
   ...row,
 })
 
-const update = (id: string, data: Row) => dataProvider.update('audios', { id, data, previousData: { id } })
-const updateMany = (ids: string[], data: Row) => dataProvider.updateMany('audios', { ids, data })
+// The editor opened each row while it held its original file, `<id>.wav`.
+const update = (id: string, data: Row) =>
+  dataProvider.update('audios', { id, data, previousData: { id, storage_path: `${id}.wav` } })
+const updateMany = (ids: string[], data: Row) =>
+  dataProvider.updateMany('audios', {
+    ids,
+    data,
+    meta: { reviewedPaths: Object.fromEntries(ids.map((id) => [id, `${id}.wav`])) },
+  })
 const writtenFor = (id: string) => db.written.find((write) => write.id === id)?.data
 
 beforeEach(() => {
   db.written = []
   db.failOn = null
+  db.failRead = null
+  db.beforeWrite = null
   db.tables = {
     dictionary_entries: [entry('keɖe', 1), entry('keɖe', 2), entry('caɣʋ', null)],
     audios: [
@@ -187,19 +219,18 @@ describe('a patch cannot change the row it is checked as', () => {
 })
 
 describe('write failures', () => {
-  // ra-supabase throws an HttpError whose body is the PostgREST error.
-  const postgresError = (code: string) => Object.assign(new Error('violates constraint'), { body: { code } })
+  const postgresError = (code: string) => ({ message: 'violates constraint', code })
 
   it.each([
     ['23505', 'Another approved recording already covers this word/form.'],
     ['23514', 'Approved recordings need kind, text and, for a word, a lexeme.'],
   ])('turns Postgres %s into an admin message', async (code, message) => {
-    db.failOn = { id: 'word', error: postgresError(code) }
+    db.failOn = { id: 'word', error: postgresError(code), status: 409 }
     await expect(update('word', { status: 'approved' })).rejects.toThrow(message)
   })
 
   it('names the saved and unsaved rows when a bulk write fails part-way', async () => {
-    db.failOn = { id: 'word', error: postgresError('23505') }
+    db.failOn = { id: 'word', error: postgresError('23505'), status: 409 }
     const result = updateMany(['sentence', 'word', 'stale'], { status: 'rejected' })
     await expect(result).rejects.toThrow(
       'Stopped at "audio word": Another approved recording already covers this word/form. ' +
@@ -250,7 +281,7 @@ describe('round 3 review fixes', () => {
   })
 
   it('keeps the HTTP status of a refused write, so a 401 reaches the auth provider', async () => {
-    db.failOn = { id: 'word', error: Object.assign(new Error('JWT expired'), { status: 401 }) }
+    db.failOn = { id: 'word', error: { message: 'JWT expired' }, status: 401 }
     await expect(update('word', { name: 'x' })).rejects.toMatchObject({ status: 401, message: 'JWT expired' })
     await expect(updateMany(['word'], { name: 'x' })).rejects.toMatchObject({ status: 401 })
   })
@@ -268,5 +299,82 @@ describe('round 3 review fixes', () => {
     await expect(
       dataProvider.create('audios', { data: { kind: 'word', kbp_text: 'keɖe', status: 'approved' } })
     ).rejects.toThrow(/needs a lexeme id/)
+  })
+})
+
+describe('a reviewer approves only the file they heard', () => {
+  // B replaced the file of an approved word: the row is pending again with b.wav.
+  const replaced = () =>
+    db.tables.audios.push(
+      audio({ id: 'swap', kind: 'word', kbp_text: 'keɖe', kbp_key: 'keɖe', lexeme_id: 'keɖe#1', storage_path: 'b.wav' })
+    )
+  const openedByA = { id: 'swap', name: 'audio swap', status: 'approved', storage_path: 'a.wav' }
+
+  it('refuses a stale edit that resends status approved after the file changed', async () => {
+    replaced()
+    const save = dataProvider.update('audios', {
+      id: 'swap',
+      data: { ...openedByA, name: 'renamed' },
+      previousData: openedByA,
+    })
+    await expect(save).rejects.toThrow(CHANGED_SINCE_OPENED)
+    expect(db.written).toEqual([])
+  })
+
+  it('sends only the fields that differ from what the editor opened', async () => {
+    db.tables.audios.push(audio({ id: 'tidy', kind: 'word', kbp_text: 'keɖe', kbp_key: 'keɖe', lexeme_id: 'keɖe#1' }))
+    const opened = { id: 'tidy', name: 'audio tidy', kind: 'word', status: 'pending', storage_path: 'tidy.wav' }
+    await dataProvider.update('audios', { id: 'tidy', data: { ...opened, name: 'renamed' }, previousData: opened })
+    expect(writtenFor('tidy')).toEqual({ name: 'renamed' })
+  })
+
+  it('conditions the approval on the reviewed file, so a replacement after the checks is not approved', async () => {
+    db.beforeWrite = () => {
+      const row = db.tables.audios.find((r) => r.id === 'word')
+      if (row) row.storage_path = 'replaced.wav'
+    }
+    await expect(update('word', { status: 'approved' })).rejects.toThrow(CHANGED_SINCE_OPENED)
+    const row = db.tables.audios.find((r) => r.id === 'word')
+    if (row) row.storage_path = 'word.wav'
+    await expect(updateMany(['word'], { status: 'approved' })).rejects.toThrow(
+      `Stopped at "audio word": ${CHANGED_SINCE_OPENED}`
+    )
+    expect(db.written).toEqual([])
+  })
+
+  it('refuses a bulk approval of a row whose file changed since the list loaded, naming it', async () => {
+    replaced()
+    const approve = dataProvider.updateMany('audios', {
+      ids: ['word', 'swap'],
+      data: { status: 'approved' },
+      meta: { reviewedPaths: { word: 'word.wav', swap: 'a.wav' } },
+    })
+    await expect(approve).rejects.toThrow(`Not approved: "audio swap". ${CHANGED_SINCE_OPENED}`)
+    expect(db.written).toEqual([])
+  })
+
+  it('refuses a bulk approval that does not say which file the reviewer heard', async () => {
+    const approve = dataProvider.updateMany('audios', { ids: ['word'], data: { status: 'approved' } })
+    await expect(approve).rejects.toThrow(CHANGED_SINCE_OPENED)
+  })
+})
+
+describe('read failures keep their HTTP status for the auth provider', () => {
+  it.each([401, 403])('keeps %i from the stored-row read', async (status) => {
+    db.failRead = { table: 'audios', status, skip: 0 }
+    await expect(update('word', { name: 'x' })).rejects.toMatchObject({ status })
+    db.failRead = { table: 'audios', status, skip: 0 }
+    await expect(updateMany(['word'], { name: 'x' })).rejects.toMatchObject({ status })
+  })
+
+  it.each([401, 403])('keeps %i from the dictionary lookup', async (status) => {
+    db.failRead = { table: 'dictionary_entries', status, skip: 0 }
+    await expect(update('word', { status: 'approved' })).rejects.toMatchObject({ status })
+  })
+
+  it.each([401, 403])('keeps %i from the duplicate check', async (status) => {
+    // The first audios read is the stored row, the second the duplicate check.
+    db.failRead = { table: 'audios', status, skip: 1 }
+    await expect(update('word', { status: 'approved' })).rejects.toMatchObject({ status })
   })
 })

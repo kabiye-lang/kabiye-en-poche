@@ -1,4 +1,5 @@
 import { stripToneMarks } from '@/lib/kbp-key'
+import { readFailure } from '@/lib/read-failure'
 import { supabase } from '@/supabase'
 
 /** A dictionary entry as the lexeme lookup shows it. */
@@ -54,13 +55,13 @@ export function toLexemeOption(entry: { headword: string; entry_data: unknown })
 export async function searchLexemes(term: string): Promise<LexemeOption[]> {
   const prefix = stripToneMarks(term.trim().normalize('NFC')).replace(/[\\%_]/g, (c) => `\\${c}`)
   if (!prefix) return []
-  const { data, error } = await supabase
+  const { data, error, status } = await supabase
     .from('dictionary_entries')
     .select('headword, entry_data')
     .ilike('headword', `${prefix}%`)
     .order('headword')
     .limit(30)
-  if (error) throw new Error(error.message)
+  if (error) throw readFailure(error, status)
   return (data ?? [])
     .map(toLexemeOption)
     .filter((option): option is LexemeOption => option !== null)
@@ -70,10 +71,10 @@ export async function searchLexemes(term: string): Promise<LexemeOption[]> {
 /** True when the lexeme id names an existing dictionary entry. */
 export async function lexemeExists(lexemeId: string): Promise<boolean> {
   const { headword, homographNumber } = parseLexemeId(lexemeId.normalize('NFC'))
-  const { data, error } = await supabase
+  const { data, error, status } = await supabase
     .from('dictionary_entries')
     .select('headword, entry_data')
     .eq('headword', headword)
-  if (error) throw new Error(error.message)
+  if (error) throw readFailure(error, status)
   return (data ?? []).some((entry) => toLexemeOption(entry)?.lexemeId === lexemeIdOf(headword, homographNumber))
 }

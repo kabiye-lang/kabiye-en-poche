@@ -88,7 +88,8 @@ export const AudioCreate = () => {
       notify('At least one tag is required to find audios later', { type: 'warning' })
       return
     }
-    const blocker = review.status === 'approved' ? await checkApproval({ ...review }).catch((err: Error) => err.message) : null
+    const blocker =
+      review.status === 'approved' ? await checkApproval({ ...review }).catch((err: Error) => err.message) : null
     if (blocker) {
       notify(blocker, { type: 'warning' })
       return
@@ -104,7 +105,8 @@ export const AudioCreate = () => {
       try {
         await update(
           'audios',
-          { id: created.id, data: review, previousData: { id: created.id } },
+          // The file just uploaded is the one this editor reviewed.
+          { id: created.id, data: review, previousData: { id: created.id, storage_path: created.storage_path } },
           { returnPromise: true }
         )
       } catch (err) {

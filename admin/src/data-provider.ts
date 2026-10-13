@@ -1,4 +1,5 @@
-import type { DataProvider, Identifier, RaRecord } from 'react-admin'
+import type { SupabaseClient } from '@supabase/supabase-js'
+import type { DataProvider, Identifier, RaRecord, UpdateResult } from 'react-admin'
 
 import { HttpError } from 'react-admin'
 
@@ -6,6 +7,7 @@ import { supabaseDataProvider } from 'ra-supabase'
 
 import { checkApproval, duplicateMessage, normaliseAudio, sameLookup } from '@/lib/audio-review'
 import { deleteAudioFromStorage } from '@/lib/audio-upload'
+import { readFailure } from '@/lib/read-failure'
 
 import { supabase } from './supabase'
 
@@ -26,28 +28,39 @@ export const dataProvider: DataProvider = {
     if (resource !== 'audios') return baseDataProvider.update(resource, params)
     const [stored] = await storedAudios([params.id])
     if (!stored) throw new Error('Audio not found')
-    const [data] = await auditedAudioWrites([stored], params.data)
-    return baseDataProvider
-      .update(resource, { ...params, data, previousData: stored })
-      .catch((err) => rethrowReadable(err))
+    const reviewedPath = params.previousData?.storage_path ?? null
+    const approving = wantsApproved(params.data, stored)
+    if (approving && reviewedPath !== (stored.storage_path ?? null)) throw new Error(CHANGED_SINCE_OPENED)
+    // Only what the editor changed: resending what they merely saw could undo someone else's edit.
+    const [data] = await auditedAudioWrites([stored], changedFields(params.data, params.previousData))
+    if (!Object.keys(data).length) return { data: stored } as UpdateResult
+    return { data: await writeAudio(stored.id, data, approving ? reviewedPath : undefined) } as UpdateResult
   },
   updateMany: async (resource, params) => {
     if (resource !== 'audios') return baseDataProvider.updateMany(resource, params)
     const rows = await storedAudios(params.ids)
     const missing = params.ids.filter((id) => !rows.some((row) => String(row.id) === String(id)))
     if (missing.length) throw new Error(`Audio not found: ${missing.join(', ')}. Nothing was saved.`)
+    const names = (part: RaRecord[]) => part.map((r) => `"${r.name ?? r.id}"`).join(', ') || 'none'
+    // The file each reviewer heard, from the list they selected in: { [id]: storage_path }.
+    const reviewedPaths: Record<string, string | undefined> = params.meta?.reviewedPaths ?? {}
+    const reviewedPath = (row: RaRecord) => reviewedPaths[String(row.id)] ?? null
+    const approving = rows.map((row) => wantsApproved(params.data, row))
+    const changed = rows.filter((row, i) => approving[i] && reviewedPath(row) !== (row.storage_path ?? null))
+    if (changed.length) {
+      throw new Error(`Not approved: ${names(changed)}. ${CHANGED_SINCE_OPENED} Nothing was saved.`)
+    }
     // Every row is checked before the first write, so a refused bulk approval writes nothing.
     const writes = await auditedAudioWrites(rows, params.data)
     // One write per row, so a failure part-way leaves earlier rows saved: say which.
     for (const [i, row] of rows.entries()) {
       try {
-        await baseDataProvider.update(resource, { id: row.id, data: writes[i], previousData: row })
+        await writeAudio(row.id, writes[i], approving[i] ? reviewedPath(row) : undefined)
       } catch (err) {
-        const names = (part: RaRecord[]) => part.map((r) => `"${r.name ?? r.id}"`).join(', ') || 'none'
+        const message = err instanceof Error ? err.message : String(err)
         rethrowReadable(
           err,
-          `Stopped at ${names([row])}: ${readableWriteError(err)} Saved: ${names(rows.slice(0, i))}. ` +
-            `Not saved: ${names(rows.slice(i))}.`
+          `Stopped at ${names([row])}: ${message} Saved: ${names(rows.slice(0, i))}. Not saved: ${names(rows.slice(i))}.`
         )
       }
     }
@@ -82,12 +95,45 @@ export const dataProvider: DataProvider = {
   },
 }
 
-/** The audios rows as stored now: '*' because the generated types do not list the review columns yet. */
+export const CHANGED_SINCE_OPENED = 'This recording changed since you opened it. Reload and review it again.'
+
+// The generated types do not list the review columns yet, so audio reads and writes use the
+// client untyped.
+const audiosTable = () => (supabase as unknown as SupabaseClient).from('audios')
+
+/** The audios rows as stored now. */
 async function storedAudios(ids: Identifier[]): Promise<RaRecord[]> {
   if (!ids.length) return []
-  const { data, error } = await supabase.from('audios').select('*').in('id', ids.map(String))
-  if (error) throw new Error(error.message)
+  const { data, error, status } = await audiosTable().select('*').in('id', ids.map(String))
+  if (error) throw readFailure(error, status)
   return data ?? []
+}
+
+/** True when the write sets status 'approved', or leaves an approved row approved. */
+function wantsApproved(patch: Record<string, unknown>, stored: RaRecord): boolean {
+  return (patch.status ?? stored.status) === 'approved'
+}
+
+/** The fields of `data` that differ from what the editor opened. The id never moves. */
+function changedFields(data: Record<string, unknown>, opened: Record<string, unknown> | undefined) {
+  const { id: _id, ...fields } = data
+  if (!opened) return fields
+  return Object.fromEntries(
+    Object.entries(fields).filter(([key, value]) => JSON.stringify(value) !== JSON.stringify(opened[key]))
+  )
+}
+
+/**
+ * Write one audio row. With `reviewedPath`, the UPDATE only matches while the row still
+ * holds the file the reviewer heard, so a file replaced after the checks is never approved.
+ */
+async function writeAudio(id: Identifier, data: Record<string, unknown>, reviewedPath?: string | null) {
+  let query = audiosTable().update(data).eq('id', String(id))
+  if (reviewedPath !== undefined) query = query.eq('storage_path', reviewedPath)
+  const { data: rows, error, status } = await query.select()
+  if (error) throw new HttpError(readableWriteError(error), status, error)
+  if (!rows?.length) throw new Error(reviewedPath !== undefined ? CHANGED_SINCE_OPENED : 'Audio not found')
+  return rows[0] as RaRecord
 }
 
 const DERIVED_COLUMNS = ['kbp_text', 'kbp_key', 'lexeme_id'] as const
@@ -133,7 +179,8 @@ async function auditedAudioWrites(rows: Record<string, unknown>[], rawPatch: Rec
 /**
  * The admin message for a failed write. The database refuses an invalid approved row
  * on its own (23505 unique, 23514 check), so a write that slipped past the checks above
- * still gets a plain explanation. ra-supabase puts the Postgres error in `body`.
+ * still gets a plain explanation. ra-supabase puts the Postgres error in `body`;
+ * a Supabase client error carries `code` itself.
  */
 function readableWriteError(err: unknown): string {
   const error = err as { message?: string; code?: string; body?: { code?: string } } | undefined

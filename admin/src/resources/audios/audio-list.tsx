@@ -1,6 +1,8 @@
+import { useState } from 'react'
 import {
   BulkDeleteButton,
-  BulkUpdateButton,
+  Button,
+  Confirm,
   CreateButton,
   Datagrid,
   DeleteButton,
@@ -12,8 +14,10 @@ import {
   ShowButton,
   TextField,
   TopToolbar,
+  useListContext,
   useNotify,
   useRefresh,
+  useUpdateMany,
 } from 'react-admin'
 
 import { ApproveButton, AudioSourceField, AudioStatusField, RejectButton, STATUS_CHOICES } from './audio-review-actions'
@@ -35,22 +39,49 @@ const audioFilters = [
   <SelectInput key="status" source="status" label="Status" choices={STATUS_CHOICES} />,
 ]
 
-/** On failure some rows may be saved already (the message says which), so reload the list. */
+/**
+ * Approve the selected rows. Each row is approved only while it still holds the file
+ * shown in this list: the data provider checks the paths passed in `meta`. On failure
+ * some rows may be saved already (the message says which), so the list reloads.
+ */
 const BulkApproveButton = () => {
+  const { selectedIds, data, onUnselectItems } = useListContext()
   const notify = useNotify()
   const refresh = useRefresh()
+  const [open, setOpen] = useState(false)
+  const [updateMany, { isPending }] = useUpdateMany()
+
+  const approve = async () => {
+    setOpen(false)
+    const reviewedPaths = Object.fromEntries(
+      (data ?? []).filter((record) => selectedIds.includes(record.id)).map((record) => [record.id, record.storage_path])
+    )
+    try {
+      await updateMany(
+        'audios',
+        { ids: selectedIds, data: { status: 'approved' }, meta: { reviewedPaths } },
+        { returnPromise: true }
+      )
+      notify(`${selectedIds.length} audio(s) approved`)
+      onUnselectItems()
+    } catch (err) {
+      notify(err instanceof Error ? err.message : 'Update failed', { type: 'error' })
+    } finally {
+      refresh()
+    }
+  }
+
   return (
-    <BulkUpdateButton
-      label="Approve"
-      data={{ status: 'approved' }}
-      mutationMode="pessimistic"
-      mutationOptions={{
-        onError: (error: unknown) => {
-          notify(error instanceof Error ? error.message : 'Update failed', { type: 'error' })
-          refresh()
-        },
-      }}
-    />
+    <>
+      <Button label="Approve" onClick={() => setOpen(true)} disabled={isPending} />
+      <Confirm
+        isOpen={open}
+        title="Approve the selected audios?"
+        content="The app will play them for learners."
+        onConfirm={approve}
+        onClose={() => setOpen(false)}
+      />
+    </>
   )
 }
 

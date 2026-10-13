@@ -1,3 +1,4 @@
+import { readFailure } from '@/lib/read-failure'
 import { supabase } from '@/supabase'
 
 import { kbpKey } from './kbp-key'
@@ -98,8 +99,8 @@ export async function checkApproval(input: Record<string, unknown>): Promise<str
     .filter('kbp_key', 'eq', String(row.kbp_key))
   if (row.kind === 'word') query = query.filter('lexeme_id', 'eq', String(row.lexeme_id))
   if (row.id != null) query = query.neq('id', String(row.id))
-  const { data, error } = await query.limit(1)
-  if (error) throw new Error(error.message)
+  const { data, error, status } = await query.limit(1)
+  if (error) throw readFailure(error, status)
   const existing = data?.[0]
   return existing ? duplicateMessage(existing.name, row) : null
 }
