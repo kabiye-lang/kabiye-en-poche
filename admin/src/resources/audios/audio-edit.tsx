@@ -187,6 +187,11 @@ function AudioEditForm() {
 
       <div>
         <p className="mb-2 text-sm font-medium">Replace audio</p>
+        {replaceMode !== 'keep' && (
+          <p className="text-muted-foreground mb-2 text-xs">
+            A new file is unreviewed: saving sets the status back to Pending.
+          </p>
+        )}
         <div className="mb-2 flex gap-4">
           <button
             type="button"

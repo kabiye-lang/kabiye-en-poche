@@ -42,7 +42,7 @@ export function readAudioReview(record: Record<string, unknown>): AudioReviewFie
  */
 export function normaliseAudio(row: Record<string, unknown>): Record<string, unknown> {
   const text = typeof row.kbp_text === 'string' ? row.kbp_text.trim() : ''
-  const lexemeId = typeof row.lexeme_id === 'string' ? row.lexeme_id.trim() : ''
+  const lexemeId = typeof row.lexeme_id === 'string' ? row.lexeme_id.trim().normalize('NFC') : ''
   return {
     ...row,
     kbp_text: text || null,
@@ -53,6 +53,8 @@ export function normaliseAudio(row: Record<string, unknown>): Record<string, unk
 
 /** Why this normalised row cannot be approved without a lookup, or null. */
 function approvalBlocker(row: Record<string, unknown>): string | null {
+  if (row.source === 'tts')
+    return 'Cannot approve: the app never plays TTS recordings. Only native ones can be approved.'
   if (!row.kbp_key) return 'Cannot approve: Kabiyè text is empty. Fill in what the recording says first.'
   if (row.kind !== 'word' && row.kind !== 'sentence') return 'Cannot approve: set the kind (word or sentence) first.'
   if (row.kind === 'word' && !row.lexeme_id) {
@@ -91,6 +93,7 @@ export async function checkApproval(input: Record<string, unknown>): Promise<str
     .from('audios')
     .select('*')
     .filter('status', 'eq', 'approved')
+    .filter('source', 'eq', 'native')
     .filter('kind', 'eq', String(row.kind))
     .filter('kbp_key', 'eq', String(row.kbp_key))
   if (row.kind === 'word') query = query.filter('lexeme_id', 'eq', String(row.lexeme_id))

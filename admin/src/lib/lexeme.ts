@@ -29,10 +29,12 @@ export function parseLexemeId(lexemeId: string): { headword: string; homographNu
   return match ? { headword: match[1], homographNumber: match[2] } : { headword: lexemeId, homographNumber: null }
 }
 
-export function toLexemeOption(entry: { headword: string; entry_data: unknown }): LexemeOption {
+/** The entry as a lookup option, or null when its homograph number is not a whole number. */
+export function toLexemeOption(entry: { headword: string; entry_data: unknown }): LexemeOption | null {
   const data = (entry.entry_data ?? {}) as EntryData
   const headword = data.headword ?? entry.headword
   const homograph = data.homograph_number == null || data.homograph_number === '' ? null : Number(data.homograph_number)
+  if (homograph !== null && !Number.isInteger(homograph)) return null
   const definition = data.senses?.[0]?.definitions?.[0]
   const gloss =
     definition?.translations?.en || definition?.translations?.fr || definition?.definition || data.frenchGlosses?.[0]
@@ -45,9 +47,12 @@ export function toLexemeOption(entry: { headword: string; entry_data: unknown })
   }
 }
 
+// Live data, checked 2026-10-13: the headword column equals entry_data->>'headword' on all
+// 9,901 rows, and all are NFC. So match on the indexed column, with NFC input.
+
 /** Dictionary entries whose headword starts with the term, tone marks ignored. */
 export async function searchLexemes(term: string): Promise<LexemeOption[]> {
-  const prefix = stripToneMarks(term.trim()).replace(/[\\%_]/g, (c) => `\\${c}`)
+  const prefix = stripToneMarks(term.trim().normalize('NFC')).replace(/[\\%_]/g, (c) => `\\${c}`)
   if (!prefix) return []
   const { data, error } = await supabase
     .from('dictionary_entries')
@@ -56,16 +61,19 @@ export async function searchLexemes(term: string): Promise<LexemeOption[]> {
     .order('headword')
     .limit(30)
   if (error) throw new Error(error.message)
-  return (data ?? []).map(toLexemeOption).sort((a, b) => a.lexemeId.localeCompare(b.lexemeId))
+  return (data ?? [])
+    .map(toLexemeOption)
+    .filter((option): option is LexemeOption => option !== null)
+    .sort((a, b) => a.lexemeId.localeCompare(b.lexemeId))
 }
 
 /** True when the lexeme id names an existing dictionary entry. */
 export async function lexemeExists(lexemeId: string): Promise<boolean> {
-  const { headword, homographNumber } = parseLexemeId(lexemeId)
+  const { headword, homographNumber } = parseLexemeId(lexemeId.normalize('NFC'))
   const { data, error } = await supabase
     .from('dictionary_entries')
     .select('headword, entry_data')
     .eq('headword', headword)
   if (error) throw new Error(error.message)
-  return (data ?? []).some((entry) => toLexemeOption(entry).lexemeId === lexemeIdOf(headword, homographNumber))
+  return (data ?? []).some((entry) => toLexemeOption(entry)?.lexemeId === lexemeIdOf(headword, homographNumber))
 }

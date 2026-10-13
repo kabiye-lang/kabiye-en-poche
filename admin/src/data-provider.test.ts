@@ -42,6 +42,10 @@ vi.mock('ra-supabase', () => ({
       db.written.push({ id: params.id, data: params.data })
       return { data: { id: params.id, ...params.data } }
     },
+    create: async (_resource: string, params: { data: Row }) => {
+      db.written.push({ id: 'new', data: params.data })
+      return { data: { id: 'new', ...params.data } }
+    },
   }),
 }))
 
@@ -105,7 +109,7 @@ describe('audio writes normalise the merged row', () => {
 
   it('derives kbp_key from the stored text on approve, and ignores a caller kbp_key', async () => {
     await update('stale', { status: 'approved' })
-    expect(writtenFor('stale')).toMatchObject({ kbp_text: 'Páná!', kbp_key: 'pana' })
+    expect(writtenFor('stale')).toEqual({ status: 'approved', kbp_key: 'pana' })
 
     db.written = []
     await updateMany(['stale'], { kbp_key: 'forged' })
@@ -140,7 +144,7 @@ describe('audio writes validate the merged row when it ends approved', () => {
 
   it('approves a valid word', async () => {
     await update('word', { status: 'approved' })
-    expect(writtenFor('word')).toMatchObject({ status: 'approved', kbp_key: 'keɖe', lexeme_id: 'keɖe#1' })
+    expect(writtenFor('word')).toEqual({ status: 'approved', kbp_key: 'keɖe' })
   })
 })
 
@@ -202,5 +206,67 @@ describe('write failures', () => {
         'Saved: "audio sentence". Not saved: "audio word", "audio stale".'
     )
     expect(db.written.map((write) => write.id)).toEqual(['sentence'])
+  })
+})
+
+describe('round 3 review fixes', () => {
+  const clean = audio({ id: 'clean', kind: 'word', kbp_text: 'keɖe', kbp_key: 'keɖe', lexeme_id: 'keɖe#1' })
+
+  it('sets an approved row back to pending when its file is replaced', async () => {
+    await update('approved', { storage_path: 'new.wav', status: 'approved' })
+    expect(writtenFor('approved')).toMatchObject({ storage_path: 'new.wav', status: 'pending' })
+    db.written = []
+    await updateMany(['approved'], { storage_path: 'other.wav' })
+    expect(writtenFor('approved')).toMatchObject({ status: 'pending' })
+  })
+
+  it('sends only the status on Approve when the stored text fields are already normal', async () => {
+    db.tables.audios.push(clean)
+    await update('clean', { status: 'approved' })
+    expect(writtenFor('clean')).toEqual({ status: 'approved' })
+    db.written = []
+    await updateMany(['clean'], { status: 'approved' })
+    expect(writtenFor('clean')).toEqual({ status: 'approved' })
+  })
+
+  it('matches an NFD lexeme id against the NFC dictionary and stores it NFC', async () => {
+    db.tables.dictionary_entries.push(entry('ñɩnɖʋ', null))
+    db.tables.audios.push(audio({ id: 'nfd', kind: 'word', kbp_text: 'ñɩnɖʋ', lexeme_id: 'ñɩnɖʋ'.normalize('NFD') }))
+    await update('nfd', { status: 'approved' })
+    expect(writtenFor('nfd')?.lexeme_id).toBe('ñɩnɖʋ'.normalize('NFC'))
+  })
+
+  it('refuses to approve a TTS recording', async () => {
+    await expect(update('word', { status: 'approved', source: 'tts' })).rejects.toThrow(/TTS/)
+    await expect(updateMany(['word'], { status: 'approved', source: 'tts' })).rejects.toThrow(/TTS/)
+  })
+
+  it('ignores an approved TTS row in the duplicate check', async () => {
+    db.tables.audios.push(
+      audio({ id: 'synthetic', kind: 'word', kbp_key: 'keɖe', lexeme_id: 'keɖe#1', source: 'tts', status: 'approved' })
+    )
+    await update('word', { status: 'approved' })
+    expect(writtenFor('word')).toMatchObject({ status: 'approved' })
+  })
+
+  it('keeps the HTTP status of a refused write, so a 401 reaches the auth provider', async () => {
+    db.failOn = { id: 'word', error: Object.assign(new Error('JWT expired'), { status: 401 }) }
+    await expect(update('word', { name: 'x' })).rejects.toMatchObject({ status: 401, message: 'JWT expired' })
+    await expect(updateMany(['word'], { name: 'x' })).rejects.toMatchObject({ status: 401 })
+  })
+
+  it('refuses a bulk update naming ids it cannot find, and saves nothing', async () => {
+    await expect(updateMany(['word', 'ghost'], { status: 'rejected' })).rejects.toThrow(/ghost/)
+    expect(db.written).toEqual([])
+  })
+
+  it('normalises and validates a create', async () => {
+    await dataProvider.create('audios', {
+      data: { name: 'n', kind: 'sentence', kbp_text: ' Páná! ', lexeme_id: 'keɖe#1', kbp_key: 'forged' },
+    })
+    expect(writtenFor('new')).toMatchObject({ kbp_text: 'Páná!', kbp_key: 'pana', lexeme_id: null })
+    await expect(
+      dataProvider.create('audios', { data: { kind: 'word', kbp_text: 'keɖe', status: 'approved' } })
+    ).rejects.toThrow(/needs a lexeme id/)
   })
 })

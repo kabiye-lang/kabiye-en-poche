@@ -1,5 +1,7 @@
 import type { DataProvider, Identifier, RaRecord } from 'react-admin'
 
+import { HttpError } from 'react-admin'
+
 import { supabaseDataProvider } from 'ra-supabase'
 
 import { checkApproval, duplicateMessage, normaliseAudio, sameLookup } from '@/lib/audio-review'
@@ -18,18 +20,22 @@ export const dataProvider: DataProvider = {
   create: async (resource, params) => {
     if (resource !== 'audios') return baseDataProvider.create(resource, params)
     const [data] = await auditedAudioWrites([{ status: 'pending' }], params.data)
-    return baseDataProvider.create(resource, { ...params, data }).catch(rethrowReadable)
+    return baseDataProvider.create(resource, { ...params, data }).catch((err) => rethrowReadable(err))
   },
   update: async (resource, params) => {
     if (resource !== 'audios') return baseDataProvider.update(resource, params)
     const [stored] = await storedAudios([params.id])
     if (!stored) throw new Error('Audio not found')
     const [data] = await auditedAudioWrites([stored], params.data)
-    return baseDataProvider.update(resource, { ...params, data, previousData: stored }).catch(rethrowReadable)
+    return baseDataProvider
+      .update(resource, { ...params, data, previousData: stored })
+      .catch((err) => rethrowReadable(err))
   },
   updateMany: async (resource, params) => {
     if (resource !== 'audios') return baseDataProvider.updateMany(resource, params)
     const rows = await storedAudios(params.ids)
+    const missing = params.ids.filter((id) => !rows.some((row) => String(row.id) === String(id)))
+    if (missing.length) throw new Error(`Audio not found: ${missing.join(', ')}. Nothing was saved.`)
     // Every row is checked before the first write, so a refused bulk approval writes nothing.
     const writes = await auditedAudioWrites(rows, params.data)
     // One write per row, so a failure part-way leaves earlier rows saved: say which.
@@ -38,7 +44,8 @@ export const dataProvider: DataProvider = {
         await baseDataProvider.update(resource, { id: row.id, data: writes[i], previousData: row })
       } catch (err) {
         const names = (part: RaRecord[]) => part.map((r) => `"${r.name ?? r.id}"`).join(', ') || 'none'
-        throw new Error(
+        rethrowReadable(
+          err,
           `Stopped at ${names([row])}: ${readableWriteError(err)} Saved: ${names(rows.slice(0, i))}. ` +
             `Not saved: ${names(rows.slice(i))}.`
         )
@@ -83,6 +90,8 @@ async function storedAudios(ids: Identifier[]): Promise<RaRecord[]> {
   return data ?? []
 }
 
+const DERIVED_COLUMNS = ['kbp_text', 'kbp_key', 'lexeme_id'] as const
+
 /**
  * Audio writes go through here on every path. The patch is merged onto each stored
  * row, the merged row is normalised (kbp_key derived, a sentence loses its lexeme id)
@@ -90,8 +99,13 @@ async function storedAudios(ids: Identifier[]): Promise<RaRecord[]> {
  */
 async function auditedAudioWrites(rows: Record<string, unknown>[], rawPatch: Record<string, unknown>) {
   // A patch never moves a row: the stored id is kept, so duplicate checks exclude the right row.
-  const { id: _patchId, ...patch } = rawPatch
-  const merged = rows.map((row) => normaliseAudio({ ...row, ...patch, id: row.id }))
+  const { id: _patchId, kbp_key: _callerKey, ...patch } = rawPatch
+  const merged = rows.map((row) => {
+    const next = normaliseAudio({ ...row, ...patch, id: row.id })
+    // A new file is an unreviewed recording, whatever status the patch asks for.
+    if ('storage_path' in patch && patch.storage_path !== row.storage_path) next.status = 'pending'
+    return next
+  })
   const approved = merged.filter((row) => row.status === 'approved')
   for (const [i, row] of approved.entries()) {
     const twin = approved.slice(0, i).find((other) => sameLookup(other, row))
@@ -103,12 +117,17 @@ async function auditedAudioWrites(rows: Record<string, unknown>[], rawPatch: Rec
     const name = approved[blocked].name
     throw new Error(name ? `${String(name)}: ${blockers[blocked]}` : String(blockers[blocked]))
   }
-  return merged.map((row) => ({
-    ...patch,
-    kbp_text: row.kbp_text,
-    kbp_key: row.kbp_key,
-    lexeme_id: row.lexeme_id,
-  }))
+  // Send the derived columns only when the patch is about them or normalisation changes
+  // them: re-sending values read earlier could undo another admin's edit.
+  const touchesText = ['kbp_text', 'kind', 'lexeme_id'].some((column) => column in patch)
+  return merged.map((row, i) => {
+    const write: Record<string, unknown> = { ...patch }
+    if (row.status !== (patch.status ?? rows[i].status)) write.status = row.status
+    for (const column of DERIVED_COLUMNS) {
+      if (touchesText || row[column] !== (rows[i][column] ?? null)) write[column] = row[column]
+    }
+    return write
+  })
 }
 
 /**
@@ -124,6 +143,8 @@ function readableWriteError(err: unknown): string {
   return error?.message || 'Update failed.'
 }
 
-function rethrowReadable(err: unknown): never {
-  throw new Error(readableWriteError(err))
+/** Rethrow with the admin message, keeping the HTTP status so a 401/403 still reaches the auth provider. */
+function rethrowReadable(err: unknown, message = readableWriteError(err)): never {
+  const { status, body } = (err ?? {}) as { status?: number; body?: unknown }
+  throw typeof status === 'number' ? new HttpError(message, status, body) : new Error(message)
 }
