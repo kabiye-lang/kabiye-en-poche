@@ -12,6 +12,8 @@ import {
   ShowButton,
   TextField,
   TopToolbar,
+  useNotify,
+  useRefresh,
 } from 'react-admin'
 
 import { ApproveButton, AudioSourceField, AudioStatusField, RejectButton, STATUS_CHOICES } from './audio-review-actions'
@@ -33,9 +35,28 @@ const audioFilters = [
   <SelectInput key="status" source="status" label="Status" choices={STATUS_CHOICES} />,
 ]
 
+/** On failure some rows may be saved already (the message says which), so reload the list. */
+const BulkApproveButton = () => {
+  const notify = useNotify()
+  const refresh = useRefresh()
+  return (
+    <BulkUpdateButton
+      label="Approve"
+      data={{ status: 'approved' }}
+      mutationMode="pessimistic"
+      mutationOptions={{
+        onError: (error: unknown) => {
+          notify(error instanceof Error ? error.message : 'Update failed', { type: 'error' })
+          refresh()
+        },
+      }}
+    />
+  )
+}
+
 const AudioBulkActions = () => (
   <>
-    <BulkUpdateButton label="Approve" data={{ status: 'approved' }} mutationMode="pessimistic" />
+    <BulkApproveButton />
     <BulkDeleteButton
       mutationMode="pessimistic"
       confirmTitle={deleteConfirmTitle}

@@ -18,22 +18,31 @@ export const dataProvider: DataProvider = {
   create: async (resource, params) => {
     if (resource !== 'audios') return baseDataProvider.create(resource, params)
     const [data] = await auditedAudioWrites([{ status: 'pending' }], params.data)
-    return baseDataProvider.create(resource, { ...params, data })
+    return baseDataProvider.create(resource, { ...params, data }).catch(rethrowReadable)
   },
   update: async (resource, params) => {
     if (resource !== 'audios') return baseDataProvider.update(resource, params)
     const [stored] = await storedAudios([params.id])
     if (!stored) throw new Error('Audio not found')
     const [data] = await auditedAudioWrites([stored], params.data)
-    return baseDataProvider.update(resource, { ...params, data, previousData: stored })
+    return baseDataProvider.update(resource, { ...params, data, previousData: stored }).catch(rethrowReadable)
   },
   updateMany: async (resource, params) => {
     if (resource !== 'audios') return baseDataProvider.updateMany(resource, params)
     const rows = await storedAudios(params.ids)
     // Every row is checked before the first write, so a refused bulk approval writes nothing.
     const writes = await auditedAudioWrites(rows, params.data)
+    // One write per row, so a failure part-way leaves earlier rows saved: say which.
     for (const [i, row] of rows.entries()) {
-      await baseDataProvider.update(resource, { id: row.id, data: writes[i], previousData: row })
+      try {
+        await baseDataProvider.update(resource, { id: row.id, data: writes[i], previousData: row })
+      } catch (err) {
+        const names = (part: RaRecord[]) => part.map((r) => `"${r.name ?? r.id}"`).join(', ') || 'none'
+        throw new Error(
+          `Stopped at ${names([row])}: ${readableWriteError(err)} Saved: ${names(rows.slice(0, i))}. ` +
+            `Not saved: ${names(rows.slice(i))}.`
+        )
+      }
     }
     return { data: rows.map((row) => row.id) }
   },
@@ -79,8 +88,10 @@ async function storedAudios(ids: Identifier[]): Promise<RaRecord[]> {
  * row, the merged row is normalised (kbp_key derived, a sentence loses its lexeme id)
  * and, when it ends approved, validated. A caller's kbp_key is ignored.
  */
-async function auditedAudioWrites(rows: Record<string, unknown>[], patch: Record<string, unknown>) {
-  const merged = rows.map((row) => normaliseAudio({ ...row, ...patch }))
+async function auditedAudioWrites(rows: Record<string, unknown>[], rawPatch: Record<string, unknown>) {
+  // A patch never moves a row: the stored id is kept, so duplicate checks exclude the right row.
+  const { id: _patchId, ...patch } = rawPatch
+  const merged = rows.map((row) => normaliseAudio({ ...row, ...patch, id: row.id }))
   const approved = merged.filter((row) => row.status === 'approved')
   for (const [i, row] of approved.entries()) {
     const twin = approved.slice(0, i).find((other) => sameLookup(other, row))
@@ -98,4 +109,21 @@ async function auditedAudioWrites(rows: Record<string, unknown>[], patch: Record
     kbp_key: row.kbp_key,
     lexeme_id: row.lexeme_id,
   }))
+}
+
+/**
+ * The admin message for a failed write. The database refuses an invalid approved row
+ * on its own (23505 unique, 23514 check), so a write that slipped past the checks above
+ * still gets a plain explanation. ra-supabase puts the Postgres error in `body`.
+ */
+function readableWriteError(err: unknown): string {
+  const error = err as { message?: string; code?: string; body?: { code?: string } } | undefined
+  const code = error?.body?.code ?? error?.code
+  if (code === '23505') return 'Another approved recording already covers this word/form.'
+  if (code === '23514') return 'Approved recordings need kind, text and, for a word, a lexeme.'
+  return error?.message || 'Update failed.'
+}
+
+function rethrowReadable(err: unknown): never {
+  throw new Error(readableWriteError(err))
 }

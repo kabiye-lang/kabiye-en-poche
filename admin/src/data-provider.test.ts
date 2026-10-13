@@ -7,6 +7,8 @@ type Row = Record<string, unknown>
 const db = vi.hoisted(() => ({
   tables: {} as Record<string, Row[]>,
   written: [] as { id: unknown; data: Row }[],
+  // The write to this row id fails with this error, as a database refusal would.
+  failOn: null as { id: string; error: unknown } | null,
 }))
 
 vi.mock('@/supabase', () => {
@@ -36,6 +38,7 @@ vi.mock('@/supabase', () => {
 vi.mock('ra-supabase', () => ({
   supabaseDataProvider: () => ({
     update: async (_resource: string, params: { id: unknown; data: Row }) => {
+      if (db.failOn && db.failOn.id === params.id) throw db.failOn.error
       db.written.push({ id: params.id, data: params.data })
       return { data: { id: params.id, ...params.data } }
     },
@@ -66,6 +69,7 @@ const writtenFor = (id: string) => db.written.find((write) => write.id === id)?.
 
 beforeEach(() => {
   db.written = []
+  db.failOn = null
   db.tables = {
     dictionary_entries: [entry('keɖe', 1), entry('keɖe', 2), entry('caɣʋ', null)],
     audios: [
@@ -166,5 +170,37 @@ describe('approval refuses a second recording for the same app lookup', () => {
     db.tables.audios.push(audio({ id: 'twin', kind: 'sentence', kbp_text: 'lɩm  keɖe' }))
     await expect(updateMany(['sentence', 'twin'], { status: 'approved' })).rejects.toThrow(/already covers/)
     expect(db.written).toEqual([])
+  })
+})
+
+describe('a patch cannot change the row it is checked as', () => {
+  it('keeps the stored id, so a patched id cannot hide the duplicate it names', async () => {
+    const patch = { id: 'approved', status: 'approved', lexeme_id: 'keɖe#2' }
+    await expect(update('word', patch)).rejects.toThrow(/"audio approved"/)
+    await expect(updateMany(['word'], patch)).rejects.toThrow(/"audio approved"/)
+    expect(db.written).toEqual([])
+  })
+})
+
+describe('write failures', () => {
+  // ra-supabase throws an HttpError whose body is the PostgREST error.
+  const postgresError = (code: string) => Object.assign(new Error('violates constraint'), { body: { code } })
+
+  it.each([
+    ['23505', 'Another approved recording already covers this word/form.'],
+    ['23514', 'Approved recordings need kind, text and, for a word, a lexeme.'],
+  ])('turns Postgres %s into an admin message', async (code, message) => {
+    db.failOn = { id: 'word', error: postgresError(code) }
+    await expect(update('word', { status: 'approved' })).rejects.toThrow(message)
+  })
+
+  it('names the saved and unsaved rows when a bulk write fails part-way', async () => {
+    db.failOn = { id: 'word', error: postgresError('23505') }
+    const result = updateMany(['sentence', 'word', 'stale'], { status: 'rejected' })
+    await expect(result).rejects.toThrow(
+      'Stopped at "audio word": Another approved recording already covers this word/form. ' +
+        'Saved: "audio sentence". Not saved: "audio word", "audio stale".'
+    )
+    expect(db.written.map((write) => write.id)).toEqual(['sentence'])
   })
 })
