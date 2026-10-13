@@ -22,6 +22,7 @@ import {
 
 import { ApproveButton, AudioSourceField, AudioStatusField, RejectButton, STATUS_CHOICES } from './audio-review-actions'
 import { AudioSearchFilter } from './audio-search-filter'
+import { ReviewedSelection, useReviewedSelection } from './reviewed-selection'
 
 const deleteConfirmTitle = 'Delete this audio?'
 const deleteConfirmContent = 'This will permanently remove the audio from storage. This action cannot be undone.'
@@ -40,13 +41,14 @@ const audioFilters = [
 ]
 
 /**
- * Approve the selected rows. Each row is approved only while it still holds what this
- * list showed (file, kind, text, lexeme, source): the data provider checks the records
- * passed in `meta`. On failure
- * some rows may be saved already (the message says which), so the list reloads.
+ * Approve the selected rows. Each row is approved only while it still holds what the
+ * reviewer saw when selecting it (file, kind, text, key, lexeme, source): the data
+ * provider checks the snapshots passed in `meta`. On failure some rows may be saved
+ * already (the message says which), so the list reloads.
  */
 const BulkApproveButton = () => {
-  const { selectedIds, data, onUnselectItems } = useListContext()
+  const { selectedIds, onUnselectItems } = useListContext()
+  const snapshots = useReviewedSelection()
   const notify = useNotify()
   const refresh = useRefresh()
   const [open, setOpen] = useState(false)
@@ -54,9 +56,12 @@ const BulkApproveButton = () => {
 
   const approve = async () => {
     setOpen(false)
-    const reviewed = Object.fromEntries(
-      (data ?? []).filter((record) => selectedIds.includes(record.id)).map((record) => [record.id, record])
-    )
+    const unseen = selectedIds.filter((id) => !snapshots[String(id)])
+    if (unseen.length) {
+      notify(`Select these rows again before approving: ${unseen.join(', ')}. Nothing was saved.`, { type: 'error' })
+      return
+    }
+    const reviewed = Object.fromEntries(selectedIds.map((id) => [id, snapshots[String(id)]]))
     try {
       await updateMany(
         'audios',
@@ -100,25 +105,27 @@ const AudioBulkActions = () => (
 
 export const AudioList = () => (
   <List actions={<AudioListActions />} filters={audioFilters}>
-    <Datagrid rowClick="edit" bulkActionButtons={<AudioBulkActions />}>
-      <TextField source="name" />
-      <FunctionField label="Status" render={() => <AudioStatusField />} />
-      <TextField source="kind" />
-      <TextField source="kbp_text" label="Kabiyè text" />
-      <FunctionField label="Source" render={() => <AudioSourceField />} />
-      <TextField source="tags" />
-      <TextField source="description" />
-      <TextField source="storage_path" label="Path" />
-      <ApproveButton />
-      <RejectButton />
-      <ShowButton />
-      <EditButton />
-      <DeleteButton
-        mutationMode="pessimistic"
-        confirmTitle={deleteConfirmTitle}
-        confirmContent={deleteConfirmContent}
-        confirmColor="warning"
-      />
-    </Datagrid>
+    <ReviewedSelection>
+      <Datagrid rowClick="edit" bulkActionButtons={<AudioBulkActions />}>
+        <TextField source="name" />
+        <FunctionField label="Status" render={() => <AudioStatusField />} />
+        <TextField source="kind" />
+        <TextField source="kbp_text" label="Kabiyè text" />
+        <FunctionField label="Source" render={() => <AudioSourceField />} />
+        <TextField source="tags" />
+        <TextField source="description" />
+        <TextField source="storage_path" label="Path" />
+        <ApproveButton />
+        <RejectButton />
+        <ShowButton />
+        <EditButton />
+        <DeleteButton
+          mutationMode="pessimistic"
+          confirmTitle={deleteConfirmTitle}
+          confirmContent={deleteConfirmContent}
+          confirmColor="warning"
+        />
+      </Datagrid>
+    </ReviewedSelection>
   </List>
 )

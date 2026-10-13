@@ -1,3 +1,4 @@
+import type { Reviewed } from '@/lib/audio-review'
 import type { SupabaseClient } from '@supabase/supabase-js'
 import type { DataProvider, Identifier, RaRecord, UpdateResult } from 'react-admin'
 
@@ -5,7 +6,15 @@ import { HttpError } from 'react-admin'
 
 import { supabaseDataProvider } from 'ra-supabase'
 
-import { checkApproval, duplicateMessage, normaliseAudio, sameLookup } from '@/lib/audio-review'
+import {
+  checkApproval,
+  duplicateMessage,
+  matchesReviewed,
+  normaliseAudio,
+  REVIEWED_COLUMNS,
+  reviewedSnapshot,
+  sameLookup,
+} from '@/lib/audio-review'
 import { deleteAudioFromStorage } from '@/lib/audio-upload'
 import { readFailure } from '@/lib/read-failure'
 
@@ -107,19 +116,6 @@ async function storedAudios(ids: Identifier[]): Promise<RaRecord[]> {
   const { data, error, status } = await audiosTable().select('*').in('id', ids.map(String))
   if (error) throw readFailure(error, status)
   return data ?? []
-}
-
-/** The columns a reviewer approves: the file and what it is said to be. */
-const REVIEWED_COLUMNS = ['storage_path', 'kind', 'kbp_text', 'kbp_key', 'lexeme_id', 'source'] as const
-type Reviewed = Record<(typeof REVIEWED_COLUMNS)[number], unknown>
-
-/** What the reviewer saw of the reviewed columns. A column they did not see counts as null. */
-function reviewedSnapshot(seen: Record<string, unknown> | undefined): Reviewed {
-  return Object.fromEntries(REVIEWED_COLUMNS.map((column) => [column, seen?.[column] ?? null])) as Reviewed
-}
-
-function matchesReviewed(stored: Record<string, unknown>, reviewed: Reviewed): boolean {
-  return REVIEWED_COLUMNS.every((column) => (stored[column] ?? null) === reviewed[column])
 }
 
 /** True when the write sets status 'approved', or leaves an approved row approved. */

@@ -104,3 +104,16 @@ export async function checkApproval(input: Record<string, unknown>): Promise<str
   const existing = data?.[0]
   return existing ? duplicateMessage(existing.name, row) : null
 }
+
+/** The columns a reviewer approves: the file and what it is said to be. */
+export const REVIEWED_COLUMNS = ['storage_path', 'kind', 'kbp_text', 'kbp_key', 'lexeme_id', 'source'] as const
+export type Reviewed = Record<(typeof REVIEWED_COLUMNS)[number], unknown>
+
+/** What the reviewer saw of the reviewed columns. A column they did not see counts as null. */
+export function reviewedSnapshot(seen: Record<string, unknown> | undefined): Reviewed {
+  return Object.fromEntries(REVIEWED_COLUMNS.map((column) => [column, seen?.[column] ?? null])) as Reviewed
+}
+
+export function matchesReviewed(stored: Record<string, unknown>, reviewed: Reviewed): boolean {
+  return REVIEWED_COLUMNS.every((column) => (stored[column] ?? null) === reviewed[column])
+}

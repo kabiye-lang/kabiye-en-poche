@@ -1,4 +1,5 @@
 import type { AudioReviewFields } from '@/lib/audio-review'
+import type { RaRecord } from 'react-admin'
 
 import { useEffect, useRef, useState } from 'react'
 import {
@@ -13,7 +14,13 @@ import {
 } from 'react-admin'
 
 import { Input } from '@/components/ui/input'
-import { checkApproval, DEFAULT_AUDIO_REVIEW, readAudioReview } from '@/lib/audio-review'
+import {
+  checkApproval,
+  DEFAULT_AUDIO_REVIEW,
+  matchesReviewed,
+  readAudioReview,
+  reviewedSnapshot,
+} from '@/lib/audio-review'
 import { trimSilence } from '@/lib/audio-trim'
 import { deleteAudioFromStorage, getAudioPublicUrl, uploadAudioToStorage } from '@/lib/audio-upload'
 
@@ -51,17 +58,30 @@ function AudioEditForm() {
   const [tags, setTags] = useState('')
   const [review, setReview] = useState<AudioReviewFields>(DEFAULT_AUDIO_REVIEW)
   const [saving, setSaving] = useState(false)
+  // The record as it was when the draft was filled in: what the reviewer is looking at.
+  const [opened, setOpened] = useState<RaRecord | null>(null)
   const mediaRecorderRef = useRef<MediaRecorder | null>(null)
   const chunksRef = useRef<Blob[]>([])
 
+  // React-admin can render a cached record first and the refetched one after. The draft
+  // follows the record it was filled from. When a refetch shows another file, kind, text,
+  // key, lexeme or source, the draft is reset to it, so a stale Approved is never saved
+  // against a recording the reviewer has not heard.
   useEffect(() => {
-    if (record) {
-      setName(record.name ?? '')
-      setDescription(record.description ?? '')
-      setTags(Array.isArray(record.tags) ? record.tags.join(', ') : '')
-      setReview(readAudioReview(record))
+    if (!record || saving) return
+    const sameRow = opened?.id === record.id
+    if (sameRow && matchesReviewed(record, reviewedSnapshot(opened))) return
+    setOpened(record)
+    setName(record.name ?? '')
+    setDescription(record.description ?? '')
+    setTags(Array.isArray(record.tags) ? record.tags.join(', ') : '')
+    setReview(readAudioReview(record))
+    if (sameRow) {
+      notify('This recording changed since you opened it. The form now shows the current version: review it again.', {
+        type: 'warning',
+      })
     }
-  }, [record?.id])
+  }, [record, opened, saving, notify])
 
   const startRecording = async () => {
     try {
@@ -116,7 +136,7 @@ function AudioEditForm() {
     // Check before any upload, so a refused approval leaves no orphan file in storage.
     const blocker =
       review.status === 'approved'
-        ? await checkApproval({ ...record, ...review }).catch((err: Error) => err.message)
+        ? await checkApproval({ ...opened, ...review }).catch((err: Error) => err.message)
         : null
     if (blocker) {
       notify(blocker, { type: 'warning' })
@@ -156,7 +176,9 @@ function AudioEditForm() {
     setSaving(true)
     try {
       // returnPromise: the data provider can refuse the write, and the catch below must see it.
-      await update('audios', { id: record.id, data: payload, previousData: record }, { returnPromise: true })
+      // previousData is what the draft was filled from, not the latest refetch: the data
+      // provider refuses the approval if the row no longer matches it.
+      await update('audios', { id: record.id, data: payload, previousData: opened ?? record }, { returnPromise: true })
       if (newStoragePath && record.storage_path) {
         try {
           await deleteAudioFromStorage(record.storage_path)
@@ -165,10 +187,11 @@ function AudioEditForm() {
         }
       }
       notify('ra.notification.updated')
+      // saving stays true: the page leaves, and the refetch of the saved row must not
+      // read as someone else's change.
       redirect('list', 'audios')
     } catch (err) {
       notify(err instanceof Error ? err.message : 'Update failed', { type: 'error' })
-    } finally {
       setSaving(false)
     }
   }

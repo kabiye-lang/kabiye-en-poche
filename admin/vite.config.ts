@@ -18,9 +18,9 @@ export default defineConfig({
     port: 3001,
   },
   test: {
-    // These suites cover pure logic and fetch/Supabase boundaries, not components,
-    // so node is enough — no jsdom. Revisit if component tests are added.
+    // Node by default. Component suites (*.test.tsx) opt into jsdom with a
+    // `// @vitest-environment jsdom` docblock.
     environment: 'node',
-    include: ['src/**/*.test.ts'],
+    include: ['src/**/*.test.{ts,tsx}'],
   },
 })
