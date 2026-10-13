@@ -110,7 +110,7 @@ export const AudioCreate = () => {
           {
             id: created.id,
             data: review,
-            previousData: { id: created.id, storage_path: created.storage_path, source: 'native' },
+            previousData: { id: created.id, storage_path: created.storage_path, source: 'native', status: 'pending' },
           },
           { returnPromise: true }
         )

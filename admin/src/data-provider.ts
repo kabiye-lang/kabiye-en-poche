@@ -9,9 +9,9 @@ import { supabaseDataProvider } from 'ra-supabase'
 import {
   checkApproval,
   duplicateMessage,
+  GUARDED_COLUMNS,
   matchesReviewed,
   normaliseAudio,
-  REVIEWED_COLUMNS,
   reviewedSnapshot,
   sameLookup,
 } from '@/lib/audio-review'
@@ -37,13 +37,13 @@ export const dataProvider: DataProvider = {
     if (resource !== 'audios') return baseDataProvider.update(resource, params)
     const [stored] = await storedAudios([params.id])
     if (!stored) throw new Error('Audio not found')
-    const reviewed = reviewedSnapshot(params.previousData)
-    const approving = wantsApproved(params.data, stored)
-    if (approving && !matchesReviewed(stored, reviewed)) throw new Error(CHANGED_SINCE_OPENED)
+    // Every write, approving or not, requires the row to still be as the editor opened it.
+    const reviewed = reviewedSnapshot(params.previousData, GUARDED_COLUMNS)
+    if (!matchesReviewed(stored, reviewed)) throw new Error(CHANGED_SINCE_OPENED)
     // Only what the editor changed: resending what they merely saw could undo someone else's edit.
     const [data] = await auditedAudioWrites([stored], changedFields(params.data, params.previousData))
     if (!Object.keys(data).length) return { data: stored } as UpdateResult
-    return { data: await writeAudio(stored.id, data, approving ? reviewed : undefined) } as UpdateResult
+    return { data: await writeAudio(stored.id, data, reviewed) } as UpdateResult
   },
   updateMany: async (resource, params) => {
     if (resource !== 'audios') return baseDataProvider.updateMany(resource, params)
@@ -53,18 +53,17 @@ export const dataProvider: DataProvider = {
     const names = (part: RaRecord[]) => part.map((r) => `"${r.name ?? r.id}"`).join(', ') || 'none'
     // What the reviewer saw of each row, from the list they selected in: { [id]: record }.
     const seen: Record<string, Record<string, unknown> | undefined> = params.meta?.reviewed ?? {}
-    const reviewed = rows.map((row) => reviewedSnapshot(seen[String(row.id)]))
-    const approving = rows.map((row) => wantsApproved(params.data, row))
-    const changed = rows.filter((row, i) => approving[i] && !matchesReviewed(row, reviewed[i]))
+    const reviewed = rows.map((row) => reviewedSnapshot(seen[String(row.id)], GUARDED_COLUMNS))
+    const changed = rows.filter((row, i) => !matchesReviewed(row, reviewed[i]))
     if (changed.length) {
-      throw new Error(`Not approved: ${names(changed)}. ${CHANGED_SINCE_OPENED} Nothing was saved.`)
+      throw new Error(`Not saved: ${names(changed)}. ${CHANGED_SINCE_OPENED} Nothing was saved.`)
     }
     // Every row is checked before the first write, so a refused bulk approval writes nothing.
     const writes = await auditedAudioWrites(rows, params.data)
     // One write per row, so a failure part-way leaves earlier rows saved: say which.
     for (const [i, row] of rows.entries()) {
       try {
-        await writeAudio(row.id, writes[i], approving[i] ? reviewed[i] : undefined)
+        await writeAudio(row.id, writes[i], reviewed[i])
       } catch (err) {
         const message = err instanceof Error ? err.message : String(err)
         rethrowReadable(
@@ -118,11 +117,6 @@ async function storedAudios(ids: Identifier[]): Promise<RaRecord[]> {
   return data ?? []
 }
 
-/** True when the write sets status 'approved', or leaves an approved row approved. */
-function wantsApproved(patch: Record<string, unknown>, stored: RaRecord): boolean {
-  return (patch.status ?? stored.status) === 'approved'
-}
-
 /** The fields of `data` that differ from what the editor opened. The id never moves. */
 function changedFields(data: Record<string, unknown>, opened: Record<string, unknown> | undefined) {
   const { id: _id, ...fields } = data
@@ -133,18 +127,18 @@ function changedFields(data: Record<string, unknown>, opened: Record<string, unk
 }
 
 /**
- * Write one audio row. With `reviewed`, the UPDATE only matches while the row still holds
- * what the reviewer saw, so a change made after the checks is never approved.
+ * Write one audio row. The UPDATE only matches while the row still holds the status and
+ * reviewed columns the editor saw, so a change made after the checks (another admin's
+ * approval, a replaced file) is never written over unchecked.
  */
-async function writeAudio(id: Identifier, data: Record<string, unknown>, reviewed?: Reviewed) {
+async function writeAudio(id: Identifier, data: Record<string, unknown>, reviewed: Reviewed) {
   let query = audiosTable().update(data).eq('id', String(id))
-  for (const column of reviewed ? REVIEWED_COLUMNS : []) {
-    const value = reviewed?.[column]
+  for (const [column, value] of Object.entries(reviewed)) {
     query = value === null ? query.is(column, null) : query.eq(column, value)
   }
   const { data: rows, error, status } = await query.select()
   if (error) throw new HttpError(readableWriteError(error), status, error)
-  if (!rows?.length) throw new Error(reviewed ? CHANGED_SINCE_OPENED : 'Audio not found')
+  if (!rows?.length) throw new Error(CHANGED_SINCE_OPENED)
   return rows[0] as RaRecord
 }
 

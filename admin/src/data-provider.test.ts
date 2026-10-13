@@ -324,7 +324,7 @@ describe('a reviewer approves only the file they heard', () => {
 
   it('sends only the fields that differ from what the editor opened', async () => {
     db.tables.audios.push(audio({ id: 'tidy', kind: 'word', kbp_text: 'keɖe', kbp_key: 'keɖe', lexeme_id: 'keɖe#1' }))
-    const opened = { id: 'tidy', name: 'audio tidy', kind: 'word', status: 'pending', storage_path: 'tidy.wav' }
+    const opened = seen('tidy')
     await dataProvider.update('audios', { id: 'tidy', data: { ...opened, name: 'renamed' }, previousData: opened })
     expect(writtenFor('tidy')).toEqual({ name: 'renamed' })
   })
@@ -350,7 +350,7 @@ describe('a reviewer approves only the file they heard', () => {
       data: { status: 'approved' },
       meta: { reviewed: { word: seen('word'), swap: { ...seen('swap'), storage_path: 'a.wav' } } },
     })
-    await expect(approve).rejects.toThrow(`Not approved: "audio swap". ${CHANGED_SINCE_OPENED}`)
+    await expect(approve).rejects.toThrow(`Not saved: "audio swap". ${CHANGED_SINCE_OPENED}`)
     expect(db.written).toEqual([])
   })
 
@@ -407,7 +407,7 @@ describe('a reviewer approves only what they saw of the text and lexeme', () => 
       data: { status: 'approved' },
       meta: { reviewed },
     })
-    await expect(approve).rejects.toThrow(`Not approved: "audio word". ${CHANGED_SINCE_OPENED}`)
+    await expect(approve).rejects.toThrow(`Not saved: "audio word". ${CHANGED_SINCE_OPENED}`)
     expect(db.written).toEqual([])
   })
 
@@ -417,6 +417,37 @@ describe('a reviewer approves only what they saw of the text and lexeme', () => 
       if (row) row.kbp_text = 'Páná!'
     }
     await expect(update('sentence', { status: 'approved' })).rejects.toThrow(CHANGED_SINCE_OPENED)
+    expect(db.written).toEqual([])
+  })
+})
+
+describe('every audio write is conditioned on the row the editor saw', () => {
+  // Another admin approves the row after the checks pass and before the UPDATE runs.
+  const approvedMeanwhile = () => {
+    db.beforeWrite = () => {
+      const row = db.tables.audios.find((r) => r.id === 'word')
+      if (row) row.status = 'approved'
+    }
+  }
+
+  it('refuses an unchecked edit that would land on a row approved meanwhile, through update', async () => {
+    approvedMeanwhile()
+    await expect(update('word', { lexeme_id: 'does-not-exist' })).rejects.toThrow(CHANGED_SINCE_OPENED)
+    expect(db.written).toEqual([])
+  })
+
+  it('refuses the same race through updateMany', async () => {
+    approvedMeanwhile()
+    await expect(updateMany(['word'], { lexeme_id: 'does-not-exist' })).rejects.toThrow(CHANGED_SINCE_OPENED)
+    expect(db.written).toEqual([])
+  })
+
+  it('refuses a non-approving edit when the status changed since the editor opened the row', async () => {
+    const opened = seen('word')
+    const row = db.tables.audios.find((r) => r.id === 'word')
+    if (row) row.status = 'approved'
+    const save = dataProvider.update('audios', { id: 'word', data: { name: 'renamed' }, previousData: opened })
+    await expect(save).rejects.toThrow(CHANGED_SINCE_OPENED)
     expect(db.written).toEqual([])
   })
 })

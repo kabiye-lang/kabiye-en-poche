@@ -107,13 +107,19 @@ export async function checkApproval(input: Record<string, unknown>): Promise<str
 
 /** The columns a reviewer approves: the file and what it is said to be. */
 export const REVIEWED_COLUMNS = ['storage_path', 'kind', 'kbp_text', 'kbp_key', 'lexeme_id', 'source'] as const
-export type Reviewed = Record<(typeof REVIEWED_COLUMNS)[number], unknown>
+/** Every audio write is conditioned on these: the reviewed columns plus the status. */
+export const GUARDED_COLUMNS = [...REVIEWED_COLUMNS, 'status'] as const
+export type Reviewed = Record<string, unknown>
 
-/** What the reviewer saw of the reviewed columns. A column they did not see counts as null. */
-export function reviewedSnapshot(seen: Record<string, unknown> | undefined): Reviewed {
-  return Object.fromEntries(REVIEWED_COLUMNS.map((column) => [column, seen?.[column] ?? null])) as Reviewed
+/** What the reviewer saw of `columns`. A column they did not see counts as null. */
+export function reviewedSnapshot(
+  seen: Record<string, unknown> | undefined,
+  columns: readonly string[] = REVIEWED_COLUMNS
+): Reviewed {
+  return Object.fromEntries(columns.map((column) => [column, seen?.[column] ?? null]))
 }
 
+/** True when the stored row still holds every column of the snapshot. */
 export function matchesReviewed(stored: Record<string, unknown>, reviewed: Reviewed): boolean {
-  return REVIEWED_COLUMNS.every((column) => (stored[column] ?? null) === reviewed[column])
+  return Object.entries(reviewed).every(([column, value]) => (stored[column] ?? null) === value)
 }
