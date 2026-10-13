@@ -1,5 +1,7 @@
 import Constants from 'expo-constants'
 
+import { DEV_AUDIO_FIXTURE_URI } from './dev-audio-fixture'
+
 /**
  * Every audio URL that shipped with the lesson content was a stand-in: 251 of the
  * 253 example recordings pointed at the same stock piano clip on
@@ -30,6 +32,9 @@ const trustedOrigin = (() => {
  * Callers treat undefined as "no audio for this item".
  */
 export function usableAudioUrl(url?: string | null): string | undefined {
+  // The development tone is served by Metro, not by Supabase. It is let through by exact
+  // match, and only when the dev flag produced it -- see `dev-audio-fixture.ts`.
+  if (url && DEV_AUDIO_FIXTURE_URI !== undefined && url === DEV_AUDIO_FIXTURE_URI) return url
   if (!url || !trustedOrigin) return undefined
   try {
     return new URL(url).origin === trustedOrigin ? url : undefined
