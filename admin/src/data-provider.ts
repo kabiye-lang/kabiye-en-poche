@@ -2,7 +2,7 @@ import type { DataProvider } from 'react-admin'
 
 import { supabaseDataProvider } from 'ra-supabase'
 
-import { approvalBlocker, prepareAudioWrite } from '@/lib/audio-review'
+import { checkApproval, prepareAudioWrite } from '@/lib/audio-review'
 import { deleteAudioFromStorage } from '@/lib/audio-upload'
 
 import { supabase } from './supabase'
@@ -18,13 +18,13 @@ export const dataProvider: DataProvider = {
   create: async (resource, params) => {
     if (resource !== 'audios') return baseDataProvider.create(resource, params)
     const data = prepareAudioWrite(params.data)
-    if (data.status === 'approved') assertApprovable(data)
+    if (data.status === 'approved') await assertApprovable(data)
     return baseDataProvider.create(resource, { ...params, data })
   },
   update: async (resource, params) => {
     if (resource !== 'audios') return baseDataProvider.update(resource, params)
     const data = prepareAudioWrite(params.data)
-    if (data.status === 'approved') assertApprovable({ ...params.previousData, ...data })
+    if (data.status === 'approved') await assertApprovable({ ...params.previousData, ...data })
     return baseDataProvider.update(resource, { ...params, data })
   },
   updateMany: async (resource, params) => {
@@ -33,11 +33,11 @@ export const dataProvider: DataProvider = {
     if (data.status === 'approved' && params.ids.length) {
       const { data: rows, error } = await supabase
         .from('audios')
-        // '*' rather than the review columns by name: the generated types predate the migration.
+        // '*' rather than the review columns by name: the generated types do not list them yet.
         .select('*')
         .in('id', params.ids.map(String))
       if (error) throw new Error(error.message)
-      for (const row of rows ?? []) assertApprovable({ ...row, ...data }, row.name)
+      await Promise.all((rows ?? []).map((row) => assertApprovable({ ...row, ...data }, row.name)))
     }
     return baseDataProvider.updateMany(resource, { ...params, data })
   },
@@ -71,7 +71,7 @@ export const dataProvider: DataProvider = {
 }
 
 /** Every path that approves an audio goes through here, so the rule cannot be skipped. */
-function assertApprovable(record: Record<string, unknown>, name?: string) {
-  const blocker = approvalBlocker(record)
+async function assertApprovable(record: Record<string, unknown>, name?: string) {
+  const blocker = await checkApproval(record)
   if (blocker) throw new Error(name ? `${name}: ${blocker}` : blocker)
 }

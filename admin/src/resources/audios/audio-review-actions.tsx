@@ -2,8 +2,6 @@ import type { AudioStatus } from '@/lib/audio-review'
 
 import { Button, useNotify, useRecordContext, useRefresh, useUpdate } from 'react-admin'
 
-import { approvalBlocker, hasReviewColumns } from '@/lib/audio-review'
-
 const STATUS_CLASS: Record<AudioStatus, string> = {
   pending: 'bg-slate-100 text-slate-700',
   approved: 'bg-green-100 text-green-800',
@@ -37,15 +35,11 @@ const ReviewButton = ({ status, label }: { status: AudioStatus; label: string })
   const notify = useNotify()
   const refresh = useRefresh()
   const [update, { isPending }] = useUpdate()
-  if (!record || !hasReviewColumns(record) || record.status === status) return null
+  if (!record || record.status === status) return null
 
   const handleClick = async (e: React.MouseEvent) => {
     e.stopPropagation()
-    const blocker = status === 'approved' ? approvalBlocker(record) : null
-    if (blocker) {
-      notify(blocker, { type: 'warning' })
-      return
-    }
+    // The data provider refuses an approval that breaks the rule, and its message lands here.
     try {
       await update('audios', { id: record.id, data: { status }, previousData: record }, { returnPromise: true })
       notify(`Audio ${status}`)

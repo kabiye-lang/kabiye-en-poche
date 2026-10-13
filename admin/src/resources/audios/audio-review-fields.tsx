@@ -3,6 +3,8 @@ import type { AudioKind, AudioReviewFields, AudioSource, AudioStatus } from '@/l
 import { Input } from '@/components/ui/input'
 import { kbpKey } from '@/lib/kbp-key'
 
+import { LexemeLookup } from './lexeme-lookup'
+
 const selectClass = 'border-input mt-1 block w-full rounded-md border bg-transparent px-3 py-2 text-sm'
 
 interface AudioReviewFieldsInputProps {
@@ -43,12 +45,7 @@ export function AudioReviewFieldsInput({ value, onChange }: AudioReviewFieldsInp
       </div>
       <div>
         <label className="text-sm font-medium">Lexeme id{value.kind === 'word' ? ' *' : ''}</label>
-        <Input
-          value={value.lexeme_id ?? ''}
-          onChange={(e) => set('lexeme_id', e.target.value)}
-          placeholder="e.g. keɖe#1"
-          className="mt-1"
-        />
+        <LexemeLookup value={value.lexeme_id} onChange={(lexemeId) => set('lexeme_id', lexemeId)} />
         {value.kind === 'word' && (
           <p className="text-muted-foreground mt-1 text-xs">
             Required to approve a word: without it the audio could play for a same-spelling word with another tone.

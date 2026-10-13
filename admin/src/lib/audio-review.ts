@@ -1,4 +1,5 @@
 import { kbpKey } from './kbp-key'
+import { lexemeExists } from './lexeme'
 
 export type AudioKind = 'word' | 'sentence'
 export type AudioSource = 'native' | 'tts'
@@ -20,14 +21,6 @@ export const DEFAULT_AUDIO_REVIEW: AudioReviewFields = {
   status: 'pending',
 }
 
-/**
- * True when the record was read after the audio review migration. Before it, the
- * columns do not exist and writing them makes PostgREST reject the whole update.
- */
-export function hasReviewColumns(record: object | undefined): boolean {
-  return !!record && 'status' in record
-}
-
 /** The review fields of a record, with the column defaults for missing values. */
 export function readAudioReview(record: Record<string, unknown>): AudioReviewFields {
   return {
@@ -43,13 +36,27 @@ export function readAudioReview(record: Record<string, unknown>): AudioReviewFie
  * Why this audio cannot be approved, or null when it can. A word without a lexeme
  * could play for a same-spelling word with a different tone.
  */
-export function approvalBlocker(record: Record<string, unknown> | AudioReviewFields): string | null {
+function approvalBlocker(record: Record<string, unknown> | AudioReviewFields): string | null {
   const text = typeof record.kbp_text === 'string' ? record.kbp_text : ''
   if (!kbpKey(text)) return 'Cannot approve: Kabiyè text is empty. Fill in what the recording says first.'
+  if (record.kind !== 'word' && record.kind !== 'sentence')
+    return 'Cannot approve: set the kind (word or sentence) first.'
   const lexemeId = typeof record.lexeme_id === 'string' ? record.lexeme_id.trim() : ''
   if (record.kind === 'word' && !lexemeId) {
     return 'Cannot approve: a word needs a lexeme id, or it could play for a same-spelling word with a different tone.'
   }
+  return null
+}
+
+/**
+ * approvalBlocker, plus a dictionary lookup: a word's lexeme id must name an existing
+ * entry, or the app would never find the recording through it.
+ */
+export async function checkApproval(record: Record<string, unknown> | AudioReviewFields): Promise<string | null> {
+  const blocker = approvalBlocker(record)
+  if (blocker || record.kind !== 'word') return blocker
+  const lexemeId = String(record.lexeme_id).trim()
+  if (!(await lexemeExists(lexemeId))) return `Cannot approve: lexeme id "${lexemeId}" is not in the dictionary.`
   return null
 }
 

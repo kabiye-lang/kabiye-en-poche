@@ -39,6 +39,9 @@ export function AudioPickerModal({ open, onClose, onSelect }: AudioPickerModalPr
     let query = supabase
       .from('audios')
       .select('id, storage_path, name, description, tags')
+      // Lesson editors may only pick reviewed native recordings, never TTS or unreviewed files.
+      .filter('status', 'eq', 'approved')
+      .filter('source', 'eq', 'native')
       .order('created_at', { ascending: false })
       .limit(50)
     if (search.trim()) {
@@ -111,13 +114,15 @@ export function AudioPickerModal({ open, onClose, onSelect }: AudioPickerModalPr
         blob = recordedBlob
         fileName = (recordName.trim() || `audio-${Date.now()}`) + '.webm'
       }
-      const result = await uploadAudio(blob, {
+      await uploadAudio(blob, {
         name: fileName,
         description: recordDescription.trim() || undefined,
         tags: tagsArr,
       })
-      onSelect(result.url)
-      onClose()
+      // A new recording is pending review, so it cannot be selected yet.
+      alert('Uploaded. Approve it in Audios before you select it here.')
+      setRecordedBlob(null)
+      setTab('search')
     } catch (err) {
       console.error(err)
       alert(err instanceof Error ? err.message : 'Upload failed')
@@ -172,7 +177,7 @@ export function AudioPickerModal({ open, onClose, onSelect }: AudioPickerModalPr
               {loading ? (
                 <p className="text-muted-foreground text-sm">Loading...</p>
               ) : audios.length === 0 ? (
-                <p className="text-muted-foreground text-sm">No audios found</p>
+                <p className="text-muted-foreground text-sm">No approved native audios found</p>
               ) : (
                 <div className="space-y-2">
                   {audios.map((a) => (
@@ -262,7 +267,7 @@ export function AudioPickerModal({ open, onClose, onSelect }: AudioPickerModalPr
                       disabled={uploading || !recordTags.trim()}
                       className="bg-primary rounded px-4 py-2 text-white disabled:opacity-50"
                     >
-                      {uploading ? 'Uploading...' : 'Upload & select'}
+                      {uploading ? 'Uploading...' : 'Upload for review'}
                     </button>
                     <button type="button" onClick={() => setRecordedBlob(null)} className="rounded border px-4 py-2">
                       Record again

@@ -13,7 +13,7 @@ import {
 } from 'react-admin'
 
 import { Input } from '@/components/ui/input'
-import { approvalBlocker, DEFAULT_AUDIO_REVIEW, hasReviewColumns, readAudioReview } from '@/lib/audio-review'
+import { checkApproval, DEFAULT_AUDIO_REVIEW, readAudioReview } from '@/lib/audio-review'
 import { trimSilence } from '@/lib/audio-trim'
 import { deleteAudioFromStorage, getAudioPublicUrl, uploadAudioToStorage } from '@/lib/audio-upload'
 
@@ -111,15 +111,13 @@ function AudioEditForm() {
       name: name.trim() || record.name,
       description: description.trim() || null,
       tags: tagsArr,
+      ...review,
     }
-    // Before the review migration these columns do not exist: sending them would fail every save.
-    if (hasReviewColumns(record)) {
-      Object.assign(payload, review)
-      const blocker = review.status === 'approved' ? approvalBlocker(review) : null
-      if (blocker) {
-        notify(blocker, { type: 'warning' })
-        return
-      }
+    // Check before any upload, so a refused approval leaves no orphan file in storage.
+    const blocker = review.status === 'approved' ? await checkApproval(review).catch((err: Error) => err.message) : null
+    if (blocker) {
+      notify(blocker, { type: 'warning' })
+      return
     }
 
     let newStoragePath: string | null = null
@@ -284,14 +282,7 @@ function AudioEditForm() {
           className="mt-1"
         />
       </div>
-      {hasReviewColumns(record) ? (
-        <AudioReviewFieldsInput value={review} onChange={setReview} />
-      ) : (
-        <p className="text-muted-foreground text-sm">
-          Review fields (kind, Kabiyè text, lexeme id, source, status) appear once the audio review migration is
-          applied.
-        </p>
-      )}
+      <AudioReviewFieldsInput value={review} onChange={setReview} />
       <div className="flex gap-2">
         <button
           type="submit"

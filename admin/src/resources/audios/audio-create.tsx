@@ -4,7 +4,7 @@ import { useRef, useState } from 'react'
 import { Create, useNotify, useRedirect, useUpdate } from 'react-admin'
 
 import { Input } from '@/components/ui/input'
-import { approvalBlocker, DEFAULT_AUDIO_REVIEW } from '@/lib/audio-review'
+import { checkApproval, DEFAULT_AUDIO_REVIEW } from '@/lib/audio-review'
 import { trimSilence } from '@/lib/audio-trim'
 import { uploadAudio } from '@/lib/audio-upload'
 
@@ -88,7 +88,7 @@ export const AudioCreate = () => {
       notify('At least one tag is required to find audios later', { type: 'warning' })
       return
     }
-    const blocker = review.status === 'approved' ? approvalBlocker(review) : null
+    const blocker = review.status === 'approved' ? await checkApproval(review).catch((err: Error) => err.message) : null
     if (blocker) {
       notify(blocker, { type: 'warning' })
       return
@@ -100,25 +100,19 @@ export const AudioCreate = () => {
         description: description.trim() || undefined,
         tags: tagsArr,
       })
-      // The upload function only writes the base columns. Save the review fields after it,
-      // and only when they differ from the column defaults, so creating works before the migration.
-      const reviewChanged = (Object.keys(review) as (keyof AudioReviewFields)[]).some(
-        (field) => (review[field] || null) !== DEFAULT_AUDIO_REVIEW[field]
-      )
-      if (reviewChanged) {
-        try {
-          await update(
-            'audios',
-            { id: created.id, data: review, previousData: { id: created.id } },
-            { returnPromise: true }
-          )
-        } catch (err) {
-          notify(`Audio uploaded, but review fields were not saved: ${err instanceof Error ? err.message : err}`, {
-            type: 'warning',
-          })
-          redirect('list', 'audios')
-          return
-        }
+      // The upload function writes only the base columns: save the review fields after it.
+      try {
+        await update(
+          'audios',
+          { id: created.id, data: review, previousData: { id: created.id } },
+          { returnPromise: true }
+        )
+      } catch (err) {
+        notify(`Audio uploaded, but review fields were not saved: ${err instanceof Error ? err.message : err}`, {
+          type: 'warning',
+        })
+        redirect('list', 'audios')
+        return
       }
       notify('ra.notification.created')
       redirect('list', 'audios')
