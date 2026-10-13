@@ -11,7 +11,7 @@ import {
   usePrimaryColor,
   usePrimaryForegroundColor,
 } from '../hooks/use-theme-color'
-import { SpeakerHighIcon, SpeakerSlashIcon } from './icons'
+import { SpeakerHighIcon } from './icons'
 
 const AnimatedPressable = Animated.createAnimatedComponent(Pressable)
 
@@ -95,10 +95,10 @@ export const AudioPlayButton = ({
             /* White, not paper: in dark the primary fill *is* paper, so a white glyph on
                it was a white circle. */
             <ActivityIndicator size={size === 'sm' ? 'small' : 'large'} color={onPrimary} />
-          ) : isPlaying ? (
-            <SpeakerHighIcon size={icon} color={iconColor} weight="fill" />
           ) : (
-            <SpeakerSlashIcon size={icon} color={iconColor} weight="fill" />
+            /* A speaker, idle or playing -- the fill tells them apart. Idle used to show a
+               struck-through speaker, which reads as "muted", not "tap to hear". */
+            <SpeakerHighIcon size={icon} color={iconColor} weight="fill" />
           )}
         </Animated.View>
       )}

@@ -2,51 +2,67 @@ import { useEffect, useRef, useState } from 'react'
 
 import { useAudioPlayer, useAudioPlayerStatus } from 'expo-audio'
 
+import { configureAudioSession } from '../utils/audio-session'
+
+/**
+ * How close to the end a clip must sit to count as finished. iOS pauses at the end of an
+ * item (`actionAtItemEnd = .pause`) and reports a position a few milliseconds short of
+ * the duration, so an exact comparison misses it.
+ */
+const END_TOLERANCE_SECONDS = 0.1
+
 export const useAudio = () => {
   const player = useAudioPlayer()
   const status = useAudioPlayerStatus(player)
-  const [isLoading, setIsLoading] = useState(false)
+  // Whether playback was ever asked for. A player with no source reports `isLoaded: false`
+  // too, and the button disables itself while loading -- so without this it would sit
+  // disabled before the first tap.
+  const [requested, setRequested] = useState(false)
   const currentSourceRef = useRef<string | null>(null)
 
-  // Cleanup audio on unmount
-  useEffect(() => {
-    return () => {
-      // Stop and reset audio if playing
-      if (player && status.playing) {
+  // Stop on unmount only. This used to depend on `status.playing` as well, so its cleanup
+  // ran -- pausing and rewinding -- every time playback started or stopped. Replay worked
+  // only by that accident; it is now explicit in `playAudio`.
+  useEffect(
+    function pauseOnUnmount() {
+      return () => {
         try {
           player.pause()
-          player.seekTo(0)
         } catch {
-          // Ignore errors during cleanup
+          // The player may already be released.
         }
       }
-    }
-  }, [player, status.playing])
+    },
+    [player]
+  )
 
   const playAudio = async (audioUri: string) => {
     try {
-      setIsLoading(true)
+      setRequested(true)
+      await configureAudioSession()
 
-      // If a different audio is loaded, replace it
       if (currentSourceRef.current !== audioUri) {
         player.replace({ uri: audioUri })
         currentSourceRef.current = audioUri
+      } else {
+        // The same clip again. At its end iOS leaves the position at the end, and `play()`
+        // from there plays nothing -- rewind first.
+        const atEnd =
+          status.didJustFinish || (status.duration > 0 && status.currentTime >= status.duration - END_TOLERANCE_SECONDS)
+        if (atEnd) await player.seekTo(0)
       }
 
-      // Play the audio
-      await player.play()
+      player.play()
     } catch (error) {
       console.error('Error playing audio:', error)
-    } finally {
-      setIsLoading(false)
     }
   }
 
   const stopAudio = async () => {
     try {
-      if (player && status.playing) {
+      if (status.playing) {
         player.pause()
-        player.seekTo(0) // Reset to beginning
+        await player.seekTo(0) // Reset to beginning
       }
     } catch (error) {
       console.error('Error stopping audio:', error)
@@ -55,7 +71,7 @@ export const useAudio = () => {
 
   const pauseAudio = async () => {
     try {
-      if (player && status.playing) {
+      if (status.playing) {
         player.pause()
       }
     } catch (error) {
@@ -65,8 +81,8 @@ export const useAudio = () => {
 
   const resumeAudio = async () => {
     try {
-      if (player && !status.playing) {
-        await player.play()
+      if (!status.playing) {
+        player.play()
       }
     } catch (error) {
       console.error('Error resuming audio:', error)
@@ -79,7 +95,9 @@ export const useAudio = () => {
     pauseAudio,
     resumeAudio,
     isPlaying: status.playing,
-    isLoading,
+    // `play()` returns nothing to await, so loading is read from the player: the source is
+    // not loaded yet after `replace`, or the player is buffering.
+    isLoading: requested && !status.error && (!status.isLoaded || status.isBuffering),
     // A URL can point at a recording that no longer exists in storage. Without
     // this the control just silently does nothing when tapped; callers use it to
     // say so instead.

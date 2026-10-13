@@ -37,6 +37,7 @@ import { Toaster } from 'sonner-native'
 import { useAppearance } from '../hooks/use-appearance'
 import i18n, { I18nProvider } from '../i18n'
 import { queryClient } from '../lib/query-client'
+import { configureAudioSession } from '../utils/audio-session'
 import { AppDarkTheme, AppDefaultTheme } from '../utils/design-system-nativewind'
 
 export {
@@ -49,6 +50,10 @@ export const unstable_settings = {
 }
 
 SplashScreen.preventAutoHideAsync()
+
+// Playback mode before anything can play -- see utils/audio-session.ts. Without it iOS
+// keeps `.soloAmbient` and the silent switch mutes every recording.
+void configureAudioSession()
 
 export default function RootLayout() {
   const [ready, setReady] = useState(false)

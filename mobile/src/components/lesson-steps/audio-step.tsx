@@ -6,7 +6,7 @@ import { useLingui } from '@lingui/react/macro'
 import { useAudio } from '../../hooks/use-audio'
 import { usableAudioUrl } from '../../utils/audio-source'
 import { AudioPlayButton } from '../audio-play-button'
-import { SpeakerHighIcon, SpeakerSlashIcon } from '../icons'
+import { SpeakerHighIcon } from '../icons'
 import { Button, Card, Text, View } from '../ui'
 
 interface AudioStepProps {
@@ -114,11 +114,8 @@ const AudioStep = ({
                       onPress={() => handleToggleAudio(line.audioUrl)}
                       className={`ml-3 rounded-full p-2 ${isPlaying ? 'bg-accent-fill' : 'bg-foreground'}`}
                     >
-                      {isPlaying ? (
-                        <SpeakerHighIcon size={20} color="white" weight="fill" />
-                      ) : (
-                        <SpeakerSlashIcon size={20} color="white" />
-                      )}
+                      {/* A speaker either way: a struck-through one read as "muted". */}
+                      <SpeakerHighIcon size={20} color="white" weight="fill" />
                     </Pressable>
                   )}
                 </View>

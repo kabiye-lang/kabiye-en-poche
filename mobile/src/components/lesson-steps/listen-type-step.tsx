@@ -10,7 +10,7 @@ import { useAudio } from '../../hooks/use-audio'
 import { useLanguage } from '../../hooks/use-language'
 import { useOnAccentColor, usePlaceholderColor, usePrimaryForegroundColor } from '../../hooks/use-theme-color'
 import { usableAudioUrl } from '../../utils/audio-source'
-import { LightbulbIcon, SpeakerHighIcon, SpeakerSlashIcon } from '../icons'
+import { LightbulbIcon, SpeakerHighIcon } from '../icons'
 import { Button, Card, Text, View } from '../ui'
 import MissNote from './miss-note'
 
@@ -108,10 +108,9 @@ const ListenTypeStep = ({ activity, onAnswer, isReview }: ListenTypeStepProps) =
             >
               {isLoading ? (
                 <ActivityIndicator size="large" color={glyphColor} />
-              ) : isPlaying ? (
-                <SpeakerHighIcon size={40} color={glyphColor} weight="fill" />
               ) : (
-                <SpeakerSlashIcon size={40} color={glyphColor} weight="fill" />
+                /* A speaker either way: a struck-through one read as "muted". */
+                <SpeakerHighIcon size={40} color={glyphColor} weight="fill" />
               )}
             </Pressable>
             <Text variant="caption" className="text-foreground-secondary mt-2 text-center">

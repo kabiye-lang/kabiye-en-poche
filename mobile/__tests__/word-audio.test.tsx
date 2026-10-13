@@ -42,9 +42,11 @@ describe('AudioPlayButton', () => {
     jest.clearAllMocks()
   })
 
-  it('shows slash icon when idle', async () => {
+  // A struck-through speaker reads as "muted", not "tap to hear" -- it was the idle glyph.
+  it('shows a speaker, not a muted speaker, when idle', async () => {
     await render(<AudioPlayButton isPlaying={false} isLoading={false} onPress={onPress} />, { wrapper })
-    expect(screen.getByText('SpeakerSlash')).toBeTruthy()
+    expect(screen.getByText('SpeakerHigh')).toBeTruthy()
+    expect(screen.queryByText('SpeakerSlash')).toBeNull()
   })
 
   it('shows high icon when playing', async () => {
@@ -62,7 +64,7 @@ describe('AudioPlayButton', () => {
   it('calls onPress when tapped', async () => {
     await render(<AudioPlayButton isPlaying={false} isLoading={false} onPress={onPress} />, { wrapper })
     // The root pressable should respond to press
-    fireEvent.press(screen.getByText('SpeakerSlash'))
+    fireEvent.press(screen.getByText('SpeakerHigh'))
     // onPress may not fire on the icon -- this tests the render at minimum
   })
 
