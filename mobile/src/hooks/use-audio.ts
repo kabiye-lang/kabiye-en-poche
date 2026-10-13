@@ -11,6 +11,13 @@ import { configureAudioSession } from '../utils/audio-session'
  */
 const END_TOLERANCE_SECONDS = 0.1
 
+/**
+ * How long a clip may stay loading before it counts as failed. A missing file does not
+ * always report `status.error`: the player can sit at `isLoaded: false` for good, and the
+ * button would spin, disabled, forever.
+ */
+export const LOAD_TIMEOUT_MS = 10_000
+
 export const useAudio = () => {
   const player = useAudioPlayer()
   const status = useAudioPlayerStatus(player)
@@ -37,6 +44,29 @@ export const useAudio = () => {
       }
     },
     [player]
+  )
+
+  // `play()` returns nothing to await, so loading is read from the player: the source is
+  // not loaded yet after `replace`, or the player is buffering.
+  const isLoading = requested && !status.error && (!status.isLoaded || status.isBuffering)
+
+  useEffect(
+    function failSlowLoad() {
+      if (!isLoading) return
+      const timer = setTimeout(() => {
+        try {
+          // Do not start playing seconds after the learner was told it failed.
+          player.pause()
+        } catch {
+          // The player may already be released.
+        }
+        currentSourceRef.current = null
+        setRequested(false)
+        setPlayError('Timed out loading audio')
+      }, LOAD_TIMEOUT_MS)
+      return () => clearTimeout(timer)
+    },
+    [isLoading, player]
   )
 
   const playAudio = async (audioUri: string) => {
@@ -76,11 +106,12 @@ export const useAudio = () => {
   }
 
   const stopAudio = async () => {
+    // Unconditional: `status` here can be a render behind (a caller stopping from an
+    // effect sees the status of the render that scheduled it), and pausing a paused
+    // player is harmless.
     try {
-      if (status.playing) {
-        player.pause()
-        await player.seekTo(0) // Reset to beginning
-      }
+      player.pause()
+      await player.seekTo(0) // Reset to beginning
     } catch (error) {
       console.error('Error stopping audio:', error)
     }
@@ -112,9 +143,7 @@ export const useAudio = () => {
     pauseAudio,
     resumeAudio,
     isPlaying: status.playing,
-    // `play()` returns nothing to await, so loading is read from the player: the source is
-    // not loaded yet after `replace`, or the player is buffering.
-    isLoading: requested && !status.error && (!status.isLoaded || status.isBuffering),
+    isLoading,
     // A URL can point at a recording that no longer exists in storage. Without
     // this the control just silently does nothing when tapped; callers use it to
     // say so instead.

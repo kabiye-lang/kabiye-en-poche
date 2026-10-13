@@ -39,13 +39,12 @@ import {
   useAppLessonContents,
   useAppProgressSummary,
 } from '../hooks/use-app-data'
-import { useLessonAudioIndex } from '../hooks/use-audio-index'
+import { useLessonAudio } from '../hooks/use-audio-index'
 import { useLanguage } from '../hooks/use-language'
 import { useLessonSession } from '../hooks/use-lesson-session'
 import { useMyWords } from '../hooks/use-my-words'
 import { hasActivity } from '../types/lesson-steps'
 import { buildLessonSteps, taughtWords } from '../utils/build-lesson-steps'
-import { exampleAudioUrl } from '../utils/find-audio'
 import { practisedWords } from '../utils/lesson-outcomes'
 import { progressView as computeProgressView, reviewOutcomes } from '../utils/lesson-session'
 import { isWritten } from '../utils/lesson-status'
@@ -79,10 +78,11 @@ const LessonScreen = () => {
   /** The words this lesson teaches, in the order it teaches them -- see `taughtWords`. */
   const { words, sectionOf } = useMemo(() => taughtWords(contents), [contents])
 
-  // Every playable recording, for the Teach cards and the listening questions built from
-  // them, frozen for this lesson session (see `useLessonAudioIndex`). A failed load is an
-  // empty index: the lesson runs exactly as it does without audio.
-  const { index: audioIndex, isSettled: audioIndexSettled } = useLessonAudioIndex(lessonId)
+  // Each taught word's recording, for the Teach cards and the listening questions built
+  // from them, fixed for this lesson session and stored with it (see `useLessonAudio`). A
+  // failed load means no recordings: the lesson runs exactly as it does without audio.
+  const lessonAudio = useLessonAudio(lessonId, words, contents !== undefined)
+  const { audioFor } = lessonAudio
 
   /** Steps, in the Laterite order -- see `buildLessonSteps`. */
   const steps = useMemo<LessonStep[]>(() => {
@@ -94,9 +94,9 @@ const LessonScreen = () => {
       words,
       sectionOf,
       getValue,
-      audioFor: (word) => exampleAudioUrl(audioIndex, word),
+      audioFor,
     })
-  }, [lesson, lessonId, contents, activities, words, sectionOf, getValue, audioIndex])
+  }, [lesson, lessonId, contents, activities, words, sectionOf, getValue, audioFor])
 
   /** The fixed lesson `utils/lesson-session.ts` walks: cover through the last taught or
    *  practised step, excluding `completion` -- `finish` is a phase, not a step. */
@@ -109,9 +109,10 @@ const LessonScreen = () => {
   // worked on a real network. Hand it the steps only once every query has settled.
   // Data present, not merely "done loading": a query that fails also stops loading, and
   // `activities ?? []` would then build a lesson with no exercises and save a session for it.
-  // The audio index is part of the content: a recorded word gains a listening question, so
-  // a step list built before the index settled would change under the restored session.
-  const contentReady = lesson !== undefined && contents !== undefined && activities !== undefined && audioIndexSettled
+  // The recordings are part of the content: a recorded word gains a listening question, so
+  // a step list built before they settled would change under the restored session.
+  const contentReady =
+    lesson !== undefined && contents !== undefined && activities !== undefined && lessonAudio.isSettled
   const lessonSession = useLessonSession(lessonId, contentReady ? lessonSteps : NO_STEPS)
   const { session } = lessonSession
 
@@ -161,6 +162,7 @@ const LessonScreen = () => {
       // The stored session's job ends here -- reopening this lesson starts fresh. A
       // failed removal is logged inside `clear()`; either way the learner still leaves.
       await lessonSession.clear()
+      await lessonAudio.clear()
       toast.success(t`Lesson Completed!`, {
         description: t`Great job! You've completed this lesson.`,
       })
@@ -316,7 +318,7 @@ const LessonScreen = () => {
   // The first teach card in the walk that has no recording. It carries the one sentence
   // explaining the silence; every card after it is simply silent, which is the point.
   const firstSilentTeachIndex = lessonSteps.findIndex(
-    (step) => step.type === 'teach' && exampleAudioUrl(audioIndex, step.example) === undefined
+    (step) => step.type === 'teach' && audioFor(step.example) === undefined
   )
   const currentLessonIndex = session.phase === 'lesson' ? session.lessonIndex : -1
 
@@ -419,7 +421,7 @@ const LessonScreen = () => {
           {currentStep.type === 'teach' ? (
             <TeachStep
               example={currentStep.example}
-              audioUrl={exampleAudioUrl(audioIndex, currentStep.example)}
+              audioUrl={audioFor(currentStep.example)}
               onContinue={handleAdvance}
               explainMissingAudio={currentLessonIndex === firstSilentTeachIndex}
             />

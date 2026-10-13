@@ -25,16 +25,16 @@ export const EMPTY_AUDIO_INDEX: AudioIndex = { records: [] }
  *
  * Kabiyè does not write tone, so a spelling alone does not name a word: `keɖe#1` and
  * `keɖe#2` are spelled alike and may be said differently. Silence beats teaching the
- * wrong word, so a word recording plays only when nothing else could be meant.
+ * wrong word, so a word recording plays only for the exact lexeme asked for.
  *
  * Word lookups (the default) consider only rows with `kind = 'word'`. A word recording is
  * one form of one lexeme -- the pair (lexeme_id, kbp_key) -- because a lesson can show an
  * inflected form (`ɛcaɣ`) of a lexeme whose headword is another (`caɣʋ`).
  *
- * - With a `lexemeId`: only a row filed under that exact lexeme AND that spelling. No
- *   spelling fallback at all.
- * - Without one: a row whose spelling matches, filed under a lexeme id with no `#n`. A
- *   numbered lexeme means same-spelling siblings exist. Exactly one lexeme may remain.
+ * - Only a row filed under the caller's exact `lexemeId` AND that spelling plays. Ids are
+ *   compared in NFC, so a headword typed or stored decomposed still finds its row.
+ * - Without a `lexemeId` nothing plays. Every lesson example carries one, and a spelling
+ *   alone could only ever pick the wrong lexeme.
  * - A word row with no lexeme id is never played.
  *
  * Sentence lookups consider only `kind = 'sentence'` rows, by `kbp_key` alone. A sentence
@@ -53,11 +53,9 @@ export function findAudio(
 
   if (kind === 'sentence') return records[0]?.url
 
-  if (lexemeId) return records.find((record) => record.lexemeId === lexemeId)?.url
-
-  const candidates = records.filter((record) => record.lexemeId !== null && !record.lexemeId.includes('#'))
-  const lexemes = new Set(candidates.map((record) => record.lexemeId))
-  return lexemes.size === 1 ? candidates[0].url : undefined
+  if (!lexemeId) return undefined
+  const wanted = lexemeId.normalize('NFC')
+  return records.find((record) => record.lexemeId?.normalize('NFC') === wanted)?.url
 }
 
 /**

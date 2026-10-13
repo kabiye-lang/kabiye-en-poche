@@ -34,15 +34,24 @@ describe('findAudio', () => {
     expect(findAudio(idx, { lexemeId: 'keɖe#2', kbp: 'keɖe' })).toBeUndefined()
   })
 
-  it('plays nothing by spelling alone when the only recording is a numbered homograph', () => {
-    const idx = index(rec('one.m4a', { kbpKey: 'keɖe', lexemeId: 'keɖe#1' }))
+  // Review round 2: the spelling fallback could only ever pick the wrong lexeme.
+  it('plays nothing for a word looked up without a lexeme id', () => {
+    const idx = index(
+      rec('n.m4a', { kbpKey: 'nzʋlʋmɩyɛ', lexemeId: 'nzʋlʋmɩyɛ' }),
+      rec('one.m4a', { kbpKey: 'keɖe', lexemeId: 'keɖe#1' })
+    )
+    expect(findAudio(idx, { kbp: 'nzʋlʋmɩyɛ' })).toBeUndefined()
     expect(findAudio(idx, { kbp: 'keɖe' })).toBeUndefined()
   })
 
-  it('plays by spelling alone for a lexeme with no homographs, ignoring tone, case and punctuation', () => {
-    const idx = index(rec('n.m4a', { kbpKey: 'nzʋlʋmɩyɛ', lexemeId: 'nzʋlʋmɩyɛ' }))
-    expect(findAudio(idx, { kbp: 'nzʋlʋmɩyɛ' })).toBe(BASE + 'n.m4a')
-    expect(findAudio(index(rec('p.m4a', { kbpKey: 'pana', lexemeId: 'pana' })), { kbp: 'Páná!' })).toBe(BASE + 'p.m4a')
+  it('ignores tone, case and punctuation in the spelling shown', () => {
+    const idx = index(rec('p.m4a', { kbpKey: 'pana', lexemeId: 'pana' }))
+    expect(findAudio(idx, { lexemeId: 'pana', kbp: 'Páná!' })).toBe(BASE + 'p.m4a')
+  })
+
+  it('matches a lexeme id given in decomposed form (NFD) against the stored NFC one', () => {
+    const idx = index(rec('n.m4a', { kbpKey: 'ñɩnɖʋ', lexemeId: 'ñɩnɖʋ'.normalize('NFC') }))
+    expect(findAudio(idx, { lexemeId: 'ñɩnɖʋ'.normalize('NFD'), kbp: 'ñɩnɖʋ'.normalize('NFD') })).toBe(BASE + 'n.m4a')
   })
 
   it('never plays a word recording with no lexeme id', () => {
@@ -99,11 +108,13 @@ describe('exampleAudioUrl', () => {
 
   it('falls back to the index when the legacy URL is not ours', () => {
     const idx = index(rec('indexed.m4a', { kbpKey: 'wɩʋ', lexemeId: 'wɩʋ' }))
-    expect(exampleAudioUrl(idx, { kbp: 'wɩʋ', audio_url: 'https://example.com/x.mp3' })).toBe(BASE + 'indexed.m4a')
+    expect(exampleAudioUrl(idx, { kbp: 'wɩʋ', lexeme_id: 'wɩʋ', audio_url: 'https://example.com/x.mp3' })).toBe(
+      BASE + 'indexed.m4a'
+    )
   })
 
   it('rejects an index URL that is not on our origin', () => {
     const idx = { records: [{ url: 'https://example.com/x.m4a', kind: 'word', kbpKey: 'wɩʋ', lexemeId: 'wɩʋ' }] }
-    expect(exampleAudioUrl(idx, { kbp: 'wɩʋ' })).toBeUndefined()
+    expect(exampleAudioUrl(idx, { kbp: 'wɩʋ', lexeme_id: 'wɩʋ' })).toBeUndefined()
   })
 })

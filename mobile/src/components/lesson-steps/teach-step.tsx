@@ -1,5 +1,6 @@
 import type { LessonExample } from '../../types/lesson-steps'
 
+import { useEffect, useRef } from 'react'
 import { ScrollView } from 'react-native'
 
 import { router } from 'expo-router'
@@ -44,6 +45,19 @@ interface TeachStepProps {
 const TeachStep = ({ example, audioUrl, onContinue, explainMissingAudio }: TeachStepProps) => {
   const { t } = useLingui()
   const { playAudio, stopAudio, isPlaying, isLoading, error: audioError } = useAudio()
+
+  // A card handed a new word must not keep saying the old one over it. The lesson keys
+  // each step by id, so today a new word means a new card; this holds if that changes.
+  const wordKey = `${example.lexeme_id ?? ''}|${example.kbp}|${audioUrl ?? ''}`
+  const shownWordRef = useRef(wordKey)
+  useEffect(
+    function stopOnNewWord() {
+      if (shownWordRef.current === wordKey) return
+      shownWordRef.current = wordKey
+      void stopAudio()
+    },
+    [wordKey, stopAudio]
+  )
 
   return (
     <View className="bg-background flex-1">

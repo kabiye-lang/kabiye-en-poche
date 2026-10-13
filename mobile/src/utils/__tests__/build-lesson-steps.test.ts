@@ -2,6 +2,7 @@ import type { LessonExample, LessonStep } from '../../types/lesson-steps'
 import type { LessonActivity, Tables } from '../../types/supabase'
 
 import { buildLessonSteps, taughtWords } from '../build-lesson-steps'
+import { fingerprintLesson } from '../lesson-session'
 
 jest.mock('expo-constants', () => ({
   __esModule: true,
@@ -80,6 +81,14 @@ describe('buildLessonSteps', () => {
       ['activity-a3', 'multiple_choice', null],
       ['completion', 'completion', null],
     ])
+  })
+
+  // Review round 2 (P3): the shape above can hold while `activity.data` or the teach
+  // examples drift, and any drift deletes every saved session on update. This value is
+  // what origin/develop's inline builder (lesson.tsx before this branch) gives the same
+  // fixture.
+  it('fingerprints a lesson with no recordings exactly as the pre-audio builder did', () => {
+    expect(fingerprintLesson(build(() => undefined).slice(0, -1))).toBe('zlobkl')
   })
 
   it('adds a listen_choose after the paired activity of each recorded word', () => {

@@ -16,7 +16,14 @@ import {
   showWord as pureShowWord,
 } from '../utils/lesson-session'
 
-const sessionKey = (lessonId: string) => `lesson-session:v1:${lessonId}`
+export const sessionKey = (lessonId: string) => `lesson-session:v1:${lessonId}`
+
+/**
+ * Which taught words had a recording when the lesson session started -- see
+ * `useLessonAudio`. Kept apart from the session itself: the session is decoded against the
+ * lesson's steps, and the steps cannot be built until this has been read.
+ */
+export const audioSnapshotKey = (lessonId: string) => `lesson-audio:v1:${lessonId}`
 
 // A storage failure costs the learner a resume point, not the lesson itself -- the app
 // keeps working in memory. Logged once per app run rather than once per failure, which on

@@ -3,7 +3,7 @@ import type { AudioStatus } from 'expo-audio'
 import { act, renderHook } from '@testing-library/react-native'
 
 import * as audioSession from '../../utils/audio-session'
-import { useAudio } from '../use-audio'
+import { LOAD_TIMEOUT_MS, useAudio } from '../use-audio'
 
 // expo-audio is mocked at the module boundary: one player, and a status the test sets
 // before each render -- the way `useAudioPlayerStatus` hands the hook native events.
@@ -167,5 +167,54 @@ describe('useAudio', () => {
 
     await act(() => result.current.playAudio(URL))
     expect(configure).toHaveBeenCalledTimes(2)
+  })
+
+  // Review round 2 (P2): a missing file can leave the player at `isLoaded: false` with no
+  // `status.error`. The spinner -- a disabled button -- must not last for ever.
+  describe('load timeout', () => {
+    beforeEach(() => jest.useFakeTimers())
+    afterEach(() => jest.useRealTimers())
+
+    it('gives up on a clip that never loads, says so, and lets the next tap load it again', async () => {
+      const { result } = await renderHook(() => useAudio())
+      await act(() => result.current.playAudio(URL))
+      expect(result.current.isLoading).toBe(true)
+
+      await act(async () => {
+        jest.advanceTimersByTime(LOAD_TIMEOUT_MS)
+      })
+      expect(result.current.isLoading).toBe(false)
+      expect(result.current.error).toEqual(expect.any(String))
+      expect(mockPlayer.pause).toHaveBeenCalled()
+
+      jest.clearAllMocks()
+      await act(() => result.current.playAudio(URL))
+      expect(mockPlayer.replace).toHaveBeenCalledWith({ uri: URL })
+      expect(result.current.error).toBeNull()
+    })
+
+    it('does not time out a clip that loaded in time', async () => {
+      const { result, rerender } = await renderHook(() => useAudio())
+      await act(() => result.current.playAudio(URL))
+      mockStatus = { ...idle, isLoaded: true, playing: true, duration: 30 }
+      await rerender({})
+
+      await act(async () => {
+        jest.advanceTimersByTime(LOAD_TIMEOUT_MS * 2)
+      })
+      expect(result.current.error).toBeNull()
+      expect(mockPlayer.pause).not.toHaveBeenCalled()
+    })
+  })
+
+  // Review round 2 (P3): the Teach card stops the clip from an effect, where `status` can
+  // be a render behind and still read `playing: false`. Stopping must not depend on it.
+  it('stops even when the status it holds does not yet say playing', async () => {
+    const { result } = await renderHook(() => useAudio())
+    await act(() => result.current.playAudio(URL))
+
+    await act(() => result.current.stopAudio())
+    expect(mockPlayer.pause).toHaveBeenCalled()
+    expect(mockPlayer.seekTo).toHaveBeenCalledWith(0)
   })
 })
