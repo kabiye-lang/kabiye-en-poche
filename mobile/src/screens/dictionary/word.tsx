@@ -65,17 +65,17 @@ const WordDetailsScreen: React.FC = () => {
   const { entry_data } = entry
   const translation = currentLanguage === 'fr' ? 'fr' : 'en'
 
-  // The headword's recording, by lexeme id: the headword, plus `#n` for a homograph --
-  // the same id lesson examples carry. A homograph shares its spelling with its siblings
-  // (keɖe#1, keɖe#2) and Kabiyè does not write the tone that tells them apart, so it gets
-  // only a recording filed under its own id, never one found by spelling.
+  // The headword's recording: this lexeme (the headword, plus `#n` for a homograph -- the
+  // id lesson examples carry) in its headword form. Never another homograph's recording:
+  // `findAudio` plays only an exact (lexeme id, spelling) match when given a lexeme id.
   const homograph = entry_data.homograph_number
   const headwordAudio = usableAudioUrl(
     findAudio(audioIndex, {
       lexemeId: homograph ? `${entry_data.headword}#${homograph}` : entry_data.headword,
-      kbp: homograph ? '' : entry_data.headword,
+      kbp: entry_data.headword,
     })
   )
+
   // The print sends a dagger entry to its main word with "Voir": the `see` relation.
   const standardForm =
     entry_data.senses?.[0]?.lexRefs?.find((ref) => ref.type === 'see')?.targets?.[0] ??

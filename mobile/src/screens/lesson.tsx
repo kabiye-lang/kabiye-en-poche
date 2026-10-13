@@ -39,7 +39,7 @@ import {
   useAppLessonContents,
   useAppProgressSummary,
 } from '../hooks/use-app-data'
-import { useAudioIndex } from '../hooks/use-audio-index'
+import { useLessonAudioIndex } from '../hooks/use-audio-index'
 import { useLanguage } from '../hooks/use-language'
 import { useLessonSession } from '../hooks/use-lesson-session'
 import { useMyWords } from '../hooks/use-my-words'
@@ -80,8 +80,9 @@ const LessonScreen = () => {
   const { words, sectionOf } = useMemo(() => taughtWords(contents), [contents])
 
   // Every playable recording, for the Teach cards and the listening questions built from
-  // them. A failed load is an empty index: the lesson runs exactly as it does without audio.
-  const { index: audioIndex, isSettled: audioIndexSettled } = useAudioIndex()
+  // them, frozen for this lesson session (see `useLessonAudioIndex`). A failed load is an
+  // empty index: the lesson runs exactly as it does without audio.
+  const { index: audioIndex, isSettled: audioIndexSettled } = useLessonAudioIndex(lessonId)
 
   /** Steps, in the Laterite order -- see `buildLessonSteps`. */
   const steps = useMemo<LessonStep[]>(() => {

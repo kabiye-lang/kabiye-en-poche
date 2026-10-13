@@ -20,36 +20,45 @@ const rec = (name: string, fields: Partial<AudioRecord>): AudioRecord => ({
 const index = (...records: AudioRecord[]) => ({ records })
 
 describe('findAudio', () => {
-  it('prefers the exact lexeme id over a spelling match', () => {
-    const idx = index(rec('spelled.m4a', { kbpKey: 'keɖe' }), rec('exact.m4a', { kbpKey: 'keɖe', lexemeId: 'keɖe#1' }))
-    expect(findAudio(idx, { lexemeId: 'keɖe#1', kbp: 'keɖe' })).toBe(BASE + 'exact.m4a')
-  })
-
-  it('matches by spelling, ignoring tone, case and punctuation', () => {
-    const idx = index(rec('pana.m4a', { kbpKey: 'pana' }))
-    expect(findAudio(idx, { kbp: 'Páná!' })).toBe(BASE + 'pana.m4a')
-  })
-
-  it('skips a spelling match filed under a different lexeme', () => {
-    const idx = index(rec('other.m4a', { kbpKey: 'keɖe', lexemeId: 'keɖe#2' }))
-    expect(findAudio(idx, { lexemeId: 'keɖe#1', kbp: 'keɖe' })).toBeUndefined()
-  })
-
-  it('never guesses between two lexemes spelled alike', () => {
+  it('plays the exact lexeme and form the caller names', () => {
     const idx = index(
       rec('one.m4a', { kbpKey: 'keɖe', lexemeId: 'keɖe#1' }),
       rec('two.m4a', { kbpKey: 'keɖe', lexemeId: 'keɖe#2' })
     )
+    expect(findAudio(idx, { lexemeId: 'keɖe#2', kbp: 'keɖe' })).toBe(BASE + 'two.m4a')
+  })
+
+  // Review P1: a spelling fallback played keɖe#1's recording for keɖe#2.
+  it('plays nothing for a lexeme id with no recording of its own, even when a sibling has one', () => {
+    const idx = index(rec('one.m4a', { kbpKey: 'keɖe', lexemeId: 'keɖe#1' }))
+    expect(findAudio(idx, { lexemeId: 'keɖe#2', kbp: 'keɖe' })).toBeUndefined()
+  })
+
+  it('plays nothing by spelling alone when the only recording is a numbered homograph', () => {
+    const idx = index(rec('one.m4a', { kbpKey: 'keɖe', lexemeId: 'keɖe#1' }))
     expect(findAudio(idx, { kbp: 'keɖe' })).toBeUndefined()
   })
 
-  it('takes the first match when every candidate is the same lexeme or unfiled', () => {
+  it('plays by spelling alone for a lexeme with no homographs, ignoring tone, case and punctuation', () => {
+    const idx = index(rec('n.m4a', { kbpKey: 'nzʋlʋmɩyɛ', lexemeId: 'nzʋlʋmɩyɛ' }))
+    expect(findAudio(idx, { kbp: 'nzʋlʋmɩyɛ' })).toBe(BASE + 'n.m4a')
+    expect(findAudio(index(rec('p.m4a', { kbpKey: 'pana', lexemeId: 'pana' })), { kbp: 'Páná!' })).toBe(BASE + 'p.m4a')
+  })
+
+  it('never plays a word recording with no lexeme id', () => {
+    const idx = index(rec('unfiled.m4a', { kbpKey: 'nzʋlʋmɩyɛ' }))
+    expect(findAudio(idx, { kbp: 'nzʋlʋmɩyɛ' })).toBeUndefined()
+    expect(findAudio(idx, { lexemeId: 'nzʋlʋmɩyɛ', kbp: 'nzʋlʋmɩyɛ' })).toBeUndefined()
+  })
+
+  // One lexeme, several recorded forms: a lesson can show an inflected form.
+  it('plays the form shown, not another form of the same lexeme', () => {
     const idx = index(
-      rec('unfiled.m4a', { kbpKey: 'keɖe' }),
-      rec('one.m4a', { kbpKey: 'keɖe', lexemeId: 'keɖe#1' }),
-      rec('one-again.m4a', { kbpKey: 'keɖe', lexemeId: 'keɖe#1' })
+      rec('headword.m4a', { kbpKey: 'caɣʋ', lexemeId: 'caɣʋ' }),
+      rec('inflected.m4a', { kbpKey: 'ɛcaɣ', lexemeId: 'caɣʋ' })
     )
-    expect(findAudio(idx, { kbp: 'keɖe' })).toBe(BASE + 'unfiled.m4a')
+    expect(findAudio(idx, { lexemeId: 'caɣʋ', kbp: 'ɛcaɣ' })).toBe(BASE + 'inflected.m4a')
+    expect(findAudio(idx, { lexemeId: 'caɣʋ', kbp: 'caɣʋ' })).toBe(BASE + 'headword.m4a')
   })
 
   // Lesson sentences carry the lexeme id of the word they illustrate.
@@ -72,7 +81,7 @@ describe('findAudio', () => {
 
   it('finds nothing in an empty index or for an empty word', () => {
     expect(findAudio(EMPTY_AUDIO_INDEX, { kbp: 'keɖe' })).toBeUndefined()
-    expect(findAudio(index(rec('x.m4a', { kbpKey: '' })), { kbp: '!' })).toBeUndefined()
+    expect(findAudio(index(rec('x.m4a', { kbpKey: '', lexemeId: 'x' })), { kbp: '!' })).toBeUndefined()
   })
 
   it('answers every lookup with the development fixture when one is set', () => {
@@ -84,17 +93,17 @@ describe('findAudio', () => {
 
 describe('exampleAudioUrl', () => {
   it('keeps a hosted legacy audio_url ahead of the index', () => {
-    const idx = index(rec('indexed.m4a', { kbpKey: 'keɖe' }))
-    expect(exampleAudioUrl(idx, { kbp: 'keɖe', audio_url: BASE + 'legacy.m4a' })).toBe(BASE + 'legacy.m4a')
+    const idx = index(rec('indexed.m4a', { kbpKey: 'wɩʋ', lexemeId: 'wɩʋ' }))
+    expect(exampleAudioUrl(idx, { kbp: 'wɩʋ', audio_url: BASE + 'legacy.m4a' })).toBe(BASE + 'legacy.m4a')
   })
 
   it('falls back to the index when the legacy URL is not ours', () => {
-    const idx = index(rec('indexed.m4a', { kbpKey: 'keɖe' }))
-    expect(exampleAudioUrl(idx, { kbp: 'keɖe', audio_url: 'https://example.com/x.mp3' })).toBe(BASE + 'indexed.m4a')
+    const idx = index(rec('indexed.m4a', { kbpKey: 'wɩʋ', lexemeId: 'wɩʋ' }))
+    expect(exampleAudioUrl(idx, { kbp: 'wɩʋ', audio_url: 'https://example.com/x.mp3' })).toBe(BASE + 'indexed.m4a')
   })
 
   it('rejects an index URL that is not on our origin', () => {
-    const idx = { records: [{ url: 'https://example.com/x.m4a', kind: 'word', kbpKey: 'keɖe', lexemeId: null }] }
-    expect(exampleAudioUrl(idx, { kbp: 'keɖe' })).toBeUndefined()
+    const idx = { records: [{ url: 'https://example.com/x.m4a', kind: 'word', kbpKey: 'wɩʋ', lexemeId: 'wɩʋ' }] }
+    expect(exampleAudioUrl(idx, { kbp: 'wɩʋ' })).toBeUndefined()
   })
 })

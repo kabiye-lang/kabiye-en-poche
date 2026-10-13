@@ -23,13 +23,19 @@ export const EMPTY_AUDIO_INDEX: AudioIndex = { records: [] }
 /**
  * The recording of one Kabiyè word or sentence, or undefined when we have none we can trust.
  *
- * Word lookups (the default) consider only rows with `kind = 'word'`:
+ * Kabiyè does not write tone, so a spelling alone does not name a word: `keɖe#1` and
+ * `keɖe#2` are spelled alike and may be said differently. Silence beats teaching the
+ * wrong word, so a word recording plays only when nothing else could be meant.
  *
- * 1. A recording filed under the word's exact `lexemeId` wins.
- * 2. Otherwise a recording whose `kbp_key` matches the word's spelling, skipping any that
- *    is filed under a different lexeme. If what is left belongs to more than one lexeme,
- *    there is no answer: Kabiyè does not write tone, so `keɖe#1` and `keɖe#2` are spelled
- *    alike and may be said differently. Silence beats teaching the wrong word.
+ * Word lookups (the default) consider only rows with `kind = 'word'`. A word recording is
+ * one form of one lexeme -- the pair (lexeme_id, kbp_key) -- because a lesson can show an
+ * inflected form (`ɛcaɣ`) of a lexeme whose headword is another (`caɣʋ`).
+ *
+ * - With a `lexemeId`: only a row filed under that exact lexeme AND that spelling. No
+ *   spelling fallback at all.
+ * - Without one: a row whose spelling matches, filed under a lexeme id with no `#n`. A
+ *   numbered lexeme means same-spelling siblings exist. Exactly one lexeme may remain.
+ * - A word row with no lexeme id is never played.
  *
  * Sentence lookups consider only `kind = 'sentence'` rows, by `kbp_key` alone. A sentence
  * row carries the lexeme id of the word it illustrates, so matching it by lexeme id would
@@ -41,25 +47,17 @@ export function findAudio(
 ): string | undefined {
   if (index.fixtureUrl) return index.fixtureUrl
 
-  const records = index.records.filter((record) => record.kind === kind)
   const key = kbpKey(kbp)
-
-  if (kind === 'sentence') {
-    return key ? records.find((record) => record.kbpKey === key)?.url : undefined
-  }
-
-  if (lexemeId) {
-    const exact = records.find((record) => record.lexemeId === lexemeId)
-    if (exact) return exact.url
-  }
-
   if (!key) return undefined
-  const candidates = records.filter(
-    (record) => record.kbpKey === key && !(lexemeId && record.lexemeId && record.lexemeId !== lexemeId)
-  )
-  const lexemes = new Set(candidates.map((record) => record.lexemeId).filter((id) => id !== null))
-  if (lexemes.size > 1) return undefined
-  return candidates[0]?.url
+  const records = index.records.filter((record) => record.kind === kind && record.kbpKey === key)
+
+  if (kind === 'sentence') return records[0]?.url
+
+  if (lexemeId) return records.find((record) => record.lexemeId === lexemeId)?.url
+
+  const candidates = records.filter((record) => record.lexemeId !== null && !record.lexemeId.includes('#'))
+  const lexemes = new Set(candidates.map((record) => record.lexemeId))
+  return lexemes.size === 1 ? candidates[0].url : undefined
 }
 
 /**

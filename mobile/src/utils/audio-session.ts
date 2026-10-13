@@ -15,7 +15,8 @@ let configured: Promise<void> | undefined
  * background playback and no recording -- the app does neither.
  *
  * Called at app start from the root layout and awaited again before every play, so a
- * clip can never start before the mode is set. A failure is retried on the next call.
+ * clip can never start before the mode is set. A failure rejects, and is not cached: the
+ * next call -- the next tap on a play button -- tries again.
  */
 export function configureAudioSession(): Promise<void> {
   configured ??= setAudioModeAsync({
@@ -23,8 +24,9 @@ export function configureAudioSession(): Promise<void> {
     interruptionMode: 'duckOthers',
     shouldPlayInBackground: false,
     allowsRecording: false,
-  }).catch(() => {
+  }).catch((error: unknown) => {
     configured = undefined
+    throw error
   })
   return configured
 }

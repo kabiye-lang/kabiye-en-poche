@@ -1,5 +1,7 @@
 import type { AudioIndex, AudioRecord } from '../utils/find-audio'
 
+import { useState } from 'react'
+
 import { useQuery } from '@tanstack/react-query'
 
 import { supabase } from '../lib/supabase'
@@ -59,4 +61,24 @@ export function useAudioIndex(): { index: AudioIndex; isSettled: boolean } {
     index: query.data ?? EMPTY_AUDIO_INDEX,
     isSettled: !query.isPending,
   }
+}
+
+/**
+ * The audio index as it was when this lesson session started, frozen until the screen
+ * goes away.
+ *
+ * A lesson's steps depend on the index (a recorded word gains a listening question), and
+ * the saved session is tied to those steps. The live index can change mid-lesson: after a
+ * failed load, any other screen that reads it -- "Look it up" opens the dictionary --
+ * retries, and a success would rebuild the steps under the learner and break resume. So
+ * the first settled value, the empty fallback included, is kept for `key` (the lesson id).
+ */
+export function useLessonAudioIndex(key: string): { index: AudioIndex; isSettled: boolean } {
+  const live = useAudioIndex()
+  const [frozen, setFrozen] = useState<{ key: string; index: AudioIndex } | undefined>(undefined)
+
+  // Render-time state adjustment: take the first settled index for this key, once.
+  if (live.isSettled && frozen?.key !== key) setFrozen({ key, index: live.index })
+
+  return frozen?.key === key ? { index: frozen.index, isSettled: true } : { index: EMPTY_AUDIO_INDEX, isSettled: false }
 }

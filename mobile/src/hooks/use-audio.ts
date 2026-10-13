@@ -18,6 +18,9 @@ export const useAudio = () => {
   // too, and the button disables itself while loading -- so without this it would sit
   // disabled before the first tap.
   const [requested, setRequested] = useState(false)
+  // A failure thrown by `replace()` or `play()` itself. The player's own `status.error`
+  // covers a source that loaded and then failed natively.
+  const [playError, setPlayError] = useState<string | null>(null)
   const currentSourceRef = useRef<string | null>(null)
 
   // Stop on unmount only. This used to depend on `status.playing` as well, so its cleanup
@@ -37,11 +40,20 @@ export const useAudio = () => {
   )
 
   const playAudio = async (audioUri: string) => {
-    try {
-      setRequested(true)
-      await configureAudioSession()
+    setPlayError(null)
+    setRequested(true)
 
-      if (currentSourceRef.current !== audioUri) {
+    try {
+      await configureAudioSession()
+    } catch (error) {
+      // Play anyway: the clip is still heard unless the silent switch is on, and the
+      // next tap tries the session again.
+      console.warn('Could not set the audio mode:', error)
+    }
+
+    try {
+      // A source that failed natively is loaded again rather than played as it is.
+      if (currentSourceRef.current !== audioUri || status.error) {
         player.replace({ uri: audioUri })
         currentSourceRef.current = audioUri
       } else {
@@ -54,6 +66,11 @@ export const useAudio = () => {
 
       player.play()
     } catch (error) {
+      // Not loading any more -- a spinner that never ends is a disabled button. Say it
+      // failed, and let the next tap start from a clean `replace`.
+      currentSourceRef.current = null
+      setRequested(false)
+      setPlayError(error instanceof Error ? error.message : String(error))
       console.error('Error playing audio:', error)
     }
   }
@@ -101,6 +118,6 @@ export const useAudio = () => {
     // A URL can point at a recording that no longer exists in storage. Without
     // this the control just silently does nothing when tapped; callers use it to
     // say so instead.
-    error: status.error ?? null,
+    error: status.error ?? playError,
   }
 }

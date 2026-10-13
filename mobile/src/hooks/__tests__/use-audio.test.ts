@@ -2,6 +2,7 @@ import type { AudioStatus } from 'expo-audio'
 
 import { act, renderHook } from '@testing-library/react-native'
 
+import * as audioSession from '../../utils/audio-session'
 import { useAudio } from '../use-audio'
 
 // expo-audio is mocked at the module boundary: one player, and a status the test sets
@@ -34,7 +35,10 @@ const idle: Partial<AudioStatus> = {
 
 beforeEach(() => {
   jest.clearAllMocks()
+  jest.restoreAllMocks()
   mockStatus = { ...idle }
+  jest.spyOn(console, 'error').mockImplementation(() => {})
+  jest.spyOn(console, 'warn').mockImplementation(() => {})
 })
 
 describe('useAudio', () => {
@@ -114,5 +118,54 @@ describe('useAudio', () => {
 
     await unmount()
     expect(mockPlayer.pause).toHaveBeenCalledTimes(1)
+  })
+
+  // Review P2: a throw from replace() left `requested` set and the source unloaded, so
+  // the button spun -- and stayed disabled -- for good.
+  it('stops loading and reports the error when replace throws, and loads again on the next tap', async () => {
+    mockPlayer.replace.mockImplementationOnce(() => {
+      throw new Error('cannot be cast to AudioSource')
+    })
+    const { result } = await renderHook(() => useAudio())
+
+    await act(() => result.current.playAudio(URL))
+    expect(result.current.isLoading).toBe(false)
+    expect(result.current.error).toBe('cannot be cast to AudioSource')
+    expect(mockPlayer.play).not.toHaveBeenCalled()
+
+    await act(() => result.current.playAudio(URL))
+    expect(mockPlayer.replace).toHaveBeenCalledTimes(2)
+    expect(mockPlayer.play).toHaveBeenCalledTimes(1)
+    expect(result.current.error).toBeNull()
+  })
+
+  it('stops loading on a native failure, and loads the source again on the next tap', async () => {
+    const { result, rerender } = await renderHook(() => useAudio())
+    await act(() => result.current.playAudio(URL))
+    mockStatus = { ...idle, isLoaded: false, error: 'decode failed' } as Partial<AudioStatus>
+    await rerender({})
+
+    expect(result.current.isLoading).toBe(false)
+    expect(result.current.error).toBe('decode failed')
+
+    jest.clearAllMocks()
+    await act(() => result.current.playAudio(URL))
+    expect(mockPlayer.replace).toHaveBeenCalledWith({ uri: URL })
+  })
+
+  // Review P2: the session must be tried again before a play, and its failure must not
+  // stop the clip.
+  it('still plays when the audio mode cannot be set, and tries the mode again next time', async () => {
+    const configure = jest
+      .spyOn(audioSession, 'configureAudioSession')
+      .mockRejectedValueOnce(new Error('session busy'))
+      .mockResolvedValueOnce(undefined)
+    const { result } = await renderHook(() => useAudio())
+
+    await act(() => result.current.playAudio(URL))
+    expect(mockPlayer.play).toHaveBeenCalledTimes(1)
+
+    await act(() => result.current.playAudio(URL))
+    expect(configure).toHaveBeenCalledTimes(2)
   })
 })
