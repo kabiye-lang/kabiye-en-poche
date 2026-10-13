@@ -27,7 +27,7 @@ export function AudioReviewFieldsInput({ value, onChange }: AudioReviewFieldsInp
           value={value.kind ?? ''}
           onChange={(e) => {
             const kind = (e.target.value || null) as AudioKind | null
-            // A sentence never carries a lexeme id (see prepareAudioWrite).
+            // A sentence never carries a lexeme id (see normaliseAudio).
             onChange({ ...value, kind, lexeme_id: kind === 'sentence' ? null : value.lexeme_id })
           }}
           className={selectClass}

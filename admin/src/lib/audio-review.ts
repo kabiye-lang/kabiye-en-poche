@@ -1,3 +1,5 @@
+import { supabase } from '@/supabase'
+
 import { kbpKey } from './kbp-key'
 import { lexemeExists } from './lexeme'
 
@@ -33,47 +35,68 @@ export function readAudioReview(record: Record<string, unknown>): AudioReviewFie
 }
 
 /**
- * Why this audio cannot be approved, or null when it can. A word without a lexeme
- * could play for a same-spelling word with a different tone.
+ * The row as it will be stored: trimmed text and lexeme id, kbp_key always derived
+ * from kbp_text (never taken from the caller), and no lexeme id on a sentence.
+ * The app matches word audio by lexeme id, so a sentence carrying one could be
+ * played for that word.
  */
-function approvalBlocker(record: Record<string, unknown> | AudioReviewFields): string | null {
-  const text = typeof record.kbp_text === 'string' ? record.kbp_text : ''
-  if (!kbpKey(text)) return 'Cannot approve: Kabiyè text is empty. Fill in what the recording says first.'
-  if (record.kind !== 'word' && record.kind !== 'sentence')
-    return 'Cannot approve: set the kind (word or sentence) first.'
-  const lexemeId = typeof record.lexeme_id === 'string' ? record.lexeme_id.trim() : ''
-  if (record.kind === 'word' && !lexemeId) {
+export function normaliseAudio(row: Record<string, unknown>): Record<string, unknown> {
+  const text = typeof row.kbp_text === 'string' ? row.kbp_text.trim() : ''
+  const lexemeId = typeof row.lexeme_id === 'string' ? row.lexeme_id.trim() : ''
+  return {
+    ...row,
+    kbp_text: text || null,
+    kbp_key: kbpKey(text) || null,
+    lexeme_id: row.kind === 'sentence' ? null : lexemeId || null,
+  }
+}
+
+/** Why this normalised row cannot be approved without a lookup, or null. */
+function approvalBlocker(row: Record<string, unknown>): string | null {
+  if (!row.kbp_key) return 'Cannot approve: Kabiyè text is empty. Fill in what the recording says first.'
+  if (row.kind !== 'word' && row.kind !== 'sentence') return 'Cannot approve: set the kind (word or sentence) first.'
+  if (row.kind === 'word' && !row.lexeme_id) {
     return 'Cannot approve: a word needs a lexeme id, or it could play for a same-spelling word with a different tone.'
   }
   return null
 }
 
 /**
- * approvalBlocker, plus a dictionary lookup: a word's lexeme id must name an existing
- * entry, or the app would never find the recording through it.
+ * True when both rows would answer the same lookup in the app: words by
+ * (lexeme_id, kbp_key), sentences by kbp_key. The app would pick one arbitrarily.
  */
-export async function checkApproval(record: Record<string, unknown> | AudioReviewFields): Promise<string | null> {
-  const blocker = approvalBlocker(record)
-  if (blocker || record.kind !== 'word') return blocker
-  const lexemeId = String(record.lexeme_id).trim()
-  if (!(await lexemeExists(lexemeId))) return `Cannot approve: lexeme id "${lexemeId}" is not in the dictionary.`
-  return null
+export function sameLookup(a: Record<string, unknown>, b: Record<string, unknown>): boolean {
+  if (a.kind !== b.kind || a.kbp_key !== b.kbp_key) return false
+  return a.kind === 'sentence' || a.lexeme_id === b.lexeme_id
+}
+
+export function duplicateMessage(existingName: unknown, row: Record<string, unknown>): string {
+  const what = row.kind === 'word' ? `word ${row.lexeme_id} "${row.kbp_key}"` : `sentence "${row.kbp_key}"`
+  return `Cannot approve: approved audio "${String(existingName)}" already covers the ${what}. Reject one of them.`
 }
 
 /**
- * Trim the typed review fields before a write and derive kbp_key from kbp_text.
- * A sentence never keeps a lexeme id: the app matches word audio by lexeme id, so a
- * sentence carrying one could be played for that word. `currentKind` is the stored
- * kind, for a write that sets lexeme_id without kind.
+ * Why a row cannot end up approved, or null when it can. Give it the merged,
+ * normalised row (with its id when it exists), never a patch.
  */
-export function prepareAudioWrite<T extends Record<string, unknown>>(data: T, currentKind?: unknown): T {
-  const out: Record<string, unknown> = { ...data }
-  if ('lexeme_id' in data) out.lexeme_id = (typeof data.lexeme_id === 'string' && data.lexeme_id.trim()) || null
-  if (('kind' in data ? data.kind : currentKind) === 'sentence') out.lexeme_id = null
-  if ('kbp_text' in data) {
-    const text = typeof data.kbp_text === 'string' ? data.kbp_text.trim() : ''
-    out.kbp_text = text || null
-    out.kbp_key = kbpKey(text) || null
+export async function checkApproval(input: Record<string, unknown>): Promise<string | null> {
+  const row = normaliseAudio(input)
+  const blocker = approvalBlocker(row)
+  if (blocker) return blocker
+  if (row.kind === 'word' && !(await lexemeExists(String(row.lexeme_id)))) {
+    return `Cannot approve: lexeme id "${row.lexeme_id}" is not in the dictionary.`
   }
-  return out as T
+  // The generated types do not list the review columns yet, hence the untyped filters.
+  let query = supabase
+    .from('audios')
+    .select('*')
+    .filter('status', 'eq', 'approved')
+    .filter('kind', 'eq', String(row.kind))
+    .filter('kbp_key', 'eq', String(row.kbp_key))
+  if (row.kind === 'word') query = query.filter('lexeme_id', 'eq', String(row.lexeme_id))
+  if (row.id != null) query = query.neq('id', String(row.id))
+  const { data, error } = await query.limit(1)
+  if (error) throw new Error(error.message)
+  const existing = data?.[0]
+  return existing ? duplicateMessage(existing.name, row) : null
 }

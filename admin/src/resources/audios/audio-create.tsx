@@ -88,7 +88,7 @@ export const AudioCreate = () => {
       notify('At least one tag is required to find audios later', { type: 'warning' })
       return
     }
-    const blocker = review.status === 'approved' ? await checkApproval(review).catch((err: Error) => err.message) : null
+    const blocker = review.status === 'approved' ? await checkApproval({ ...review }).catch((err: Error) => err.message) : null
     if (blocker) {
       notify(blocker, { type: 'warning' })
       return

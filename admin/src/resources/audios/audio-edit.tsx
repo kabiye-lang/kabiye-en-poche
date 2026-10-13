@@ -114,7 +114,10 @@ function AudioEditForm() {
       ...review,
     }
     // Check before any upload, so a refused approval leaves no orphan file in storage.
-    const blocker = review.status === 'approved' ? await checkApproval(review).catch((err: Error) => err.message) : null
+    const blocker =
+      review.status === 'approved'
+        ? await checkApproval({ ...record, ...review }).catch((err: Error) => err.message)
+        : null
     if (blocker) {
       notify(blocker, { type: 'warning' })
       return
@@ -152,7 +155,8 @@ function AudioEditForm() {
 
     setSaving(true)
     try {
-      await update('audios', { id: record.id, data: payload, previousData: record })
+      // returnPromise: the data provider can refuse the write, and the catch below must see it.
+      await update('audios', { id: record.id, data: payload, previousData: record }, { returnPromise: true })
       if (newStoragePath && record.storage_path) {
         try {
           await deleteAudioFromStorage(record.storage_path)
