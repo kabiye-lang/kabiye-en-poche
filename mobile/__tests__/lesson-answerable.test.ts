@@ -1,7 +1,7 @@
 /**
  * A step that renders nothing is worse than a missing step: the learner lands on a blank
  * screen with the progress bar advanced and no way forward. `isAnswerable` in
- * screens/lesson.tsx is what keeps those out of the list, so it is pinned here.
+ * utils/build-lesson-steps.ts is what keeps those out of the list, so it is pinned here.
  *
  * The retry-queue mirror that used to live in this file (`walkedSteps` built from
  * `missed` + `retriesQueued`) was replaced by the review stage in
@@ -9,31 +9,12 @@
  * coverage: "freezes the review list once entered" and "no misses means no review phase"
  * are what this file's old "retry queue" suite used to pin.
  */
-import { spellingVariants } from '../src/utils/kabiye-variants'
+import { isAnswerable } from '../src/utils/build-lesson-steps'
 
-const AUDIO_DEPENDENT = new Set(['audio', 'listen_choose', 'listen_type'])
-
-function isAnswerable(activity: { activity_type: string; data: Record<string, unknown> }): boolean {
-  const data = activity.data as {
-    audio_url?: string
-    correct?: string
-    distractors?: string[]
-    sentence?: string
-    options?: Record<string, string[]>
-  }
-  if (AUDIO_DEPENDENT.has(activity.activity_type)) return Boolean(data.audio_url)
-  if (activity.activity_type === 'spot_letter') {
-    const correct = data.correct?.trim() ?? ''
-    if (!correct) return false
-    const supplied = (data.distractors ?? []).filter((d) => d && d !== correct)
-    return supplied.length >= 2 || spellingVariants(correct, 2).length >= 2
-  }
-  if (activity.activity_type === 'read_choose') {
-    const anyOptions = Object.values(data.options ?? {}).find((l) => (l?.length ?? 0) >= 2)
-    return Boolean(data.sentence?.trim()) && anyOptions !== undefined
-  }
-  return true
-}
+jest.mock('expo-constants', () => ({
+  __esModule: true,
+  default: { expoConfig: { extra: { supabase: { url: 'https://isdeilllppdfngxmsols.supabase.co' } } } },
+}))
 
 describe('isAnswerable', () => {
   it('drops a spot_letter whose word has only one letter French cannot write', () => {
@@ -75,6 +56,12 @@ describe('isAnswerable', () => {
 
   it('still drops audio activities with no recording', () => {
     expect(isAnswerable({ activity_type: 'listen_choose', data: {} })).toBe(false)
+  })
+
+  it('drops audio activities whose recording is not hosted by us', () => {
+    expect(
+      isAnswerable({ activity_type: 'listen_choose', data: { audio_url: 'https://audio-samples.github.io/x.mp3' } })
+    ).toBe(false)
   })
 
   it('leaves ordinary activities alone', () => {

@@ -6,13 +6,16 @@ import { router } from 'expo-router'
 
 import { useLingui } from '@lingui/react/macro'
 
-import { usableAudioUrl } from '../../utils/audio-source'
+import { useAudio } from '../../hooks/use-audio'
+import { AudioPlayButton } from '../audio-play-button'
 import { SpeakerSlashIcon } from '../icons'
 import { Button, Text, View } from '../ui'
 import TeachContent from './teach-content'
 
 interface TeachStepProps {
   example: LessonExample
+  /** The word's recording, already through `usableAudioUrl` -- see `exampleAudioUrl`. */
+  audioUrl?: string
   onContinue: () => void
   /**
    * Whether this is the first word in the lesson with no recording.
@@ -38,10 +41,9 @@ interface TeachStepProps {
  * notice, and the two controls that advance or leave the lesson, none of which belong in
  * an overlay sitting over a live question.
  */
-const TeachStep = ({ example, onContinue, explainMissingAudio }: TeachStepProps) => {
+const TeachStep = ({ example, audioUrl, onContinue, explainMissingAudio }: TeachStepProps) => {
   const { t } = useLingui()
-
-  const audio = usableAudioUrl(example.audio_url)
+  const { playAudio, stopAudio, isPlaying, isLoading, error: audioError } = useAudio()
 
   return (
     <View className="bg-background flex-1">
@@ -50,11 +52,27 @@ const TeachStep = ({ example, onContinue, explainMissingAudio }: TeachStepProps)
 
         <TeachContent example={example} />
 
+        {/* The play control lives here, not in TeachContent: that card also opens over a
+            live review question, and a play button there would answer a listening one. */}
+        {audioUrl ? (
+          <View className="mt-6 flex-row items-center gap-3">
+            <AudioPlayButton
+              size="md"
+              isPlaying={isPlaying}
+              isLoading={isLoading}
+              onPress={() => void (isPlaying ? stopAudio() : playAudio(audioUrl))}
+            />
+            <Text className="text-foreground-secondary text-[15px]">
+              {audioError ? t`Audio unavailable` : t`Hear it said`}
+            </Text>
+          </View>
+        ) : null}
+
         {/* Absence beats a stand-in: no recording means no control, never a control that
             plays nothing. Said once per lesson, and in terms of the language rather than
             of our own policy -- Kabiyè does not write tone, so a wrong voice would teach
             the wrong word, which is the learner's problem and not just ours. */}
-        {!audio && explainMissingAudio ? (
+        {!audioUrl && explainMissingAudio ? (
           <View className="bg-background-tertiary mt-6 flex-row items-start gap-3 rounded-[14px] px-4 py-3">
             <SpeakerSlashIcon size={18} className="text-foreground-secondary mt-[2px]" />
             <Text className="text-foreground-secondary flex-1 text-[14px] leading-[1.4]">
