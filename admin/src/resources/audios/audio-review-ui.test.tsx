@@ -131,6 +131,22 @@ describe('audio edit form', () => {
     expect(params.previousData.storage_path).toBe('b.wav')
     expect(document.body.textContent).toContain('This recording changed since you opened it')
   })
+
+  it('confirms a save in words, not as a raw plural template', async () => {
+    const row = audio({ id: 'a2' })
+    const update = vi.fn(async (_resource: string, params: { data: RaRecord }) => ({ data: { ...row, ...params.data } }))
+    await renderAdmin('/audios/a2', {
+      getOne: async () => ({ data: row }),
+      update,
+      getList: async () => ({ data: [], total: 0 }),
+    })
+    await waitFor(() => byText('label', 'Name *'), 'the edit form')
+    await click(byText('button', 'Save') as HTMLElement)
+    await waitFor(() => document.body.textContent?.includes('Element updated'), 'the saved toast')
+
+    expect(document.body.textContent).not.toContain('smart_count')
+    expect(document.body.textContent).not.toContain('||||')
+  })
 })
 
 describe('audio list bulk approve', () => {

@@ -186,7 +186,7 @@ function AudioEditForm() {
           console.error('Failed to delete old audio from storage:', err)
         }
       }
-      notify('ra.notification.updated')
+      notify('ra.notification.updated', { messageArgs: { smart_count: 1 } })
       // saving stays true: the page leaves, and the refetch of the saved row must not
       // read as someone else's change.
       redirect('list', 'audios')
