@@ -113,7 +113,7 @@ when `import FirebaseCore` is present; throws when the anchor is missing.
 - R8 is on in SDK 58 release builds. A local release build must compile and launch.
 - `react-native-gesture-handler` 3: the app uses only `GestureHandlerRootView` (`src/app/_layout.tsx`).
 - `react-native-webview` 14: one `WebView` in `src/screens/dictionary/dictionary-pdf.tsx`.
-- RN 0.87 strict TypeScript API: deep `react-native/Libraries/*` imports are type errors. None exist
+- RN 0.88 strict TypeScript API: deep `react-native/Libraries/*` imports are type errors. None exist
   today. Fix any ref-type errors `tsc` reports at the call site. Do not use the `customConditions`
   opt-out.
 - Tabs: SDK 58 shows only declared screens. All five `(tabs)` routes are declared in
@@ -121,7 +121,7 @@ when `import FirebaseCore` is present; throws when the anchor is missing.
 - `uniwind` 1.12 peers `react-native >=0.81`. The installed range `^1.7.0` must resolve to a version
   that bundles with metro of SDK 58 (`check-duplicates` proves a single metro).
 
-## Gotchas that apply (from project memory; no nested AGENTS.md in `mobile/`)
+## Gotchas that apply (from project memory; `mobile/AGENTS.md` is new on this branch)
 
 - Bundling rewrites `mobile/uniwind-types.d.ts` with 4-space indent: `git checkout --` it before commit.
 - The pre-commit hook runs `eslint --fix` and touches unrelated files: revert those, commit only yours.

@@ -10,11 +10,11 @@
 
 ## Project Overview
 
-This is an Expo 54 React Native project using Expo Router v6, Uniwind for styling, Lingui for internationalization, Phosphor React Native for icons, and Supabase for backend. The project follows modern React Native best practices with TypeScript, ESLint, and Prettier.
+This is an Expo SDK 58 React Native project using Expo Router, Uniwind for styling, Lingui for internationalization, Phosphor React Native for icons, and Supabase for backend. The project follows modern React Native best practices with TypeScript, ESLint, and Prettier.
 
 ## Tech Stack & Dependencies
 
-- **Framework**: Expo 54 with Expo Router v6
+- **Framework**: Expo SDK 58 with Expo Router
 - **Styling**: Uniwind (Tailwind CSS v4 for React Native)
 - **Internationalization**: Lingui (migrate from i18next)
 - **Icons**: Phosphor React Native v3.0.0
@@ -53,7 +53,7 @@ This is an Expo 54 React Native project using Expo Router v6, Uniwind for stylin
 - **Constants**: UPPER_SNAKE_CASE (e.g., `API_BASE_URL`)
 - **Types/Interfaces**: PascalCase with descriptive suffixes (e.g., `UserProfileProps`, `ApiResponse`)
 
-## Expo Router v6 Best Practices
+## Expo Router Best Practices
 
 ### File-based Routing
 
