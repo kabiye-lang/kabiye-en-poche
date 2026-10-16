@@ -1,3 +1,4 @@
+import type { ComponentRef } from 'react'
 import type { AudioActivityData } from '../types/activity-data'
 import type { LessonStep } from '../types/lesson-steps'
 import type { Effect } from '../utils/lesson-session'
@@ -73,7 +74,7 @@ const LessonScreen = () => {
    *  Ephemeral UI state, not part of the persisted session -- see the Goal's guarantee
    *  boundary: only submitted answers are restored, and this is not one. */
   const [showWordOverlay, setShowWordOverlay] = useState(false)
-  const overlayHeadingRef = useRef<RNView>(null)
+  const overlayHeadingRef = useRef<ComponentRef<typeof RNView>>(null)
 
   /** The words this lesson teaches, in the order it teaches them -- see `taughtWords`. */
   const { words, sectionOf } = useMemo(() => taughtWords(contents), [contents])
