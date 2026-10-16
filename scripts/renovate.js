@@ -102,20 +102,38 @@ renovateCfg.ignoreDeps = pinnedByExpo
 fs.writeFileSync('renovate.json', JSON.stringify(renovateCfg, null, 2) + '\n')
 console.log(`Updated renovate.json ignoreDeps (${renovateCfg.ignoreDeps.length} packages).`)
 
-// Keep Expo SDK-related packages exempt from pnpm's minimumReleaseAge gating, since
-// their versions are pinned to bundledNativeModules and updated by this script directly.
-const minimumReleaseAgeExclude = [...new Set([
-  ...sdkExtras,
-  ...bundledPackages.filter((dep) => dep.startsWith('expo-') || dep.startsWith('@expo/')),
-])].sort()
+// Keep every Expo package exempt from pnpm's minimumReleaseAge gating, since the SDK
+// versions are pinned to bundledNativeModules and updated by this script directly.
+// Name patterns, not the bundledNativeModules list: an exempt package resolves to the
+// newest release, and it can require an Expo package that is not in the manifest and was
+// published the same day (expo-modules-jsi, @expo/schema-utils on 2026-10-16), which
+// then fails the gate. pnpm 12 matches `*` patterns in this list.
+const expoPatterns = ['@expo/*', 'expo-*']
+const minimumReleaseAgeExclude = [...new Set([...sdkExtras, ...expoPatterns])].sort()
+const isExpoEntry = (name) =>
+  minimumReleaseAgeExclude.includes(name) || name.startsWith('expo-') || name.startsWith('@expo/')
 
+// Entries a person added by hand (e.g. `@cloudflare/vite-plugin`, with its trailing
+// comment) stay as they are, ahead of the generated ones. Only Expo entries are rebuilt.
 const workspaceYaml = fs.readFileSync('pnpm-workspace.yaml', 'utf8')
-const minimumReleaseAgeExcludeLines = minimumReleaseAgeExclude.map((dep) => `  - "${dep}"`).join('\n')
+const excludeBlock = /\nminimumReleaseAgeExclude:\n((?: +-.*\n?)*)/.exec(workspaceYaml)
+const handAddedLines = (excludeBlock?.[1] ?? '')
+  .split('\n')
+  .filter((line) => {
+    const name = /^ +- +["']?([^"'\s#]+)/.exec(line)?.[1]
+    return name && !isExpoEntry(name)
+  })
+const minimumReleaseAgeExcludeLines = [
+  ...handAddedLines,
+  ...minimumReleaseAgeExclude.map((dep) => `  - "${dep}"`),
+].join('\n')
 const updatedWorkspaceYaml = workspaceYaml
   .replace(/\nminimumReleaseAgeExclude:[\s\S]*?(?=\n[a-zA-Z][\w-]*:|$)/, '')
   .replace(/minimumReleaseAge: \d+\n/, (match) => `${match}\nminimumReleaseAgeExclude:\n${minimumReleaseAgeExcludeLines}\n`)
 fs.writeFileSync('pnpm-workspace.yaml', updatedWorkspaceYaml)
-console.log(`Updated pnpm-workspace.yaml minimumReleaseAgeExclude (${minimumReleaseAgeExclude.length} packages).`)
+console.log(
+  `Updated pnpm-workspace.yaml minimumReleaseAgeExclude (${minimumReleaseAgeExclude.length} Expo entries, ${handAddedLines.length} kept by hand).`
+)
 
 fs.writeFileSync('mobile/package.json', JSON.stringify(pkg, null, 2) + '\n')
 fs.writeFileSync('.ncurc.json', JSON.stringify(ncuCfg, null, 2))
