@@ -89,6 +89,8 @@ export default ({ config }: ConfigContext): ExpoConfig => ({
       },
     ],
     '@react-native-firebase/app',
+    // SDK 58 AppDelegate has no line RNFB 26 can anchor to: see the plugin's header.
+    './plugins/with-firebase-configure',
     '@react-native-firebase/auth',
     '@react-native-firebase/crashlytics',
     'expo-router',
