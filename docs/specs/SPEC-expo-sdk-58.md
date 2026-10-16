@@ -199,7 +199,9 @@ and no warning outside the baseline list. Do not touch those two files.
 
 New Done item 13: `node scripts/renovate.js` run a second time leaves `pnpm-workspace.yaml`,
 `renovate.json`, `.ncurc.json` and `mobile/package.json` unchanged, and the hand-added exempt lines
-survive. `git diff develop -- pnpm-lock.yaml` shows no change under `admin` importers.
+survive. `git diff develop -- pnpm-lock.yaml` shows no change under the `admin` importer
+except the `@cloudflare/vite-plugin` specifier (`beta` → the pinned version), and admin's
+resolved versions and peer graph stay the same (owner, 2026-10-16).
 
 ## Out of scope
 

@@ -193,3 +193,14 @@ uninstalled first, normal Supabase backend.
 
 Not run. Emulator `Medium_Phone` (emulator-5554) was in use by another project
 (`app.mojatable` in front, Gradle builds running).
+
+## Owner decisions, 2026-10-16
+
+1. Item 5 (expo-doctor) accepted with its three mismatches: jest 30 (needed by jest-expo 58),
+   expo 58.0.11 (re-run `node scripts/renovate.js` after 2026-10-17 ~19:51 UTC for 58.0.14),
+   and typescript 6.0.2 (`@typescript/typescript6` has no 6.0.3).
+2. Item 12 (web export) accepted. `+html.tsx` compiles. Static rendering fails on
+   `expo-secure-store` in Node, which this branch does not change, and web is out of scope.
+3. Item 13 reworded: the admin lockfile may change the `@cloudflare/vite-plugin` specifier only.
+4. The tab bar theme bug goes to a follow-up branch, not this one.
+5. Item 9 (Android) waits until `Medium_Phone` is free of the other project.
