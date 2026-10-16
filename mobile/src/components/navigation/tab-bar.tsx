@@ -1,4 +1,4 @@
-import type { BottomTabBarProps } from 'expo-router/build/react-navigation/bottom-tabs'
+import type { BottomTabBarProps } from 'expo-router/js-tabs'
 
 import { useEffect } from 'react'
 import { Platform, Pressable, useWindowDimensions } from 'react-native'
@@ -10,7 +10,7 @@ import { useTheme } from 'expo-router/react-navigation'
 
 import { Text, View } from '../ui'
 
-export default function CustomTabBar({ state, descriptors, navigation }: BottomTabBarProps) {
+export default function CustomTabBar({ state, descriptors, emitter, navigateToTab }: BottomTabBarProps) {
   // descriptors[0].options.tabBarActiveTintColor
   const { colors: navColors } = useTheme()
 
@@ -80,20 +80,21 @@ export default function CustomTabBar({ state, descriptors, navigation }: BottomT
         const isFocused = state.index === index
 
         const onPress = () => {
-          const event = navigation.emit({
+          const event = emitter.emit({
             type: 'tabPress',
             target: route.key,
             canPreventDefault: true,
           })
 
           if (!isFocused && !event.defaultPrevented) {
-            // The `merge: true` option makes sure that the params inside the tab screen are preserved
-            navigation.navigate(route.name)
+            // SDK 58 tab bars get `navigateToTab(key)` in place of `navigation`; this mirrors
+            // the stock BottomTabBar.
+            navigateToTab(route.key)
           }
         }
 
         const onLongPress = () => {
-          navigation.emit({
+          emitter.emit({
             type: 'tabLongPress',
             target: route.key,
           })
