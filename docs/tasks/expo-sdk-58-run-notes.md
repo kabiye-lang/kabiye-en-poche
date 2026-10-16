@@ -92,3 +92,71 @@ Options for the owner: (1) wait until the young packages mature (earliest after
 (`pnpm install --yes` answers the approval prompt; not run); (3) durable fix: have
 `scripts/renovate.js` keep hand-added exclude lines and also exclude the non-bundled
 `expo-modules-*` / `@expo/*` deps, and pin admin's cloudflare specifier to a concrete version.
+
+The owner chose option 3 (spec "Amendment 2026-10-16"). Note: the "wait" option above was
+labelled (1) here, and the coordinator called it "(a)".
+
+## Resumed after the amendment (2026-10-16 ~21:00 UTC)
+
+- `pnpm` 12.3.4 matches `*` patterns in `minimumReleaseAgeExclude`. Checked in a scratch
+  project: `expo-modules-jsi@58.0.15` and `@expo/schema-utils@58.0.2` fail with `"nothing"`
+  excluded and resolve with `"expo-*"` and `"@expo/*"`.
+- `scripts/renovate.js` now exempts `@expo/*`, `expo-*`, `expo`, `babel-preset-expo` and
+  `jest-expo`, and keeps every other existing entry (with its comment) ahead of them.
+- `admin/package.json`: `@cloudflare/vite-plugin` pinned to `2.0.0-beta.sha-52b0dc0e9` (what
+  develop's lockfile resolves).
+- Install then needed:
+  - `allowBuilds: '@parcel/watcher': false`. It is new with jest 30 and ships prebuilt binaries.
+  - `pnpm update -r @expo/metro-config @react-native/metro-config metro metro-transform-worker metro-cache`.
+    The auto-installed peers of uniwind and `@lingui/metro-transformer` stayed on SDK 57's
+    metro 0.84.5, so `check-duplicates` failed. This changed no specifier in any package.json.
+- Installed: expo 58.0.11, react-native 0.88.0, react 19.3.0, react-dom 19.3.0,
+  babel-preset-expo 58.0.17 (exact pin, one copy), jest 30.5.2, jest-expo 58.0.11,
+  expo-router 58.0.23, uniwind 1.12.2, @types/react 19.3.0, @react-native-firebase/app 26.0.0.
+
+## Gates (final tree, after `rm -rf mobile/node_modules && pnpm install --frozen-lockfile`)
+
+| # | Command | Exit | Result |
+|---|---|---|---|
+| 1 | `cd mobile && pnpm exec tsc --noEmit -p .` | 0 | |
+| 2 | `pnpm --filter ./mobile lint:check` | 1 | Same 4 errors and 40 warnings as the baseline. Pass under the amended criterion. |
+| 3 | `cd mobile && pnpm exec jest` | 0 | 44/44 suites, 493/493 tests (4 new in `with-firebase-configure.test.ts`) |
+| 4 | `pnpm check-duplicates` | 0 | 15 watched packages, one version each. `pnpm why babel-preset-expo -r`: 58.0.17 only |
+| 5 | `npx expo-doctor@1.21.5` | 1 | **Fails, see below** |
+| 6 | `npx expo export:embed --platform ios --dev false --reset-cache ...` | 0 | 2461 modules |
+| 7 | `rm -rf ios && npx expo prebuild --platform ios --no-install` | 0 | `ios/KabiyeenPoche/SceneDelegate.swift` exists. `AppDelegate.swift` has 1 `FirebaseApp.configure()` and 1 `import FirebaseCore` |
+| 10 | `npx expo config --type public` | 0 | `version: '0.1.0'`, `runtimeVersion.policy: 'appVersion'` |
+| 11 | `test ! -e mobile/android`, `git ls-files mobile/ios mobile/android` | 0, empty | `uniwind-types.d.ts` reverted after each bundle |
+| 12 | `npx expo export --platform web --output-dir <scratch>/web` | 7 | **Fails, see below** |
+| 13 | `node scripts/renovate.js` a second time | 0 | Leaves the 4 files unchanged, and the cf lines survive. Admin importer vs develop: only the specifier line (`beta` → the pinned version) |
+
+Prebuild with `GOOGLE_SERVICES_PLIST` pointed at the main checkout's plist, because the
+worktree has none. The RNFB warning "Unable to determine correct Firebase insertion point"
+still prints, since RNFB's mod runs before ours. Our plugin then inserts the call. The
+warning disappears once RNFB ships #9336, which is the signal to delete the plugin.
+Prebuild also prints "@react-native-firebase/auth: Skipping iOS openURL fix because no
+'openURL' method was found". The app does not call Firebase Auth from `src/`.
+
+### Item 5: expo-doctor 1.21.5 fails one check ("packages match versions required by installed Expo SDK")
+
+- `jest` expected `~29.7.0`, found 30.5.2. `@types/jest` expected 29.5.14, found 30.0.0.
+  Expo's version API (`relatedPackages` for SDK 58) still lists jest 29. jest-expo 58.0.11
+  depends on `@jest/globals`, `babel-jest`, `jest-snapshot` etc. `^30.0.0`. The spec pins
+  jest 30. Owner decision.
+- `expo` expected `~58.0.14`, found 58.0.11. renovate.js picks the newest release older than
+  the 1d cooldown. 58.0.14 was published 2026-10-16 19:51 UTC, so a re-run after
+  2026-10-17 ~19:51 UTC picks it.
+- `typescript` expected `~6.0.3`, found 6.0.2. The dependency is
+  `npm:@typescript/typescript6@^6.0.2`, and that package has no 6.0.3.
+- Fixed: `@types/react` (was 19.2.18, now ~19.3.0).
+
+### Item 12: web export fails after both bundles compile
+
+1. With develop's uniwind 1.9.0, web bundling failed: uniwind's resolver redirects
+   react-native-web's `InputAccessoryView` to `uniwind/components/InputAccessoryView`, which
+   1.9.0 does not ship. Fixed by moving the lockfile to uniwind 1.12.2 (range `^1.7.0` unchanged).
+2. Static rendering needs `EXPO_PUBLIC_SUPABASE_URL`/`_ANON_KEY` (the worktree has no
+   `.env.local`). With placeholders, the client and server bundles compile (`+html.tsx`
+   included). Rendering then throws `getValueWithKeyAsync is not a function`: `src/lib/supabase.ts`
+   gives the Supabase client `expo-secure-store` as storage, and it has no web implementation
+   in Node. This is outside `+html.tsx` and unchanged by this branch. Web behaviour is out of scope.
