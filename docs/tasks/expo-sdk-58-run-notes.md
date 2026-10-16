@@ -189,10 +189,40 @@ uninstalled first, normal Supabase backend.
   tap worked each time.
 - No audio check: the database holds 0 recordings, so no lesson plays audio.
 
-## Item 9: Android smoke run
+## Item 9: Android smoke run (main session, 2026-10-16)
 
-Not run. Emulator `Medium_Phone` (emulator-5554) was in use by another project
-(`app.mojatable` in front, Gradle builds running).
+Emulator `Medium_Phone` (emulator-5554, arm64-v8a), after the other project freed it.
+
+Debug build, `expo run:android --port 8082`:
+
+- The first build failed in `expo-updates:kspDebugKotlin` with `OutOfMemoryError: Metaspace`.
+  The second build passed after `MaxMetaspaceSize` went from 512m to 1024m in the generated
+  `gradle.properties` and `./gradlew --stop`. Both release builds below ran at the default
+  512m in a fresh JVM (`--no-daemon`) without an OOM. So the stale daemon was the likely cause,
+  and no committed fix is needed.
+- First launch showed a "nearby devices" prompt. It is `ACCESS_LOCAL_NETWORK` from the
+  react-android 0.88.0 debug AAR. It is in the debug merged manifest only, not in release.
+- All pass:
+  - Fresh install: onboarding with fonts (the AssetRegistry fix works on Android), Skip, and
+    Home with live data.
+  - All five tabs open.
+  - Dictionary PDF screen: the WebView renders the same Cloudflare 522 as on iOS.
+  - Lesson: Begin moves 1/24 to 2/24, Close returns Home, and Home shows "Step 2 of 24".
+  - Deep link `kabiye://lesson/<id>` while running opens the lesson, and Back returns Home.
+
+Release build, `./gradlew app:assembleRelease --no-daemon` (R8 on):
+
+- It fails in `lintVitalRelease` with 4 `ExtraTranslation` errors. `mobile/locales/en.json`
+  and `fr.json` hold the iOS keys `CFBundleDisplayName` and `NSUserTrackingUsageDescription`
+  at the top level. The Expo locales plugin writes top-level keys into Android
+  `values-b+en/strings.xml` and `values-b+fr/strings.xml`, and the default `values` has
+  neither key. SDK 57's plugin does the same (`@expo/config-plugins` 57.0.9
+  `android/Locales.js`), so this is not from the upgrade. EAS lists no Android build for this
+  project, so nothing caught it before.
+- With `-x lintVitalRelease`, R8 builds the APK. The app starts to Home with live data. The
+  tabs and a lesson step work. Logcat shows no crash and no R8 class or method error. The
+  only app errors are expo-updates failing to fetch a remote update, because no Android
+  update exists.
 
 ## Owner decisions, 2026-10-16
 
@@ -203,4 +233,5 @@ Not run. Emulator `Medium_Phone` (emulator-5554) was in use by another project
    `expo-secure-store` in Node, which this branch does not change, and web is out of scope.
 3. Item 13 reworded: the admin lockfile may change the `@cloudflare/vite-plugin` specifier only.
 4. The tab bar theme bug goes to a follow-up branch, not this one.
-5. Item 9 (Android) waits until `Medium_Phone` is free of the other project.
+5. Item 9 (Android) waits until `Medium_Phone` is free of the other project. Done the same
+   day (see Item 9), except the release lint error, which waits for the owner.
