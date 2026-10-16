@@ -1,6 +1,6 @@
 # Agent instructions — Kabiyè en Poche
 
-pnpm monorepo: `mobile/` (Expo 54 + Expo Router, Uniwind, Lingui, Supabase), `admin/` (React-admin + Vite, Supabase), `website/` (React + Vite), `supabase/`.
+pnpm monorepo: `mobile/` (Expo SDK 58 + Expo Router, Uniwind, Lingui, Supabase), `admin/` (React-admin + Vite, Supabase), `website/` (React + Vite), `supabase/`.
 Hard rules (full conventions in `.cursorrules` — read it before touching lesson content, i18n, or file layout):
 - Kebab-case file names everywhere.
 - No summary or changelog files unless asked.
