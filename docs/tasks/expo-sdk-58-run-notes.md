@@ -160,3 +160,36 @@ Prebuild also prints "@react-native-firebase/auth: Skipping iOS openURL fix beca
    included). Rendering then throws `getValueWithKeyAsync is not a function`: `src/lib/supabase.ts`
    gives the Supabase client `expo-secure-store` as storage, and it has no web implementation
    in Node. This is outside `+html.tsx` and unchanged by this branch. Web behaviour is out of scope.
+
+## Item 8: iOS smoke run (main session, 2026-10-16)
+
+iPhone 18 Pro simulator, iOS 27.2, Debug build from the worktree, Metro on 8082, app
+uninstalled first, normal Supabase backend.
+
+- First launch failed: RootLayout render error `Cannot read property 'getAssetByID' of
+  undefined` (expo-asset via expo-font). Uniwind's resolver swaps `react-native` for its own
+  export list, which lacks RN 0.88's new public `AssetRegistry` (uni-stack/uniwind#732).
+  Fixed in `8bcf720` (metro.config.js routes expo-asset's import around uniwind).
+- After the fix, all pass:
+  - Fresh install: onboarding, Skip, Home with live data.
+  - Returning user: relaunch goes straight to Home.
+  - All five tabs open, and the active-tab rule follows.
+  - Lesson: Begin moves 1/24 to 2/24, Close returns Home, and Home shows "Step 2 of 24".
+  - Deep link `kabiye://lesson/<id>` while running opens the lesson, and Close returns Home.
+  - Dictionary PDF screen: the WebView renders (webview 14).
+- Not a pass, outside this branch: the PDF host `www.ingeniumlink.com` returns a Cloudflare
+  522 (also from curl), so no PDF loads. This is an outage, not the upgrade.
+- Open: after a live Appearance change, the custom tab bar keeps the old colours until the
+  next tab press. The root layout's theme does update (`Appearance.getColorScheme()` is
+  `dark`, and a tab press repaints the bar dark). Separately, `useAppearance()` keeps state per
+  instance, so a change from an explicit Light/Dark to System does not reach the root until
+  restart (pre-existing code). An SDK 57 comparison is impossible on this machine: an app
+  built with Xcode 27 must adopt the UIScene life cycle, so the SDK 57 build exits at launch.
+- The first tap after a fresh launch was ignored twice (Skip, the Profile tab). The second
+  tap worked each time.
+- No audio check: the database holds 0 recordings, so no lesson plays audio.
+
+## Item 9: Android smoke run
+
+Not run. Emulator `Medium_Phone` (emulator-5554) was in use by another project
+(`app.mojatable` in front, Gradle builds running).
