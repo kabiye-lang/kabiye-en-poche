@@ -203,6 +203,28 @@ survive. `git diff develop -- pnpm-lock.yaml` shows no change under the `admin` 
 except the `@cloudflare/vite-plugin` specifier (`beta` → the pinned version), and admin's
 resolved versions and peer graph stay the same (owner, 2026-10-16).
 
+## Amendment 2026-10-16 (owner, after the Android release build)
+
+`./gradlew app:assembleRelease` fails in `lintVitalRelease` with 4 `ExtraTranslation` errors.
+`mobile/locales/en.json` and `fr.json` hold the iOS keys `CFBundleDisplayName` and
+`NSUserTrackingUsageDescription` at the top level. The Expo locales plugin
+(`@expo/config-plugins` `utils/locales.js`, `getResolvedLocalesAsync`) gives Android the
+top-level keys plus `android`, and gives iOS the top-level keys plus `ios`. So Android gets two
+strings that the default `values/strings.xml` lacks. The bug predates SDK 58. The owner chose to
+fix it on this branch.
+
+Change: in both files, move the two keys, with their values unchanged, into an `"ios": {}`
+object. Touch nothing else.
+
+New Done item 14:
+- `npx expo prebuild --platform android --no-install` writes no `CFBundleDisplayName` or
+  `NSUserTrackingUsageDescription` into `mobile/android/app/src/main/res/values-b+*/strings.xml`.
+- `./gradlew app:assembleRelease` passes with `lintVitalRelease` included.
+- `npx expo prebuild --platform ios --no-install` still writes both keys, with the same values,
+  into `mobile/ios/*/Supporting/en.lproj/InfoPlist.strings` and `fr.lproj/InfoPlist.strings`
+  (or wherever prebuild puts them, compared with a run at `develop`'s locale files).
+- Afterwards, `test ! -e mobile/android` and `test ! -e mobile/ios` both succeed.
+
 ## Out of scope
 
 - Any EAS build, update or submit; merging to `develop` or `main`.
