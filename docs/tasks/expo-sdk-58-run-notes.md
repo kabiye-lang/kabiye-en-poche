@@ -224,6 +224,23 @@ Release build, `./gradlew app:assembleRelease --no-daemon` (R8 on):
   only app errors are expo-updates failing to fetch a remote update, because no Android
   update exists.
 
+## Item 14: locale lint fix (implementer, 2026-10-16)
+
+Owner chose to fix the lint error on this branch. `b60e102` moves the two keys under `"ios"`
+in `mobile/locales/en.json` and `fr.json`, with values unchanged (`jq -S` diff against
+`develop`, exit 0).
+
+- Android prebuild: `values-b+en` and `values-b+fr` `strings.xml` are empty. No key matches
+  under `res/`.
+- `./gradlew app:assembleRelease --no-daemon` without `-x` passes. `:app:lintVitalAnalyzeRelease`,
+  `:app:lintVitalReportRelease` and `:app:lintVitalRelease` ran.
+- iOS prebuild (`--clean`, needs `GOOGLE_SERVICES_PLIST`): `en.lproj` and `fr.lproj`
+  `InfoPlist.strings` are byte-identical to the ones generated from `develop`'s files (`cmp`
+  exit 0).
+- Not run: installing this APK. Its only change from the APK tested in Item 9 is two unused
+  string resources in two locale folders.
+- `mobile/android` and `mobile/ios` deleted afterwards.
+
 ## Owner decisions, 2026-10-16
 
 1. Item 5 (expo-doctor) accepted with its three mismatches: jest 30 (needed by jest-expo 58),
@@ -234,4 +251,5 @@ Release build, `./gradlew app:assembleRelease --no-daemon` (R8 on):
 3. Item 13 reworded: the admin lockfile may change the `@cloudflare/vite-plugin` specifier only.
 4. The tab bar theme bug goes to a follow-up branch, not this one.
 5. Item 9 (Android) waits until `Medium_Phone` is free of the other project. Done the same
-   day (see Item 9), except the release lint error, which waits for the owner.
+   day (see Item 9).
+6. The release lint error is fixed on this branch (spec amendment, Item 14).
