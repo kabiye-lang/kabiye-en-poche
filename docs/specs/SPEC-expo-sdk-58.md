@@ -176,6 +176,31 @@ Each item is checked by running it. Paste the exit status in the report.
 12. `cd mobile && npx expo export --platform web --output-dir <scratch>/web` exits 0 (compile check
     for `+html.tsx` only, no web behaviour check).
 
+## Amendment 2026-10-16 (owner, after the install was blocked)
+
+`pnpm install` failed on `minimumReleaseAge` (1440 min). Two causes, two fixes on this branch:
+
+1. `scripts/renovate.js` builds `minimumReleaseAgeExclude` from `bundledNativeModules` only, so an
+   exempt Expo package can require a non-exempt Expo package published the same day
+   (`expo-modules-jsi`, `@expo/schema-utils` on 2026-10-16). Change the script to:
+   - exempt every `expo-*` and `@expo/*` package, plus `expo`, `babel-preset-expo`, `jest-expo`.
+     Use pnpm name patterns (`"expo-*"`, `"@expo/*"`) if the repo's pnpm (12.3.4) supports them in
+     `minimumReleaseAgeExclude`. Verify that support before relying on it. Otherwise list the
+     names from the resolved tree.
+   - keep the entries a person added by hand (today: `@cloudflare/vite-plugin` and `cf`, each with
+     its trailing comment). It currently deletes them. Keep the comments.
+2. `admin/package.json` asks for `"@cloudflare/vite-plugin": "beta"`, a dist-tag that re-resolves on
+   every lockfile regeneration. Pin it to the exact version `pnpm-lock.yaml` on `develop` already
+   resolves, so admin's part of the lockfile does not change in this branch.
+
+Done item 2 changes to: `lint:check` reports the same 4 baseline errors
+(`src/hooks/__tests__/use-conjugation.test.ts` ×3, `src/types/dictionary.ts` ×1), no new error,
+and no warning outside the baseline list. Do not touch those two files.
+
+New Done item 13: `node scripts/renovate.js` run a second time leaves `pnpm-workspace.yaml`,
+`renovate.json`, `.ncurc.json` and `mobile/package.json` unchanged, and the hand-added exempt lines
+survive. `git diff develop -- pnpm-lock.yaml` shows no change under `admin` importers.
+
 ## Out of scope
 
 - Any EAS build, update or submit; merging to `develop` or `main`.
