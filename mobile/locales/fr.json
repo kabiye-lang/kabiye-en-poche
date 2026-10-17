@@ -1,6 +1,6 @@
 {
     "ios": {
-        "CFBundleDisplayName": "Kabiyè en poche",
+        "CFBundleDisplayName": "Kabiyè en Poche",
         "NSUserTrackingUsageDescription": "Cela permet à Kabiyè en poche de vous fournir des recommandations et du contenu d'apprentissage personnalisés."
     }
 }
