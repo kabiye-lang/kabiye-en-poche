@@ -293,10 +293,14 @@ jobs:
   # Fires the production-release EAS workflow when mobile-check passes on main.
   # The EAS workflow itself uses fingerprint + get-build to avoid rebuilding
   # when only JS changed.
+  # Disabled: there is no Google Play app yet, so the workflow's Android build
+  # would run (paid) on every push and its Play submit would fail. Release with
+  # local `eas build` until then. To re-enable, delete the `false &&` line.
   trigger-eas-production:
     name: Trigger EAS production release
     needs: [resolve, mobile-check]
     if: |
+      false &&
       needs.mobile-check.result == 'success'
       && needs.resolve.outputs.app == 'true'
       && github.ref == 'refs/heads/main'
