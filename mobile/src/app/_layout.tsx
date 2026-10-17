@@ -45,8 +45,10 @@ export {
   ErrorBoundary,
 } from 'expo-router'
 
+// SDK 58 drops `initialRouteName`. `anchor` names the screen kept under a deep-linked
+// one in this stack, so back from `kabiye://lesson/<id>` lands on the tabs (Home).
 export const unstable_settings = {
-  initialRouteName: 'index',
+  anchor: '(tabs)',
 }
 
 SplashScreen.preventAutoHideAsync()

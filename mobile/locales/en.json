@@ -1,4 +1,6 @@
 {
-    "CFBundleDisplayName": "Kabiyè en poche",
-    "NSUserTrackingUsageDescription": "This allows Kabiyè en poche to provide you with personalized learning recommendations and content."
+    "ios": {
+        "CFBundleDisplayName": "Kabiyè en poche",
+        "NSUserTrackingUsageDescription": "This allows Kabiyè en poche to provide you with personalized learning recommendations and content."
+    }
 }

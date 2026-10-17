@@ -49,7 +49,7 @@ const DictionaryScreen: React.FC = () => {
   // Home's search field hands off here rather than owning a field itself. `focus` is a
   // fresh timestamp on every hand-off, so arriving twice in a row -- Home, back, Home,
   // search again -- focuses the keyboard both times rather than only the first.
-  const inputRef = useRef<TextInput>(null)
+  const inputRef = useRef<React.ComponentRef<typeof TextInput>>(null)
   const { focus } = useLocalSearchParams<{ focus?: string }>()
   const consumedFocusRef = useRef<string | undefined>(undefined)
   useFocusEffect(
