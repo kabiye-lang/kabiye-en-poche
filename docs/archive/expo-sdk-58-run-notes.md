@@ -1,6 +1,6 @@
 # Expo SDK 58 upgrade — run notes
 
-Spec: `docs/specs/SPEC-expo-sdk-58.md`. Branch `chore/expo-sdk-58`, worktree `.claude/worktrees/expo-sdk-58`.
+Spec: `docs/archive/SPEC-expo-sdk-58.md`. Branch `chore/expo-sdk-58`, worktree `.claude/worktrees/expo-sdk-58`.
 
 ## 0. Baseline (2026-10-16, before any change)
 

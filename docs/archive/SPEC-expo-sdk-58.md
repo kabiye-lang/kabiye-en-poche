@@ -139,7 +139,7 @@ Each item is checked by running it. Paste the exit status in the report.
 
 0. Baseline, before any change: on the worktree's base commit run `pnpm --filter ./mobile lint:check`
    and `jest`. Record the base commit, the warning list and any failing test in
-   `docs/tasks/expo-sdk-58-run-notes.md`.
+   `docs/archive/expo-sdk-58-run-notes.md`.
 1. `cd mobile && PATH=/opt/homebrew/bin:$PATH pnpm exec tsc --noEmit -p .` exits 0.
 2. `PATH=/opt/homebrew/bin:$PATH pnpm --filter ./mobile lint:check` exits 0 with no warning that is
    not in the baseline list.
