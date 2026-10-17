@@ -2,11 +2,18 @@ import { ConfigContext, ExpoConfig } from 'expo/config'
 
 import pkg from '../package.json' with { type: 'json' }
 
+// Poche is capitalised: it is the product's name, and every screen inside spells it
+// that way. The home-screen icon label and the deep-link prompt were the exceptions.
+const DISPLAY_NAME = 'Kabiyè en Poche'
+
 export default ({ config }: ConfigContext): ExpoConfig => ({
   ...config,
-  // Poche is capitalised: it is the product's name, and every screen inside spells it
-  // that way. The home-screen icon label and the deep-link prompt were the exceptions.
-  name: 'Kabiyè en Poche',
+  // No è here: `name` also names the Xcode target. SDK 58's prebuild turns è into e
+  // (KabiyeenPoche) while eas-cli 25, still on @expo/config-plugins 55, drops it
+  // (KabiyenPoche), and EAS then fails with "Could not find target". Users see
+  // DISPLAY_NAME instead, through CFBundleDisplayName and the Android plugin below.
+  // Put the è back once eas-cli depends on @expo/config-plugins 58 or later.
+  name: 'Kabiye en Poche',
   slug: 'kabiye-en-poche',
   version: pkg.version,
   orientation: 'portrait',
@@ -22,6 +29,7 @@ export default ({ config }: ConfigContext): ExpoConfig => ({
     infoPlist: {
       ITSAppUsesNonExemptEncryption: false,
       CFBundleAllowMixedLocalizations: true,
+      CFBundleDisplayName: DISPLAY_NAME,
       NSUserTrackingUsageDescription:
         'This allows Kabiyè en poche to provide you with personalized learning recommendations and content.',
     },
@@ -93,6 +101,8 @@ export default ({ config }: ConfigContext): ExpoConfig => ({
     './plugins/with-firebase-configure',
     '@react-native-firebase/auth',
     '@react-native-firebase/crashlytics',
+    // `name` has no è (see above): give the launcher label its è back.
+    ['./plugins/with-android-app-name', DISPLAY_NAME],
     'expo-router',
     [
       'expo-localization',
