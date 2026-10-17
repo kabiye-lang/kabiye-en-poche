@@ -9,3 +9,5 @@ Shipped or dropped specs and task lists. Archived files stay as written; new wor
 | SPEC-honest-outcomes.md | Shipped: the lesson summary says what the lesson measured | 2026-09 |
 | SPEC-laterite-a11y-foundations.md | Shipped: earth-red palette contrast fixes and 44pt touch targets | 2026-09 |
 | SPEC-website-acquisition.md | Shipped: website narrow screens, says the app is coming, honest controls | 2026-09 |
+| SPEC-expo-sdk-58.md | Shipped: Expo SDK 58 (RN 0.88), two upstream workarounds, Android release lint fix (#74) | 2026-10 |
+| expo-sdk-58-run-notes.md | Run notes for SDK 58: gate results, iOS and Android smoke runs, owner decisions | 2026-10 |
