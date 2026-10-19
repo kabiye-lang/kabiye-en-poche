@@ -11,9 +11,9 @@
     "dependencies"
   ],
   "minimumReleaseAge": "3 days",
-  "toolSettings": {
-    "nodeMaxMemory": 2048
-  },
+  "internalChecksFilter": "strict",
+  "prCreation": "not-pending",
+  "prNotPendingHours": 96,
   "prConcurrentLimit": 8,
   "prHourlyLimit": 2,
   "ignoreDeps": [
@@ -147,7 +147,7 @@
   ],
   "packageRules": [
     {
-      "description": "GitHub Actions - group all updates, pin to SHA digest, automerge",
+      "description": "GitHub Actions - group all updates, pin to SHA digest, automerge (majors excepted, next rule)",
       "matchManagers": [
         "github-actions"
       ],
@@ -156,7 +156,17 @@
       "automerge": true
     },
     {
-      "description": "NPM - only check major updates; skip everything else to speed up runs and cut resource usage",
+      "description": "GitHub Actions - major versions wait for a review (no automerge)",
+      "matchManagers": [
+        "github-actions"
+      ],
+      "matchUpdateTypes": [
+        "major"
+      ],
+      "automerge": false
+    },
+    {
+      "description": "NPM - minor and patch versions come in the daily deps-bot PR (scripts/renovate.js + scripts/update-all.sh)",
       "matchManagers": [
         "npm"
       ],
