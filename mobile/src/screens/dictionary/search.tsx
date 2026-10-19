@@ -10,6 +10,7 @@ import { LanguageTag } from '../../components/language-tag'
 import { Text, View } from '../../components/ui'
 import { useSearchDictionary } from '../../hooks/use-dictionary'
 import { useLanguage } from '../../hooks/use-language'
+import { entryHref, entryTerm } from '../../utils/dictionary-helpers'
 import { kabiyeSpellingOf } from '../../utils/kabiye-variants'
 
 const SearchResultsScreen: React.FC = () => {
@@ -173,9 +174,9 @@ const SearchResultsScreen: React.FC = () => {
         contentContainerStyle={{ paddingHorizontal: 24, paddingBottom: 32 }}
         ItemSeparatorComponent={() => <View className="bg-border h-px" />}
         renderItem={({ item }) => (
-          <Link href={`/word/${item.headword}`} asChild>
+          <Link href={entryHref(item.entry_data)} asChild>
             <Pressable className="py-[18px]">
-              <MatchedHeadword headword={item.headword} query={query || ''} />
+              <MatchedHeadword headword={entryTerm(item.entry_data)} query={query || ''} />
               {item.entry_data.grammaticalInfo ? (
                 <Text className="text-foreground-secondary mt-0.5 text-[14px] italic">
                   {item.entry_data.grammaticalInfo}

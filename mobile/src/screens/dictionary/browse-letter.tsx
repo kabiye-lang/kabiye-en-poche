@@ -10,7 +10,7 @@ import { useLingui } from '@lingui/react/macro'
 import { Text, View } from '../../components/ui'
 import { useAvailableLetters, useEntriesByLetter, useLetterCount } from '../../hooks/use-dictionary'
 import { useLanguage } from '../../hooks/use-language'
-import { translationFor } from '../../utils/dictionary-helpers'
+import { entryHref, entryTerm, translationFor } from '../../utils/dictionary-helpers'
 
 /** The eight a French keyboard cannot reach. They are the laterite marks on the rail. */
 const KABIYE_ONLY = 'ɖɛɣɩŋɔʋñ'
@@ -72,11 +72,11 @@ const BrowseByLetterScreen: React.FC = () => {
               return (
                 <Pressable
                   accessibilityRole="button"
-                  onPress={() => router.push(`/word/${item.headword}`)}
+                  onPress={() => router.push(entryHref(entry))}
                   className="py-[18px]"
                 >
                   <Text kabiye weight="bold" className="text-foreground text-[24px] leading-[1.15]">
-                    {entry.headword}
+                    {entryTerm(entry)}
                   </Text>
                   {entry.grammaticalInfo ? (
                     <Text className="text-foreground-secondary mt-0.5 text-[14px] italic">{entry.grammaticalInfo}</Text>
