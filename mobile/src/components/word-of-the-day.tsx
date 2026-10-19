@@ -7,7 +7,7 @@ import { Link } from 'expo-router'
 
 import { useLingui } from '@lingui/react/macro'
 
-import { resolveTranslation } from '../utils/dictionary-helpers'
+import { entryHref, resolveTranslation } from '../utils/dictionary-helpers'
 import { LanguageTag } from './language-tag'
 import { Text, View } from './ui'
 
@@ -62,7 +62,7 @@ const WordOfTheDayCard = ({ word, language, index }: { word: WordGroup; language
 
   return (
     <Animated.View entering={FadeInUp.duration(300).delay(index * 100)}>
-      <Link href={`/word/${firstEntry.entry_data.headword}`} asChild>
+      <Link href={entryHref(firstEntry.entry_data)} asChild>
         <Pressable>
           <View className="bg-card mb-3 rounded-2xl p-4">
             <Text kabiye variant="lg" weight="bold" className="text-foreground">

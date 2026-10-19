@@ -1,4 +1,22 @@
-import type { DictionaryEntry } from '../types/dictionary'
+import type { DictionaryEntry, EntryData } from '../types/dictionary'
+
+const SUBSCRIPT = '₀₁₂₃₄₅₆₇₈₉'
+
+/**
+ * The term that opens this entry and not another homograph: `abaa₂`. A list row that
+ * linked the bare headword opened homograph 1 for every `abaa` row, because
+ * get_entry_by_term('abaa') returns the first. It reads a trailing subscript as the
+ * homograph number. The row shows the same term, so two homographs can be told apart.
+ */
+export function entryTerm(entry: Pick<EntryData, 'headword' | 'homograph_number'>): string {
+  const n = entry.homograph_number
+  return n ? entry.headword + String(n).replace(/\d/g, (d) => SUBSCRIPT[Number(d)]) : entry.headword
+}
+
+/** The word screen's route for this entry. */
+export function entryHref(entry: Pick<EntryData, 'headword' | 'homograph_number'>): `/word/${string}` {
+  return `/word/${encodeURIComponent(entryTerm(entry))}`
+}
 
 /**
  * Check if a dictionary entry is a redirect entry

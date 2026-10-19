@@ -1,4 +1,4 @@
-import { resolveTranslation } from '../dictionary-helpers'
+import { entryHref, resolveTranslation } from '../dictionary-helpers'
 
 describe('resolveTranslation', () => {
   it("shows the dictionary's own gloss in the reader's language with nothing to say", () => {
@@ -36,5 +36,17 @@ describe('resolveTranslation', () => {
   it('uses the fallback text when there is nothing at all', () => {
     expect(resolveTranslation(null, 'en', 'raw')).toEqual({ text: 'raw', isFallback: false, isMachine: false })
     expect(resolveTranslation({ fr: '', en: '' }, 'en', 'raw').text).toBe('raw')
+  })
+})
+
+describe('entryHref', () => {
+  // get_entry_by_term reads only a trailing subscript as the homograph. A bare headword
+  // opens homograph 1, so every `abaa` row opened the interjection.
+  it('names the homograph the way get_entry_by_term reads it', () => {
+    expect(entryHref({ headword: 'abaa', homograph_number: 2 })).toBe(`/word/${encodeURIComponent('abaa₂')}`)
+    expect(entryHref({ headword: 'kaɣ', homograph_number: 12 })).toBe(`/word/${encodeURIComponent('kaɣ₁₂')}`)
+    expect(entryHref({ headword: 'aalayɩ tɛm', homograph_number: null })).toBe(
+      `/word/${encodeURIComponent('aalayɩ tɛm')}`
+    )
   })
 })

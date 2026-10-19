@@ -19,6 +19,7 @@ import {
 import { useLanguage } from '../../hooks/use-language'
 import { useMyWords } from '../../hooks/use-my-words'
 import { usePlaceholderColor } from '../../hooks/use-theme-color'
+import { entryHref, entryTerm } from '../../utils/dictionary-helpers'
 
 const DictionaryScreen: React.FC = () => {
   const placeholderColor = usePlaceholderColor()
@@ -184,10 +185,15 @@ const DictionaryScreen: React.FC = () => {
         {showSearchResults && searchResults.length > 0 && (
           <View className="border-border bg-card mt-2 rounded-lg border">
             {searchResults.slice(0, 5).map((result) => (
-              <Link key={result.entry_id} href={`/word/${result.headword}`} asChild onPress={() => setSearchQuery('')}>
+              <Link
+                key={result.entry_id}
+                href={entryHref(result.entry_data)}
+                asChild
+                onPress={() => setSearchQuery('')}
+              >
                 <Pressable className="border-border border-b px-4 py-3">
                   <Text kabiye variant="body" weight="semibold" className="text-foreground">
-                    {result.headword}
+                    {entryTerm(result.entry_data)}
                   </Text>
                   {/* Only render a subtitle when it says something the headword does
                       not. Falling back to the headword printed the word twice. */}
