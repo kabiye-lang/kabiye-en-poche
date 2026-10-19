@@ -23,6 +23,8 @@ export interface Abbreviation {
     this?: string
     number?: 'singular' | 'plural' | 'collective' | 'mass'
     example?: { kbp: string; fr: string; en: string }
+    /** The capital vowel in the class symbol (`A` in `kA`), set by vowel harmony. */
+    vowel?: { letter: string; fr: string; en: string }
   } | null
 }
 
