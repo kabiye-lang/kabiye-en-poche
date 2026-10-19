@@ -259,6 +259,11 @@ export const SubEntries = ({
                           {`"${example.source}"`}
                         </Text>
                       )}
+                      {example.translation && (
+                        <Text variant="caption" className="text-foreground-secondary mt-0.5">
+                          {example.translation}
+                        </Text>
+                      )}
                     </View>
                   ))}
                 </View>
