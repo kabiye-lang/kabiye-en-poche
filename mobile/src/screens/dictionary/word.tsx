@@ -106,8 +106,8 @@ const WordDetailsScreen: React.FC = () => {
               {entry_data.headword}
             </Text>
             <Text variant="body" className="text-foreground-secondary mb-4">
-              {/* 935 of the 941 redirect entries are expressions listed on their main entry. */}
-              {t`This form is listed under its main entry, with its meaning and examples.`}
+              {/* Most redirects are expressions listed on their main entry, not variants. */}
+              {t`See the main entry for the meaning of this form.`}
             </Text>
             <Link href={`/word/${entry_data.mainEntry}`} asChild>
               <Pressable>

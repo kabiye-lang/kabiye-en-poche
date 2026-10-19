@@ -1071,6 +1071,10 @@ msgstr "Voir aussi"
 msgid "See Also"
 msgstr "Voir aussi"
 
+#: src/screens/dictionary/word.tsx
+msgid "See the main entry for the meaning of this form."
+msgstr "Consultez l'entrée principale pour le sens de cette forme."
+
 #: src/screens/learn.tsx
 msgid "Set for someone new to Kabiyè."
 msgstr "Pour quelqu'un qui découvre le kabiyè."
@@ -1309,10 +1313,6 @@ msgstr "Ces tableaux sont ceux que nos sources donnent pour le verbe modèle de 
 #: src/screens/keyboard.tsx
 msgid "The tinted keys"
 msgstr "Les touches teintées"
-
-#: src/screens/dictionary/word.tsx
-msgid "This form is listed under its main entry, with its meaning and examples."
-msgstr "Cette forme figure sous son entrée principale, avec son sens et ses exemples."
 
 #: src/screens/alphabet-letter.tsx
 msgid "This letter does not exist"
