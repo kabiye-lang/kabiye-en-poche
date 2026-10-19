@@ -216,12 +216,21 @@ export const LexicalReferences = ({
                   </Pressable>
                 </Link>
               )
-              if (!condition) return link
+              // In a column, a bare link stretches: the row keeps its tap area to the chip.
+              if (!condition)
+                return ref.conditions ? (
+                  <View key={targetIdx} className="flex-row">
+                    {link}
+                  </View>
+                ) : (
+                  link
+                )
               const french = translation === 'en' && !condition.en
               return (
                 <View key={targetIdx} className="flex-row items-center gap-2">
                   {link}
-                  <Text variant="caption" className="text-foreground-secondary flex-1">
+                  {/* Andika for every caption: some cite ɛ or ɔ, which the interface face lacks. */}
+                  <Text variant="caption" kabiye className="text-foreground-secondary flex-1">
                     {translation === 'en' && condition.en ? condition.en : condition.fr}
                   </Text>
                   {french ? <LanguageTag language="fr" /> : null}
