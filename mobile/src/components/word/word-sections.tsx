@@ -146,7 +146,7 @@ export const SenseDefinitions = ({
           })}
 
           <WordExamples examples={sense.examples} />
-          <LexicalReferences lexRefs={sense.lexRefs} />
+          <LexicalReferences lexRefs={sense.lexRefs} translation={translation} />
         </View>
       ))}
     </View>
@@ -182,7 +182,13 @@ export const WordExamples = ({ examples }: { examples: EntryData['senses'][numbe
 }
 
 /** Lexical references (related words) at the sense level */
-export const LexicalReferences = ({ lexRefs }: { lexRefs: EntryData['senses'][number]['lexRefs'] }) => {
+export const LexicalReferences = ({
+  lexRefs,
+  translation,
+}: {
+  lexRefs: EntryData['senses'][number]['lexRefs']
+  translation: Translation
+}) => {
   const labels = useRelationLabels()
   if (!lexRefs || lexRefs.length === 0) return null
 
@@ -193,19 +199,35 @@ export const LexicalReferences = ({ lexRefs }: { lexRefs: EntryData['senses'][nu
           <Text variant="caption" className="text-foreground-secondary mb-1">
             {labels[ref.type] ?? ref.type}
           </Text>
-          <View className="flex-row flex-wrap gap-2">
-            {ref.targets.map((target, targetIdx) => (
-              <Link key={targetIdx} href={`/word/${encodeURIComponent(target)}`} asChild>
-                <Pressable>
-                  <View className="bg-primary/10 flex-row items-center rounded px-2 py-1">
-                    <Text variant="caption" className="text-primary">
-                      {target}
-                    </Text>
-                    <ArrowRightIcon size={12} className="text-primary ml-1" />
-                  </View>
-                </Pressable>
-              </Link>
-            ))}
+          {/* With a condition, one form per line and when it is used beside it: the
+              prefix `e-` is `ɛ-` before the vowels a, ɛ, ɩ, ɔ and ʋ. */}
+          <View className={ref.conditions ? 'gap-2' : 'flex-row flex-wrap gap-2'}>
+            {ref.targets.map((target, targetIdx) => {
+              const condition = ref.conditions?.[target]
+              const link = (
+                <Link key={targetIdx} href={`/word/${encodeURIComponent(target)}`} asChild>
+                  <Pressable>
+                    <View className="bg-primary/10 flex-row items-center self-start rounded px-2 py-1">
+                      <Text variant="caption" className="text-primary">
+                        {target}
+                      </Text>
+                      <ArrowRightIcon size={12} className="text-primary ml-1" />
+                    </View>
+                  </Pressable>
+                </Link>
+              )
+              if (!condition) return link
+              const french = translation === 'en' && !condition.en
+              return (
+                <View key={targetIdx} className="flex-row items-center gap-2">
+                  {link}
+                  <Text variant="caption" className="text-foreground-secondary flex-1">
+                    {translation === 'en' && condition.en ? condition.en : condition.fr}
+                  </Text>
+                  {french ? <LanguageTag language="fr" /> : null}
+                </View>
+              )
+            })}
           </View>
         </View>
       ))}
