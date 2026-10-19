@@ -343,6 +343,13 @@ const CodeExplanations = ({
                 ) : null}
               </Text>
             ) : null}
+            {/* The capital in `kA` is no letter of its own: the print's front matter
+                gives the vowels it stands for (pp. xvii-xix). */}
+            {c.detail?.vowel ? (
+              <Text className="text-foreground-secondary mt-1 text-[13px] leading-[1.4]">
+                {c.detail.vowel.letter} = {lang === 'fr' ? c.detail.vowel.fr : c.detail.vowel.en}
+              </Text>
+            ) : null}
           </View>
         </View>
       ))}
