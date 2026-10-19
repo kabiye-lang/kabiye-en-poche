@@ -9,7 +9,6 @@ export interface DictionaryEntry extends Omit<DbDictionaryEntry, 'entry_data'> {
   entry_data: EntryData
 }
 
-
 /**
  * Where a verb's tables are. `schemaKeys` is what to query: the entry's own subgroup
  * when the sketch prints a table for it; every printed subgroup of the schema when the
@@ -23,6 +22,18 @@ export interface Conjugation {
   schemaPrinted?: boolean | null
   classes: number[]
 }
+
+/**
+ * Links to other words, by type. `conditions` says when a form is used, by target:
+ * `ɛ-` "devant les voyelles a, ɛ, ɩ, ɔ et ʋ" on `e-` (print p. 110). `en` is null when
+ * the pipeline has no English for the wording.
+ */
+export interface LexRef {
+  type: string
+  targets: string[]
+  conditions?: Record<string, { fr: string; en: string | null }>
+}
+
 export interface EntryData {
   letter: string
   headword: string
@@ -49,7 +60,7 @@ export interface EntryData {
       machine?: ('fr' | 'en')[]
     }[]
     examples: { source?: string; translation?: string }[]
-    lexRefs: { type: string; targets: string[] }[] // Moved from entry level to sense level
+    lexRefs: LexRef[] // Moved from entry level to sense level
   }[]
   subEntries: {
     type: string
@@ -65,7 +76,7 @@ export interface EntryData {
         }
       }[]
       examples: { source?: string; translation?: string }[]
-      lexRefs: { type: string; targets: string[] }[]
+      lexRefs: LexRef[]
     }[]
   }[]
   publishRoot?: string
