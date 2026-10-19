@@ -106,7 +106,8 @@ const WordDetailsScreen: React.FC = () => {
               {entry_data.headword}
             </Text>
             <Text variant="body" className="text-foreground-secondary mb-4">
-              {t`This is a variant form. See the main entry for the full definition.`}
+              {/* Most redirects are expressions listed on their main entry, not variants. */}
+              {t`See the main entry for the meaning of this form.`}
             </Text>
             <Link href={`/word/${entry_data.mainEntry}`} asChild>
               <Pressable>
