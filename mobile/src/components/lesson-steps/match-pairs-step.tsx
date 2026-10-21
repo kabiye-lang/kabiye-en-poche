@@ -37,9 +37,10 @@ const shuffleArray = <T,>(array: T[]): T[] => {
  *
  * Shuffling each column independently leaves the answer sitting on the adjacent
  * row surprisingly often -- with the three pairs these activities typically have,
- * one deal in six is a freebie. Redeal until every row is a mismatch (a derangement);
- * give up after a bounded number of tries so a degenerate set, such as two pairs
- * sharing a translation, can never spin here.
+ * one deal in six is a freebie. Redeal until every row is a mismatch (a derangement).
+ * After a bounded number of tries, shift each match down one row instead. That is a
+ * mismatch whenever the translations differ, and it can never spin on a degenerate
+ * set, such as two pairs sharing a translation.
  */
 export const dealColumns = (pairs: { left: string; right: string }[]) => {
   const left = shuffleArray(pairs.map((p) => p.left))
@@ -49,7 +50,7 @@ export const dealColumns = (pairs: { left: string; right: string }[]) => {
     const right = shuffleArray(pairs.map((p) => p.right))
     if (left.every((l, i) => rightFor.get(l) !== right[i])) return { left, right }
   }
-  return { left, right: shuffleArray(pairs.map((p) => p.right)) }
+  return { left, right: left.map((_, i) => rightFor.get(left[(i + 1) % left.length]) ?? '') }
 }
 
 const MatchPairsStep = ({ activity, onAnswer }: MatchPairsStepProps) => {
