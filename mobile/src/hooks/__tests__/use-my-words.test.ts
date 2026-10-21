@@ -1,7 +1,7 @@
 import AsyncStorage from '@react-native-async-storage/async-storage'
 import { act, renderHook } from '@testing-library/react-native'
 
-import { mergeWords, MY_WORDS_KEY, useMyWords } from '../use-my-words'
+import { mergeWords, MY_WORDS_KEY, recordWritten, useMyWords } from '../use-my-words'
 
 jest.mock('@react-native-async-storage/async-storage', () => ({
   getItem: jest.fn(),
@@ -68,5 +68,13 @@ describe('mergeWords', () => {
     const first = mergeWords([], [{ headword: 'abaa', lexemeId: 'abaa#1' }])
     const both = mergeWords(first, [{ headword: 'abaa', lexemeId: 'abaa#2' }])
     expect(both.map((word) => word.lexemeId)).toEqual(['abaa#1', 'abaa#2'])
+  })
+
+  it('keeps a spelling made before the lesson saved the word', () => {
+    // A spell step saves the bare headword. The lesson then saves its lexeme id, which
+    // must land on that row, not start a second one at 0.
+    const spelled = recordWritten([], 'abaa')
+    const saved = mergeWords(spelled, [{ headword: 'abaa', lexemeId: 'abaa#2' }])
+    expect(saved).toEqual([{ ...spelled[0], lexemeId: 'abaa#2', writtenCount: 1 }])
   })
 })

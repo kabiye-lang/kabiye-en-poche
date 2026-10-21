@@ -32,12 +32,20 @@ export function wordKey(word: { headword: string; lexemeId?: string }): string {
   return word.lexemeId || word.headword
 }
 
-/** Merge newly-met words into the stored list without losing what was already written. */
+/**
+ * Merge newly-met words into the stored list without losing what was already written.
+ * A row with no lexeme id (a spelling, or a save from before ids) takes the id of the
+ * first save of its headword that has one, so its count and date stay on one row.
+ */
 export function mergeWords(existing: MyWord[], met: { headword: string; lexemeId?: string }[]): MyWord[] {
   const byKey = new Map(existing.map((word) => [wordKey(word), word]))
   for (const word of met) {
     if (!word.headword) continue
-    if (!byKey.has(wordKey(word))) {
+    const bare = byKey.get(word.headword)
+    if (word.lexemeId && !byKey.has(word.lexemeId) && bare && !bare.lexemeId) {
+      byKey.delete(word.headword)
+      byKey.set(word.lexemeId, { ...bare, lexemeId: word.lexemeId })
+    } else if (!byKey.has(wordKey(word))) {
       byKey.set(wordKey(word), {
         headword: word.headword,
         lexemeId: word.lexemeId,
