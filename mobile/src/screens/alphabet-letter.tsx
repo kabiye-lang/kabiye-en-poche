@@ -18,7 +18,7 @@ import { Button, Text, View } from '../components/ui'
 import { useAppAlphabetLetter, useAppAlphabetLetters } from '../hooks/use-app-data'
 import { useEntriesByLetter } from '../hooks/use-dictionary'
 import { useLanguage } from '../hooks/use-language'
-import { useMyWords, wordKey } from '../hooks/use-my-words'
+import { useMyWords, wordKey, wordLexeme } from '../hooks/use-my-words'
 import { brandColors, MARKDOWN_STYLE } from '../utils/design-system-nativewind'
 import { entryHref, lexemeHref } from '../utils/dictionary-helpers'
 
@@ -42,10 +42,10 @@ export default function AlphabetLetterScreen() {
   const known = myWords.filter((word) => word.headword.toLowerCase().includes(letterId.toLowerCase())).slice(0, 4)
   // Each example links its own entry: a bare headword opened homograph 1 of its spelling.
   const examples = known.length
-    ? known.map((word) => ({ headword: word.headword, href: lexemeHref(wordKey(word)) }))
+    ? known.map((word) => ({ key: wordKey(word), headword: word.headword, href: lexemeHref(wordLexeme(word)) }))
     : (entriesByLetter?.pages[0] || [])
         .slice(0, 4)
-        .map((entry) => ({ headword: entry.headword, href: entryHref(entry.entry_data) }))
+        .map((entry) => ({ key: entry.id, headword: entry.headword, href: entryHref(entry.entry_data) }))
 
   const position = alphabet?.findIndex((entry) => entry.id === letterId) ?? -1
   const next = position >= 0 && alphabet ? alphabet[position + 1] : undefined
@@ -176,9 +176,9 @@ export default function AlphabetLetterScreen() {
               {known.length ? t`In words you know` : t`In words`}
             </Text>
             <View className="mt-3">
-              {examples.map(({ headword, href }) => (
+              {examples.map(({ key, headword, href }) => (
                 <Pressable
-                  key={href}
+                  key={key}
                   accessibilityRole="button"
                   onPress={() => router.push(href)}
                   className="border-border border-b py-4"

@@ -77,4 +77,13 @@ describe('mergeWords', () => {
     const saved = mergeWords(spelled, [{ headword: 'abaa', lexemeId: 'abaa#2' }])
     expect(saved).toEqual([{ ...spelled[0], lexemeId: 'abaa#2', writtenCount: 1 }])
   })
+
+  it('keeps two forms a lesson saved under one lexeme id', () => {
+    // A lesson saves each taught form under its word's id: `caʋ` and `caɣaɣ` are both caʋ#2.
+    const forms = [
+      { headword: 'caʋ', lexemeId: 'caʋ#2', firstSeen: '2026-10-01T00:00:00.000Z', writtenCount: 3 },
+      { headword: 'caɣaɣ', lexemeId: 'caʋ#2', firstSeen: '2026-10-02T00:00:00.000Z', writtenCount: 0 },
+    ]
+    expect(mergeWords(forms, [{ headword: 'abaa', lexemeId: 'abaa#1' }]).slice(0, 2)).toEqual(forms)
+  })
 })

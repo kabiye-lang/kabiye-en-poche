@@ -9,7 +9,7 @@ import { useLingui } from '@lingui/react/macro'
 
 import { PencilSimpleIcon } from '../../components/icons'
 import { Text, View } from '../../components/ui'
-import { useMyWords, wordKey } from '../../hooks/use-my-words'
+import { useMyWords, wordKey, wordLexeme } from '../../hooks/use-my-words'
 import { lexemeHref, lexemeTerm } from '../../utils/dictionary-helpers'
 
 type Sort = 'recent' | 'alpha' | 'practise'
@@ -102,10 +102,10 @@ const MyWordsScreen = () => {
                   accessibilityRole="link"
                   accessibilityLabel={
                     word.writtenCount > 0
-                      ? `${word.headword}, ${t`spelled correctly`}`
-                      : `${word.headword}, ${t`not spelled yet`}`
+                      ? `${wordLabel(word)}, ${t`spelled correctly`}`
+                      : `${wordLabel(word)}, ${t`not spelled yet`}`
                   }
-                  onPress={() => router.push(lexemeHref(wordKey(word)))}
+                  onPress={() => router.push(lexemeHref(wordLexeme(word)))}
                   className={
                     i === 0
                       ? 'flex-row items-center justify-between py-4'
@@ -170,6 +170,6 @@ export default MyWordsScreen
  * left alone, so the row still shows what the learner saw.
  */
 function wordLabel(word: MyWord): string {
-  const key = wordKey(word)
-  return key.split('#')[0] === word.headword ? lexemeTerm(key) : word.headword
+  const lexeme = wordLexeme(word)
+  return lexeme.split('#')[0] === word.headword ? lexemeTerm(lexeme) : word.headword
 }

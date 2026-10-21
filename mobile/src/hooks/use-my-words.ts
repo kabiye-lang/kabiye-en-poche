@@ -24,11 +24,16 @@ export interface MyWord {
 export const MY_WORDS_KEY = '@kabiye_my_words'
 
 /**
- * What makes two saved words one: the lexeme id where there is one (`abaa#2`), else the
- * headword. Keyed by headword alone, saving `abaa₂` after `abaa₁` saved nothing. A word
- * saved before ids were stored keeps its headword key.
+ * What makes two saved words one: the spelling and the lexeme id together. Keyed by
+ * spelling alone, saving `abaa₂` after `abaa₁` saved nothing. Keyed by id alone, a
+ * lesson's inflected forms (`caʋ` and `caɣaɣ`, both `caʋ#2`) merged and lost counts.
  */
 export function wordKey(word: { headword: string; lexemeId?: string }): string {
+  return `${word.headword}#${word.lexemeId ?? ''}`
+}
+
+/** The entry a saved word opens: its lexeme id, else its spelling. */
+export function wordLexeme(word: { headword: string; lexemeId?: string }): string {
   return word.lexemeId || word.headword
 }
 
@@ -41,10 +46,11 @@ export function mergeWords(existing: MyWord[], met: { headword: string; lexemeId
   const byKey = new Map(existing.map((word) => [wordKey(word), word]))
   for (const word of met) {
     if (!word.headword) continue
-    const bare = byKey.get(word.headword)
-    if (word.lexemeId && !byKey.has(word.lexemeId) && bare && !bare.lexemeId) {
-      byKey.delete(word.headword)
-      byKey.set(word.lexemeId, { ...bare, lexemeId: word.lexemeId })
+    const bareKey = wordKey({ headword: word.headword })
+    const bare = byKey.get(bareKey)
+    if (word.lexemeId && !byKey.has(wordKey(word)) && bare) {
+      byKey.delete(bareKey)
+      byKey.set(wordKey(word), { ...bare, lexemeId: word.lexemeId })
     } else if (!byKey.has(wordKey(word))) {
       byKey.set(wordKey(word), {
         headword: word.headword,
