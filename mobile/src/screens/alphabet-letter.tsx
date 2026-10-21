@@ -107,7 +107,7 @@ export default function AlphabetLetterScreen() {
   const KABIYE_ONLY = 'ɖƉɛƐɣƔɩƖŋŊɔƆʋƲñÑ'
 
   return (
-    <View flex className="bg-background" style={{ paddingBottom: 70 + safeAreaInsets.top }}>
+    <View flex className="bg-background">
       <Animated.View
         className="border-border bg-background absolute top-0 left-0 z-10 w-full border-b"
         style={[animatedHeaderStyle]}
@@ -186,26 +186,30 @@ export default function AlphabetLetterScreen() {
           </View>
         ) : null}
 
-        {/* Write it, or move on. Both are the actions this screen leads to; neither is
-            a decoration, so they sit at the end of the page rather than in a bar. */}
-        <View className="mt-8 flex-row gap-3 px-6">
-          <Button
-            variant="outline"
-            className="flex-1"
-            onPress={() => router.push(`/keyboard?text=${encodeURIComponent(letterId)}`)}
-          >
-            <Text weight="semibold" className="text-foreground text-[16px]">{t`Write it`}</Text>
-          </Button>
-          {next ? (
-            <Button className="flex-1" onPress={() => router.replace(`/alphabet/${encodeURIComponent(next.id)}`)}>
-              <Text kabiye weight="semibold" className="text-background text-[16px]">
-                {t`Next`} {next.id.toUpperCase()} {next.id}
-              </Text>
-            </Button>
-          ) : null}
-        </View>
-        <View className="h-[70px]" />
+        <View className="h-8" />
       </Animated.ScrollView>
+
+      {/* Write it, or move on. A bar fixed under the page, so the next letter is one tap
+          away wherever the reader has scrolled to. */}
+      <View
+        className="border-border bg-background flex-row gap-3 border-t px-6 pt-3"
+        style={{ paddingBottom: safeAreaInsets.bottom + 12 }}
+      >
+        <Button
+          variant="outline"
+          className="flex-1"
+          onPress={() => router.push(`/keyboard?text=${encodeURIComponent(letterId)}`)}
+        >
+          <Text weight="semibold" className="text-foreground text-[16px]">{t`Write it`}</Text>
+        </Button>
+        {next ? (
+          <Button className="flex-1" onPress={() => router.replace(`/alphabet/${encodeURIComponent(next.id)}`)}>
+            <Text kabiye weight="semibold" className="text-background text-[16px]">
+              {t`Next`} {next.id.toUpperCase()} {next.id}
+            </Text>
+          </Button>
+        ) : null}
+      </View>
     </View>
   )
 }
