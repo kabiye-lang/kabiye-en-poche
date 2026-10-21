@@ -8,6 +8,7 @@ import { router } from 'expo-router'
 import { useLingui } from '@lingui/react/macro'
 
 import { useAudio } from '../../hooks/use-audio'
+import { lexemeHref } from '../../utils/dictionary-helpers'
 import { AudioPlayButton } from '../audio-play-button'
 import { SpeakerSlashIcon } from '../icons'
 import { Button, Text, View } from '../ui'
@@ -101,7 +102,9 @@ const TeachStep = ({ example, audioUrl, onContinue, explainMissingAudio }: Teach
           <Button
             variant="outline"
             className="flex-1"
-            onPress={() => router.push(`/word/${encodeURIComponent(example.kbp)}`)}
+            // The word the example teaches: `kbp` is often a sentence, and a bare
+            // headword opened homograph 1.
+            onPress={() => router.push(lexemeHref(example.lexeme_id!))}
           >
             {/* "Entry" named a noun, not what the button does. */}
             {t`Look it up`}

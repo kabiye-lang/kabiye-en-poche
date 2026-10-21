@@ -9,7 +9,8 @@ import { useLingui } from '@lingui/react/macro'
 
 import { PencilSimpleIcon } from '../../components/icons'
 import { Text, View } from '../../components/ui'
-import { useMyWords } from '../../hooks/use-my-words'
+import { useMyWords, wordKey, wordLexeme } from '../../hooks/use-my-words'
+import { lexemeHref, lexemeTerm } from '../../utils/dictionary-helpers'
 
 type Sort = 'recent' | 'alpha' | 'practise'
 
@@ -97,14 +98,14 @@ const MyWordsScreen = () => {
             <View className="mt-3">
               {sorted.map((word, i) => (
                 <Pressable
-                  key={word.headword}
+                  key={wordKey(word)}
                   accessibilityRole="link"
                   accessibilityLabel={
                     word.writtenCount > 0
-                      ? `${word.headword}, ${t`spelled correctly`}`
-                      : `${word.headword}, ${t`not spelled yet`}`
+                      ? `${wordLabel(word)}, ${t`spelled correctly`}`
+                      : `${wordLabel(word)}, ${t`not spelled yet`}`
                   }
-                  onPress={() => router.push(`/word/${encodeURIComponent(word.headword)}`)}
+                  onPress={() => router.push(lexemeHref(wordLexeme(word)))}
                   className={
                     i === 0
                       ? 'flex-row items-center justify-between py-4'
@@ -112,7 +113,7 @@ const MyWordsScreen = () => {
                   }
                 >
                   <Text kabiye weight="bold" className="text-foreground flex-1 text-[24px]">
-                    {word.headword}
+                    {wordLabel(word)}
                   </Text>
                   <PencilSimpleIcon
                     size={18}
@@ -162,3 +163,13 @@ export function sortWords(words: MyWord[], sort: Sort): MyWord[] {
 }
 
 export default MyWordsScreen
+
+/**
+ * The saved spelling, with the homograph number when the lexeme id names one: two saved
+ * `abaa` words read `abaa₁` and `abaa₂`. A lexeme id whose head is another spelling is
+ * left alone, so the row still shows what the learner saw.
+ */
+function wordLabel(word: MyWord): string {
+  const lexeme = wordLexeme(word)
+  return lexeme.split('#')[0] === word.headword ? lexemeTerm(lexeme) : word.headword
+}

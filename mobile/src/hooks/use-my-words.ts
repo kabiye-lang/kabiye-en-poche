@@ -23,26 +23,57 @@ export interface MyWord {
 
 export const MY_WORDS_KEY = '@kabiye_my_words'
 
-/** Merge newly-met words into the stored list without losing what was already written. */
+/**
+ * What makes two saved words one: the spelling and the lexeme id together. Keyed by
+ * spelling alone, saving `abaa₂` after `abaa₁` saved nothing. Keyed by id alone, a
+ * lesson's inflected forms (`caʋ` and `caɣaɣ`, both `caʋ#2`) merged and lost counts.
+ */
+export function wordKey(word: { headword: string; lexemeId?: string }): string {
+  return `${word.headword}#${word.lexemeId ?? ''}`
+}
+
+/** The entry a saved word opens: its lexeme id, else its spelling. */
+export function wordLexeme(word: { headword: string; lexemeId?: string }): string {
+  return word.lexemeId || word.headword
+}
+
+/**
+ * Merge newly-met words into the stored list without losing what was already written.
+ * - A save without a lexeme id is known if any saved word has its spelling.
+ * - A save with an id is known if that spelling and id are saved.
+ * - Else a saved word of that spelling with no id (a spelling, or a save from before
+ *   ids) takes the id, so its count and date stay on one row.
+ * - Else a new row starts with the count its spelling has, as `recordWritten` counts it.
+ */
 export function mergeWords(existing: MyWord[], met: { headword: string; lexemeId?: string }[]): MyWord[] {
-  const byHeadword = new Map(existing.map((word) => [word.headword, word]))
+  const byKey = new Map(existing.map((word) => [wordKey(word), word]))
   for (const word of met) {
     if (!word.headword) continue
-    if (!byHeadword.has(word.headword)) {
-      byHeadword.set(word.headword, {
+    const sameSpelling = [...byKey.values()].filter((saved) => saved.headword === word.headword)
+    if (word.lexemeId ? byKey.has(wordKey(word)) : sameSpelling.length > 0) continue
+    const bare = sameSpelling.find((saved) => !saved.lexemeId)
+    if (bare) {
+      byKey.delete(wordKey(bare))
+      byKey.set(wordKey(word), { ...bare, lexemeId: word.lexemeId })
+    } else {
+      byKey.set(wordKey(word), {
         headword: word.headword,
         lexemeId: word.lexemeId,
         firstSeen: new Date().toISOString(),
-        writtenCount: 0,
+        writtenCount: Math.max(0, ...sameSpelling.map((saved) => saved.writtenCount)),
       })
     }
   }
-  return [...byHeadword.values()]
+  return [...byKey.values()]
 }
 
-/** Record that a word was spelled correctly. Adds it if it was not already known. */
+/**
+ * Record that a word was spelled correctly. Adds it if it was not already known.
+ * A spelling cannot tell homographs apart, so it counts for every saved word written
+ * that way.
+ */
 export function recordWritten(existing: MyWord[], headword: string): MyWord[] {
-  const found = existing.find((word) => word.headword === headword)
+  const found = existing.some((word) => word.headword === headword)
   if (!found) {
     return [...existing, { headword, firstSeen: new Date().toISOString(), writtenCount: 1 }]
   }

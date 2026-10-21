@@ -1,4 +1,4 @@
-import { entryHref, resolveTranslation } from '../dictionary-helpers'
+import { entryHref, lexemeHref, orderHomographs, resolveTranslation } from '../dictionary-helpers'
 
 describe('resolveTranslation', () => {
   it("shows the dictionary's own gloss in the reader's language with nothing to say", () => {
@@ -48,5 +48,28 @@ describe('entryHref', () => {
     expect(entryHref({ headword: 'aalayɩ tɛm', homograph_number: null })).toBe(
       `/word/${encodeURIComponent('aalayɩ tɛm')}`
     )
+  })
+  // A lesson example's `kbp` is often a sentence. The lexeme id names the entry.
+  it('opens the entry a lexeme id names', () => {
+    expect(lexemeHref('abaa#2')).toBe(entryHref({ headword: 'abaa', homograph_number: 2 }))
+    expect(lexemeHref('aalayɩ tɛm')).toBe(entryHref({ headword: 'aalayɩ tɛm', homograph_number: null }))
+  })
+})
+
+describe('orderHomographs', () => {
+  // search_dictionary ties two homographs on every sort key, so abaa₂ came back first.
+  it('puts tied homographs in number order and leaves other rows alone', () => {
+    const row = (headword: string, rank: number, n: number | null) => ({
+      headword,
+      rank,
+      entry_data: { homograph_number: n },
+    })
+    const rows = [row('abaa', 1.2, 2), row('abaa', 1.2, 1), row('aba', 0.9, null), row('abaa', 0.5, 3)]
+    expect(orderHomographs(rows).map((r) => [r.headword, r.entry_data.homograph_number])).toEqual([
+      ['abaa', 1],
+      ['abaa', 2],
+      ['aba', null],
+      ['abaa', 3],
+    ])
   })
 })

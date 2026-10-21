@@ -19,6 +19,45 @@ export function entryHref(entry: Pick<EntryData, 'headword' | 'homograph_number'
 }
 
 /**
+ * The entry a lexeme id names, as `entryTerm` writes it: `abaa#2` -> `abaa₂`, `abaa` ->
+ * `abaa`. Lessons and My Words carry this id. A lesson example's `kbp` is often a
+ * sentence or an inflected form, so it is not a term the dictionary can open.
+ */
+export function lexemeTerm(lexemeId: string): string {
+  const [headword, n] = lexemeId.split('#')
+  return entryTerm({ headword, homograph_number: n ? Number(n) : null })
+}
+
+/** The word screen's route for this lexeme id. */
+export function lexemeHref(lexemeId: string): `/word/${string}` {
+  return `/word/${encodeURIComponent(lexemeTerm(lexemeId))}`
+}
+
+/**
+ * Put homographs in number order: `abaa₁` before `abaa₂`. search_dictionary orders by
+ * rank, headword length and headword, so two homographs of one word tie on every key
+ * and came back in any order. Only a run of rows with the same headword and rank moves.
+ */
+export function orderHomographs<
+  T extends {
+    headword: string
+    rank: number
+    entry_data: Pick<EntryData, 'homograph_number'>
+  },
+>(rows: T[]): T[] {
+  const out: T[] = []
+  for (let i = 0; i < rows.length;) {
+    let j = i + 1
+    while (j < rows.length && rows[j].headword === rows[i].headword && rows[j].rank === rows[i].rank) j++
+    const run = rows.slice(i, j)
+    run.sort((a, b) => (a.entry_data.homograph_number ?? 0) - (b.entry_data.homograph_number ?? 0))
+    out.push(...run)
+    i = j
+  }
+  return out
+}
+
+/**
  * Check if a dictionary entry is a redirect entry
  * @param entry - The dictionary entry to check
  * @returns true if the entry has a mainEntry field (indicating it's a redirect)

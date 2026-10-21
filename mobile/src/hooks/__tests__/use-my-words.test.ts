@@ -1,7 +1,7 @@
 import AsyncStorage from '@react-native-async-storage/async-storage'
 import { act, renderHook } from '@testing-library/react-native'
 
-import { MY_WORDS_KEY, useMyWords } from '../use-my-words'
+import { mergeWords, MY_WORDS_KEY, recordWritten, useMyWords } from '../use-my-words'
 
 jest.mock('@react-native-async-storage/async-storage', () => ({
   getItem: jest.fn(),
@@ -59,5 +59,44 @@ describe('useMyWords concurrency', () => {
     const stored = JSON.parse(store) as { headword: string; lexemeId?: string; writtenCount: number }[]
     expect(stored).toEqual([expect.objectContaining({ headword: 'kɛlɩm', lexemeId: 'lx-1', writtenCount: 1 })])
     expect(setItem).toHaveBeenLastCalledWith(MY_WORDS_KEY, store)
+  })
+})
+
+describe('mergeWords', () => {
+  it('saves two homographs as two words', () => {
+    // Keyed by headword, saving abaa₂ after abaa₁ was dropped as already saved.
+    const first = mergeWords([], [{ headword: 'abaa', lexemeId: 'abaa#1' }])
+    const both = mergeWords(first, [{ headword: 'abaa', lexemeId: 'abaa#2' }])
+    expect(both.map((word) => word.lexemeId)).toEqual(['abaa#1', 'abaa#2'])
+  })
+
+  it('keeps a spelling made before the lesson saved the word', () => {
+    // A spell step saves the bare headword. The lesson then saves its lexeme id, which
+    // must land on that row, not start a second one at 0.
+    const spelled = recordWritten([], 'abaa')
+    const saved = mergeWords(spelled, [{ headword: 'abaa', lexemeId: 'abaa#2' }])
+    expect(saved).toEqual([{ ...spelled[0], lexemeId: 'abaa#2', writtenCount: 1 }])
+  })
+
+  it('counts a spelling for a homograph saved after it', () => {
+    // Spelled while abaa#1 was saved, then a lesson saves abaa#2: the spelling counts for both.
+    const spelled = recordWritten(mergeWords([], [{ headword: 'abaa', lexemeId: 'abaa#1' }]), 'abaa')
+    const both = mergeWords(spelled, [{ headword: 'abaa', lexemeId: 'abaa#2' }])
+    expect(both.map((word) => word.writtenCount)).toEqual([1, 1])
+  })
+
+  it('does not save a word again when the save has no lexeme id', () => {
+    // A bookmark carries the id. A lesson example may not.
+    const saved = mergeWords([], [{ headword: 'wɩʋ', lexemeId: 'wɩʋ' }])
+    expect(mergeWords(saved, [{ headword: 'wɩʋ' }])).toEqual(saved)
+  })
+
+  it('keeps two forms a lesson saved under one lexeme id', () => {
+    // A lesson saves each taught form under its word's id: `caʋ` and `caɣaɣ` are both caʋ#2.
+    const forms = [
+      { headword: 'caʋ', lexemeId: 'caʋ#2', firstSeen: '2026-10-01T00:00:00.000Z', writtenCount: 3 },
+      { headword: 'caɣaɣ', lexemeId: 'caʋ#2', firstSeen: '2026-10-02T00:00:00.000Z', writtenCount: 0 },
+    ]
+    expect(mergeWords(forms, [{ headword: 'abaa', lexemeId: 'abaa#1' }]).slice(0, 2)).toEqual(forms)
   })
 })
