@@ -85,6 +85,12 @@ describe('mergeWords', () => {
     expect(both.map((word) => word.writtenCount)).toEqual([1, 1])
   })
 
+  it('does not save a word again when the save has no lexeme id', () => {
+    // A bookmark carries the id. A lesson example may not.
+    const saved = mergeWords([], [{ headword: 'wɩʋ', lexemeId: 'wɩʋ' }])
+    expect(mergeWords(saved, [{ headword: 'wɩʋ' }])).toEqual(saved)
+  })
+
   it('keeps two forms a lesson saved under one lexeme id', () => {
     // A lesson saves each taught form under its word's id: `caʋ` and `caɣaɣ` are both caʋ#2.
     const forms = [

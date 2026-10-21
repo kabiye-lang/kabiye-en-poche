@@ -39,26 +39,28 @@ export function wordLexeme(word: { headword: string; lexemeId?: string }): strin
 
 /**
  * Merge newly-met words into the stored list without losing what was already written.
- * A row with no lexeme id (a spelling, or a save from before ids) takes the id of the
- * first save of its headword that has one, so its count and date stay on one row. A new
- * row starts with the count its spelling already has, as `recordWritten` counts it.
+ * - A save without a lexeme id is known if any saved word has its spelling.
+ * - A save with an id is known if that spelling and id are saved.
+ * - Else a saved word of that spelling with no id (a spelling, or a save from before
+ *   ids) takes the id, so its count and date stay on one row.
+ * - Else a new row starts with the count its spelling has, as `recordWritten` counts it.
  */
 export function mergeWords(existing: MyWord[], met: { headword: string; lexemeId?: string }[]): MyWord[] {
   const byKey = new Map(existing.map((word) => [wordKey(word), word]))
   for (const word of met) {
     if (!word.headword) continue
-    const bareKey = wordKey({ headword: word.headword })
-    const bare = byKey.get(bareKey)
-    if (word.lexemeId && !byKey.has(wordKey(word)) && bare) {
-      byKey.delete(bareKey)
+    const sameSpelling = [...byKey.values()].filter((saved) => saved.headword === word.headword)
+    if (word.lexemeId ? byKey.has(wordKey(word)) : sameSpelling.length > 0) continue
+    const bare = sameSpelling.find((saved) => !saved.lexemeId)
+    if (bare) {
+      byKey.delete(wordKey(bare))
       byKey.set(wordKey(word), { ...bare, lexemeId: word.lexemeId })
-    } else if (!byKey.has(wordKey(word))) {
-      const spelled = [...byKey.values()].filter((saved) => saved.headword === word.headword)
+    } else {
       byKey.set(wordKey(word), {
         headword: word.headword,
         lexemeId: word.lexemeId,
         firstSeen: new Date().toISOString(),
-        writtenCount: Math.max(0, ...spelled.map((saved) => saved.writtenCount)),
+        writtenCount: Math.max(0, ...sameSpelling.map((saved) => saved.writtenCount)),
       })
     }
   }
