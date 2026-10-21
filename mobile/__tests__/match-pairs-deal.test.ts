@@ -16,6 +16,18 @@ describe('dealColumns', () => {
     }
   })
 
+  it('still deals a mismatch when every shuffle comes out in order', () => {
+    // The fallback after the bounded retries used to be one more plain shuffle.
+    const random = jest.spyOn(Math, 'random').mockReturnValue(0.999)
+    try {
+      const rightFor = new Map(PAIRS.map((p) => [p.left, p.right]))
+      const { left, right } = dealColumns(PAIRS)
+      expect(left.every((l, idx) => rightFor.get(l) !== right[idx])).toBe(true)
+    } finally {
+      random.mockRestore()
+    }
+  })
+
   it('deals every item exactly once on both sides', () => {
     const { left, right } = dealColumns(PAIRS)
     expect([...left].sort()).toEqual(PAIRS.map((p) => p.left).sort())
