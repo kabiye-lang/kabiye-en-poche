@@ -13,7 +13,7 @@ import { useWordOfTheDay } from '../hooks/use-dictionary'
 import { useLanguage } from '../hooks/use-language'
 import { readLessonSessionSummary } from '../hooks/use-lesson-session'
 import { useMyWords } from '../hooks/use-my-words'
-import { resolveTranslation } from '../utils/dictionary-helpers'
+import { entryHref, resolveTranslation } from '../utils/dictionary-helpers'
 
 /**
  * Home opens on resume and search -- the two things a learner returning to the app
@@ -257,7 +257,8 @@ const HomeScreen = () => {
             <Pressable
               accessibilityRole="link"
               accessibilityLabel={`${headword}${gloss ? `, ${gloss}` : ''}`}
-              onPress={() => router.push(`/word/${encodeURIComponent(headword)}`)}
+              // This entry, not homograph 1 of its spelling.
+              onPress={() => entry && router.push(entryHref(entry.entry_data))}
               className="mt-2 flex-row items-baseline justify-between"
             >
               <View className="flex-1">

@@ -23,13 +23,22 @@ export interface MyWord {
 
 export const MY_WORDS_KEY = '@kabiye_my_words'
 
+/**
+ * What makes two saved words one: the lexeme id where there is one (`abaa#2`), else the
+ * headword. Keyed by headword alone, saving `abaa₂` after `abaa₁` saved nothing. A word
+ * saved before ids were stored keeps its headword key.
+ */
+export function wordKey(word: { headword: string; lexemeId?: string }): string {
+  return word.lexemeId || word.headword
+}
+
 /** Merge newly-met words into the stored list without losing what was already written. */
 export function mergeWords(existing: MyWord[], met: { headword: string; lexemeId?: string }[]): MyWord[] {
-  const byHeadword = new Map(existing.map((word) => [word.headword, word]))
+  const byKey = new Map(existing.map((word) => [wordKey(word), word]))
   for (const word of met) {
     if (!word.headword) continue
-    if (!byHeadword.has(word.headword)) {
-      byHeadword.set(word.headword, {
+    if (!byKey.has(wordKey(word))) {
+      byKey.set(wordKey(word), {
         headword: word.headword,
         lexemeId: word.lexemeId,
         firstSeen: new Date().toISOString(),
@@ -37,12 +46,16 @@ export function mergeWords(existing: MyWord[], met: { headword: string; lexemeId
       })
     }
   }
-  return [...byHeadword.values()]
+  return [...byKey.values()]
 }
 
-/** Record that a word was spelled correctly. Adds it if it was not already known. */
+/**
+ * Record that a word was spelled correctly. Adds it if it was not already known.
+ * A spelling cannot tell homographs apart, so it counts for every saved word written
+ * that way.
+ */
 export function recordWritten(existing: MyWord[], headword: string): MyWord[] {
-  const found = existing.find((word) => word.headword === headword)
+  const found = existing.some((word) => word.headword === headword)
   if (!found) {
     return [...existing, { headword, firstSeen: new Date().toISOString(), writtenCount: 1 }]
   }

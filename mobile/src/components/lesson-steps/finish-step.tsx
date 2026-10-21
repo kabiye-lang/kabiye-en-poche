@@ -9,6 +9,7 @@ import { router } from 'expo-router'
 import { useLingui } from '@lingui/react/macro'
 
 import { useLanguage } from '../../hooks/use-language'
+import { lexemeHref } from '../../utils/dictionary-helpers'
 import { ArrowRightIcon, BookmarkSimpleIcon } from '../icons'
 import { Button, Text, View } from '../ui'
 
@@ -154,7 +155,7 @@ function WordRow({ word, index, currentLanguage }: { word: LessonExample; index:
       <Pressable
         accessibilityRole="link"
         accessibilityLabel={`${word.kbp}, ${currentLanguage === 'fr' ? word.fr : word.en}`}
-        onPress={() => router.push(`/word/${encodeURIComponent(word.kbp)}`)}
+        onPress={() => router.push(lexemeHref(word.lexeme_id || word.kbp))}
         className={
           index === 0
             ? 'flex-row items-baseline justify-between py-3'

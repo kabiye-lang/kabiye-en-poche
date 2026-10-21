@@ -20,7 +20,7 @@ import { useEntryByTerm } from '../../hooks/use-dictionary'
 import { useLanguage } from '../../hooks/use-language'
 import { useMyWords } from '../../hooks/use-my-words'
 import { usableAudioUrl } from '../../utils/audio-source'
-import { isRedirectEntry, translationFor } from '../../utils/dictionary-helpers'
+import { entryTerm, isRedirectEntry, translationFor } from '../../utils/dictionary-helpers'
 import { findAudio } from '../../utils/find-audio'
 import { describeGrammaticalInfo, grammaticalComponents } from '../../utils/grammatical-info'
 
@@ -69,9 +69,10 @@ const WordDetailsScreen: React.FC = () => {
   // id lesson examples carry) in its headword form. Never another homograph's recording:
   // `findAudio` plays only an exact (lexeme id, spelling) match when given a lexeme id.
   const homograph = entry_data.homograph_number
+  const lexemeId = homograph ? `${entry_data.headword}#${homograph}` : entry_data.headword
   const headwordAudio = usableAudioUrl(
     findAudio(audioIndex, {
-      lexemeId: homograph ? `${entry_data.headword}#${homograph}` : entry_data.headword,
+      lexemeId,
       kbp: entry_data.headword,
     })
   )
@@ -109,11 +110,15 @@ const WordDetailsScreen: React.FC = () => {
               {/* Most redirects are expressions listed on their main entry, not variants. */}
               {t`See the main entry for the meaning of this form.`}
             </Text>
-            <Link href={`/word/${entry_data.mainEntry}`} asChild>
+            {/* `mainEntry` names the homograph (`abaa₂`): bare, it opened homograph 1. */}
+            <Link href={`/word/${encodeURIComponent(entry_data.mainEntry ?? '')}`} asChild>
               <Pressable>
                 <View className="bg-primary flex-row items-center rounded-lg px-4 py-3">
                   <Text variant="lg" weight="semibold" className="flex-1 text-white">
-                    {t`View main entry:`} {entry_data.mainEntry}
+                    {t`View main entry:`}{' '}
+                    <Text kabiye variant="lg" weight="semibold" className="text-white">
+                      {entry_data.mainEntry}
+                    </Text>
                   </Text>
                   <ArrowRightIcon size={20} className="text-white" />
                 </View>
@@ -151,8 +156,9 @@ const WordDetailsScreen: React.FC = () => {
         {/* The headword is the page. At 44 it is the first and largest thing, in the
             face that can actually draw it. */}
         <View className="flex-row items-center gap-4">
+          {/* With its homograph number (`abaa₂`), so two entries of one spelling differ. */}
           <Text kabiye weight="bold" className="text-foreground flex-shrink text-[44px] leading-[1.05]">
-            {entry_data.headword}
+            {entryTerm(entry_data)}
           </Text>
           {headwordAudio ? (
             <AudioPlayButton
@@ -279,7 +285,7 @@ const WordDetailsScreen: React.FC = () => {
           // Await the write before navigating: My words reads storage on mount, so
           // pushing first showed an empty list for the word just added.
           onPress={async () => {
-            await addMet([{ headword: entry_data.headword }])
+            await addMet([{ headword: entry_data.headword, lexemeId }])
             router.push('/dictionary/my-words')
           }}
           className="bg-foreground flex-[1.2] items-center rounded-full py-4"

@@ -1,7 +1,7 @@
 import AsyncStorage from '@react-native-async-storage/async-storage'
 import { act, renderHook } from '@testing-library/react-native'
 
-import { MY_WORDS_KEY, useMyWords } from '../use-my-words'
+import { mergeWords, MY_WORDS_KEY, useMyWords } from '../use-my-words'
 
 jest.mock('@react-native-async-storage/async-storage', () => ({
   getItem: jest.fn(),
@@ -59,5 +59,14 @@ describe('useMyWords concurrency', () => {
     const stored = JSON.parse(store) as { headword: string; lexemeId?: string; writtenCount: number }[]
     expect(stored).toEqual([expect.objectContaining({ headword: 'kɛlɩm', lexemeId: 'lx-1', writtenCount: 1 })])
     expect(setItem).toHaveBeenLastCalledWith(MY_WORDS_KEY, store)
+  })
+})
+
+describe('mergeWords', () => {
+  it('saves two homographs as two words', () => {
+    // Keyed by headword, saving abaa₂ after abaa₁ was dropped as already saved.
+    const first = mergeWords([], [{ headword: 'abaa', lexemeId: 'abaa#1' }])
+    const both = mergeWords(first, [{ headword: 'abaa', lexemeId: 'abaa#2' }])
+    expect(both.map((word) => word.lexemeId)).toEqual(['abaa#1', 'abaa#2'])
   })
 })

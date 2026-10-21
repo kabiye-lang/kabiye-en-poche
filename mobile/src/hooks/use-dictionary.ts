@@ -3,7 +3,7 @@ import type { DictionaryEntry, DictionaryStatistics, EntryByTermResult, SearchRe
 import { useInfiniteQuery, useQueries, useQuery } from '@tanstack/react-query'
 
 import { supabase } from '../lib/supabase'
-import { resolveTranslation } from '../utils/dictionary-helpers'
+import { orderHomographs, resolveTranslation } from '../utils/dictionary-helpers'
 
 /**
  * Search dictionary entries
@@ -21,7 +21,7 @@ export function useSearchDictionary(query: string, language: 'all' | 'fr' | 'en'
         result_limit: 20,
       })
       if (error) throw error
-      return (data ?? []).map((r) => {
+      const rows = (data ?? []).map((r) => {
         // The subtitle under each result should be what the word *means*. This used to
         // derive a definition only when searching by translation, so a Kabiyè search --
         // the default -- rendered every row as "kalimiye / kalimiye", the headword twice
@@ -48,6 +48,7 @@ export function useSearchDictionary(query: string, language: 'all' | 'fr' | 'en'
           match_machine: resolved.isMachine || undefined,
         }
       }) as unknown as SearchResult[]
+      return orderHomographs(rows)
     },
     enabled: enabled && query.length >= 2,
     staleTime: 1000 * 60 * 60 * 24, // 24 hours
