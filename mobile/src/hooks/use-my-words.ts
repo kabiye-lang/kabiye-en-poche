@@ -40,7 +40,8 @@ export function wordLexeme(word: { headword: string; lexemeId?: string }): strin
 /**
  * Merge newly-met words into the stored list without losing what was already written.
  * A row with no lexeme id (a spelling, or a save from before ids) takes the id of the
- * first save of its headword that has one, so its count and date stay on one row.
+ * first save of its headword that has one, so its count and date stay on one row. A new
+ * row starts with the count its spelling already has, as `recordWritten` counts it.
  */
 export function mergeWords(existing: MyWord[], met: { headword: string; lexemeId?: string }[]): MyWord[] {
   const byKey = new Map(existing.map((word) => [wordKey(word), word]))
@@ -52,11 +53,12 @@ export function mergeWords(existing: MyWord[], met: { headword: string; lexemeId
       byKey.delete(bareKey)
       byKey.set(wordKey(word), { ...bare, lexemeId: word.lexemeId })
     } else if (!byKey.has(wordKey(word))) {
+      const spelled = [...byKey.values()].filter((saved) => saved.headword === word.headword)
       byKey.set(wordKey(word), {
         headword: word.headword,
         lexemeId: word.lexemeId,
         firstSeen: new Date().toISOString(),
-        writtenCount: 0,
+        writtenCount: Math.max(0, ...spelled.map((saved) => saved.writtenCount)),
       })
     }
   }

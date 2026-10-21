@@ -78,6 +78,13 @@ describe('mergeWords', () => {
     expect(saved).toEqual([{ ...spelled[0], lexemeId: 'abaa#2', writtenCount: 1 }])
   })
 
+  it('counts a spelling for a homograph saved after it', () => {
+    // Spelled while abaa#1 was saved, then a lesson saves abaa#2: the spelling counts for both.
+    const spelled = recordWritten(mergeWords([], [{ headword: 'abaa', lexemeId: 'abaa#1' }]), 'abaa')
+    const both = mergeWords(spelled, [{ headword: 'abaa', lexemeId: 'abaa#2' }])
+    expect(both.map((word) => word.writtenCount)).toEqual([1, 1])
+  })
+
   it('keeps two forms a lesson saved under one lexeme id', () => {
     // A lesson saves each taught form under its word's id: `caʋ` and `caɣaɣ` are both caʋ#2.
     const forms = [
