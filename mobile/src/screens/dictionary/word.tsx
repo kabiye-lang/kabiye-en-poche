@@ -378,14 +378,15 @@ function pageOf(entry: EntryData): number | undefined {
   return undefined
 }
 
-/** The booklet page a definition was printed on (`ak-livret-2019:p21`), if any. */
-function bookletPageOf(entry: EntryData): number | undefined {
+/** The booklet pages the definitions were printed on (`ak-livret-2019:p21`), in order. */
+function bookletPagesOf(entry: EntryData): number[] {
   const tags = entry.senses.flatMap((sense) => sense.definitions.flatMap((def) => def.sources ?? []))
+  const pages = new Set<number>()
   for (const tag of tags) {
     const match = /^ak-livret-2019:p(\d+)$/.exec(tag)
-    if (match) return Number(match[1])
+    if (match) pages.add(Number(match[1]))
   }
-  return undefined
+  return [...pages].sort((a, b) => a - b)
 }
 
 /**
@@ -398,14 +399,20 @@ function bookletPageOf(entry: EntryData): number | undefined {
 function SourceLine({ entry }: { entry: EntryData }) {
   const { t } = useLingui()
   const page = pageOf(entry)
-  const bookletPage = bookletPageOf(entry)
+  const bookletPages = bookletPagesOf(entry)
+  const bookletPage = bookletPages[0]
+  const bookletPageList = bookletPages.join(', ')
   const sources = entry.sources ?? []
 
   if (sources.length === 0) return null
 
   const pages = [
     page ? t`Kabiyè–French dictionary, p. ${page}` : null,
-    bookletPage ? t`Académie Kabiyè vocabulary booklet (2019), p. ${bookletPage}` : null,
+    bookletPages.length > 1
+      ? t`Académie Kabiyè vocabulary booklet (2019), pp. ${bookletPageList}`
+      : bookletPage
+        ? t`Académie Kabiyè vocabulary booklet (2019), p. ${bookletPage}`
+        : null,
   ].filter(Boolean)
 
   return (
