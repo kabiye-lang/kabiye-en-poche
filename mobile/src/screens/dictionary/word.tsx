@@ -12,7 +12,7 @@ import { AudioPlayButton } from '../../components/audio-play-button'
 import { ArrowRightIcon, InfoIcon, ShareNetworkIcon } from '../../components/icons'
 import { Card, Text, View } from '../../components/ui'
 import { Conjugation } from '../../components/word/conjugation'
-import { CrossReferences, SenseDefinitions, SubEntries } from '../../components/word/word-sections'
+import { ClassTable, CrossReferences, SenseDefinitions, SubEntries } from '../../components/word/word-sections'
 import { useAbbreviations } from '../../hooks/use-abbreviations'
 import { useAudio } from '../../hooks/use-audio'
 import { useAudioIndex } from '../../hooks/use-audio-index'
@@ -264,6 +264,7 @@ const WordDetailsScreen: React.FC = () => {
 
         <SenseDefinitions senses={entry_data.senses} translation={translation} />
         <Conjugation headword={entry_data.headword} conjugation={entry_data.conjugation} />
+        <ClassTable classTable={entry_data.classTable} />
         <SubEntries subEntries={entry_data.subEntries} translation={translation} />
         <CrossReferences crossRefs={entry_data.crossRefs} />
         <SourceLine entry={entry_data} />

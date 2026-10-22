@@ -442,6 +442,10 @@ msgstr "Complétez la phrase"
 msgid "Filled pencil: spelled correctly at least once."
 msgstr "Crayon plein : bien écrit au moins une fois."
 
+#: src/components/word/word-sections.tsx
+msgid "Forms by noun class"
+msgstr "Formes selon la classe nominale"
+
 #: src/screens/dictionary/search.tsx
 msgid "French"
 msgstr "Français"
@@ -1131,6 +1135,14 @@ msgstr "Afficher la traduction"
 msgid "Show the word again"
 msgstr "Revoir le mot"
 
+#: src/components/word/word-sections.tsx
+msgid "SIL 1999 dictionary, p. {pageList}"
+msgstr "Dictionnaire SIL 1999, p. {pageList}"
+
+#: src/components/word/word-sections.tsx
+msgid "SIL 1999 dictionary, pp. {pageList}"
+msgstr "Dictionnaire SIL 1999, p. {pageList}"
+
 #: src/components/word/conjugation.tsx
 msgid "SIL 1999 dictionary, pp. 545–550"
 msgstr "Dictionnaire SIL 1999, p. 545–550"
@@ -1289,6 +1301,10 @@ msgstr "Le dictionnaire a besoin du réseau."
 #: src/components/word/conjugation.tsx
 msgid "The entry names pattern {schema} without its subgroup, so every subgroup's tables are shown."
 msgstr "L'entrée nomme le schéma {schema} sans son sous-groupe ; les tableaux de tous les sous-groupes sont donc montrés."
+
+#: src/components/word/word-sections.tsx
+msgid "The form changes with the class of the noun it goes with. Each row gives the class, then the form."
+msgstr "La forme change selon la classe du nom auquel elle se rapporte. Chaque ligne donne la classe, puis la forme."
 
 #: src/screens/alphabet-list.tsx
 msgid "The Kabiyè alphabet"
