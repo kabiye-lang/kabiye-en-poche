@@ -58,6 +58,8 @@ export interface EntryData {
       }
       /** Sides that were machine-translated from the other one; the reader is told. */
       machine?: ('fr' | 'en')[]
+      /** Where this definition was printed, as `<corpus>:p<page>` tags: `ak-livret-2019:p21`. */
+      sources?: string[]
     }[]
     examples: { source?: string; translation?: string }[]
     lexRefs: LexRef[] // Moved from entry level to sense level

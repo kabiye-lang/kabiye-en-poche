@@ -378,6 +378,17 @@ function pageOf(entry: EntryData): number | undefined {
   return undefined
 }
 
+/** The booklet pages the definitions were printed on (`ak-livret-2019:p21`), in order. */
+function bookletPagesOf(entry: EntryData): number[] {
+  const tags = entry.senses.flatMap((sense) => sense.definitions.flatMap((def) => def.sources ?? []))
+  const pages = new Set<number>()
+  for (const tag of tags) {
+    const match = /^ak-livret-2019:p(\d+)$/.exec(tag)
+    if (match) pages.add(Number(match[1]))
+  }
+  return [...pages].sort((a, b) => a - b)
+}
+
 /**
  * Where this entry came from, and how to say it is wrong.
  *
@@ -388,16 +399,28 @@ function pageOf(entry: EntryData): number | undefined {
 function SourceLine({ entry }: { entry: EntryData }) {
   const { t } = useLingui()
   const page = pageOf(entry)
+  const bookletPages = bookletPagesOf(entry)
+  const bookletPage = bookletPages[0]
+  const bookletPageList = bookletPages.join(', ')
   const sources = entry.sources ?? []
 
   if (sources.length === 0) return null
+
+  const pages = [
+    page ? t`Kabiyè–French dictionary, p. ${page}` : null,
+    bookletPages.length > 1
+      ? t`Académie Kabiyè vocabulary booklet (2019), pp. ${bookletPageList}`
+      : bookletPage
+        ? t`Académie Kabiyè vocabulary booklet (2019), p. ${bookletPage}`
+        : null,
+  ].filter(Boolean)
 
   return (
     <View className="border-border mt-8 border-t pt-4">
       <Text className="text-foreground-secondary text-[13px] leading-[1.5]">
         {t`Source`}
         {' \u00B7 '}
-        {page ? t`Kabiyè–French dictionary, p. ${page}` : sources.join(', ')}
+        {pages.length > 0 ? pages.join(', ') : sources.join(', ')}
         {' \u00B7 '}
         <Text
           className="text-foreground-secondary text-[13px] underline"
