@@ -107,6 +107,10 @@ msgstr "A–Z"
 msgid "Académie Kabiyè"
 msgstr "Académie Kabiyè"
 
+#: src/screens/dictionary/word.tsx
+msgid "Académie Kabiyè vocabulary booklet (2019), p. {bookletPage}"
+msgstr "Livret de vocabulaire de l'Académie Kabiyè (2019), p. {bookletPage}"
+
 #: src/utils/difficulty.ts
 msgid "Advanced"
 msgstr "Avancé"
