@@ -364,3 +364,49 @@ export const CrossReferences = ({ crossRefs }: { crossRefs: EntryData['crossRefs
     </View>
   )
 }
+
+/**
+ * The forms a word takes with each noun class, as the SIL print tables them.
+ *
+ * Kabiyè pronouns and modifiers agree with the noun they go with, so the print gives a
+ * small table under the entry. The rows are shown as printed, class code first: the
+ * app writes no form a source did not write.
+ */
+export const ClassTable = ({ classTable }: { classTable: EntryData['classTable'] }) => {
+  const { t } = useLingui()
+  const rows = classTable?.rows ?? []
+  if (rows.length === 0) return null
+
+  const pages = (classTable?.sources ?? [])
+    .map((tag) => /^sil1999_print:p(\d+)$/.exec(tag)?.[1])
+    .filter((page): page is string => Boolean(page))
+  const pageList = pages.join(', ')
+
+  return (
+    <View className="mb-4">
+      <Text variant="h6" weight="bold" className="text-foreground mb-1">
+        {t`Forms by noun class`}
+      </Text>
+      <Text className="text-foreground-secondary mb-1 text-[14px] leading-[1.45]">
+        {t`The form changes with the class of the noun it goes with. Each row gives the class, then the form.`}
+      </Text>
+      <View className="border-foreground mt-2 border-t-[1.5px]">
+        {rows.map(([code, form], idx) => (
+          <View key={idx} className="border-border flex-row items-start gap-3 border-b py-2.5">
+            <Text kabiye className="text-foreground-secondary w-[22%] text-[14px] leading-[1.35]">
+              {code}
+            </Text>
+            <Text kabiye weight="semibold" className="text-foreground flex-1 text-[17px] leading-[1.3]">
+              {form}
+            </Text>
+          </View>
+        ))}
+      </View>
+      {pages.length > 0 ? (
+        <Text className="text-foreground-secondary mt-2 text-[12px]">
+          {pages.length > 1 ? t`SIL 1999 dictionary, pp. ${pageList}` : t`SIL 1999 dictionary, p. ${pageList}`}
+        </Text>
+      ) : null}
+    </View>
+  )
+}

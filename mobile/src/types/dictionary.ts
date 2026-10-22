@@ -101,6 +101,11 @@ export interface EntryData {
    * `v.3b`, and the 2013 conjugation book's class(es) from its index. Verbs only.
    */
   conjugation?: Conjugation | null
+  /**
+   * The forms a pronoun, determiner or modifier takes with each noun class, as the SIL
+   * print tables them: `[class code, form]` rows (`["kA", "ŋga"]` under ɛnʋ, SIL p. 121), with the page.
+   */
+  classTable?: { rows: [string, string][]; sources?: string[] } | null
 }
 
 export interface SearchResult extends Omit<DbSearchResult, 'entry_data'> {
