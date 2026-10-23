@@ -32,6 +32,8 @@ export interface LexRef {
   type: string
   targets: string[]
   conditions?: Record<string, { fr: string; en: string | null }>
+  /** Targets whose page only lists other words: shown as text, not as a link. */
+  plain?: string[]
 }
 
 export interface EntryData {
