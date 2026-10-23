@@ -204,7 +204,14 @@ export const LexicalReferences = ({
           <View className={ref.conditions ? 'gap-2' : 'flex-row flex-wrap gap-2'}>
             {ref.targets.map((target, targetIdx) => {
               const condition = ref.conditions?.[target]
-              const link = (
+              // A page with no meaning of its own would open blank: name the word, no link.
+              const link = ref.plain?.includes(target) ? (
+                <View key={targetIdx} className="self-start px-2 py-1">
+                  <Text variant="caption" kabiye className="text-foreground-secondary">
+                    {target}
+                  </Text>
+                </View>
+              ) : (
                 <Link key={targetIdx} href={`/word/${encodeURIComponent(target)}`} asChild>
                   <Pressable>
                     <View className="bg-primary/10 flex-row items-center self-start rounded px-2 py-1">

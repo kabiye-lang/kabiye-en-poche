@@ -78,9 +78,10 @@ const WordDetailsScreen: React.FC = () => {
   )
 
   // The print sends a dagger entry to its main word with "Voir": the `see` relation.
+  // A `plain` target has no page to open, so it cannot be the standard form.
+  const see = entry_data.senses?.[0]?.lexRefs?.find((ref) => ref.type === 'see')
   const standardForm =
-    entry_data.senses?.[0]?.lexRefs?.find((ref) => ref.type === 'see')?.targets?.[0] ??
-    entry_data.crossRefs?.[0]?.targets?.[0]
+    see?.targets?.find((target) => !see.plain?.includes(target)) ?? entry_data.crossRefs?.[0]?.targets?.[0]
 
   /**
    * Hand the word to whatever the reader wants to send it with.
