@@ -18,7 +18,7 @@ Already in place on the live project: the `audios` table, the public `audios` bu
 storage policies and the delete trigger (step 4). They were created in the dashboard and
 have no migration file in this repo — the `20240225…` migrations this page used to cite
 never existed — so there is nothing to push. The table is recorded in the pipeline
-repository's schema capture, `kbp-dict-crawler/supabase/migrations/00000000000000_captured_schema.sql`.
+repository's schema capture, `kbp-content/supabase/migrations/00000000000000_captured_schema.sql`.
 Steps 2–4 describe setting up a new project.
 
 ### 2. Create Storage Bucket
