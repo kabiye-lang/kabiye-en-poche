@@ -11,7 +11,7 @@ admin panel and its website.
 | `supabase/` | The `upload-audio` edge function |
 
 The dictionary data and the lessons come from the content pipeline in the sibling
-repository `kbp-dict-crawler`, which also holds the captured database schema.
+repository `kbp-content` (`kbp-dict-crawler` until 2026-10-27), which also holds the captured database schema.
 
 ## Development
 

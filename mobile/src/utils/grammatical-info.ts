@@ -4,7 +4,7 @@
  * The dictionary writes a word's grammatical class in the SIL notation: `n.` for a noun
  * followed by its noun class in the singular and the plural, `v.3b` for a verb on
  * conjugation pattern 3 subgroup b, `adv. expr.` for an expressive adverb. The pipeline
- * normalises both sources to one written form (kbp-dict-crawler,
+ * normalises both sources to one written form (kbp-content,
  * scripts/lexicon/abbreviations.py) and loads every code with its meaning into
  * `dictionary_abbreviations`; this file turns a code into the sentence the entry screen
  * shows under it, and into the list the info button expands. A learner who has never
