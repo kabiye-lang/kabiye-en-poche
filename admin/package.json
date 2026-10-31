@@ -26,7 +26,7 @@
     "@uiw/react-md-editor": "^4.1.6",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
-    "lucide-react": "^1.64.0",
+    "lucide-react": "^1.65.0",
     "ra-core": "^5.15.5",
     "ra-i18n-polyglot": "^5.15.5",
     "ra-language-english": "^5.15.5",
@@ -49,7 +49,7 @@
     "@types/react-dom": "~19.3.0",
     "@vitejs/plugin-react": "^6.1.2",
     "autoprefixer": "^10.6.2",
-    "cf": "1.0.0-beta.25",
+    "cf": "1.0.0-beta.26",
     "eslint": "10.13.0",
     "eslint-config-prettier": "10.1.8",
     "eslint-plugin-prettier": "5.5.7",
@@ -64,6 +64,6 @@
     "typescript-eslint": "^8.72.1",
     "vite": "^8.3.5",
     "vitest": "^5.0.5",
-    "wrangler": "^4.155.0"
+    "wrangler": "^4.156.0"
   }
 }
