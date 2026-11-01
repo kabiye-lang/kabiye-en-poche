@@ -4,6 +4,8 @@
   "cooldown": "1d",
   "reject": [
     "@babel/types",
+    "@babel/core",
+    "@babel/plugin-transform-export-namespace-from",
     "expo",
     "babel-preset-expo",
     "jest-expo",

@@ -18,6 +18,8 @@
   "prHourlyLimit": 2,
   "ignoreDeps": [
     "@babel/types",
+    "@babel/core",
+    "@babel/plugin-transform-export-namespace-from",
     "expo",
     "babel-preset-expo",
     "jest-expo",

@@ -87,7 +87,11 @@ const bundledPackages = Object.keys(expoJsonData)
 // 'jest-expo' are absent from it but move with the SDK all the same — an update tool that
 // bumps one of those across an SDK major undoes the currentSdkMajor lock above.
 const sdkExtras = ['expo', 'babel-preset-expo', 'jest-expo']
-const pinnedByExpo = [...new Set(['@babel/types', ...sdkExtras, ...bundledPackages])]
+// babel-preset-expo and the React Native Babel plugins require Babel 7. `ncu -u` took
+// @babel/core and the namespace plugin to 8 in 2ba8ec1, and every Jest suite failed with
+// `Requires Babel "^7.0.0-0", but was loaded with "8.0.10"`. Lift these at the SDK that moves to Babel 8.
+const babelBySdk = ['@babel/types', '@babel/core', '@babel/plugin-transform-export-namespace-from']
+const pinnedByExpo = [...new Set([...babelBySdk, ...sdkExtras, ...bundledPackages])]
 
 ncuCfg.reject = pinnedByExpo
 if (pkg.dependencies['expo']) pkg.dependencies['expo'] = expoVersion
