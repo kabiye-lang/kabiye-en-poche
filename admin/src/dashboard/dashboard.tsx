@@ -3,7 +3,6 @@ import { Link } from 'react-router-dom'
 import { BookOpen, CaretRight, CircleDashed, House, ListBullets, Table, Waveform } from '@phosphor-icons/react'
 
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
-import { useRequireAdmin } from '@/hooks/use-require-admin'
 
 const internalLinks = [
   {
@@ -46,12 +45,6 @@ const internalLinks = [
 ]
 
 export const Dashboard = () => {
-  const isAdmin = useRequireAdmin()
-
-  if (!isAdmin) {
-    return null
-  }
-
   return (
     <div className="space-y-4 pt-4">
       <Card className="col-span-3">

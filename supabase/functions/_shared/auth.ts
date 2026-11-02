@@ -28,25 +28,35 @@ function verifySupabaseJWT(jwt: string) {
   })
 }
 
-// Validates authorization header
-export async function AuthMiddleware(req: Request, next: (req: Request) => Promise<Response>) {
+// Validates the authorization header. With `role`, the token's app_metadata.user_role must match it.
+// app_metadata is set by the service role only, so a user cannot give it to themselves.
+export async function AuthMiddleware(
+  req: Request,
+  next: (req: Request) => Promise<Response>,
+  options: { role?: string } = {}
+) {
   if (req.method === 'OPTIONS') {
     return new Response('ok', { headers: corsHeaders })
   }
 
   try {
     const token = getAuthToken(req)
-    const isValidJWT = await verifySupabaseJWT(token)
+    const { payload } = await verifySupabaseJWT(token)
 
-    if (isValidJWT) return await next(req)
-
-    return Response.json(
-      { msg: 'Invalid JWT' },
-      {
-        status: 401,
-        headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+    if (options.role) {
+      const appMetadata = payload.app_metadata as { user_role?: unknown } | undefined
+      if (appMetadata?.user_role !== options.role) {
+        return Response.json(
+          { msg: 'Forbidden' },
+          {
+            status: 403,
+            headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+          }
+        )
       }
-    )
+    }
+
+    return await next(req)
   } catch (e) {
     return Response.json(
       { msg: e?.toString() },
