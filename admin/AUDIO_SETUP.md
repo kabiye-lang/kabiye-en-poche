@@ -28,6 +28,8 @@ In Supabase Dashboard → Storage:
 - Create bucket: **audios**
 - Set as **Public** (app needs to play audio files)
 
+> Pending: a public bucket exposes pending recordings too. Fix it before audio goes live: `docs/tasks/audio-bucket-private.md`.
+
 The live project has these policies on `storage.objects` (`audios_storage_admin_upload`,
 `audios_storage_admin_update`, `audios_storage_admin_delete`, `audios_storage_public_select`);
 on a new project, create them:
