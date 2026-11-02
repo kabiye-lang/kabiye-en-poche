@@ -5,6 +5,7 @@ Hard rules (full conventions in `.cursorrules` — read it before touching lesso
 - Kebab-case file names everywhere.
 - No summary or changelog files unless asked.
 - Never fabricate Kabiyè: only words present in the provided dictionary/PDF sources; if a word isn't there, use one that is, or drop the example.
+- Architecture map: open `docs/architecture/index.html` (pan, zoom, click a box or step) before exploring the monorepo. Rebuild it with `/lab-architecture-map` after a large feature.
 
 <!-- BEGIN:ai-loop (managed from ~/devs/dotfiles/claude — edit there; remove this block to opt out) -->
 ## Working rules
