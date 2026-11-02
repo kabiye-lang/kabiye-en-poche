@@ -41,7 +41,7 @@ Deno.serve((req) =>
       })
 
       if (!metadataResult.success) {
-        const msg = metadataResult.error.errors[0]?.message ?? 'Invalid metadata (tags are required)'
+        const msg = metadataResult.error.issues[0]?.message ?? 'Invalid metadata (tags are required)'
         return new Response(JSON.stringify({ error: msg }), {
           status: 400,
           headers: { ...corsHeaders, 'Content-Type': 'application/json' },
