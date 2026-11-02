@@ -9,9 +9,12 @@ import { useRequireAdmin } from '@/hooks/use-require-admin'
 const Layout = (props: CoreLayoutProps) => {
   const { children } = props
   // Every admin page renders inside this layout, so the role check sits here, not on one page.
-  const isAdmin = useRequireAdmin()
+  const access = useRequireAdmin()
 
-  if (!isAdmin) {
+  if (access === 'error') {
+    return <p className="p-8 text-center">Could not check your access. Reload the page.</p>
+  }
+  if (access === 'hide') {
     return null
   }
 
