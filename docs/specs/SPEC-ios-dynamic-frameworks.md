@@ -2,6 +2,8 @@
 
 Status: approved (owner, 2026-11-14: option b, the gate is a local clean prebuild and Release build). Stage 2 skipped: build config only, no data, auth or schema change.
 
+Owner decision 2026-11-14: dynamic linkage duplicated a GoogleUtilities SwiftPM class (`GoogleUtilities_GoogleUtilities_NSData_SWIFTPM_MODULE_BUNDLER_FINDER`) inside `RNFBAuth.framework`, and the launch log printed "Class ... is implemented in both". No screen uses the auth pod, so the owner chose to remove it (step 6).
+
 ## Why
 
 A clean iOS prebuild fails at `pod install` on `develop`:
@@ -29,14 +31,16 @@ The owner chose option b on 2026-11-14: stay on Firebase 27 and build with dynam
 3. `mobile/plugins/with-firebase-configure.js`: run a clean prebuild without it (take it out of the plugin list). If the generated `AppDelegate.swift` has `import FirebaseCore` once and `FirebaseApp.configure()` once, and prebuild prints no "Unable to determine correct Firebase insertion point", delete the plugin, its test if one exists, and its line in `app.config.ts`. If not, keep it and say so in the PR.
 4. Note in the PR whether Expo's precompiled React Native is still used with dynamic frameworks, and the clean build time. If it falls back to building React Native from source, say so: that is acceptable, but the owner should know before an EAS build.
 5. `scripts/renovate.js` (repo root): no change needed for option b. Check that it does not pin or downgrade Firebase.
+6. Remove `@react-native-firebase/auth` (owner decision 2026-11-14): take it out of `mobile/package.json` and `pnpm-lock.yaml`, and take `'@react-native-firebase/auth'` out of the plugin list in `mobile/app.config.ts`. Run `pnpm check-duplicates`. Check that the Release `.app` has no `RNFBAuth.framework` and no ObjC class defined in two binaries.
 
-Do not change Android (`android: { usePrecompiledHeaders: true }` stays). Do not add or remove Firebase packages.
+Do not change Android (`android: { usePrecompiledHeaders: true }` stays). Do not add Firebase packages, and remove none except `@react-native-firebase/auth`.
 
 ## Files to touch
 
 | Path | Change |
 |---|---|
-| `mobile/app.config.ts` | `useFrameworks: 'dynamic'`, `forceStaticLinking` removed or reduced, comment, maybe the `with-firebase-configure` line |
+| `mobile/app.config.ts` | `useFrameworks: 'dynamic'`, `forceStaticLinking` removed or reduced, comment, maybe the `with-firebase-configure` line, the `@react-native-firebase/auth` plugin line removed |
+| `mobile/package.json`, `pnpm-lock.yaml` | `@react-native-firebase/auth` removed |
 | `mobile/plugins/with-firebase-configure.js` | Deleted if step 3 allows |
 | Tests of that plugin (if any, `git grep with-firebase-configure`) | Deleted with it |
 
@@ -68,5 +72,4 @@ Run in the worktree, from `mobile/`, with `PATH=/opt/homebrew/bin:$PATH`. Set `G
 ## Out of scope
 
 - Moving off Firebase, or replacing Crashlytics.
-- Removing the unused auth pod.
 - An EAS build, local or remote.

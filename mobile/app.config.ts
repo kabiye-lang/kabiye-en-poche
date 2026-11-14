@@ -77,7 +77,6 @@ export default ({ config }: ConfigContext): ExpoConfig => ({
       },
     ],
     '@react-native-firebase/app',
-    '@react-native-firebase/auth',
     '@react-native-firebase/crashlytics',
     // `name` has no è (see above): give the launcher label its è back.
     ['./plugins/with-android-app-name', DISPLAY_NAME],
