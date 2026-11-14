@@ -1,7 +1,9 @@
+import type { LearnerPath } from '../../hooks/use-path'
 import type { LessonExample, LessonStep } from '../../types/lesson-steps'
 import type { LessonActivity, Tables } from '../../types/supabase'
 
 import { buildLessonSteps, taughtWords } from '../build-lesson-steps'
+import { practisedWords } from '../lesson-outcomes'
 import { fingerprintLesson } from '../lesson-session'
 
 jest.mock('expo-constants', () => ({
@@ -59,7 +61,16 @@ const activities = [
 
 const build = (audioFor: (w: LessonExample) => string | undefined, lessonContents = contents) => {
   const { words, sectionOf } = taughtWords(lessonContents)
-  return buildLessonSteps({ lessonId: 'L', contents: lessonContents, activities, words, sectionOf, getValue, audioFor })
+  return buildLessonSteps({
+    lessonId: 'L',
+    contents: lessonContents,
+    activities,
+    words,
+    sectionOf,
+    getValue,
+    audioFor,
+    path: null,
+  })
 }
 
 const shape = (steps: LessonStep[]) =>
@@ -132,5 +143,145 @@ describe('buildLessonSteps', () => {
 
   it('adds nothing for a recording that is not ours', () => {
     expect(shape(build(() => 'https://example.com/keɖe.mp3'))).toEqual(shape(build(() => undefined)))
+  })
+})
+
+// The learner's path (speaker, heritage, new) reorders a lesson's steps -- see
+// docs/archive/SPEC-path-step-order.md. One fixture with every group of activity: 2 prose
+// sections, 4 words (keɖe and wɩʋ with Kabiyè-only letters), a dialogue, notes and a TDA.
+describe('buildLessonSteps by path', () => {
+  const pathContents: Tables<'lesson_contents'>[] = [
+    { ...section(0, [word('caa')]), id: 'd', kind: 'dialogue', title_en: 'Dialogue' },
+    section(1, [word('luu', 'luu'), word('keɖe', 'keɖe#1')]),
+    section(2, [word('wɩʋ', 'wɩʋ'), word('cee', 'cee')]),
+    { ...section(3, []), id: 'n', kind: 'cultural_notes', title_en: 'Notes' },
+    { ...section(4, []), id: 't', kind: 'tda', title_en: 'This week' },
+  ]
+  const pathActivities = [
+    activity('m-keɖe', 'match_pairs', { lexeme_id: 'keɖe#1' }),
+    activity('s-keɖe', 'spell', { correct: 'keɖe' }),
+    activity('f-luu', 'fill_blank', { lexeme_id: 'luu' }),
+    activity('s-wɩʋ', 'spell', { lexeme_id: 'wɩʋ' }),
+    activity('r-wɩʋ', 'read_choose', { lexeme_id: 'wɩʋ', sentence: 'wɩʋ', options: { en: ['stone', 'water'] } }),
+    activity('q-cee', 'multiple_choice', { lexeme_id: 'cee' }),
+    // No taught word claims these three. A listening question is "Other": rank 1 on
+    // every path.
+    activity('u-listen', 'listen_choose', {
+      audio_url: HOSTED + 'tɛɛ.m4a',
+      options: ['tɛɛ', 'cee'],
+      correct_answer: 'tɛɛ',
+    }),
+    activity('u-order', 'order_words', {}),
+    activity('u-spot', 'spot_letter', { correct: 'tɛɛ', distractors: ['tee', 'tɛe'] }),
+  ]
+
+  const PATHS: (LearnerPath | null)[] = [null, 'new', 'speaker', 'heritage']
+
+  const buildFor = (path: LearnerPath | null) => {
+    const { words, sectionOf } = taughtWords(pathContents)
+    return buildLessonSteps({
+      lessonId: 'L',
+      contents: pathContents,
+      activities: pathActivities,
+      words,
+      sectionOf,
+      getValue,
+      audioFor: () => undefined,
+      path,
+    })
+  }
+
+  const TODAY = [
+    ['cover', 'cover', null],
+    ['dialogue', 'dialogue', null],
+    ['teach-luu', 'teach', null],
+    ['activity-f-luu', 'fill_blank', 'luu'],
+    ['teach-keɖe', 'teach', null],
+    ['activity-m-keɖe', 'match_pairs', 'keɖe'],
+    ['rule-0', 'content', null],
+    ['teach-wɩʋ', 'teach', null],
+    ['activity-s-wɩʋ', 'spell', 'wɩʋ'],
+    ['teach-cee', 'teach', null],
+    ['activity-q-cee', 'multiple_choice', 'cee'],
+    ['rule-1', 'content', null],
+    ['activity-s-keɖe', 'spell', null],
+    ['activity-r-wɩʋ', 'read_choose', null],
+    ['activity-u-listen', 'listen_choose', null],
+    ['activity-u-order', 'order_words', null],
+    ['activity-u-spot', 'spot_letter', null],
+    ['notes', 'notes', null],
+    ['completion', 'completion', null],
+  ]
+
+  // Pinned against the builder before the path existed: the default path must not move.
+  it.each([null, 'new'] as const)('builds exactly today’s steps and fingerprint for path %p', (path) => {
+    const steps = buildFor(path)
+    expect(shape(steps)).toEqual(TODAY)
+    expect(steps.map((s) => s.order)).toEqual(steps.map((_, i) => i))
+    expect(fingerprintLesson(steps.slice(0, -1))).toBe('1b489f1')
+  })
+
+  it('speaker: pairs a word to its spelling activity, and puts unclaimed spelling first', () => {
+    const steps = shape(buildFor('speaker'))
+    // keɖe matches a match_pairs and a spell: the spell wins.
+    expect(steps.slice(4, 6)).toEqual([
+      ['teach-keɖe', 'teach', null],
+      ['activity-s-keɖe', 'spell', 'keɖe'],
+    ])
+    expect(steps.slice(12, 17)).toEqual([
+      ['activity-u-spot', 'spot_letter', null],
+      ['activity-m-keɖe', 'match_pairs', null],
+      ['activity-r-wɩʋ', 'read_choose', null],
+      ['activity-u-listen', 'listen_choose', null],
+      ['activity-u-order', 'order_words', null],
+    ])
+  })
+
+  it('heritage: recognition wins the pairing, and production waits for the section’s last word', () => {
+    const steps = shape(buildFor('heritage'))
+    // luu is paired only to fill_blank: after keɖe, the section's last word, and before
+    // rule-0, still paired to luu.
+    expect(steps.slice(2, 7)).toEqual([
+      ['teach-luu', 'teach', null],
+      ['teach-keɖe', 'teach', null],
+      ['activity-m-keɖe', 'match_pairs', 'keɖe'],
+      ['activity-f-luu', 'fill_blank', 'luu'],
+      ['rule-0', 'content', null],
+    ])
+    // wɩʋ matches a spell and a read_choose: the read_choose wins.
+    expect(steps.slice(7, 9)).toEqual([
+      ['teach-wɩʋ', 'teach', null],
+      ['activity-r-wɩʋ', 'read_choose', 'wɩʋ'],
+    ])
+    // Recognition first, then rank 1 (listening, spot_letter) in list order, then
+    // production.
+    expect(steps.slice(12, 17).map(([id]) => id)).toEqual([
+      'activity-u-listen',
+      'activity-u-spot',
+      'activity-s-keɖe',
+      'activity-s-wɩʋ',
+      'activity-u-order',
+    ])
+    expect(buildFor('heritage').map((s) => s.order)).toEqual(steps.map((_, i) => i))
+  })
+
+  it('counts the same practised words on every path', () => {
+    const practised = PATHS.map((path) => {
+      const steps = buildFor(path)
+      const answers = new Map(steps.map((s) => [s.id, 'answer']))
+      return practisedWords(steps, answers).sort()
+    })
+    expect(practised[0]).toEqual(['cee', 'keɖe', 'luu', 'wɩʋ'])
+    for (const words of practised) expect(words).toEqual(practised[0])
+  })
+
+  it('keeps cover, dialogue, notes and completion in place on every path', () => {
+    for (const path of PATHS) {
+      const ids = buildFor(path).map((s) => s.id)
+      expect(ids.slice(0, 2)).toEqual(['cover', 'dialogue'])
+      expect(ids.slice(-2)).toEqual(['notes', 'completion'])
+      expect(ids.indexOf('rule-0')).toBe(6)
+      expect(ids.indexOf('rule-1')).toBe(11)
+    }
   })
 })

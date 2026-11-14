@@ -44,6 +44,7 @@ import { useLessonAudio } from '../hooks/use-audio-index'
 import { useLanguage } from '../hooks/use-language'
 import { useLessonSession } from '../hooks/use-lesson-session'
 import { useMyWords } from '../hooks/use-my-words'
+import { usePath } from '../hooks/use-path'
 import { hasActivity } from '../types/lesson-steps'
 import { buildLessonSteps, taughtWords } from '../utils/build-lesson-steps'
 import { practisedWords } from '../utils/lesson-outcomes'
@@ -85,6 +86,12 @@ const LessonScreen = () => {
   const lessonAudio = useLessonAudio(lessonId, words, contents !== undefined)
   const { audioFor } = lessonAudio
 
+  // The learner's path orders the practice (see `buildLessonSteps`). A path changed in
+  // Profile mid-lesson gives a different step list, so the stored session's fingerprint no
+  // longer matches: it is dropped and the lesson restarts at the cover, as a content
+  // change already does.
+  const { path, isLoading: pathLoading } = usePath()
+
   /** Steps, in the Laterite order -- see `buildLessonSteps`. */
   const steps = useMemo<LessonStep[]>(() => {
     if (!lesson || !contents) return []
@@ -96,8 +103,9 @@ const LessonScreen = () => {
       sectionOf,
       getValue,
       audioFor,
+      path,
     })
-  }, [lesson, lessonId, contents, activities, words, sectionOf, getValue, audioFor])
+  }, [lesson, lessonId, contents, activities, words, sectionOf, getValue, audioFor, path])
 
   /** The fixed lesson `utils/lesson-session.ts` walks: cover through the last taught or
    *  practised step, excluding `completion` -- `finish` is a phase, not a step. */
@@ -111,9 +119,10 @@ const LessonScreen = () => {
   // Data present, not merely "done loading": a query that fails also stops loading, and
   // `activities ?? []` would then build a lesson with no exercises and save a session for it.
   // The recordings are part of the content: a recorded word gains a listening question, so
-  // a step list built before they settled would change under the restored session.
+  // a step list built before they settled would change under the restored session. So is
+  // the path: steps built before it is read are the default order, not this learner's.
   const contentReady =
-    lesson !== undefined && contents !== undefined && activities !== undefined && lessonAudio.isSettled
+    lesson !== undefined && contents !== undefined && activities !== undefined && lessonAudio.isSettled && !pathLoading
   const lessonSession = useLessonSession(lessonId, contentReady ? lessonSteps : NO_STEPS)
   const { session } = lessonSession
 
@@ -425,6 +434,7 @@ const LessonScreen = () => {
               audioUrl={audioFor(currentStep.example)}
               onContinue={handleAdvance}
               explainMissingAudio={currentLessonIndex === firstSilentTeachIndex}
+              leadWithLetters={path === 'speaker'}
             />
           ) : null}
 
@@ -557,7 +567,7 @@ const LessonScreen = () => {
                 </Text>
               </RNView>
               <View className="mt-4 flex-1">
-                <TeachContent example={overlayWord} />
+                <TeachContent example={overlayWord} leadWithLetters={path === 'speaker'} />
               </View>
               <Button variant="primary" fullWidth className="min-h-[44px]" onPress={() => setShowWordOverlay(false)}>
                 {t`Back to the question`}

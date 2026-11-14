@@ -1,7 +1,7 @@
+import { BOOK, paradigmFilters, SIL } from '../use-conjugation'
+
 // The hook module reaches for the Supabase client at import; the filter builder needs none of it.
 jest.mock('../../lib/supabase', () => ({ supabase: {} }))
-
-import { BOOK, paradigmFilters, SIL } from '../use-conjugation'
 
 describe('paradigmFilters -- which tables an entry asks for', () => {
   it('a subgroup the sketch prints: that one key, and the book class', () => {
@@ -12,9 +12,9 @@ describe('paradigmFilters -- which tables an entry asks for', () => {
   })
 
   it('a parent code the entry prints without its subgroup: every printed subgroup', () => {
-    expect(paradigmFilters({ schema: '3', schemaKeys: ['3a', '3b', '3c', '3d', '3n'], schemaPrinted: true, classes: [] })).toEqual([
-      `and(source.eq.${SIL},key.in.(3a,3b,3c,3d,3n))`,
-    ])
+    expect(
+      paradigmFilters({ schema: '3', schemaKeys: ['3a', '3b', '3c', '3d', '3n'], schemaPrinted: true, classes: [] })
+    ).toEqual([`and(source.eq.${SIL},key.in.(3a,3b,3c,3d,3n))`])
   })
 
   it('a code no page prints asks the sketch for nothing', () => {

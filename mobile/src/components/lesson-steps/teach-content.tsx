@@ -13,6 +13,13 @@ const KABIYE_ONLY = 'ɖƉɛƐɣƔɩƖŋŊɔƆʋƲñÑ'
 
 interface TeachContentProps {
   example: LessonExample
+  /**
+   * Speaker path: someone who speaks the word and has never written it. The letter chips
+   * move up, under the gloss and before the note, with a label -- the card leads with the
+   * spelling. Same chips, same hints from the alphabet table; nothing is added. A word with
+   * none of the Kabiyè-only letters has no chips, so no label either.
+   */
+  leadWithLetters?: boolean
 }
 
 /**
@@ -26,7 +33,7 @@ interface TeachContentProps {
  * explains missing audio -- that notice is said once, the first time a learner meets the
  * word, which stays `TeachStep`'s to own.
  */
-const TeachContent = ({ example }: TeachContentProps) => {
+const TeachContent = ({ example, leadWithLetters = false }: TeachContentProps) => {
   const { t } = useLingui()
   const { currentLanguage, getValue } = useLanguage()
   const { data: letters } = useAppAlphabetLetters()
@@ -43,6 +50,26 @@ const TeachContent = ({ example }: TeachContentProps) => {
     })
     .filter((c): c is { letter: string; hint: string } => c !== null)
 
+  const chipRow = (className: string) => (
+    <View className={`${className} flex-row flex-wrap gap-3`}>
+      {chips.map((chip) => (
+        <View
+          key={chip.letter}
+          className="border-foreground flex-row items-center gap-2 rounded-[10px] border-[1.5px] px-3 py-2"
+        >
+          {/* large-text: 22px bold clears the WCAG large-text threshold (>= 18.66px
+              bold), so `accent` (4.22:1) is the large-glyph carve-out here, not a
+              small-text miss. */}
+          <Text kabiye className="text-accent text-[22px]" weight="bold">
+            {chip.letter}
+          </Text>
+          <Text className="text-foreground-secondary max-w-[210px] text-[13px] leading-[1.3]">{chip.hint}</Text>
+        </View>
+      ))}
+    </View>
+  )
+  const lead = leadWithLetters && chips.length > 0
+
   return (
     <View>
       <Animated.View entering={FadeInDown.duration(600)}>
@@ -51,6 +78,15 @@ const TeachContent = ({ example }: TeachContentProps) => {
         </Text>
         {gloss ? <Text className="text-foreground mt-1 text-[24px] leading-[1.2]">{gloss}</Text> : null}
       </Animated.View>
+
+      {lead ? (
+        <View className="mt-6">
+          <Text className="text-foreground-secondary text-[13px] font-semibold uppercase tracking-[0.1em]">
+            {t`Letters to watch`}
+          </Text>
+          {chipRow('mt-3')}
+        </View>
+      ) : null}
 
       <View className="border-foreground my-6 border-t-[1.5px]" />
 
@@ -65,24 +101,7 @@ const TeachContent = ({ example }: TeachContentProps) => {
         </Text>
       ) : null}
 
-      {chips.length > 0 ? (
-        <View className="mt-6 flex-row flex-wrap gap-3">
-          {chips.map((chip) => (
-            <View
-              key={chip.letter}
-              className="border-foreground flex-row items-center gap-2 rounded-[10px] border-[1.5px] px-3 py-2"
-            >
-              {/* large-text: 22px bold clears the WCAG large-text threshold (>= 18.66px
-                  bold), so `accent` (4.22:1) is the large-glyph carve-out here, not a
-                  small-text miss. */}
-              <Text kabiye className="text-accent text-[22px]" weight="bold">
-                {chip.letter}
-              </Text>
-              <Text className="text-foreground-secondary max-w-[210px] text-[13px] leading-[1.3]">{chip.hint}</Text>
-            </View>
-          ))}
-        </View>
-      ) : null}
+      {chips.length > 0 && !lead ? chipRow('mt-6') : null}
     </View>
   )
 }

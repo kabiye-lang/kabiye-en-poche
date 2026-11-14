@@ -28,6 +28,8 @@ interface TeachStepProps {
    * one honest sentence into a refrain a learner reads eight times and stops seeing.
    */
   explainMissingAudio?: boolean
+  /** Speaker path: the letter chips lead the card -- see `TeachContent`. */
+  leadWithLetters?: boolean
 }
 
 /**
@@ -43,7 +45,7 @@ interface TeachStepProps {
  * notice, and the two controls that advance or leave the lesson, none of which belong in
  * an overlay sitting over a live question.
  */
-const TeachStep = ({ example, audioUrl, onContinue, explainMissingAudio }: TeachStepProps) => {
+const TeachStep = ({ example, audioUrl, onContinue, explainMissingAudio, leadWithLetters }: TeachStepProps) => {
   const { t } = useLingui()
   const { playAudio, stopAudio, isPlaying, isLoading, error: audioError } = useAudio()
 
@@ -65,7 +67,7 @@ const TeachStep = ({ example, audioUrl, onContinue, explainMissingAudio }: Teach
       <ScrollView contentContainerClassName="px-6 pb-8 pt-8" showsVerticalScrollIndicator={false}>
         <Text className="text-accent-text text-[13px] font-semibold uppercase tracking-[0.1em]">{t`New word`}</Text>
 
-        <TeachContent example={example} />
+        <TeachContent example={example} leadWithLetters={leadWithLetters} />
 
         {/* The play control lives here, not in TeachContent: that card also opens over a
             live review question, and a play button there would answer a listening one. */}

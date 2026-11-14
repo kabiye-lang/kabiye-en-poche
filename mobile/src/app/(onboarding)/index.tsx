@@ -23,8 +23,10 @@ const ONBOARDING_KEY = '@kabiye_onboarding_complete'
  * who speaks Kabiyè and cannot write it, someone who grew up hearing it, someone meeting
  * it new -- and the cheapest way to serve all three is to ask which one is reading.
  *
- * The answer only reorders units. It is stored on the device, sent nowhere, and can be
- * changed from Learn, so getting it wrong costs a tap rather than a wrong curriculum.
+ * The answer reorders the units and each lesson's steps (spelling first for a speaker,
+ * recognition first for heritage; see `buildLessonSteps`). It is stored on the device,
+ * sent nowhere, and can be changed from Profile → "My path", so getting it wrong costs a
+ * tap rather than a wrong curriculum.
  */
 const OnboardingScreen = () => {
   const { t } = useLingui()
