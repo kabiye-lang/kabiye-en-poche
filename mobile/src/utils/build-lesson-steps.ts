@@ -198,7 +198,7 @@ const MAX_BUILT_SPOT_LETTER = 3
 const BUILT_SPOT_LETTER_MIN_SPECIAL = 2
 
 /**
- * The speaker path's app-built "spot the letter" steps (docs/specs/SPEC-speaker-spot-letter.md),
+ * The speaker path's app-built "spot the letter" steps (docs/archive/SPEC-speaker-spot-letter.md),
  * inserted into `steps` in place, each right after its word's first Teach card and so
  * before the word's paired activity.
  *

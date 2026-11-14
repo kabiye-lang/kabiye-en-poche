@@ -1,6 +1,6 @@
 # Review notes: feat/speaker-spot-letter
 
-Spec: `docs/specs/SPEC-speaker-spot-letter.md`. Diff review: the Claude `reviewer` agent (same vendor as the author: Codex was limited until 12:42 and the free model went silent), SHIP, no P0 or P1. Verify: the Claude `verifier` agent, PASS.
+Spec: `docs/archive/SPEC-speaker-spot-letter.md`. Diff review: the Claude `reviewer` agent (same vendor as the author: Codex was limited until 12:42 and the free model went silent), SHIP, no P0 or P1. Verify: the Claude `verifier` agent, PASS.
 
 ## Open notes
 

@@ -223,7 +223,7 @@ describe('buildLessonSteps by path', () => {
   })
 
   // The heritage order of #105, pinned before the speaker path gained built steps
-  // (docs/specs/SPEC-speaker-spot-letter.md): heritage must not move either.
+  // (docs/archive/SPEC-speaker-spot-letter.md): heritage must not move either.
   it('builds #105’s steps and fingerprint for heritage', () => {
     const steps = buildFor('heritage')
     expect(steps.some((s) => 'built' in s)).toBe(false)
@@ -295,7 +295,7 @@ describe('buildLessonSteps by path', () => {
   })
 })
 
-// The speaker path's app-built "spot the letter" (docs/specs/SPEC-speaker-spot-letter.md).
+// The speaker path's app-built "spot the letter" (docs/archive/SPEC-speaker-spot-letter.md).
 // Headwords from the lesson files; the glosses are placeholders.
 describe('buildLessonSteps: built spot the letter for speaker', () => {
   const buildWith = (
@@ -423,7 +423,7 @@ describe('buildLessonSteps: built spot the letter for speaker', () => {
   })
 })
 
-// Verifier edge cases for docs/specs/SPEC-speaker-spot-letter.md: the built step through
+// Verifier edge cases for docs/archive/SPEC-speaker-spot-letter.md: the built step through
 // the whole session (lesson, review, finish, saved session), as `lesson.tsx` drives it.
 // kalʋʋ has no activity at all, so on every path it is only met.
 describe('built spot the letter through a lesson session', () => {
