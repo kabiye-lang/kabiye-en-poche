@@ -21,10 +21,10 @@ jest.mock('expo-constants', () => ({
 const HOSTED = 'https://isdeilllppdfngxmsols.supabase.co/storage/v1/object/public/audios/'
 
 // Headwords already used by the builder tests (dictionary words); glosses and notes are
-// English placeholders, not Kabiyè. Every taught word carries a lexeme_id, as in all 192
-// lesson files: the builder's match `ref === word.lexeme_id` would otherwise pair a word
-// without one to any activity that names no word (`undefined === undefined`), on every
-// path including today's. That rule is older than the path and out of this spec.
+// English placeholders, not Kabiyè. Every random word carries a lexeme_id, as in all 192
+// lesson files. A word without one matches any activity that names no word
+// (`ref === word.lexeme_id` is `undefined === undefined`); the fixed case at the end of
+// the test covers what the path does with that.
 const HEADWORDS: { kbp: string; lexeme_id: string }[] = [
   { kbp: 'keɖe', lexeme_id: 'keɖe#1' },
   { kbp: 'tamaɣ', lexeme_id: 'tamaɣ#1' },
@@ -312,5 +312,58 @@ describe('buildLessonSteps by path, against the spec on random lessons', () => {
     expect(heritageMoves).toBeGreaterThan(50)
     expect(movedListening).toBeGreaterThan(10)
     expect(ties).toBeGreaterThan(10)
+
+    // A word with no lexeme_id, and an activity that names no word. Today (null) tɛɛ is
+    // paired to the fill_blank that names it. A path must not trade that for the spell that
+    // names nothing: the practised words would then differ by path, and tɛɛ would count as
+    // practised through a question that is not about it.
+    const loose: Case = (() => {
+      const contents: Tables<'lesson_contents'>[] = [
+        {
+          id: 'c0',
+          lesson_id: 'L',
+          kind: 'prose',
+          position: 0,
+          created_at: null,
+          title_en: 'Section 0',
+          title_fr: 'Section 0',
+          content_en: 'Rule 0',
+          content_fr: 'Règle 0',
+          examples: [
+            { kbp: 'tɛɛ', en: 'gloss of tɛɛ', note: { en: 'n' } },
+            { kbp: 'caa', en: 'gloss of caa', note: { en: 'n' } },
+          ] as unknown as Tables<'lesson_contents'>['examples'],
+        },
+      ]
+      const activity = (id: string, activity_type: string, data: Record<string, unknown>): LessonActivity => ({
+        id,
+        lesson_id: 'L',
+        activity_type,
+        data: data as LessonActivity['data'],
+        position: 0,
+        created_at: null,
+        question_en: null,
+        question_fr: null,
+        instructions_en: null,
+        instructions_fr: null,
+      })
+      const { words, sectionOf } = taughtWords(contents)
+      return {
+        contents,
+        activities: [activity('a0', 'fill_blank', { answer: 'tɛɛ' }), activity('a1', 'spell', {})],
+        words,
+        sectionOf,
+        audioFor: () => undefined,
+      }
+    })()
+    const looseBuilt = PATHS.map((path) => build(loose, path))
+    const pairedTo = (steps: LessonStep[], kbp: string) =>
+      steps.find((s) => 'activity' in s && (s as ActivityStep).wordKbp === kbp)?.id
+    expect(pairedTo(looseBuilt[0], 'tɛɛ')).toBe('activity-a0')
+    for (const steps of looseBuilt) expect(pairedTo(steps, 'tɛɛ')).toBe('activity-a0')
+    const loosePractised = looseBuilt.map((steps) =>
+      practisedWords(steps, new Map(steps.map((s) => [s.id, 'answer']))).sort()
+    )
+    for (const words of loosePractised) expect(words).toEqual(loosePractised[0])
   })
 })
