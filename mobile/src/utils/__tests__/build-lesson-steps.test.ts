@@ -147,7 +147,7 @@ describe('buildLessonSteps', () => {
 })
 
 // The learner's path (speaker, heritage, new) reorders a lesson's steps -- see
-// docs/specs/SPEC-path-step-order.md. One fixture with every group of activity: 2 prose
+// docs/archive/SPEC-path-step-order.md. One fixture with every group of activity: 2 prose
 // sections, 4 words (keɖe and wɩʋ with Kabiyè-only letters), a dialogue, notes and a TDA.
 describe('buildLessonSteps by path', () => {
   const pathContents: Tables<'lesson_contents'>[] = [

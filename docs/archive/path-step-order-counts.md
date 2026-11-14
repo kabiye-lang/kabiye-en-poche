@@ -1,6 +1,6 @@
 # Path step order: counts (build step 1)
 
-Measured on 2026-11-13 for `docs/specs/SPEC-path-step-order.md`, build step 1.
+Measured on 2026-11-13 for `docs/archive/SPEC-path-step-order.md`, build step 1.
 
 ## Source
 

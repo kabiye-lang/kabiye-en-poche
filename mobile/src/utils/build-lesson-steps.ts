@@ -267,7 +267,7 @@ function listeningActivity(
  * word with one gets a listening question after its paired activity -- see
  * `listeningActivity`. With no recordings the steps are exactly what they were before.
  *
- * `path` orders the practice for the learner (docs/specs/SPEC-path-step-order.md) and
+ * `path` orders the practice for the learner (docs/archive/SPEC-path-step-order.md) and
  * never changes what is in the lesson. `null` and `'new'` give the order above. With a
  * path, a word is paired to its matching activity of lowest `PATH_RANK` (ties keep list
  * order), and the unclaimed activities sort by rank, stable. Heritage also moves a word

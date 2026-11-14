@@ -15,7 +15,7 @@ import { buildLessonSteps, taughtWords } from '../../utils/build-lesson-steps'
 import { fingerprintLesson } from '../../utils/lesson-session'
 import LessonScreen from '../lesson'
 
-// The lesson screen with the learner's path (docs/specs/SPEC-path-step-order.md): it must
+// The lesson screen with the learner's path (docs/archive/SPEC-path-step-order.md): it must
 // read the stored path before it builds the steps and loads a saved session, or a speaker
 // or heritage learner's session is judged stale and dropped every time the lesson opens.
 // `usePath`, `useLessonSession` and `buildLessonSteps` are the real ones; only the data

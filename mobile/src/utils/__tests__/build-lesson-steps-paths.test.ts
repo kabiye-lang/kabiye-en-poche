@@ -11,7 +11,7 @@ jest.mock('expo-constants', () => ({
   default: { expoConfig: { extra: { supabase: { url: 'https://isdeilllppdfngxmsols.supabase.co' } } } },
 }))
 
-// The path step order (docs/specs/SPEC-path-step-order.md), checked against a small
+// The path step order (docs/archive/SPEC-path-step-order.md), checked against a small
 // oracle written from the spec on many seeded random lessons. The hand-picked tests in
 // build-lesson-steps.test.ts pin one fixture; this one reaches the cases it does not:
 // ties between two activities of the same rank, a listening question riding with a
