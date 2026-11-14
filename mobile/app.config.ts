@@ -67,38 +67,16 @@ export default ({ config }: ConfigContext): ExpoConfig => ({
       {
         android: { usePrecompiledHeaders: true },
         ios: {
-          useFrameworks: 'static',
           /**
-           * RNFirebase iOS build fix using static linking (maintainer-recommended).
-           *
-           * We previously used `buildReactNativeFromSource: true` as a workaround to fix
-           * RNFirebase + Firebase iOS SDK build issues, but it disabled Expo’s precompiled RN for
-           * iOS builds and significantly increased build times.
-           * - N.B. For links & context on why `buildReactNativeFromSource: true` was added,
-           * refer to comments in the "previous commit".
-           *
-           * This `forceStaticLinking` configuration follows the Expo maintainer’s suggested solution:
-           * https://github.com/expo/expo/issues/39607#issuecomment-3337284928
-           * https://github.com/invertase/react-native-firebase/issues/8657#issuecomment-3667922545
-           * - Now precompiled builds are enabled and build times are reduced and RNFB builds work on iOS.
-           *
-           * ⚠️ IMPORTANT: If installing/removing react-native-firebase npm packages, ensure you also update this list.
-           * - Look for `s.name` property in node_modules/@react-native-firebase/<module>/<module>.podspec to get the Pod name.
+           * Dynamic frameworks: RNFB 27 gets the Firebase Apple SDK through Swift Package
+           * Manager only, and refuses static pod linkage ("SPM + static linkage is not supported").
+           * https://rnfirebase.io/ios-spm
            */
-          forceStaticLinking: [
-            'RNFBAnalytics',
-            'RNFBApp',
-            'RNFBCrashlytics',
-            // 'RNFBInAppMessaging',
-            // 'RNFBInstallations',
-            // 'RNFBPerf',
-          ],
+          useFrameworks: 'dynamic',
         },
       },
     ],
     '@react-native-firebase/app',
-    // SDK 58 AppDelegate has no line RNFB 26 can anchor to: see the plugin's header.
-    './plugins/with-firebase-configure',
     '@react-native-firebase/auth',
     '@react-native-firebase/crashlytics',
     // `name` has no è (see above): give the launcher label its è back.
