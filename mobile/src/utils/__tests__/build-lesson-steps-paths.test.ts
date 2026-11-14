@@ -16,7 +16,8 @@ jest.mock('expo-constants', () => ({
 // build-lesson-steps.test.ts pin one fixture; this one reaches the cases it does not:
 // ties between two activities of the same rank, a listening question riding with a
 // heritage step that moves, words no section claims (one group for the deferral), a
-// section with no rule, unanswerable activities, and every path at once.
+// section with no rule, unanswerable activities, and every path at once. Speaker also
+// gains the app-built "spot the letter" steps of docs/specs/SPEC-speaker-spot-letter.md.
 
 const HOSTED = 'https://isdeilllppdfngxmsols.supabase.co/storage/v1/object/public/audios/'
 
@@ -45,6 +46,9 @@ const TYPES = [
   'order_words',
   'true_false',
 ] as const
+
+/** The Kabiyè-only letters, written out here rather than imported: the oracle is the spec. */
+const SPECIAL = new Set([...'ɖɛɣɩŋɔʋñ', ...'ƉƐƔƖŊƆƲÑ'])
 
 /** The spec's rank table. A type not listed is "Other": rank 1. */
 const SPEC_RANK: Record<'speaker' | 'heritage', Record<string, number>> = {
@@ -178,7 +182,10 @@ const isListening = (step: LessonStep) => 'activity' in step && /^activity-liste
 /**
  * The order the spec asks for, as [id, wordKbp] pairs. The listening questions and the
  * content steps are taken from the `null` build: what is in the lesson never depends on
- * the path, only where it sits.
+ * the path, only where it sits. Speaker adds its built steps on top: up to 3, for taught
+ * words with 2 or more Kabiyè-only letters and no spell or spot_letter paired, most such
+ * letters first, each right after its word's Teach card. (Two such letters always give
+ * two misspellings, so every one is answerable.)
  */
 function oracle(c: Case, path: LearnerPath | null): [string, string | null][] {
   const reference = build(c, null)
@@ -193,6 +200,7 @@ function oracle(c: Case, path: LearnerPath | null): [string, string | null][] {
 
   const answerable = c.activities.filter(isAnswerable)
   const claimed = new Set<string>()
+  const taught: { kbp: string; pairedType?: string }[] = []
   const out: [string, string | null][] = reference
     .filter((s) => s.type === 'cover' || s.type === 'dialogue')
     .map((s) => [s.id, null])
@@ -207,6 +215,7 @@ function oracle(c: Case, path: LearnerPath | null): [string, string | null][] {
         // Lowest rank first; a tie keeps list order.
         .sort((x, y) => rank(x.a) - rank(y.a) || x.index - y.index)
       const paired = candidates[0]?.a
+      taught.push({ kbp: word.kbp, pairedType: paired?.activity_type })
       const practice: [string, string | null][] = []
       if (paired) {
         claimed.add(paired.id)
@@ -233,6 +242,19 @@ function oracle(c: Case, path: LearnerPath | null): [string, string | null][] {
   for (const { a } of unclaimed) out.push([`activity-${a.id}`, null])
 
   for (const s of reference) if (s.type === 'notes' || s.type === 'completion') out.push([s.id, null])
+
+  if (path === 'speaker') {
+    const special = (kbp: string) => [...kbp].filter((ch) => SPECIAL.has(ch)).length
+    const chosen = taught
+      .map((t, index) => ({ ...t, index }))
+      .filter((t) => special(t.kbp) >= 2 && t.pairedType !== 'spell' && t.pairedType !== 'spot_letter')
+      .sort((x, y) => special(y.kbp) - special(x.kbp) || x.index - y.index)
+      .slice(0, 3)
+    for (const { kbp } of chosen) {
+      const at = out.findIndex(([id]) => id === `teach-${kbp}`)
+      out.splice(at + 1, 0, [`built-spot-${kbp}`, kbp])
+    }
+  }
   return out
 }
 
@@ -248,6 +270,7 @@ describe('buildLessonSteps by path, against the spec on random lessons', () => {
     let heritageMoves = 0
     let movedListening = 0
     let ties = 0
+    let builtSteps = 0
     for (const seed of SEEDS) {
       const c = randomCase(seed)
       const built = PATHS.map((path) => build(c, path))
@@ -263,11 +286,18 @@ describe('buildLessonSteps by path, against the spec on random lessons', () => {
         })
       })
 
-      // null and 'new' are one order and one fingerprint; every path holds the same steps.
+      // null and 'new' are one order and one fingerprint; every path holds the same steps,
+      // once speaker's built ones are set aside. No other path has any.
       const ids = built.map((steps) => steps.map((s) => s.id))
       expect(JSON.stringify(ids[1])).toBe(JSON.stringify(ids[0]))
       expect(fingerprintLesson(built[1].slice(0, -1))).toBe(fingerprintLesson(built[0].slice(0, -1)))
-      for (const list of ids) expect([...list].sort()).toEqual([...ids[0]].sort())
+      const authored = built.map((steps) => steps.filter((s) => !(s as ActivityStep).built).map((s) => s.id))
+      for (const list of authored) expect([...list].sort()).toEqual([...ids[0]].sort())
+      built.forEach((steps, p) => {
+        const count = steps.filter((s) => (s as ActivityStep).built).length
+        if (PATHS[p] === 'speaker') builtSteps += count
+        else expect(count).toBe(0)
+      })
 
       // A learner who answers every question practises the same words, whatever the path:
       // the path changes which activity a word is paired to, never whether it has one.
@@ -312,6 +342,7 @@ describe('buildLessonSteps by path, against the spec on random lessons', () => {
     expect(heritageMoves).toBeGreaterThan(50)
     expect(movedListening).toBeGreaterThan(10)
     expect(ties).toBeGreaterThan(10)
+    expect(builtSteps).toBeGreaterThan(50)
 
     // A word with no lexeme_id, and an activity that names no word. Today (null) tɛɛ is
     // paired to the fill_blank that names it. A path must not trade that for the spell that
@@ -358,7 +389,7 @@ describe('buildLessonSteps by path, against the spec on random lessons', () => {
     })()
     const looseBuilt = PATHS.map((path) => build(loose, path))
     const pairedTo = (steps: LessonStep[], kbp: string) =>
-      steps.find((s) => 'activity' in s && (s as ActivityStep).wordKbp === kbp)?.id
+      steps.find((s) => 'activity' in s && !(s as ActivityStep).built && (s as ActivityStep).wordKbp === kbp)?.id
     expect(pairedTo(looseBuilt[0], 'tɛɛ')).toBe('activity-a0')
     for (const steps of looseBuilt) expect(pairedTo(steps, 'tɛɛ')).toBe('activity-a0')
     const loosePractised = looseBuilt.map((steps) =>

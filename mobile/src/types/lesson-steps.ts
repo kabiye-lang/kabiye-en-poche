@@ -78,6 +78,11 @@ export interface ActivityStep extends BaseStep {
    *  Unset on an activity nothing claimed -- it ran after the paired steps instead of
    *  being dropped, but answering it does not count as practising a word. */
   wordKbp?: string
+  /** An app-built step, not lesson content: the speaker path's "spot the letter" for a
+   *  taught word no spelling activity was paired to (`utils/build-lesson-steps.ts`). It
+   *  carries `wordKbp` so "Show the word again" finds its word, but it never counts as
+   *  practising that word (`utils/lesson-outcomes.ts`). Absent on every authored step. */
+  built?: boolean
 }
 
 export interface ContentStep extends BaseStep {

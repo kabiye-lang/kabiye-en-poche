@@ -3,7 +3,7 @@ import type { ActivityStep, LessonExample, LessonStep } from '../types/lesson-st
 import type { LessonActivity, Tables } from '../types/supabase'
 
 import { usableAudioUrl } from './audio-source'
-import { spellingVariants } from './kabiye-variants'
+import { specialPositions, spellingVariants } from './kabiye-variants'
 import { kbpKey } from './kbp-key'
 import { dialogueTurns, placeSections, sectionSentences } from './section-kinds'
 
@@ -179,6 +179,89 @@ const LISTEN_DISTRACTORS = 3
 /** Letters `ListenTypeStep`'s plain system keyboard can be relied on to type. */
 const TYPABLE = /^[a-z]+$/
 
+/** The fields of an activity the app builds itself rather than reads from the lesson. */
+const builtActivityBase = (lessonId: string) => ({
+  lesson_id: lessonId,
+  created_at: null,
+  position: -1,
+  question_en: null,
+  question_fr: null,
+  instructions_en: null,
+  instructions_fr: null,
+})
+
+/** Speaker path: at most this many app-built "spot the letter" steps in a lesson. */
+const MAX_BUILT_SPOT_LETTER = 3
+
+/** A word needs this many Kabiyè-only letters for a built "spot the letter". With one, the
+ *  question has a single wrong spelling -- see `isAnswerable`. */
+const BUILT_SPOT_LETTER_MIN_SPECIAL = 2
+
+/**
+ * The speaker path's app-built "spot the letter" steps (docs/specs/SPEC-speaker-spot-letter.md),
+ * inserted into `steps` in place, each right after its word's first Teach card and so
+ * before the word's paired activity.
+ *
+ * A speaker meets the lesson through its spelling, but many taught words have no `spell`
+ * or `spot_letter` paired to them. The app can ask one itself without inventing Kabiyè:
+ * the right answer is the word as taught, and the wrong spellings are derived from it by
+ * `spellingVariants` when the step renders. A word qualifies with 2 or more Kabiyè-only
+ * letters (`KABIYE_ONLY`, through `specialPositions`), no spelling activity paired to
+ * it, and enough variants to be answerable. At most `MAX_BUILT_SPOT_LETTER`, the words
+ * with most such letters first, ties by teaching order.
+ *
+ * The step names its word (`wordKbp`, so review's "Show the word again" finds it) and is
+ * marked `built`, so it never counts as practising the word. Its id, `built-spot-<kbp>`,
+ * is stable, as the session fingerprint hashes it: a speaker's saved session for a
+ * lesson that gains one is judged stale and restarts at the cover, once.
+ */
+function insertBuiltSpotLetters(
+  steps: LessonStep[],
+  taught: readonly { word: LessonExample; pairedType: string | undefined }[],
+  lessonId: string
+): void {
+  const seen = new Set<string>()
+  const candidates: { word: LessonExample; special: number; activity: LessonActivity }[] = []
+  for (const { word, pairedType } of taught) {
+    // The same word taught twice gets one step at most, after its first Teach card.
+    if (seen.has(word.kbp)) continue
+    seen.add(word.kbp)
+    if (pairedType === 'spell' || pairedType === 'spot_letter') continue
+    const special = specialPositions(word.kbp).length
+    if (special < BUILT_SPOT_LETTER_MIN_SPECIAL) continue
+
+    const gloss: Record<string, string> = {}
+    if (word.en) gloss.en = word.en
+    if (word.fr) gloss.fr = word.fr
+    const activity: LessonActivity = {
+      ...builtActivityBase(lessonId),
+      id: `built-spot-${word.kbp}`,
+      activity_type: 'spot_letter',
+      data: { correct: word.kbp, gloss },
+    }
+    if (isAnswerable(activity)) candidates.push({ word, special, activity })
+  }
+
+  // `sort` is stable, so equal counts keep teaching order.
+  const chosen = candidates.sort((a, b) => b.special - a.special).slice(0, MAX_BUILT_SPOT_LETTER)
+  for (const { word, activity } of chosen) {
+    const at = steps.findIndex((step) => step.type === 'teach' && step.example.kbp === word.kbp)
+    if (at < 0) continue
+    const step: ActivityStep = {
+      id: activity.id,
+      type: 'spot_letter',
+      order: -1,
+      activity,
+      wordKbp: word.kbp,
+      built: true,
+    }
+    steps.splice(at + 1, 0, step)
+  }
+  steps.forEach((step, index) => {
+    step.order = index
+  })
+}
+
 /**
  * A listening question for one taught word with a recording, built from the lesson's own
  * words: nothing is generated and nothing is written to the database.
@@ -213,15 +296,7 @@ function listeningActivity(
     others.push(other.kbp)
   }
 
-  const base = {
-    lesson_id: lessonId,
-    created_at: null,
-    position: -1,
-    question_en: null,
-    question_fr: null,
-    instructions_en: null,
-    instructions_fr: null,
-  }
+  const base = builtActivityBase(lessonId)
 
   if (others.length >= 1) {
     return {
@@ -268,13 +343,17 @@ function listeningActivity(
  * `listeningActivity`. With no recordings the steps are exactly what they were before.
  *
  * `path` orders the practice for the learner (docs/archive/SPEC-path-step-order.md) and
- * never changes what is in the lesson. `null` and `'new'` give the order above. With a
+ * never changes what the lesson itself holds. `null` and `'new'` give the order above. With a
  * path, a word is paired to its matching activity of lowest `PATH_RANK` (ties keep list
  * order), and the unclaimed activities sort by rank, stable. Heritage also moves a word
  * whose pairing is production (`spell`, `fill_blank`, `order_words`) to after its
  * section's last word and before the rule: every word is met and recognised before the
  * learner is asked to produce one. The moved step keeps its `wordKbp` -- pairing, not
  * position, decides what was practised -- and its listening question stays with it.
+ *
+ * Speaker alone also gains up to three app-built "spot the letter" steps, one after the
+ * Teach card of a word no spelling activity was paired to -- see `insertBuiltSpotLetters`.
+ * They are extra practice, not lesson content, and never count as practising a word.
  */
 export function buildLessonSteps({
   lessonId,
@@ -338,6 +417,8 @@ export function buildLessonSteps({
   // until its last word is taught. `order` is set when a step is placed, so it stays the
   // step's position.
   let deferred: ActivityStep[] = []
+  // Speaker: each word as taught, with the type of the activity paired to it.
+  const taught: { word: LessonExample; pairedType: string | undefined }[] = []
   const place = (step: ActivityStep) => {
     step.order = order++
     built.push(step)
@@ -369,6 +450,8 @@ export function buildLessonSteps({
     } else {
       paired = answerable.find(matches)
     }
+
+    taught.push({ word, pairedType: paired?.activity_type })
 
     const practice: ActivityStep[] = []
     if (paired) {
@@ -456,5 +539,7 @@ export function buildLessonSteps({
     order: order++,
     tda: placed.tda ? getValue(placed.tda, 'content') || undefined : undefined,
   })
+
+  if (path === 'speaker') insertBuiltSpotLetters(built, taught, lessonId)
   return built
 }
