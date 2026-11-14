@@ -36,13 +36,17 @@ export const isInteractive = (step: LessonStep): boolean => INTERACTIVE_STEPS.ha
  * Lessons generated before pairing existed carry activities with no `wordKbp` at all, so
  * they produce no practised words here -- every word they taught is "met", which is the
  * honest thing to say about content nothing ever explicitly paired.
+ *
+ * A `built` step never counts, though it names its word: the set is the same on every path.
  */
 export function practisedWords(steps: readonly LessonStep[], answers: ReadonlyMap<string, unknown>): string[] {
   const seen = new Set<string>()
   const out: string[] = []
 
   for (const step of steps) {
-    if (!isInteractive(step) || !hasActivity(step)) continue
+    // An app-built step (the speaker path's spot the letter) is extra practice, not the
+    // lesson's: counting it would make the practised words depend on the path.
+    if (!isInteractive(step) || !hasActivity(step) || step.built) continue
     const kbp = step.wordKbp
     if (!kbp || seen.has(kbp)) continue
     if (!answers.has(step.id) && !answers.has(`retry-${step.id}`)) continue

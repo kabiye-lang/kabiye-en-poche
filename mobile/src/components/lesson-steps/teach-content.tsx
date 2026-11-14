@@ -6,10 +6,8 @@ import { useLingui } from '@lingui/react/macro'
 
 import { useAppAlphabetLetters } from '../../hooks/use-app-data'
 import { useLanguage } from '../../hooks/use-language'
+import { KABIYE_ONLY } from '../../utils/kabiye-variants'
 import { Text, View } from '../ui'
-
-/** The letters French cannot write. Only these earn a chip. */
-const KABIYE_ONLY = 'ɖƉɛƐɣƔɩƖŋŊɔƆʋƲñÑ'
 
 interface TeachContentProps {
   example: LessonExample
@@ -41,8 +39,9 @@ const TeachContent = ({ example, leadWithLetters = false }: TeachContentProps) =
   const gloss = currentLanguage === 'fr' ? example.fr : example.en
   const note = example.note?.[currentLanguage] ?? example.note?.en
 
-  // One chip per distinct Kabiyè-only letter in the word, in the order they appear.
-  const chips = [...new Set([...example.kbp].filter((ch) => KABIYE_ONLY.includes(ch)))]
+  // One chip per distinct Kabiyè-only letter in the word, in the order they appear. Only
+  // these earn a chip.
+  const chips = [...new Set([...example.kbp].filter((ch) => KABIYE_ONLY.has(ch)))]
     .map((ch) => {
       const row = letters?.find((l) => l.id === ch || l.id === ch.toLowerCase())
       const hint = row ? getValue(row, 'pronunciation') : null

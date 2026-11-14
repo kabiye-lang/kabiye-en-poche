@@ -39,10 +39,17 @@ export const PLAIN_FOR_KABIYE: Readonly<Record<string, string>> = {
   Ñ: 'N',
 }
 
+/**
+ * The letters French cannot write, both cases: ɖ ɛ ɣ ɩ ŋ ɔ ʋ ñ. The one set the app uses
+ * for "a Kabiyè-only letter" -- the Teach card's chips, the misspellings here, and the
+ * speaker path's built "spot the letter" steps (`utils/build-lesson-steps.ts`).
+ */
+export const KABIYE_ONLY: ReadonlySet<string> = new Set(Object.keys(PLAIN_FOR_KABIYE))
+
 /** Positions in `word` holding a letter French cannot write. */
 export function specialPositions(word: string): number[] {
   const out: number[] = []
-  for (const [i, ch] of [...word].entries()) if (ch in PLAIN_FOR_KABIYE) out.push(i)
+  for (const [i, ch] of [...word].entries()) if (KABIYE_ONLY.has(ch)) out.push(i)
   return out
 }
 
