@@ -1,3 +1,4 @@
+import type { LearnerPath } from '../hooks/use-path'
 import type { ActivityStep, LessonExample, LessonStep } from '../types/lesson-steps'
 import type { LessonActivity, Tables } from '../types/supabase'
 
@@ -139,6 +140,39 @@ function seededShuffle<T>(items: readonly T[], seed: string): T[] {
   return out
 }
 
+/**
+ * Where each activity type falls in a lesson for a path. A lower rank comes first: it
+ * wins a word's pairing over a higher one, and the unclaimed activities sort by it.
+ *
+ * - **Speaker**: someone who speaks Kabiyè and cannot write it. Spelling (`spell`,
+ *   `spot_letter`) first; everything else after.
+ * - **Heritage**: someone who grew up hearing it. Reading recognition first, then
+ *   `spot_letter` (they pick the right spelling and do not produce it), then
+ *   production. A word whose pairing has rank 2 is practised after its section's words
+ *   -- see `buildLessonSteps`.
+ *
+ * `new` and no stored path have no table: their steps are the ones the lesson always
+ * had, and a test pins them with their fingerprint.
+ */
+const PATH_RANK: Record<Exclude<LearnerPath, 'new'>, Record<string, number>> = {
+  speaker: { spell: 0, spot_letter: 0 },
+  heritage: {
+    read_choose: 0,
+    match_pairs: 0,
+    multiple_choice: 0,
+    spot_letter: 1,
+    spell: 2,
+    fill_blank: 2,
+    order_words: 2,
+  },
+}
+
+/** The rank of a type absent from a path's table: `true_false`, the audio types, and so on. */
+const DEFAULT_RANK = 1
+
+/** Heritage practises a word paired to this rank after its section's words. */
+const HERITAGE_PRODUCTION_RANK = 2
+
 /** Up to this many wrong options in a listening question built from the lesson's words. */
 const LISTEN_DISTRACTORS = 3
 
@@ -232,6 +266,15 @@ function listeningActivity(
  * `audioFor` returns a word's playable recording (already through `usableAudioUrl`). A
  * word with one gets a listening question after its paired activity -- see
  * `listeningActivity`. With no recordings the steps are exactly what they were before.
+ *
+ * `path` orders the practice for the learner (docs/specs/SPEC-path-step-order.md) and
+ * never changes what is in the lesson. `null` and `'new'` give the order above. With a
+ * path, a word is paired to its matching activity of lowest `PATH_RANK` (ties keep list
+ * order), and the unclaimed activities sort by rank, stable. Heritage also moves a word
+ * whose pairing is production (`spell`, `fill_blank`, `order_words`) to after its
+ * section's last word and before the rule: every word is met and recognised before the
+ * learner is asked to produce one. The moved step keeps its `wordKbp` -- pairing, not
+ * position, decides what was practised -- and its listening question stays with it.
  */
 export function buildLessonSteps({
   lessonId,
@@ -241,6 +284,7 @@ export function buildLessonSteps({
   sectionOf,
   getValue,
   audioFor,
+  path,
 }: {
   lessonId: string
   contents: LessonContent[]
@@ -249,6 +293,7 @@ export function buildLessonSteps({
   sectionOf: Map<LessonExample, number>
   getValue: GetValue
   audioFor: (word: LessonExample) => string | undefined
+  path: LearnerPath | null
 }): LessonStep[] {
   if (contents.length === 0) return []
 
@@ -286,20 +331,47 @@ export function buildLessonSteps({
     return undefined
   }
 
+  const ranks = path && path !== 'new' ? PATH_RANK[path] : undefined
+  const rankOf = (activity: { activity_type: string }) => ranks?.[activity.activity_type] ?? DEFAULT_RANK
+
+  // Heritage: the practice steps of the current section's production-paired words, held
+  // until its last word is taught. `order` is set when a step is placed, so it stays the
+  // step's position.
+  let deferred: ActivityStep[] = []
+  const place = (step: ActivityStep) => {
+    step.order = order++
+    built.push(step)
+  }
+  const placeDeferred = () => {
+    deferred.forEach(place)
+    deferred = []
+  }
+
   const teach = (word: LessonExample) => {
     built.push({ id: `teach-${word.kbp}`, type: 'teach', order: order++, example: word })
 
-    const paired = answerable.find((activity) => {
+    const matches = (activity: LessonActivity) => {
       if (claimed.has(activity.id)) return false
       const ref = activityWord(activity)
       return ref === word.kbp || ref === word.lexeme_id
-    })
+    }
+    let paired: LessonActivity | undefined
+    if (ranks) {
+      // Lowest rank wins; strictly lower, so a tie keeps list order.
+      for (const activity of answerable) {
+        if (matches(activity) && (!paired || rankOf(activity) < rankOf(paired))) paired = activity
+      }
+    } else {
+      paired = answerable.find(matches)
+    }
+
+    const practice: ActivityStep[] = []
     if (paired) {
       claimed.add(paired.id)
-      built.push({
+      practice.push({
         id: `activity-${paired.id}`,
         type: paired.activity_type as ActivityStep['type'],
-        order: order++,
+        order: -1, // set by `place`
         activity: paired,
         wordKbp: word.kbp,
       })
@@ -308,14 +380,17 @@ export function buildLessonSteps({
     const audioUrl = audioFor(word)
     const listening = audioUrl ? listeningActivity(word, audioUrl, words, lessonId) : undefined
     if (listening && isAnswerable(listening)) {
-      built.push({
+      practice.push({
         id: `activity-${listening.id}`,
         type: listening.activity_type as ActivityStep['type'],
-        order: order++,
+        order: -1,
         activity: listening,
         wordKbp: word.kbp,
       })
     }
+
+    if (path === 'heritage' && paired && rankOf(paired) >= HERITAGE_PRODUCTION_RANK) deferred.push(...practice)
+    else practice.forEach(place)
   }
 
   // Section by section: its words, each taught and tried, then the section's rule --
@@ -324,10 +399,13 @@ export function buildLessonSteps({
   // before reading that place words follow the noun. Words no section claims (content
   // written before sections existed) are taught first, on their own.
   const prose = placed.prose
+  // Words no section claims count as one section for heritage's deferral.
   for (const word of words) if (!sectionOf.has(word)) teach(word)
+  placeDeferred()
   prose.forEach((section, index) => {
     const own = words.filter((word) => sectionOf.get(word) === index)
     for (const word of own) teach(word)
+    placeDeferred()
     const rule = getValue(section, 'content')?.trim()
     if (rule) {
       built.push({
@@ -345,9 +423,10 @@ export function buildLessonSteps({
   })
 
   // No word claimed these, so they carry no `wordKbp` -- answering one is not
-  // practising a word, whatever the answer. See `utils/lesson-outcomes.ts`.
-  for (const activity of answerable) {
-    if (claimed.has(activity.id)) continue
+  // practising a word, whatever the answer. See `utils/lesson-outcomes.ts`. With a path
+  // they sort by rank, stable (as `orderUnitsForPath` sorts units).
+  const unclaimed = answerable.filter((activity) => !claimed.has(activity.id))
+  for (const activity of ranks ? [...unclaimed].sort((a, b) => rankOf(a) - rankOf(b)) : unclaimed) {
     built.push({
       id: `activity-${activity.id}`,
       type: activity.activity_type as ActivityStep['type'],

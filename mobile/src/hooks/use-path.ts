@@ -8,8 +8,9 @@ import AsyncStorage from '@react-native-async-storage/async-storage'
  * The app serves three audiences at once and they want different things from the same
  * screen: someone who already speaks Kabiyè and cannot write it, someone who grew up
  * hearing it, and someone meeting it for the first time. Asking once, at the start, is
- * cheaper than guessing forever -- and it is the only personalisation the product has,
- * because there is no account and nothing is sent anywhere.
+ * cheaper than guessing forever. It is the only personalisation the product has, because
+ * there is no account and nothing is sent anywhere: it orders the units
+ * (`PATH_UNIT_ORDER`) and each lesson's steps (`buildLessonSteps`).
  */
 export type LearnerPath = 'speaker' | 'heritage' | 'new'
 

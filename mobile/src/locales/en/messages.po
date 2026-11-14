@@ -657,6 +657,10 @@ msgstr "Letter not found"
 msgid "Letter of the week"
 msgstr "Letter of the week"
 
+#: src/components/lesson-steps/teach-content.tsx
+msgid "Letters to watch"
+msgstr "Letters to watch"
+
 #: src/screens/profile.tsx
 msgid "Lexilogos Dictionary"
 msgstr "Lexilogos Dictionary"

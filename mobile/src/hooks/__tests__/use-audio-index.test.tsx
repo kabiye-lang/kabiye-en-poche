@@ -119,10 +119,16 @@ function useLessonUnderTest(lessonId: string) {
   const audio = useLessonAudio(lessonId, words, true)
   const lessonSteps = useMemo(
     () =>
-      buildLessonSteps({ lessonId, contents, activities, words, sectionOf, getValue, audioFor: audio.audioFor }).slice(
-        0,
-        -1
-      ),
+      buildLessonSteps({
+        lessonId,
+        contents,
+        activities,
+        words,
+        sectionOf,
+        getValue,
+        audioFor: audio.audioFor,
+        path: null,
+      }).slice(0, -1),
     [lessonId, words, sectionOf, audio.audioFor]
   )
   const lessonSession = useLessonSession(lessonId, audio.isSettled ? lessonSteps : NO_STEPS)
