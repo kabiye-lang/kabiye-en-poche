@@ -29,13 +29,14 @@ Measured on 2026-11-13 for `docs/specs/SPEC-path-step-order.md`, build step 1.
 |---|---|
 | Speaker: words whose paired activity changes | 157 |
 | Heritage: words whose paired activity changes | 257 |
-| Heritage: words paired to production (`spell`, `fill_blank`, `order_words`), so moved after their section's words | 165 |
+| Heritage: words paired to production (`spell`, `fill_blank`, `order_words`), so their practice is deferred to after their section's last word (for the last word itself the position does not change) | 165 |
 | Activities no word claims today (they run after the sections) | 889 |
 | Lessons with an unclaimed `spell` or `spot_letter` today | 121 |
 | Lessons with at least one answerable spelling activity | 192 of 192 |
 | Lessons whose step list changes for speaker | 121 of 192 |
 | Lessons whose step list changes for heritage | 184 of 192 |
 | Lessons whose step list changes for `new` or no path | 0 of 192 (byte-identical steps and fingerprints) |
+| Lessons whose practised words (`wordKbp` set) or step ids differ from today, speaker or heritage | 0 of 192 |
 
 More than half the taught words (691 of 1,320) match more than one activity. So the pairing change has a real effect, and the spec's fallback ("the effect comes from the card lead, the unclaimed sort and the heritage deferral") does not apply. Every lesson has a spelling activity. So the edge case "a lesson with no `spell` or `spot_letter`" does not occur in today's content.
 

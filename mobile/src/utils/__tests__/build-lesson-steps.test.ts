@@ -164,7 +164,13 @@ describe('buildLessonSteps by path', () => {
     activity('s-wɩʋ', 'spell', { lexeme_id: 'wɩʋ' }),
     activity('r-wɩʋ', 'read_choose', { lexeme_id: 'wɩʋ', sentence: 'wɩʋ', options: { en: ['stone', 'water'] } }),
     activity('q-cee', 'multiple_choice', { lexeme_id: 'cee' }),
-    // No taught word claims these two.
+    // No taught word claims these three. A listening question is "Other": rank 1 on
+    // every path.
+    activity('u-listen', 'listen_choose', {
+      audio_url: HOSTED + 'tɛɛ.m4a',
+      options: ['tɛɛ', 'cee'],
+      correct_answer: 'tɛɛ',
+    }),
     activity('u-order', 'order_words', {}),
     activity('u-spot', 'spot_letter', { correct: 'tɛɛ', distractors: ['tee', 'tɛe'] }),
   ]
@@ -200,6 +206,7 @@ describe('buildLessonSteps by path', () => {
     ['rule-1', 'content', null],
     ['activity-s-keɖe', 'spell', null],
     ['activity-r-wɩʋ', 'read_choose', null],
+    ['activity-u-listen', 'listen_choose', null],
     ['activity-u-order', 'order_words', null],
     ['activity-u-spot', 'spot_letter', null],
     ['notes', 'notes', null],
@@ -211,7 +218,7 @@ describe('buildLessonSteps by path', () => {
     const steps = buildFor(path)
     expect(shape(steps)).toEqual(TODAY)
     expect(steps.map((s) => s.order)).toEqual(steps.map((_, i) => i))
-    expect(fingerprintLesson(steps.slice(0, -1))).toBe('1hjlivd')
+    expect(fingerprintLesson(steps.slice(0, -1))).toBe('1b489f1')
   })
 
   it('speaker: pairs a word to its spelling activity, and puts unclaimed spelling first', () => {
@@ -221,10 +228,11 @@ describe('buildLessonSteps by path', () => {
       ['teach-keɖe', 'teach', null],
       ['activity-s-keɖe', 'spell', 'keɖe'],
     ])
-    expect(steps.slice(12, 16)).toEqual([
+    expect(steps.slice(12, 17)).toEqual([
       ['activity-u-spot', 'spot_letter', null],
       ['activity-m-keɖe', 'match_pairs', null],
       ['activity-r-wɩʋ', 'read_choose', null],
+      ['activity-u-listen', 'listen_choose', null],
       ['activity-u-order', 'order_words', null],
     ])
   })
@@ -245,7 +253,10 @@ describe('buildLessonSteps by path', () => {
       ['teach-wɩʋ', 'teach', null],
       ['activity-r-wɩʋ', 'read_choose', 'wɩʋ'],
     ])
-    expect(steps.slice(12, 16).map(([id]) => id)).toEqual([
+    // Recognition first, then rank 1 (listening, spot_letter) in list order, then
+    // production.
+    expect(steps.slice(12, 17).map(([id]) => id)).toEqual([
+      'activity-u-listen',
       'activity-u-spot',
       'activity-s-keɖe',
       'activity-s-wɩʋ',
