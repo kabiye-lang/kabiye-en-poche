@@ -492,9 +492,10 @@ describe('built spot the letter through a lesson session', () => {
     expect(state.phase).toBe('finish')
     expect(state.reviewStepIds).toEqual(['built-spot-kalʋʋ'])
     expect(state.answers['retry-built-spot-kalʋʋ']).toMatchObject({ isCorrect: true, supported: false })
-    // Finish names it in its review line: "kalʋʋ came back for a second try."
-    expect(reviewOutcomes(state, speaker)).toEqual([{ word: 'kalʋʋ', outcome: 'right' }])
-    // ...but the practised words are the `new` path's, so kalʋʋ stays under "Words you met".
+    // Finish's review line does not name it: a built step practises nothing, so kalʋʋ is
+    // only met, as on `new`.
+    expect(reviewOutcomes(state, speaker)).toEqual([])
+    // The practised words are the `new` path's, so kalʋʋ stays under "Words you met".
     const plain = lessonStepsFor('new')
     const plainRun = walk(plain, new Set())
     const practised = (steps: LessonStep[], answers: object) => practisedWords(steps, new Map(Object.entries(answers)))
@@ -503,6 +504,23 @@ describe('built spot the letter through a lesson session', () => {
     // Only the authored spell marks a word written, on both paths.
     expect(written).toEqual(['wɩʋ'])
     expect(plainRun.written).toEqual(['wɩʋ'])
+  })
+
+  it("a built step missed twice does not change an authored step's review line", () => {
+    const speaker = lessonStepsFor('speaker')
+    const plain = lessonStepsFor('new')
+    // kɛʋ's authored multiple choice and its built step are both missed in the lesson.
+    const { state } = walk(speaker, new Set(['activity-mc-kɛʋ', 'built-spot-kɛʋ']))
+    expect(state.reviewStepIds).toEqual(['built-spot-kɛʋ', 'activity-mc-kɛʋ'])
+    // Missed again in review: the built step's retry is wrong, the authored one right.
+    const answers = {
+      ...state.answers,
+      'retry-built-spot-kɛʋ': { answer: 'wrong', isCorrect: false, supported: false },
+    }
+    expect(reviewOutcomes({ ...state, answers }, speaker)).toEqual([{ word: 'kɛʋ', outcome: 'right' }])
+    // The same answers on `new` give the same line.
+    const plainRun = walk(plain, new Set(['activity-mc-kɛʋ']))
+    expect(reviewOutcomes(plainRun.state, plain)).toEqual([{ word: 'kɛʋ', outcome: 'right' }])
   })
 
   it('a session saved in review on a built step resumes on the next speaker build, not on new', () => {

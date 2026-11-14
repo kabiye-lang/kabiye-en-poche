@@ -293,7 +293,9 @@ export function progressView(state: LessonSession, steps: readonly LessonStep[])
  * the worst outcome wins (missed beats helped beats right), because Finish's claim has to
  * hold for every question that word was asked. Review items with no `wordKbp` (nothing
  * claimed them when the lesson was built) are still asked, but say nothing here -- Finish
- * cannot name a word it does not have.
+ * cannot name a word it does not have. An app-built step (`built: true`, the speaker path's
+ * spot the letter) is asked too but says nothing here either: it never counts as practising
+ * a word, so Finish says the same about each word on every path.
  */
 export function reviewOutcomes(
   state: LessonSession,
@@ -308,7 +310,7 @@ export function reviewOutcomes(
   for (const id of state.reviewStepIds) {
     const step = byId.get(id)
     const word = step && 'wordKbp' in step ? step.wordKbp : undefined
-    if (!word) continue
+    if (!word || (step && 'built' in step && step.built)) continue
 
     const a = state.answers[`retry-${id}`]
     const outcome: ReviewOutcome = !a || !a.isCorrect ? 'missed' : a.supported ? 'helped' : 'right'
