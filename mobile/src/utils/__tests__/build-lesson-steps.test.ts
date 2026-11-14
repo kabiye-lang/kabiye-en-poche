@@ -4,8 +4,8 @@ import type { LessonActivity, Tables } from '../../types/supabase'
 
 import { buildLessonSteps, taughtWords } from '../build-lesson-steps'
 import * as variants from '../kabiye-variants'
-import { practisedWords } from '../lesson-outcomes'
-import { advance, answer, fingerprintLesson, initialSession } from '../lesson-session'
+import { isInteractive, practisedWords } from '../lesson-outcomes'
+import { advance, answer, decode, fingerprintLesson, initialSession, reviewOutcomes } from '../lesson-session'
 
 jest.mock('expo-constants', () => ({
   __esModule: true,
@@ -420,5 +420,111 @@ describe('buildLessonSteps: built spot the letter for speaker', () => {
     while (state.phase === 'lesson') state = advance(state, lessonSteps).state
     expect(state.phase).toBe('review')
     expect(state.reviewStepIds).toEqual(['built-spot-kɛʋ'])
+  })
+})
+
+// Verifier edge cases for docs/specs/SPEC-speaker-spot-letter.md: the built step through
+// the whole session (lesson, review, finish, saved session), as `lesson.tsx` drives it.
+// kalʋʋ has no activity at all, so on every path it is only met.
+describe('built spot the letter through a lesson session', () => {
+  const sessionExamples = [word('kɛʋ', 'kɛʋ#3'), word('kalʋʋ'), word('wɩʋ', 'wɩʋ')]
+  const sessionActivities = [
+    activity('mc-kɛʋ', 'multiple_choice', { lexeme_id: 'kɛʋ#3' }),
+    activity('spell-wɩʋ', 'spell', { lexeme_id: 'wɩʋ', answer: 'wɩʋ' }),
+  ]
+  // A fresh build from fresh objects each call, as a remount or a reopened lesson does.
+  const lessonStepsFor = (path: LearnerPath | null) => {
+    const lessonContents = [
+      section(
+        0,
+        sessionExamples.map((w) => ({ ...w }))
+      ),
+    ]
+    const { words, sectionOf } = taughtWords(lessonContents)
+    const steps = buildLessonSteps({
+      lessonId: 'L',
+      contents: lessonContents,
+      activities: sessionActivities.map((a) => ({ ...a, data: { ...(a.data as object) } })),
+      words,
+      sectionOf,
+      getValue,
+      audioFor: () => undefined,
+      path,
+    })
+    return steps.slice(0, -1) // `lesson.tsx` drops the completion step
+  }
+
+  /** Walk the lesson as `lesson.tsx` does: answer each interactive step, then advance.
+   *  `wrong` steps are missed in the lesson phase and answered right in review. Stops at
+   *  `stopInReview` (that many review items answered) to stand for a saved session. */
+  const walk = (steps: LessonStep[], wrong: ReadonlySet<string>, stopInReview = Infinity) => {
+    let state = initialSession(fingerprintLesson(steps))
+    const written: string[] = []
+    const run = (step: LessonStep, isCorrect: boolean) => {
+      // A right answer is the word itself: `markWritten` records the text the learner gave.
+      const given = isCorrect ? ((step as ActivityStep).wordKbp ?? 'right') : 'wrong'
+      const answered = answer(state, step, given, isCorrect)
+      for (const e of answered.effects) if (e.kind === 'markWritten') written.push(e.headword)
+      state = advance(answered.state, steps).state
+    }
+    while (state.phase === 'lesson') {
+      const step = steps[state.lessonIndex]
+      if (isInteractive(step)) run(step, !wrong.has(step.id))
+      else state = advance(state, steps).state
+    }
+    let reviewed = 0
+    while (state.phase === 'review' && reviewed < stopInReview) {
+      const original = steps.find((s) => s.id === state.reviewStepIds[state.reviewIndex])!
+      run({ ...original, id: `retry-${original.id}` } as LessonStep, true)
+      reviewed++
+    }
+    return { state, written }
+  }
+
+  it('a missed built step comes back in review, resolves, and still practises nothing', () => {
+    const speaker = lessonStepsFor('speaker')
+    expect(speaker.filter((s) => (s as ActivityStep).built).map((s) => s.id)).toEqual([
+      'built-spot-kɛʋ',
+      'built-spot-kalʋʋ',
+    ])
+
+    const { state, written } = walk(speaker, new Set(['built-spot-kalʋʋ']))
+    expect(state.phase).toBe('finish')
+    expect(state.reviewStepIds).toEqual(['built-spot-kalʋʋ'])
+    expect(state.answers['retry-built-spot-kalʋʋ']).toMatchObject({ isCorrect: true, supported: false })
+    // Finish names it in its review line: "kalʋʋ came back for a second try."
+    expect(reviewOutcomes(state, speaker)).toEqual([{ word: 'kalʋʋ', outcome: 'right' }])
+    // ...but the practised words are the `new` path's, so kalʋʋ stays under "Words you met".
+    const plain = lessonStepsFor('new')
+    const plainRun = walk(plain, new Set())
+    const practised = (steps: LessonStep[], answers: object) => practisedWords(steps, new Map(Object.entries(answers)))
+    expect(practised(speaker, state.answers)).toEqual(['kɛʋ', 'wɩʋ'])
+    expect(practised(speaker, state.answers)).toEqual(practised(plain, plainRun.state.answers))
+    // Only the authored spell marks a word written, on both paths.
+    expect(written).toEqual(['wɩʋ'])
+    expect(plainRun.written).toEqual(['wɩʋ'])
+  })
+
+  it('a session saved in review on a built step resumes on the next speaker build, not on new', () => {
+    const first = lessonStepsFor('speaker')
+    const { state } = walk(first, new Set(['built-spot-kɛʋ', 'built-spot-kalʋʋ']), 1)
+    expect(state.phase).toBe('review')
+    expect(state.reviewIndex).toBe(1)
+    const saved = JSON.stringify({ ...state, lessonStepCount: first.length })
+
+    // Reopened: a second build of the same lesson has the same fingerprint, so the saved
+    // review (and its `retry-built-spot-…` answer) is accepted where it stopped.
+    const second = lessonStepsFor('speaker')
+    expect(fingerprintLesson(second)).toBe(fingerprintLesson(first))
+    const restored = decode(saved, second, fingerprintLesson(second))
+    expect(restored).toMatchObject({ phase: 'review', reviewIndex: 1, reviewStepIds: state.reviewStepIds })
+    expect(Object.keys(restored!.answers)).toContain('retry-built-spot-kɛʋ')
+
+    // The path changed to new: those steps are gone, so the session is stale, not resumed
+    // onto the wrong question. And the other way round, once (the spec's accepted cost).
+    const plain = lessonStepsFor('new')
+    expect(decode(saved, plain, fingerprintLesson(plain))).toBeNull()
+    const plainSaved = JSON.stringify(initialSession(fingerprintLesson(plain)))
+    expect(decode(plainSaved, second, fingerprintLesson(second))).toBeNull()
   })
 })
