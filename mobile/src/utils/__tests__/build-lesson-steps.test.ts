@@ -134,3 +134,69 @@ describe('buildLessonSteps', () => {
     expect(shape(build(() => 'https://example.com/keɖe.mp3'))).toEqual(shape(build(() => undefined)))
   })
 })
+
+// The learner's path (speaker, heritage, new) reorders a lesson's steps -- see
+// docs/specs/SPEC-path-step-order.md. One fixture with every group of activity: 2 prose
+// sections, 4 words (keɖe and wɩʋ with Kabiyè-only letters), a dialogue, notes and a TDA.
+describe('buildLessonSteps by path', () => {
+  const pathContents: Tables<'lesson_contents'>[] = [
+    { ...section(0, [word('caa')]), id: 'd', kind: 'dialogue', title_en: 'Dialogue' },
+    section(1, [word('luu', 'luu'), word('keɖe', 'keɖe#1')]),
+    section(2, [word('wɩʋ', 'wɩʋ'), word('cee', 'cee')]),
+    { ...section(3, []), id: 'n', kind: 'cultural_notes', title_en: 'Notes' },
+    { ...section(4, []), id: 't', kind: 'tda', title_en: 'This week' },
+  ]
+  const pathActivities = [
+    activity('m-keɖe', 'match_pairs', { lexeme_id: 'keɖe#1' }),
+    activity('s-keɖe', 'spell', { correct: 'keɖe' }),
+    activity('f-luu', 'fill_blank', { lexeme_id: 'luu' }),
+    activity('s-wɩʋ', 'spell', { lexeme_id: 'wɩʋ' }),
+    activity('r-wɩʋ', 'read_choose', { lexeme_id: 'wɩʋ', sentence: 'wɩʋ', options: { en: ['stone', 'water'] } }),
+    activity('q-cee', 'multiple_choice', { lexeme_id: 'cee' }),
+    // No taught word claims these two.
+    activity('u-order', 'order_words', {}),
+    activity('u-spot', 'spot_letter', { correct: 'tɛɛ', distractors: ['tee', 'tɛe'] }),
+  ]
+
+  const buildFor = () => {
+    const { words, sectionOf } = taughtWords(pathContents)
+    return buildLessonSteps({
+      lessonId: 'L',
+      contents: pathContents,
+      activities: pathActivities,
+      words,
+      sectionOf,
+      getValue,
+      audioFor: () => undefined,
+    })
+  }
+
+  const TODAY = [
+    ['cover', 'cover', null],
+    ['dialogue', 'dialogue', null],
+    ['teach-luu', 'teach', null],
+    ['activity-f-luu', 'fill_blank', 'luu'],
+    ['teach-keɖe', 'teach', null],
+    ['activity-m-keɖe', 'match_pairs', 'keɖe'],
+    ['rule-0', 'content', null],
+    ['teach-wɩʋ', 'teach', null],
+    ['activity-s-wɩʋ', 'spell', 'wɩʋ'],
+    ['teach-cee', 'teach', null],
+    ['activity-q-cee', 'multiple_choice', 'cee'],
+    ['rule-1', 'content', null],
+    ['activity-s-keɖe', 'spell', null],
+    ['activity-r-wɩʋ', 'read_choose', null],
+    ['activity-u-order', 'order_words', null],
+    ['activity-u-spot', 'spot_letter', null],
+    ['notes', 'notes', null],
+    ['completion', 'completion', null],
+  ]
+
+  // Pinned against the builder before the path existed: the default path must not move.
+  it('builds exactly today’s steps and fingerprint', () => {
+    const steps = buildFor()
+    expect(shape(steps)).toEqual(TODAY)
+    expect(steps.map((s) => s.order)).toEqual(steps.map((_, i) => i))
+    expect(fingerprintLesson(steps.slice(0, -1))).toBe('1hjlivd')
+  })
+})
