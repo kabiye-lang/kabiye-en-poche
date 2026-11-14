@@ -357,10 +357,15 @@ export function buildLessonSteps({
     }
     let paired: LessonActivity | undefined
     if (ranks) {
-      // Lowest rank wins; strictly lower, so a tie keeps list order.
+      // Lowest rank wins among the activities that really name the word; strictly lower,
+      // so a tie keeps list order. A word with no lexeme_id also `matches` an activity that
+      // names no word (`undefined === undefined`): that loose match is only a fallback, taken
+      // in list order as on the null path, so a path never trades a real match for it.
+      const names = (activity: LessonActivity) => activityWord(activity) !== undefined && matches(activity)
       for (const activity of answerable) {
-        if (matches(activity) && (!paired || rankOf(activity) < rankOf(paired))) paired = activity
+        if (names(activity) && (!paired || rankOf(activity) < rankOf(paired))) paired = activity
       }
+      if (!paired) paired = answerable.find(matches)
     } else {
       paired = answerable.find(matches)
     }
