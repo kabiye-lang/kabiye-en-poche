@@ -14,3 +14,4 @@ Shipped or dropped specs and task lists. Archived files stay as written; new wor
 | SPEC-path-step-order.md | Shipped: each lesson's steps follow the learner's path (speaker spelling first, heritage recognition first, new unchanged) | 2026-11 |
 | path-step-order-counts.md | Counts of SPEC-path-step-order on the 192 lesson files: pairings and step lists changed per path | 2026-11 |
 | review-notes-feat-path-step-order.md | Review notes of feat/path-step-order: 1 P2, a pairing edge for words without a lexeme_id that no lesson reaches | 2026-11 |
+| SPEC-ios-dynamic-frameworks.md | Shipped (#107): iOS builds with dynamic frameworks for Firebase 27 (SPM-only). forceStaticLinking, with-firebase-configure and the unused auth pod were removed | 2026-11 |
