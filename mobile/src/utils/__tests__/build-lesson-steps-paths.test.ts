@@ -17,7 +17,7 @@ jest.mock('expo-constants', () => ({
 // ties between two activities of the same rank, a listening question riding with a
 // heritage step that moves, words no section claims (one group for the deferral), a
 // section with no rule, unanswerable activities, and every path at once. Speaker also
-// gains the app-built "spot the letter" steps of docs/specs/SPEC-speaker-spot-letter.md.
+// gains the app-built "spot the letter" steps of docs/archive/SPEC-speaker-spot-letter.md.
 
 const HOSTED = 'https://isdeilllppdfngxmsols.supabase.co/storage/v1/object/public/audios/'
 

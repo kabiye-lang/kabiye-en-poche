@@ -15,3 +15,5 @@ Shipped or dropped specs and task lists. Archived files stay as written; new wor
 | path-step-order-counts.md | Counts of SPEC-path-step-order on the 192 lesson files: pairings and step lists changed per path | 2026-11 |
 | review-notes-feat-path-step-order.md | Review notes of feat/path-step-order: 1 P2, a pairing edge for words without a lexeme_id that no lesson reaches | 2026-11 |
 | SPEC-ios-dynamic-frameworks.md | Shipped (#107): iOS builds with dynamic frameworks for Firebase 27 (SPM-only). forceStaticLinking, with-firebase-configure and the unused auth pod were removed | 2026-11 |
+| SPEC-speaker-spot-letter.md | Shipped (#109): the speaker path gets app-built "spot the letter" steps (2+ Kabiyè-only letters, no authored spelling, at most 3 per lesson, not counted as practised or spelled): 112 lessons, 179 steps | 2026-11 |
+| review-notes-feat-speaker-spot-letter.md | Review notes of feat/speaker-spot-letter: same-vendor SHIP, 1 P2 open for the owner (the Finish review line counts built steps), 4 P3 | 2026-11 |
