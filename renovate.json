@@ -16,6 +16,13 @@
   "prNotPendingHours": 96,
   "prConcurrentLimit": 8,
   "prHourlyLimit": 2,
+  "vulnerabilityAlerts": {
+    "enabled": true,
+    "labels": [
+      "security"
+    ]
+  },
+  "osvVulnerabilityAlerts": true,
   "ignoreDeps": [
     "@babel/types",
     "@babel/core",

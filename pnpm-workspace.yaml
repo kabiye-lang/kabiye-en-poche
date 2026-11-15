@@ -49,3 +49,15 @@ overrides:
   # ranges were never enough. A caret floor pulls ra-supabase-core's range up to admin's
   # without capping anyone — raise it whenever you want the tree to move.
   '@supabase/supabase-js': '^2.116.0'
+  # Security floors (Dependabot, Nov 2026). Each parent's range excludes the patched
+  # version, so the lockfile cannot move on its own. Drop an entry once its parent
+  # allows the fix.
+  # @jonasmerlin/react-native-markdown-display (git dep, last release 2022) wants
+  # markdown-it ^13. No 13.x fix exists for GHSA-r7fv-28h4-cvq7, GHSA-vfgh-jcmw-g37q,
+  # GHSA-253c-mchw-3w2r, GHSA-6v5v-wf23-fmfq, GHSA-38c4-r59v-3vqw. 14.3.3 also brings
+  # linkify-it 5 (GHSA-v245-v573-v5vm, GHSA-22p9-wv53-3rq4).
+  '@jonasmerlin/react-native-markdown-display>markdown-it': '^14.3.3'
+  # @firebase/firestore 4.20.0 still wants @grpc/grpc-js ~1.9.0. No 1.9.x fix exists for
+  # GHSA-m9gg-hp2v-232j and GHSA-f596-whhp-79r4. Tilde keeps 1.13.x, which still uses
+  # @grpc/proto-loader ^0.7 like firestore itself (1.14 pulls a second copy, 0.8).
+  '@firebase/firestore>@grpc/grpc-js': '~1.13.6'
