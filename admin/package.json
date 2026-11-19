@@ -30,7 +30,7 @@
     "ra-core": "^5.15.7",
     "ra-i18n-polyglot": "^5.15.7",
     "ra-language-english": "^5.15.7",
-    "ra-supabase": "^3.5.2",
+    "ra-supabase": "^4.0.0",
     "react": "^19.2.8",
     "react-admin": "^5.15.7",
     "react-dom": "^19.2.8",

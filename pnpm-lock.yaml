@@ -164,7 +164,7 @@ settings:
 
 overrides:
   '@supabase/supabase-js': ^2.116.0
-  '@jonasmerlin/react-native-markdown-display>markdown-it': ^14.3.3
+  '@jonasmerlin/react-native-markdown-display>markdown-it': ^15.0.0
   '@firebase/firestore>@grpc/grpc-js': ~1.13.6
 
 importers:
@@ -229,8 +229,8 @@ importers:
         specifier: ^5.15.7
         version: 5.15.7(@tanstack/react-query@5.105.0(@types/react@19.3.0)(react@19.3.0))(react-dom@19.3.0(react@19.3.0))(react-hook-form@7.91.0(@types/react@19.3.0)(react@19.3.0))(react-router-dom@7.18.5(react-dom@19.3.0(react@19.3.0))(react@19.3.0))(react-router@7.18.5(react-dom@19.3.0(react@19.3.0))(react@19.3.0))(react@19.3.0)
       ra-supabase:
-        specifier: ^3.5.2
-        version: 3.5.2(36ff05d4c53fceee094db4c6bb75b034)
+        specifier: ^4.0.0
+        version: 4.0.0(36ff05d4c53fceee094db4c6bb75b034)
       react:
         specifier: ^19.2.8
         version: 19.3.0
@@ -4244,6 +4244,9 @@ packages:
   argparse@2.0.1:
     resolution: {integrity: sha512-8+9WqebbFzpX9OR+Wa6O29asIogeRMzcGtAINdpMHHyAg10f05aSFVBbcEqGf/PXw1EjAZ+q2/bEBg3DvurK3Q==}
 
+  argparse@3.0.4:
+    resolution: {integrity: sha512-fwWK3Zq22l4XJJjx5mcBHGikIk+hJqO+32dPm0Jur7+rtG5x1scOjSfdT9ZKeWHPpsya/l0HHK4tDImBkTrtvA==}
+
   argue-cli@3.1.0:
     resolution: {integrity: sha512-DhBpBfXL4SS2uC0N922MMajKR3CdrTG0u2or1PNYgXMsrSzViJrbtvT0nCLlLGUI0plam/ZZCs7aAauHtW9thw==}
     engines: {node: '>=22'}
@@ -4963,6 +4966,10 @@ packages:
   entities@6.0.1:
     resolution: {integrity: sha512-aN97NXWF6AWBTahfVOIrB/NShkzi5H7F9r1s9mD3cDj4Ko5f2qhhVoYMibXF7GlLveb/D2ioWay8lxI97Ven3g==}
     engines: {node: '>=0.12'}
+
+  entities@8.1.0:
+    resolution: {integrity: sha512-kxL7msIffSuh9aaFAMD7rxAIuTRMAHMeBtgHW2yUdWw732ZNh4MehkF2gdjvtdmikkaIP9bFDDJOPlsvm7avrA==}
+    engines: {node: '>=20.19.0'}
 
   env-paths@2.2.1:
     resolution: {integrity: sha512-+h1lkLKhZMTYjog1VEpJNG7NZJWcuc2DDk/qsqSTRRCOXiLjeQ1d1/udrUGhqMxUgAlwKNZ0cf2uqan5GLuS2A==}
@@ -6714,8 +6721,8 @@ packages:
   lines-and-columns@1.2.4:
     resolution: {integrity: sha512-7ylylesZQ/PV29jhEDl3Ufjo6ZX7gCqJr5F7PKrqc93v7fzSymt1BpwEU8nAUXs8qzzvqhbjhK5QZg6Mt/HkBg==}
 
-  linkify-it@5.0.2:
-    resolution: {integrity: sha512-ONTm2jCMAVZjgQa/Fy1kScXsuOoF5NPTsoFBdE1KVIZ2vAh/r9+Bqo+0jINCBYnavTPQZz38QzFTme79ENoN3Q==}
+  linkify-it@6.1.0:
+    resolution: {integrity: sha512-wJ/TwpSDTLepCrQoYWYIExIKg5Zchex2Nn5yk2mFnB+6PtdkHtyLx742md9csRjjOnGkKIS/RrbY7l8D6gT9Vw==}
 
   lint-staged@17.6.0:
     resolution: {integrity: sha512-nOhBfYkZEwkFtNzD5pK9s9LkcWoxJ+whLzEnhqi9nl7zTB5n7tg8+9iYgMGx2Wm3VlLu8cbNj0RACzY+nWi5iQ==}
@@ -6792,8 +6799,8 @@ packages:
   makeerror@1.0.12:
     resolution: {integrity: sha512-JmqCvUhmt43madlpFzG4BQzG2Z3m6tvQDNKdClZnO3VbIudJYmxsT0FNJMeiB2+JTSlTQTSbU8QdesVmwJcmLg==}
 
-  markdown-it@14.3.3:
-    resolution: {integrity: sha512-L//tDAkjTjJCU6pBUSBTgs3Kg4InVaZuUZog/b6V12UKhcDQ7S78877ibbCanRExwPuYP1CZD7Gd2dxSy1GXRg==}
+  markdown-it@15.0.3:
+    resolution: {integrity: sha512-+Az7Ojz3iRGu8KYMvJ6xVhvrxP3eE+vEtJX75Ow88XBpcQNV/0lGX5ZynIIBftREo4DC2jsveAMDaeltmm8QvQ==}
     hasBin: true
 
   markdown-table@3.0.4:
@@ -7569,16 +7576,16 @@ packages:
   ra-language-english@5.15.7:
     resolution: {integrity: sha512-VDSrT53SaQEvUUA1Rfq+RfqCNCGxGd2K+/2BsBJFuZ61BlYM5S57aOB/AL10QPUmJqrkiRbAEoQDQ/BuSDE1BA==}
 
-  ra-supabase-core@3.5.2:
-    resolution: {integrity: sha512-jF5qnmS6ttuNbClR9oCgJFnb6bnZdUwAaEKvYUeQRSvfsNlKabMibQyt/VQaL5tW5Lv6QChfnGV5KZ/dEJt20g==}
+  ra-supabase-core@4.0.0:
+    resolution: {integrity: sha512-zBTP3WmOu99UmEvzBgTu7U7ZgFU7qnlajiW0vo0PxQAnV14Y3Eh15y6jt92r116KgUUkFOusocwEZfau51E3RQ==}
     peerDependencies:
       ra-core: ^5.8.0
 
-  ra-supabase-language-english@3.5.0:
-    resolution: {integrity: sha512-4NTPYFD9skhFK1iKft61zjM5ok2P3ngQw6Mysu1lgG/RzEWlXFzpEX2MFdvzaF3LkrIbz2jG4OxhDOnKBmqRTQ==}
+  ra-supabase-language-english@4.0.0:
+    resolution: {integrity: sha512-xMEfV2Xm6kzdA5MjcjKS4XmnXbd1anLMUDG1FMAkMxzkd5ljwFNRkNzTTFoALb/PMmLlp2EfgzVAQKteWzgqwg==}
 
-  ra-supabase-ui-materialui@3.5.2:
-    resolution: {integrity: sha512-v5u9ly1sUGuGXwM7nhFjuTZPg8hUR1gaBerHtEfLuz38skNdUXkpxgyzFSX2RvgLQDVZS7gPgW7RLPHWscxG8w==}
+  ra-supabase-ui-materialui@4.0.0:
+    resolution: {integrity: sha512-w3hLQ4jPs7IwMpN0An2kGKn0tba+ZtTdumcd60oNyVb5vcEqhea3Eo9gmG9qdw/9FPfJZj13DxZBHgede8OIng==}
     peerDependencies:
       '@mui/icons-material': ^5.16.12 || ^6.0.0 || ^7.0.0
       '@mui/material': ^5.16.12 || ^6.0.0 || ^7.0.0
@@ -7589,8 +7596,8 @@ packages:
       react-dom: ^18.0.0 || ^19.0.0
       react-router: ^6.28.1 || ^7.1.1
 
-  ra-supabase@3.5.2:
-    resolution: {integrity: sha512-CjFDU7S1gDUyBzTsr7/c7uNMRZ+PfavO7ahU/tgKz4ebrDQauFXNp49Q34V+wlr9wibNQ5M3IvfImJd3Vw6BqQ==}
+  ra-supabase@4.0.0:
+    resolution: {integrity: sha512-QL38MaoE+GVwdqSS9fu+zaAklAvKj6agGV+2YfRw+kgOAObf/59lIbtI/ks/q24hqVRuZN+hQAg/Zd42tyCHRg==}
 
   ra-ui-materialui@5.15.7:
     resolution: {integrity: sha512-V5rzO16EWdvcrj4/EMIaUQlPwWkUiu9U8JxZCnjP9UtBUgEJU2eyLhsJ5xZc2yevYcLWTiBbJ1pKDaPRAeWpLQ==}
@@ -8516,8 +8523,8 @@ packages:
     resolution: {integrity: sha512-LbBDqdIC5s8iROCUjMbW1f5dJQTEFB1+KO9ogbvlb3nm9n4YHa5p4KTvFPWvh2Hs8gZMBuiB1/8+pdfe/tDPug==}
     hasBin: true
 
-  uc.micro@2.1.0:
-    resolution: {integrity: sha512-ARDJmphmdvUk6Glw7y9DQ2bFkKBHwQHLi2lsaH6PPmz/Ka9sFOBsBluozhDltWmnv9u/cF6Rt87znRTPV+yp/A==}
+  uc.micro@3.0.0:
+    resolution: {integrity: sha512-U3PppEkleoTnIfi8BozMx3yju3qc/L6SwqWo2Sw+54PX+PX0q9I+r1Um5HCmqD7n9VDX5/v3vQH/AjA6deDdtw==}
 
   unbox-primitive@1.1.0:
     resolution: {integrity: sha512-nWJ91DjeOkej/TA8pXQ3myruKpKEYgqvpw9lz4OPHj/NWFNluYrjbz9j01CJ8yKQd2g4jFoOkINCTW2I5LEEyw==}
@@ -11247,7 +11254,7 @@ snapshots:
   '@jonasmerlin/react-native-markdown-display@https://codeload.github.com/jonasmerlin/react-native-markdown-display/tar.gz/d4bf241ae67a33885ac69c58466c4a0e8ab79d49(react-native@0.88.1(@babel/core@7.29.7(supports-color@10.2.2))(@react-native/metro-config@0.88.0(@babel/core@7.29.7(supports-color@10.2.2))(supports-color@10.2.2))(@types/react@19.3.0)(react@19.3.0)(supports-color@10.2.2))(react@19.3.0)':
     dependencies:
       css-to-react-native: 3.2.0
-      markdown-it: 14.3.3
+      markdown-it: 15.0.3
       prop-types: 15.8.1
       react: 19.3.0
       react-native: 0.88.1(@babel/core@7.29.7(supports-color@10.2.2))(@react-native/metro-config@0.88.0(@babel/core@7.29.7(supports-color@10.2.2))(supports-color@10.2.2))(@types/react@19.3.0)(react@19.3.0)(supports-color@10.2.2)
@@ -12931,6 +12938,8 @@ snapshots:
 
   argparse@2.0.1: {}
 
+  argparse@3.0.4: {}
+
   argue-cli@3.1.0: {}
 
   array-buffer-byte-length@1.0.2:
@@ -13789,6 +13798,8 @@ snapshots:
   entities@4.5.0: {}
 
   entities@6.0.1: {}
+
+  entities@8.1.0: {}
 
   env-paths@2.2.1: {}
 
@@ -15998,9 +16009,9 @@ snapshots:
 
   lines-and-columns@1.2.4: {}
 
-  linkify-it@5.0.2:
+  linkify-it@6.1.0:
     dependencies:
-      uc.micro: 2.1.0
+      uc.micro: 3.0.0
 
   lint-staged@17.6.0:
     dependencies:
@@ -16073,14 +16084,14 @@ snapshots:
     dependencies:
       tmpl: 1.0.5
 
-  markdown-it@14.3.3:
+  markdown-it@15.0.3:
     dependencies:
-      argparse: 2.0.1
-      entities: 4.5.0
-      linkify-it: 5.0.2
+      argparse: 3.0.4
+      entities: 8.1.0
+      linkify-it: 6.1.0
       mdurl: 2.1.0
       punycode.js: 2.3.1
-      uc.micro: 2.1.0
+      uc.micro: 3.0.0
 
   markdown-table@3.0.4: {}
 
@@ -17159,7 +17170,7 @@ snapshots:
       - react-router
       - react-router-dom
 
-  ra-supabase-core@3.5.2(ra-core@5.15.7(@tanstack/react-query@5.105.0(@types/react@19.3.0)(react@19.3.0))(react-dom@19.3.0(react@19.3.0))(react-hook-form@7.91.0(@types/react@19.3.0)(react@19.3.0))(react-router-dom@7.18.5(react-dom@19.3.0(react@19.3.0))(react@19.3.0))(react-router@7.18.5(react-dom@19.3.0(react@19.3.0))(react@19.3.0))(react@19.3.0)):
+  ra-supabase-core@4.0.0(ra-core@5.15.7(@tanstack/react-query@5.105.0(@types/react@19.3.0)(react@19.3.0))(react-dom@19.3.0(react@19.3.0))(react-hook-form@7.91.0(@types/react@19.3.0)(react@19.3.0))(react-router-dom@7.18.5(react-dom@19.3.0(react@19.3.0))(react@19.3.0))(react-router@7.18.5(react-dom@19.3.0(react@19.3.0))(react@19.3.0))(react@19.3.0)):
     dependencies:
       '@raphiniert/ra-data-postgrest': 2.5.1(ra-core@5.15.7(@tanstack/react-query@5.105.0(@types/react@19.3.0)(react@19.3.0))(react-dom@19.3.0(react@19.3.0))(react-hook-form@7.91.0(@types/react@19.3.0)(react@19.3.0))(react-router-dom@7.18.5(react-dom@19.3.0(react@19.3.0))(react@19.3.0))(react-router@7.18.5(react-dom@19.3.0(react@19.3.0))(react@19.3.0))(react@19.3.0))
       '@supabase/supabase-js': 2.116.0
@@ -17168,15 +17179,15 @@ snapshots:
     transitivePeerDependencies:
       - '@opentelemetry/api'
 
-  ra-supabase-language-english@3.5.0: {}
+  ra-supabase-language-english@4.0.0: {}
 
-  ra-supabase-ui-materialui@3.5.2(36ff05d4c53fceee094db4c6bb75b034):
+  ra-supabase-ui-materialui@4.0.0(36ff05d4c53fceee094db4c6bb75b034):
     dependencies:
       '@mui/icons-material': 7.3.11(@mui/material@7.3.11(@emotion/react@11.14.0(@types/react@19.3.0)(react@19.3.0)(supports-color@10.2.2))(@emotion/styled@11.14.1(@emotion/react@11.14.0(@types/react@19.3.0)(react@19.3.0)(supports-color@10.2.2))(@types/react@19.3.0)(react@19.3.0)(supports-color@10.2.2))(@types/react@19.3.0)(react-dom@19.3.0(react@19.3.0))(react@19.3.0))(@types/react@19.3.0)(react@19.3.0)
       '@mui/material': 7.3.11(@emotion/react@11.14.0(@types/react@19.3.0)(react@19.3.0)(supports-color@10.2.2))(@emotion/styled@11.14.1(@emotion/react@11.14.0(@types/react@19.3.0)(react@19.3.0)(supports-color@10.2.2))(@types/react@19.3.0)(react@19.3.0)(supports-color@10.2.2))(@types/react@19.3.0)(react-dom@19.3.0(react@19.3.0))(react@19.3.0)
       '@supabase/supabase-js': 2.116.0
       ra-core: 5.15.7(@tanstack/react-query@5.105.0(@types/react@19.3.0)(react@19.3.0))(react-dom@19.3.0(react@19.3.0))(react-hook-form@7.91.0(@types/react@19.3.0)(react@19.3.0))(react-router-dom@7.18.5(react-dom@19.3.0(react@19.3.0))(react@19.3.0))(react-router@7.18.5(react-dom@19.3.0(react@19.3.0))(react@19.3.0))(react@19.3.0)
-      ra-supabase-core: 3.5.2(ra-core@5.15.7(@tanstack/react-query@5.105.0(@types/react@19.3.0)(react@19.3.0))(react-dom@19.3.0(react@19.3.0))(react-hook-form@7.91.0(@types/react@19.3.0)(react@19.3.0))(react-router-dom@7.18.5(react-dom@19.3.0(react@19.3.0))(react@19.3.0))(react-router@7.18.5(react-dom@19.3.0(react@19.3.0))(react@19.3.0))(react@19.3.0))
+      ra-supabase-core: 4.0.0(ra-core@5.15.7(@tanstack/react-query@5.105.0(@types/react@19.3.0)(react@19.3.0))(react-dom@19.3.0(react@19.3.0))(react-hook-form@7.91.0(@types/react@19.3.0)(react@19.3.0))(react-router-dom@7.18.5(react-dom@19.3.0(react@19.3.0))(react@19.3.0))(react-router@7.18.5(react-dom@19.3.0(react@19.3.0))(react@19.3.0))(react@19.3.0))
       ra-ui-materialui: 5.15.7(c5ed4c9b7b127d6638cb3e82b6ecfd69)
       react: 19.3.0
       react-dom: 19.3.0(react@19.3.0)
@@ -17184,11 +17195,11 @@ snapshots:
     transitivePeerDependencies:
       - '@opentelemetry/api'
 
-  ra-supabase@3.5.2(36ff05d4c53fceee094db4c6bb75b034):
+  ra-supabase@4.0.0(36ff05d4c53fceee094db4c6bb75b034):
     dependencies:
-      ra-supabase-core: 3.5.2(ra-core@5.15.7(@tanstack/react-query@5.105.0(@types/react@19.3.0)(react@19.3.0))(react-dom@19.3.0(react@19.3.0))(react-hook-form@7.91.0(@types/react@19.3.0)(react@19.3.0))(react-router-dom@7.18.5(react-dom@19.3.0(react@19.3.0))(react@19.3.0))(react-router@7.18.5(react-dom@19.3.0(react@19.3.0))(react@19.3.0))(react@19.3.0))
-      ra-supabase-language-english: 3.5.0
-      ra-supabase-ui-materialui: 3.5.2(36ff05d4c53fceee094db4c6bb75b034)
+      ra-supabase-core: 4.0.0(ra-core@5.15.7(@tanstack/react-query@5.105.0(@types/react@19.3.0)(react@19.3.0))(react-dom@19.3.0(react@19.3.0))(react-hook-form@7.91.0(@types/react@19.3.0)(react@19.3.0))(react-router-dom@7.18.5(react-dom@19.3.0(react@19.3.0))(react@19.3.0))(react-router@7.18.5(react-dom@19.3.0(react@19.3.0))(react@19.3.0))(react@19.3.0))
+      ra-supabase-language-english: 4.0.0
+      ra-supabase-ui-materialui: 4.0.0(36ff05d4c53fceee094db4c6bb75b034)
     transitivePeerDependencies:
       - '@mui/icons-material'
       - '@mui/material'
@@ -18391,7 +18402,7 @@ snapshots:
 
   ua-parser-js@1.0.41: {}
 
-  uc.micro@2.1.0: {}
+  uc.micro@3.0.0: {}
 
   unbox-primitive@1.1.0:
     dependencies:

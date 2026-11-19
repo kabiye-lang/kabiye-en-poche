@@ -56,7 +56,7 @@ overrides:
   # markdown-it ^13. No 13.x fix exists for GHSA-r7fv-28h4-cvq7, GHSA-vfgh-jcmw-g37q,
   # GHSA-253c-mchw-3w2r, GHSA-6v5v-wf23-fmfq, GHSA-38c4-r59v-3vqw. 14.3.3 also brings
   # linkify-it 5 (GHSA-v245-v573-v5vm, GHSA-22p9-wv53-3rq4).
-  '@jonasmerlin/react-native-markdown-display>markdown-it': '^14.3.3'
+  '@jonasmerlin/react-native-markdown-display>markdown-it': '^15.0.0'
   # @firebase/firestore 4.20.0 still wants @grpc/grpc-js ~1.9.0. No 1.9.x fix exists for
   # GHSA-m9gg-hp2v-232j and GHSA-f596-whhp-79r4. Tilde keeps 1.13.x, which still uses
   # @grpc/proto-loader ^0.7 like firestore itself (1.14 pulls a second copy, 0.8).
